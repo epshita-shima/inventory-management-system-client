@@ -59,6 +59,7 @@ const InsertClientInformation = () => {
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
+    console.log(values.detailsData)
     try {
       if (id) {
         const response = await updateClientInfo(clientData);

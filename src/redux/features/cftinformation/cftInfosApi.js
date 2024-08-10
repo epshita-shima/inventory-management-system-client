@@ -12,25 +12,36 @@ const cftInfosApi= api.injectEndpoints({
       insertCFTInfo: builder.mutation({
         query: (payload) => {
           const formData = new FormData();
-          
-          // Append main form fields
-          formData.append("makeBy", payload.makeBy);
-          formData.append("makeDate", payload.makeDate);
-          formData.append("updateBy", payload.updateBy);
-          formData.append("updateDate", payload.updateDate);
   
-          // Append detailsData fields and files
-          payload.detailsData.forEach((detail, index) => {
+          formData.append("makeBy", payload[0].makeBy);
+          formData.append("makeDate", payload[0].makeDate);
+          formData.append("updateBy", payload[0].updateBy);
+          formData.append("updateDate", payload[0].updateDate);
+          
+          payload[0].detailsData.forEach((detail, index) => {
             formData.append(`detailsData[${index}][openingDate]`, detail.openingDate);
             formData.append(`detailsData[${index}][itemId]`, detail.itemId);
             formData.append(`detailsData[${index}][cftPerKg]`, detail.cftPerKg);
+            formData.append(`detailsData[${index}][image]`, detail.image);
             formData.append(`detailsData[${index}][isActive]`, detail.isActive);
             formData.append(`detailsData[${index}][closingDate]`, detail.closingDate);
-            if (detail.image) {
-              formData.append(`detailsData[${index}][image]`, detail.image);
-            }
+            
+            // if (detail.image) {
+            //   formData.append(`detailsData[${index}][image]`, detail.image);
+            //   console.log('Backend',detail.image,detail);
+            // }
           });
-  
+          formData.getAll('image')
+          for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+          }
+         
+          // formData.append("detailsData", JSON.stringify(payload[0].detailsData));
+          // payload[0].detailsData.forEach((detail, index) => {
+          //   if (detail.image) {
+          //     formData.append(`detailsData[${index}][image]`, detail.image);
+          //   }
+          // });
           return {
             url: "/cftinfo",
             method: "POST",

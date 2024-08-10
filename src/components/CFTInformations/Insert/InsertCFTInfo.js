@@ -93,6 +93,8 @@ const InsertCFTInfo = () => {
 
   const handleSubmit = async (e, values) => {
     e.preventDefault();
+    console.log(e, values);
+    
     // const formData = new FormData();
     // formData.append("makeBy", values.makeBy);
     // formData.append("makeDate", values.makeDate);
@@ -109,20 +111,22 @@ const InsertCFTInfo = () => {
     //   }
     // });
 
-    const payload = {
+    const payload = [{
       makeBy: values.makeBy,
       makeDate: values.makeDate,
       updateBy: values.updateBy,
       updateDate: values.updateDate,
       detailsData: values.detailsData,
-    };
-
+    }];
+    console.log('fontend',payload);
+    
     try {
       const matchData = allCFTInfoData.find((x) => x.isActive == true);
       console.log(matchData);
       if (matchData) {
         swal("Not Possible!", "Plase Close the Active CFT", "error");
       } else if (matchData == undefined) {
+        console.log('test error');
         const response = await insertCFTInfos(payload);
         console.log(response);
         console.log(response.data.status);
