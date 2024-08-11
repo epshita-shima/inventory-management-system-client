@@ -16,7 +16,6 @@ const UpdateGRNInfo = ({
   totalGrandAmount,
   totalGrandQuantity,
 }) => {
-  console.log(grnSingleData);
   const handleKeyUp = (e, index, detail) => {
     const inputValue = e.target.value;
 

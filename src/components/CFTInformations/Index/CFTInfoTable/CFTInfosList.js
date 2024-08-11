@@ -194,30 +194,32 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       filterable: true,
     },
     {
-      name: "Kg per CFT",
-      selector: (cftInfosData) => cftInfosData?.kgPerUnit,
+      name: "Number OF Items",
+      selector: (cftInfosData) => {
+        const totalItems = cftInfosData.detailsData
+        return totalItems.length==0 ?"N/A": totalItems.length;
+      },
       sortable: true,
       center: true,
       filterable: true,
     },
-    {
-      name: "Status",
-      button: true,
-      width: "200px",
-      grow: 2,
-      cell: (cftInfosData) => (
-        <div style={{ textAlign: "center" }} onClick={()=>{
-     if(cftInfosData?.image){
-      window.open(`${process.env.REACT_APP_BASE_URL}/${cftInfosData?.image}`);
-     }
+    // {
+    //   name: "Status",
+    //   button: true,
+    //   width: "200px",
+    //   grow: 2,
+    //   cell: (cftInfosData) => (
+    //     <div style={{ textAlign: "center" }} onClick={()=>{
+    //  if(cftInfosData?.image){
+    //   window.open(`${process.env.REACT_APP_BASE_URL}/${cftInfosData?.image}`);
+    //  }
           
-        }}>
-          {cftInfosData?.image ?'File uploaded' : 'No file upload'
-          }
-        </div>
-      ),
-    },
-
+    //     }}>
+    //       {cftInfosData?.image ?'File uploaded' : 'No file upload'
+    //       }
+    //     </div>
+    //   ),
+    // },
     {
       name: "Status",
       button: true,

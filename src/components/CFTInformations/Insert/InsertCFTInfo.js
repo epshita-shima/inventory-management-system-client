@@ -32,101 +32,51 @@ const InsertCFTInfo = () => {
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
-  const [file, setFile] = useState(null);
-  // const [formData, setFormData] = useState({
-  //   openingDate: new Date().toLocaleDateString("en-CA"),
-  //   isActive: true,
-  //   makeBy: "Supper-026",
-  //   makeDate: new Date(),
-  //   updateBy: "",
-  //   updateDate: "",
-  //   closingDate: "",
-  //   itemId: '',
-  //   cftPerKg: "",
-  //   image: "",
-  // });
 
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   const initialValues = {
     detailsData: [
       {
-        openingDate: startDate,
         itemId: "",
         cftPerKg: "",
         image: "",
-        isActive: true,
-        closingDate: null,
       },
     ],
+    openingDate: startDate,
+    isActive: true,
+    closingDate: null,
     makeBy: makebyUser,
     makeDate: new Date(),
     updateBy: "",
     updateDate: "",
   };
-  const handleFileChange = (e, setFieldValue, index) => {
-    setFile(e.target.files[0]);
-    setFieldValue(`detailsData.${index}.image`, e.target.files[0]);
-  };
+
   const handleChange = (setFieldValue, index, newValue) => {
     setFieldValue(`detailsData.${index}.itemId`, newValue);
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value, type } = e.target;
-  //   const date = new Date().toLocaleDateString("en-CA");
-  //   if (type == "text") {
-  //     setFormData({
-  //       ...formData,
-  //       [name]: value,
-  //     });
-  //   } else {
-  //     if (date < value) {
-  //       console.log("date is greater than value");
-  //     } else {
-  //       setFormData({
-  //         ...formData,
-  //         [name]: value,
-  //       });
-  //     }
-  //   }
-  // };
-
   const handleSubmit = async (e, values) => {
     e.preventDefault();
-    console.log(e, values);
-    
-    // const formData = new FormData();
-    // formData.append("makeBy", values.makeBy);
-    // formData.append("makeDate", values.makeDate);
-    // formData.append("updateBy", values.updateBy);
-    // formData.append("updateDate", values.updateDate);
-    // values.detailsData.forEach((detail, index) => {
-    //   formData.append(`detailsData[${index}][openingDate]`, detail.openingDate);
-    //   formData.append(`detailsData[${index}][itemId]`, detail.itemId);
-    //   formData.append(`detailsData[${index}][cftPerKg]`, detail.cftPerKg);
-    //   formData.append(`detailsData[${index}][isActive]`, detail.isActive);
-    //   formData.append(`detailsData[${index}][closingDate]`, detail.closingDate);
-    //   if (detail.image) {
-    //     formData.append(`detailsData[${index}][image]`, detail.image);
-    //   }
-    // });
+    const payload = [
+      {
+        openingDate: values.openingDate,
+        isActive: values.isActive,
+        closingDate: values.closingDate,
+        makeBy: values.makeBy,
+        makeDate: values.makeDate,
+        updateBy: values.updateBy,
+        updateDate: values.updateDate,
+        detailsData: values.detailsData,
+      },
+    ];
 
-    const payload = [{
-      makeBy: values.makeBy,
-      makeDate: values.makeDate,
-      updateBy: values.updateBy,
-      updateDate: values.updateDate,
-      detailsData: values.detailsData,
-    }];
-    console.log('fontend',payload);
-    
     try {
       const matchData = allCFTInfoData.find((x) => x.isActive == true);
       console.log(matchData);
       if (matchData) {
         swal("Not Possible!", "Plase Close the Active CFT", "error");
       } else if (matchData == undefined) {
-        console.log('test error');
+        console.log("test error");
         const response = await insertCFTInfos(payload);
         console.log(response);
         console.log(response.data.status);
@@ -145,195 +95,7 @@ const InsertCFTInfo = () => {
     } catch (err) {
       console.error(err);
     }
-
-    // if (file) {
-    //   const data = new FormData();
-    //   data.append("image", file);
-    //   data.append("openingDate", formData.openingDate);
-    //   data.append("isActive", formData.isActive);
-    //   data.append("makeBy", formData.makeBy);
-    //   data.append("makeDate", formData.makeDate);
-    //   data.append("updateBy", formData.updateBy);
-    //   data.append("updateDate", formData.updateDate);
-    //   data.append("closingDate", formData.closingDate);
-    //   data.append("cftPerKg", formData.cftPerKg);
-    //   data.delete(formData.image);
-
-    //   try {
-    //     const matchData = allCFTInfoData.find((x) => x.isActive == true);
-    //     console.log(matchData);
-    //     if (matchData) {
-    //       swal("Not Possible!", "Plase Close the Active CFT", "error");
-    //     } else if (matchData == undefined) {
-    //       const response = await insertCFTInfos(data);
-    //       console.log(response);
-    //       console.log(response.data.status);
-
-    //       if (response.data.status === 200) {
-    //         swal("Done", "Data Save Successfully", "success");
-    //         navigate("main-view/cft-info-list");
-    //       } else {
-    //         swal(
-    //           "Not Possible!",
-    //           "An problem occurred while creating the data",
-    //           "error"
-    //         );
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.error(err);
-    //     // swal("Relax!", "An problem occurred while creating the data", "error");
-    //   }
-    // } else {
-    //   try {
-    //     const matchData = allCFTInfoData.find((x) => x.isActive == true);
-    //     console.log(matchData);
-    //     if (matchData) {
-    //       swal("Not Possible!", "Plase Close the Active CFT", "error");
-    //     } else if (matchData == undefined) {
-    //       const response = await insertCFTInfos(formData);
-
-    //       if (response.data.status === 200) {
-    //         swal("Done", "Data Save Successfully", "success");
-    //         navigate("main-view/cft-info-list");
-    //       } else {
-    //         swal(
-    //           "Not Possible!",
-    //           "An problem occurred while creating the data",
-    //           "error"
-    //         );
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // }
   };
-
-  // return (
-  //  <div className="container">
-  //    <div className=" row px-4 mx-auto">
-  //     <div className="d-flex justify-content-between align-items-center">
-  //       <div className="d-flex align-items-center">
-  //         <FontAwesomeIcon
-  //           style={{
-  //             fontSize: "14px",
-  //             color: "#000",
-  //             // backgroundColor: "#00B987",
-  //             backgroundColor: "#2DDC1B",
-  //             borderRadius: "50px",
-  //             padding: "3px",
-  //           }}
-  //           icon={faPlus}
-  //         />
-  //         &nbsp;
-  //         <span
-  //           style={{
-  //             color: "#000",
-  //             fontWeight: "700",
-  //             letterSpacing: ".5px",
-  //           }}
-  //         >
-  //           Create CFT Infos
-  //         </span>
-  //       </div>
-  //       <div>
-  //         <button
-  //           style={{
-  //             backgroundColor: "#E55566",
-  //             outline: "none",
-  //             border: "none",
-  //             color: "white",
-  //             height: "25px",
-  //           }}
-  //           onClick={() => {
-  //             navigate("/main-view/cft-info-list");
-  //           }}
-  //         >
-  //           <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon> Back
-  //           to CFTInfoList
-  //         </button>
-  //       </div>
-  //     </div>
-  //     <div></div>
-  //     <div className="mt-3">
-  //       <div className="d-flex justify-content-center align-items-center w-100 ">
-  //         <div className="card shadow-lg w-50 p-5">
-  //           <form onSubmit={handleSubmit} encType="multipart/form-data">
-  //             <div>
-  //               <label htmlFor="">Opening Date</label>
-  //               <br />
-  //               <input
-  //                 type="date"
-  //                 name="openingDate"
-  //                 value={formData.openingDate}
-  //                 onChange={handleChange}
-  //                 placeholder="Opening Date"
-  //                 style={{
-  //                   border: "1px solid #2DDC1B",
-  //                   padding: "5px",
-  //                   height: "38px",
-  //                   borderRadius: "5px",
-  //                   width: "95%",
-  //                   textAlign: "center",
-  //                 }}
-  //               />
-  //             </div>
-  //             <div className="mt-3">
-  //               <label htmlFor=""> KG Per Cft</label>
-  //               <br />
-  //               <input
-  //                 type="text"
-  //                 name="cftPerKg"
-  //                 placeholder="kg per unit"
-  //                 value={formData?.cftPerKg}
-  //                 onChange={handleChange}
-  //                 style={{
-  //                   border: "1px solid #2DDC1B",
-  //                   padding: "4px",
-  //                   width: "95%",
-  //                   height: "38px",
-  //                   borderRadius: "5px",
-  //                   textAlign: "center",
-  //                 }}
-  //               />
-  //             </div>
-  //             <div className="mt-2">
-  //               <label htmlFor="">Upload Image</label>
-  //               <input type="file" onChange={handleFileChange} />
-  //             </div>
-  //             <div
-  //               className="mt-4"
-  //               style={{
-  //                 display: "flex",
-  //                 justifyContent: "center",
-  //               }}
-  //             >
-  //               <button
-  //                 type="submit"
-  //                 disabled={isLoading || formData.cftPerKg == ""}
-  //                 style={{
-  //                   backgroundColor:
-  //                     formData.cftPerKg == "" ? "gray" : "#2DDC1B",
-  //                   color: "white",
-  //                   padding: "5px 10px",
-  //                   fontSize: "14px",
-  //                   borderRadius: "5px",
-  //                   width: "30%",
-  //                   border: "none",
-  //                   textAlign: "center",
-  //                 }}
-  //               >
-  //                 {isLoading ? "Uploading..." : "Submit"}
-  //               </button>
-  //             </div>
-  //           </form>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  //  </div>
-  // );
 
   return (
     <div
@@ -481,12 +243,9 @@ const InsertCFTInfo = () => {
                         }}
                         onClick={() => {
                           ArrayHelperRef.current.push({
-                            openingDate: startDate,
                             itemId: "",
                             cftPerKg: "",
-                            image: "",
-                            isActive: true,
-                            closingDate: null,
+                            image: ""
                           });
                         }}
                       >
