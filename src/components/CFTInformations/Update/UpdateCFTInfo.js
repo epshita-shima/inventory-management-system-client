@@ -44,15 +44,15 @@ const UpdateCFTInfo = () => {
   useEffect(() => {
     if (singleCFTInfoData) {
       setSingleCFTInfosData({
-        _id: singleCFTInfoData._id,
-        openingDate: singleCFTInfoData.openingDate,
-        detailsData: singleCFTInfoData.detailsData,
-        isActive: singleCFTInfoData.isActive,
-        closingDate: singleCFTInfoData.closingDate,
-        makeBy: singleCFTInfoData.makeBy,
-        makeDate: singleCFTInfoData.makeDate,
-        updateBy: singleCFTInfoData.updateBy,
-        updateDate: singleCFTInfoData.updateDate,
+        _id: singleCFTInfoData?._id,
+        openingDate: singleCFTInfoData?.openingDate,
+        detailsData: singleCFTInfoData?.detailsData,
+        isActive: singleCFTInfoData?.isActive,
+        closingDate: singleCFTInfoData?.closingDate,
+        makeBy: singleCFTInfoData?.makeBy,
+        makeDate: singleCFTInfoData?.makeDate,
+        updateBy: singleCFTInfoData?.updateBy,
+        updateDate: singleCFTInfoData?.updateDate,
       });
     }
     setSingleCFTInfosData(singleCFTInfoData);
@@ -81,7 +81,7 @@ const UpdateCFTInfo = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileURL = reader.result;
-  
+
         setSingleCFTInfosData((prev) => {
           const temp_details = [...prev.detailsData];
           const newDetail = { ...temp_details[index] };
@@ -102,22 +102,20 @@ const UpdateCFTInfo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("image", file);
-    data.append("_id", singleCFTInfosData._id);
-    data.append("openingDate", singleCFTInfosData.openingDate);
-    data.append("isActive", singleCFTInfosData.isActive);
-    data.append("makeBy", singleCFTInfosData.makeBy);
-    data.append("makeDate", singleCFTInfosData.makeDate);
-    data.append("updateBy", singleCFTInfosData.updateBy);
-    data.append("updateDate", singleCFTInfosData.updateDate);
-    data.append("closingDate", singleCFTInfosData.closingDate);
-    data.append("kgPerUnit", singleCFTInfosData.kgPerUnit);
-    data.delete(singleCFTInfosData.image);
-    console.log(singleCFTInfosData?._id);
+    const payload = {
+        openingDate: singleCFTInfosData?.openingDate,
+        isActive: singleCFTInfosData?.isActive,
+        closingDate: singleCFTInfosData?.closingDate,
+        makeBy: singleCFTInfosData?.makeBy,
+        makeDate: singleCFTInfosData?.makeDate,
+        updateBy: singleCFTInfosData?.updateBy,
+        updateDate: singleCFTInfosData?.updateDate,
+        detailsData: singleCFTInfosData?.detailsData,
+      }
+ 
 
     try {
-      const response = await updateCFTInfoData({ data, id });
+      const response = await updateCFTInfoData({ payload, id });
       console.log(response.data.status);
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", "success");
@@ -166,7 +164,7 @@ const UpdateCFTInfo = () => {
                   letterSpacing: ".5px",
                 }}
               >
-                Update  CFT Info
+                Update CFT Info
               </span>
             </div>
             <div>
@@ -227,9 +225,10 @@ const UpdateCFTInfo = () => {
                       <DatePicker
                         dateFormat="y-MM-dd"
                         className="text-center custom-datepicker ms-2"
-                        value={singleCFTInfosData?.OpeningDate}
+                       
                         calendarClassName="custom-calendar"
-                        selected={startDate}
+                        selected={singleCFTInfosData?.openingDate}
+                        value={singleCFTInfosData?.openingDate}
                         required
                         onChange={(startDate) => {
                           if (startDate > new Date()) {
@@ -303,9 +302,9 @@ const UpdateCFTInfo = () => {
                           borderRadius: "5px",
                           width: "100px",
                         }}
-                        disabled={!(isValid && dirty)}
+                        // disabled={!(isValid && dirty)}
                       >
-                        Save
+                       Update
                       </button>
 
                       <div
@@ -324,7 +323,7 @@ const UpdateCFTInfo = () => {
                             const temp__details = [...prev.detailsData];
                             temp__details.push({
                               itemId: "",
-                              cftperkg: "",
+                              cftPerKg: "",
                               image: "",
                             });
                             return {
@@ -405,7 +404,6 @@ const UpdateCFTInfo = () => {
                                                           label: "Select Item",
                                                           value: 0,
                                                         }}
-                                                       
                                                         value={rawMaterialItemOptions.find(
                                                           (x) =>
                                                             x.value ===
@@ -536,27 +534,47 @@ const UpdateCFTInfo = () => {
                                                   </span>
                                                 </td>
                                                 <td className="text-center d-flex justify-content-center align-items-center border-0">
-  <div className="d-flex">
-    <input
-      type="file"
-      onChange={(e) => handleFileChange(e, index)}
-    />
-    {detail?.image && (
-      <p>
-        <img
-          src={detail.image} // Use the file URL for preview
-          alt="Current CFT Image"
-          style={{
-            maxWidth: "100px",
-            maxHeight: "50px",
-          }}
-        />
-        <span>{detail.file?.name}</span> {/* Display file name */}
-      </p>
-     
-    )}
-  </div>
-</td>
+                                                  <div className="d-flex">
+                                                    <input
+                                                      type="file"
+                                                      onChange={(e) =>
+                                                        handleFileChange(
+                                                          e,
+                                                          index
+                                                        )
+                                                      }
+                                                    />
+                                                    {detail.file? (
+                                                      <p>
+                                                        <img
+                                                          src={detail.image} // Use the file URL for preview
+                                                          alt="Current CFT Image"
+                                                          style={{
+                                                            maxWidth: "100px",
+                                                            maxHeight: "50px",
+                                                          }}
+                                                        />
+                                                        <span>
+                                                          {detail.file?.name}
+                                                        </span>{" "}
+                                                        {/* Display file name */}
+                                                      </p>
+                                                    ) : (<p>
+                                                      <img
+                                                        src={`${process.env.REACT_APP_BASE_URL}/${detail?.image}`} // Use the file URL for preview
+                                                        alt="Current CFT Image"
+                                                        style={{
+                                                          maxWidth: "100px",
+                                                          maxHeight: "50px",
+                                                        }}
+                                                      />
+                                                      <span>
+                                                        {detail.file?.name}
+                                                      </span>{" "}
+                                                      {/* Display file name */}
+                                                    </p>)}
+                                                  </div>
+                                                </td>
                                                 <td className="text-center align-middle">
                                                   <button
                                                     type="button"

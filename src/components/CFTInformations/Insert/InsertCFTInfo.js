@@ -83,7 +83,7 @@ const InsertCFTInfo = () => {
 
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
-          navigate("main-view/cft-info-list");
+          navigate("/main-view/cft-info-list");
         } else {
           swal(
             "Not Possible!",

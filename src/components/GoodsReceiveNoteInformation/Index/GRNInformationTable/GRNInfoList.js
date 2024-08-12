@@ -102,7 +102,6 @@ const GRNInfoList = ({ permission }) => {
 
   const groupedData = groupData(filteredData);
 
-
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -122,7 +121,6 @@ const GRNInfoList = ({ permission }) => {
         button: "OK",
       });
     } else {
-     
       setFilteredData(filteredDatas || []); // Ensure filteredDatas is not null/undefined
     }
   }, [filteredDatas]);
@@ -882,7 +880,7 @@ const GRNInfoList = ({ permission }) => {
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
-
+console.log(group)
             const totalGroupWaysQuantity = group?.reduce(
               (accumulator, currentValue) => {
                 const amount = parseFloat(
