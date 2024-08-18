@@ -52,7 +52,6 @@ const InsertGRNInfo = () => {
   const { data: singleGRNInfo } = useGetSingleGRNInformationQuery(id);
   const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
-  const { data: grnInfoData } = useGetAllGRNInformationQuery(undefined);
 
   const initialValues = {
     pOSingleId: "",

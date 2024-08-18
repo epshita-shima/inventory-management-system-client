@@ -4,14 +4,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, FieldArray, Form, Formik } from "formik";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
+import swal from "sweetalert";
 import ProductionSingleInfo from "./ProductionSingleInfo";
 import InsertProduction from "../Insert/InsertProduction";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/api/apiSlice";
+import { useInsertProductionInformationMutation } from "../../../redux/features/productioninformation/productionApi";
 
 const ProductionCommonPart = () => {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date().toLocaleDateString("en-CA"));
   const ArrayHelperRef = useRef();
+  const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
+  const [serialValue, setSerialValue] = useState([]);
+  const [createSerialNo] = useCreateSerialNoMutation();
+  const [insertProductionData]=useInsertProductionInformationMutation()
+  const getUser = localStorage.getItem("user");
+  const getUserParse = JSON.parse(getUser);
+  const makebyUser = getUserParse[0].username;
   const initialValues = {
     productionDate: new Date().toLocaleDateString("en-CA"),
     batchNo: "",
@@ -26,7 +36,7 @@ const ProductionCommonPart = () => {
     expectedProductionQtyPerBatch: "",
     expectedProductionQty: "",
     excessOrLessProductionQty: "",
-    makeBy: "",
+    makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
     updateDate: null,
@@ -41,15 +51,82 @@ const ProductionCommonPart = () => {
       },
     ],
   };
+
+  useEffect(() => {
+    if (serialNo && serialNo.length > 0) {
+      const maxSerialNoObject = serialNo?.reduce((max, current) => {
+        if (current.type === "production") {
+          return max && current.serialNo > max.serialNo
+            ? current
+            : max || current;
+        }
+        return max;
+      }, undefined);
+      if (maxSerialNoObject) {
+        setSerialValue(maxSerialNoObject);
+      }
+    }
+  }, [serialNo]);
+
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    // const serialData = {
-    //   serialNo: serialNo?.serialNo,
-    //   type: "po",
-    //   year: new Date().toLocaleDateString("en-CA"),
-    //   makeby: makebyUser,
-    //   updateby: "",
-    // };
+    try {
+      const serialData = {
+        serialNo: serialNo?.serialNo,
+        type: "production",
+        year: new Date().toLocaleDateString("en-CA"),
+        makeby: makebyUser,
+        updateby: "",
+      };
+      const newProductionInfo = {
+        productionDate:values.productionDate,
+        batchNo: values.batchNo,
+        totalBatch: values.totalBatch,
+        receipeQtyRatio: values.receipeQtyRatio,
+        productionItemName: values.productionItemName,
+        productionQty: parseFloat(values.productionQty),
+        productionStart: values.productionStart,
+        productionEnd: values.productionEnd,
+        totalHour: parseFloat(values.totalHour),
+        wasteageQty: parseFloat(values.wasteageQty),
+        expectedProductionQtyPerBatch: parseFloat(values.expectedProductionQtyPerBatch),
+        expectedProductionQty: parseFloat(values.expectedProductionQty),
+        excessOrLessProductionQty: parseFloat(values.excessOrLessProductionQty),
+        makeBy: makebyUser,
+        updateBy: null,
+        makeDate: new Date(),
+        updateDate: null,
+        detailsData: [],
+      };
+      values.detailsData.map((item)=>{
+        newProductionInfo.detailsData.push({
+          itemId: item.itemId,
+          receipe: item.receipe,
+          materialUsed: parseFloat(item.materialUsed),
+          asPerRatio: parseFloat(item.asPerRatio),
+          excess: parseFloat(item.excess), 
+          less: parseFloat(item.less) 
+        })
+      })
+      console.log(JSON.stringify(newProductionInfo))
+      const response = await insertProductionData(newProductionInfo);
+      if (response.data.status === 200) {
+        swal("Done", "Data Save Successfully", "success");
+        await createSerialNo(serialData);
+        serialRefresh();
+        resetForm();
+      } else {
+        swal(
+          "Not Possible!",
+          "An problem occurred while creating the data",
+          "error"
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      swal("Relax!", "An problem occurred while creating the data", "error");
+    }
+    resetForm();
   };
   return (
     <div
@@ -68,10 +145,7 @@ const ProductionCommonPart = () => {
               detailsData: Yup.array().of(
                 Yup.object().shape({
                   itemId: Yup.string().required("Required"),
-                  itemDescription: Yup.string().required("Required"),
-                  quantity: Yup.string().required("Required"),
-                  unitPrice: Yup.string().required("Required"),
-                  totalAmount: Yup.string().required("Required"),
+                  materialUsed: Yup.string().required("Required"),
                 })
               ),
             })}
@@ -151,6 +225,7 @@ const ProductionCommonPart = () => {
                                   touched={touched}
                                   errors={errors}
                                   values={values}
+                                  serialValue={serialValue}
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -220,6 +295,7 @@ const ProductionCommonPart = () => {
                                   touched={touched}
                                   errors={errors}
                                   arrayHelpers={arrayHelpers}
+                                  values={values}
                                 ></InsertProduction>
                               }
                             </div>

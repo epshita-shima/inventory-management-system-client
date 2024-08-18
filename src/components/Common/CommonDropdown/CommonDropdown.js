@@ -16,6 +16,7 @@ const rawMaterialItemDropdown=(options)=>{
       result.push({
         value: option._id,
         label: option.itemName,
+        productionQtyPerBatch:option?.productionQtyPerBatch
       });
     });
     return result;

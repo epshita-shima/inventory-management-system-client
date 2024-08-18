@@ -15,11 +15,12 @@ const ProductionSingleInfo = ({
   touched,
   errors,
   values,
+  serialValue,
 }) => {
-    const [proStartDate,setProStartDate]=useState(new Date())
-    const[endDate,setEndDate]=useState(new Date())
-  const {data:finishGoodsItem}=useGetAllItemInformationQuery(undefined)
-const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
+  const [proStartDate, setProStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
+  const finishGoodsOptions = rawMaterialItemDropdown(finishGoodsItem);
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
@@ -28,20 +29,16 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
     // Parse the dates
     const start = new Date(startDate);
     const end = new Date(endDate);
-  
+
     // Calculate the difference in milliseconds
     const differenceInMilliseconds = end - start;
-  
     // Convert milliseconds to hours
     const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-  
+
     return differenceInHours;
   }
-  
 
-  
   const hoursDifference = calculateHoursDifference(proStartDate, endDate);
-  console.log(`The difference in hours is: ${hoursDifference}`);
   return (
     <div class="row row-cols-2 row-cols-lg-3">
       <div class="col-6 col-lg-4">
@@ -55,15 +52,20 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             selected={startDate}
             required
             onChange={(startDate) => {
-              const poDate = new Date().toLocaleDateString("en-CA");
-              const formatedDate = poDate?.replaceAll("-", "");
-              // const poData = purchaseOrderAllInformation?.poNo;
-              // const poSerialNo = poData?.slice(-1);
+              const makeBatchNo = `MEB-${startDate.toLocaleDateString(
+                "en-CA"
+              )}-${
+                serialValue?.serialNo === undefined
+                  ? "1"
+                  : serialValue?.serialNo
+              }`;
+
               setStartDate(startDate.toLocaleDateString("en-CA"));
               setFieldValue(
-                "deliveryDate",
+                "productionDate",
                 startDate.toLocaleDateString("en-CA")
               );
+              setFieldValue("batchNo", makeBatchNo);
             }}
           />
         </div>
@@ -76,7 +78,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           name={`batchNo`}
           placeholder="Batch No"
           disabled
-          value={`MEB-${startDate}-01`}
+          value={values.batchNo}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -103,8 +105,11 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             textAlign: "center",
             height: "38px",
           }}
-          onChange={(e)=>{
-            setFieldValue('totalBatch',e.target.value)
+          onChange={(e) => {
+            const expectQty =
+              e.target.value * values.expectedProductionQtyPerBatch;
+            setFieldValue("totalBatch", e.target.value);
+            setFieldValue("expectedProductionQty", expectQty);
           }}
         />
       </div>
@@ -199,7 +204,20 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
                 },
               })}
               onChange={(e) => {
+                const expectQty = values.totalBatch * e.productionQtyPerBatch;
                 setFieldValue("productionItemName", e.value);
+                setFieldValue(
+                  "expectedProductionQtyPerBatch",
+                  e.productionQtyPerBatch
+                );
+                setFieldValue("expectedProductionQty", expectQty);
+                const calculateExcessOrLess = Math.abs(
+                  values.productionQty - expectQty
+                );
+                setFieldValue(
+                  "excessOrLessProductionQty",
+                  calculateExcessOrLess
+                );
               }}
             ></Select>
 
@@ -208,6 +226,31 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             )}
           </div>
         </div>
+      </div>
+      <div class="col-6 col-lg-4 mt-2">
+        <label htmlFor="productionQty">Production Qty</label>
+        <br />
+        <Field
+          type="number"
+          name={`productionQty`}
+          placeholder="Production Qty"
+          value={values.productionQty}
+          style={{
+            border: "1px solid #2DDC1B",
+            padding: "5px",
+            width: "100%",
+            borderRadius: "5px",
+            textAlign: "center",
+            height: "38px",
+          }}
+          onChange={(e) => {
+            const calculateExcessOrLess = Math.abs(
+              e.target.value - values.expectedProductionQty
+            );
+            setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+            setFieldValue("productionQty", e.target.value);
+          }}
+        />
       </div>
       <div class="col-6 col-lg-4 mt-2">
         <label htmlFor="productionStart">Production Start</label>
@@ -220,6 +263,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             selected={startDate}
             required
             onChange={(startDate) => {
+              setFieldValue('totalHour',hoursDifference)
               setProStartDate(startDate.toLocaleDateString("en-CA"));
               setFieldValue(
                 "productionStart",
@@ -240,6 +284,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             selected={startDate}
             required
             onChange={(startDate) => {
+              setFieldValue('totalHour',hoursDifference)
               setEndDate(startDate.toLocaleDateString("en-CA"));
               setFieldValue(
                 "productionEnd",
@@ -258,7 +303,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           name={`totalHour`}
           placeholder="Total Hour"
           disabled
-          value=""
+          value={hoursDifference}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -277,8 +322,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           type="text"
           name={`wastageQty`}
           placeholder="Wastage Qty"
-          disabled
-          value=""
+          value={values.wastageQty}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -286,6 +330,9 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
             borderRadius: "5px",
             textAlign: "center",
             height: "38px",
+          }}
+          onChange={(e) => {
+            setFieldValue("wasteageQty", e.target.value);
           }}
         />
       </div>
@@ -297,7 +344,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           name={`expectedProductionQtyPerBatch`}
           placeholder="Expected Production Qty (Per Batch)"
           disabled
-          value=""
+          value={values.expectedProductionQtyPerBatch}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -316,7 +363,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           name={`expectedProductionQty`}
           placeholder="Expected Production Qty"
           disabled
-          value=""
+          value={values.expectedProductionQty}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -335,7 +382,7 @@ const finishGoodsOptions=rawMaterialItemDropdown(finishGoodsItem)
           name={`excessOrLessProductionQty`}
           placeholder="Excess Or Less Production Qty"
           disabled
-          value=""
+          value={values.excessOrLessProductionQty}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
