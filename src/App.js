@@ -32,6 +32,7 @@ import InsertGRNInfo from "./components/GoodsReceiveNoteInformation/Insert/Inser
 import GRNInfoTable from "./components/GoodsReceiveNoteInformation/Index/GRNInfoTable";
 import InsertProduction from "./components/Production/Insert/InsertProduction";
 import ProductionCommonPart from "./components/Production/Common/ProductionCommonPart";
+import ProductionListTable from "./components/Production/Index/ProductionListTable";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -187,8 +188,10 @@ function App() {
               <Route path="/main-view/grn-list" element={<GRNInfoTable></GRNInfoTable>}></Route>
               <Route path="/main-view/create-grn" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
               <Route path="update-grn-info/:id" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
+              
               <Route path="create-production" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
-
+              <Route path="production-list" element={<ProductionListTable></ProductionListTable>}></Route>
+              <Route path="update-production-info/:id" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
 
 
               {/* <Route

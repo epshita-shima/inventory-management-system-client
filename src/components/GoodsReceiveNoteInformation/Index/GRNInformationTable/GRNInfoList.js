@@ -25,15 +25,12 @@ import { downloadGRNPDF } from "../../../ReportProperties/handleGRNReport";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { supplierDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import makeAnimated from "react-select/animated";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
 import handleGRNDownload from "../../../ReportProperties/handleGRNExcel";
 
 const GRNInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const {
-    data: grnAllInformation,
-    isLoading: isGRNLoading,
     refetch,
   } = useGetAllGRNInformationQuery(undefined);
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
@@ -133,80 +130,6 @@ const GRNInfoList = ({ permission }) => {
     }
   }, [isFetchAfterDeleteData]);
 
-  // const handleFilter = async () => {
-  //   if (isGRNLoading) {
-  //     console.log("loading");
-  //   } else {
-  //     let filtered = grnAllInformation;
-  //     if (selectSupplierName && selectSupplierPoNo) {
-  //       const filtered = grnAllInformation.filter((item) => {
-  //         const isSupplierNameMatch = item.supplierId === selectSupplierName;
-  //         const isPonumberMatch = item.supplierPoNo === selectSupplierPoNo;
-  //         return isSupplierNameMatch && isPonumberMatch;
-  //       });
-
-  //       if (filtered.length !== 0) {
-  //         console.log(filtered);
-  //         setFilteredData(filtered);
-  //       } else {
-  //         swal({
-  //           title: "Sorry!",
-  //           text: `The PO not belogns for this Supplier `,
-  //           icon: "warning",
-  //           button: "OK",
-  //         });
-  //         setFilteredData([]);
-  //       }
-  //     } else if (fromDate && toDate && selectSupplierPoNo !== "") {
-  //       filtered = await grnAllInformation.filter((item) => {
-  //         const itemDate = new Date(item.receiveDate);
-  //         const isDateInRange =
-  //           itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
-  //         const isPonumberMatch = item.supplierPoNo === selectSupplierPoNo;
-  //         return isDateInRange && isPonumberMatch;
-  //       });
-  //       setFilteredData(filtered);
-  //     } else if (selectMonth) {
-  //       console.log(selectMonth);
-  //       const filtered = grnAllInformation?.filter((item) => {
-  //         const itemDate = new Date(item.receiveDate);
-
-  //         // Check if itemDate is within any selected range
-  //         return selectMonth.some(({ start, end }) => {
-  //           const startDate = new Date(start);
-  //           const endDate = new Date(end);
-  //           return itemDate >= startDate && itemDate <= endDate;
-  //         });
-  //       });
-  //       setFilteredData(filtered);
-  //       console.log(filtered);
-  //     } else if (fromDate && toDate) {
-  //       filtered = await grnAllInformation?.filter((item) => {
-  //         const itemDate = new Date(item.receiveDate);
-  //         return itemDate >= new Date(fromDate) && itemDate <= new Date(toDate);
-  //       });
-  //       setFilteredData(filtered);
-  //     } else if (selectSupplierPoNo) {
-  //       filtered = await grnAllInformation.filter(
-  //         (item) => item.supplierPoNo === selectSupplierPoNo
-  //       );
-  //       setFilteredData(filtered);
-  //     }
-
-  //     if (filtered?.length !== 0) {
-  //       setIsTableDisplay(true);
-  //     } else {
-  //       setIsTableDisplay(false);
-  //       swal({
-  //         title: "Sorry!",
-  //         text: "No Data Available.",
-  //         icon: "warning",
-  //         button: "OK",
-  //       });
-  //     }
-  //     refetch();
-  //   }
-  // };
 
   const handleApplyFilters = async () => {
     setExecuteQuery(true);
@@ -548,10 +471,6 @@ const GRNInfoList = ({ permission }) => {
     <div className="row px-5 mx-4 ">
       <div
         className="col userlist-table mt-4"
-        // style={{
-        //   overflow: "scroll",
-        //   height: "480px",
-        // }}
       >
         <div>
           <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>

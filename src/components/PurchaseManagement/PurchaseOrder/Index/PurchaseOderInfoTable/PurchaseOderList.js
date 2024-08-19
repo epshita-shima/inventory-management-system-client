@@ -415,7 +415,6 @@ const PurchaseOderList = ({ permission }) => {
       </div>
     );
   }
-  console.log(purchaseInLCAtSight)
 
   return (
     <div className="row px-5 mx-4"

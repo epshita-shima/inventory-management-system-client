@@ -4,7 +4,10 @@ const productionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllProductionInformation: builder.query({
       query: () => "/production",
-      providesTags: ["insertproductioninfo", "updateproductioninfo,deleteproductioninfo"],
+      providesTags: [
+        "insertproductioninfo",
+        "updateproductioninfo,deleteproductioninfo",
+      ],
       refetchOnReconnect: true,
       refetchOnFocus: true,
     }),
@@ -20,11 +23,14 @@ const productionApi = api.injectEndpoints({
     }),
     getFilteredProductionInfo: builder.query({
       query: (queryParams) => ({
-        url: 'production/filtered',
+        url: "production/filtered",
         params: queryParams,
-        providesTags: ["insertproductioninfo", "updateproductioninfo,deleteproductioninfo"],
-      refetchOnReconnect: true,
-      refetchOnFocus: true,
+        providesTags: [
+          "insertproductioninfo",
+          "updateproductioninfo,deleteproductioninfo",
+        ],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
       }),
     }),
 
@@ -69,10 +75,11 @@ const productionApi = api.injectEndpoints({
 });
 
 export const {
-useGetAllProductionInformationQuery,
-useGetSingleProductionInformationQuery,
-useGetFilteredProductionInfoQuery,
-useInsertProductionInformationMutation,
-useUpdateProductionInformationMutation,
-useDeleteProductionInformationMutation
-} =  productionApi;
+  useGetAllProductionInformationQuery,
+  useGetSingleProductionInformationQuery,
+  useLazyGetFilteredProductionInfoQuery,
+  useGetFilteredProductionInfoQuery,
+  useInsertProductionInformationMutation,
+  useUpdateProductionInformationMutation,
+  useDeleteProductionInformationMutation,
+} = productionApi;

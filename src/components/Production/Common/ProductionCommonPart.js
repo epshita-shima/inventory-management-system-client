@@ -9,16 +9,41 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import ProductionSingleInfo from "./ProductionSingleInfo";
 import InsertProduction from "../Insert/InsertProduction";
-import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/api/apiSlice";
-import { useInsertProductionInformationMutation } from "../../../redux/features/productioninformation/productionApi";
+import {
+  useCreateSerialNoMutation,
+  useGetSerialNoQuery,
+} from "../../../redux/api/apiSlice";
+import {
+  useGetSingleProductionInformationQuery,
+  useInsertProductionInformationMutation,
+  useUpdateProductionInformationMutation,
+} from "../../../redux/features/productioninformation/productionApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
+import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
+import UpdateProduction from "../Update/UpdateProduction";
 
 const ProductionCommonPart = () => {
-  const [startDate, setStartDate] = useState(new Date().toLocaleDateString("en-CA"));
+  const { id } = useParams();
+  console.log(id);
+  const navigate=useNavigate();
+  const { data: getSingleProductionData } =
+    useGetSingleProductionInformationQuery(id);
+  const [updateProductionData, setUpdateProductionData] = useState([]);
+  const [updateSingleProductionInfo]=useUpdateProductionInformationMutation()
+  const [startDates, setStartDates] = useState(
+    new Date().toLocaleDateString("en-CA")
+  );
   const ArrayHelperRef = useRef();
-  const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
+  const { data: rawMaterials } = useGetAllRMItemInformationQuery(undefined);
+  const rawMaterialsData = rawMaterialItemDropdown(rawMaterials);
+  const { data: cftData } = useGetAllCFTInfosQuery(undefined);
+  const { data: serialNo, refetch: serialRefresh } =
+    useGetSerialNoQuery(undefined);
   const [serialValue, setSerialValue] = useState([]);
   const [createSerialNo] = useCreateSerialNoMutation();
-  const [insertProductionData]=useInsertProductionInformationMutation()
+  const [insertProductionData] = useInsertProductionInformationMutation();
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
@@ -32,10 +57,11 @@ const ProductionCommonPart = () => {
     productionStart: new Date(),
     productionEnd: new Date(),
     totalHour: "",
-    wasteageQty: "",
+    wastageQty: "",
     expectedProductionQtyPerBatch: "",
     expectedProductionQty: "",
     excessOrLessProductionQty: "",
+    productionStatus:'',
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -48,8 +74,32 @@ const ProductionCommonPart = () => {
         asPerRatio: "",
         excess: "",
         less: "",
+        consumptionStatus:""
       },
     ],
+  };
+  const receipeOptions = [
+    { value: "6676521ee8ecc1fa62ec8a46", label: "200" },
+    { value: "6676521ee8ecc1fa62ec8a44", label: "150" },
+    { value: "6676521ee8ecc1fa62ec8a45", label: "450" },
+    { value: "6676521ee8ecc1fa62ec8a4a", label: "" },
+    { value: "6676521ee8ecc1fa62ec8a4c", label: "" },
+    { value: "6676521ee8ecc1fa62ec8a49", label: "200" },
+  ];
+
+  const receipeOptionsLessQty = [
+    { value: "6676521ee8ecc1fa62ec8a46", label: "188" },
+    { value: "6676521ee8ecc1fa62ec8a44", label: "150" },
+    { value: "6676521ee8ecc1fa62ec8a45", label: "450" },
+    { value: "6676521ee8ecc1fa62ec8a4a", label: "" },
+    { value: "6676521ee8ecc1fa62ec8a4c", label: "" },
+    { value: "6676521ee8ecc1fa62ec8a49", label: "150" },
+  ];
+
+  const areFieldsEmpty = () => {
+    return updateProductionData?.detailsData?.some(
+      (field) => !field.itemId || !field.materialUsed
+    );
   };
 
   useEffect(() => {
@@ -66,62 +116,85 @@ const ProductionCommonPart = () => {
         setSerialValue(maxSerialNoObject);
       }
     }
-  }, [serialNo]);
+    if (id) {
+      setUpdateProductionData(getSingleProductionData);
+    }
+  }, [serialNo, getSingleProductionData, id]);
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     try {
-      const serialData = {
-        serialNo: serialNo?.serialNo,
-        type: "production",
-        year: new Date().toLocaleDateString("en-CA"),
-        makeby: makebyUser,
-        updateby: "",
-      };
-      const newProductionInfo = {
-        productionDate:values.productionDate,
-        batchNo: values.batchNo,
-        totalBatch: values.totalBatch,
-        receipeQtyRatio: values.receipeQtyRatio,
-        productionItemName: values.productionItemName,
-        productionQty: parseFloat(values.productionQty),
-        productionStart: values.productionStart,
-        productionEnd: values.productionEnd,
-        totalHour: parseFloat(values.totalHour),
-        wasteageQty: parseFloat(values.wasteageQty),
-        expectedProductionQtyPerBatch: parseFloat(values.expectedProductionQtyPerBatch),
-        expectedProductionQty: parseFloat(values.expectedProductionQty),
-        excessOrLessProductionQty: parseFloat(values.excessOrLessProductionQty),
-        makeBy: makebyUser,
-        updateBy: null,
-        makeDate: new Date(),
-        updateDate: null,
-        detailsData: [],
-      };
-      values.detailsData.map((item)=>{
-        newProductionInfo.detailsData.push({
-          itemId: item.itemId,
-          receipe: item.receipe,
-          materialUsed: parseFloat(item.materialUsed),
-          asPerRatio: parseFloat(item.asPerRatio),
-          excess: parseFloat(item.excess), 
-          less: parseFloat(item.less) 
-        })
-      })
-      console.log(JSON.stringify(newProductionInfo))
-      const response = await insertProductionData(newProductionInfo);
-      if (response.data.status === 200) {
-        swal("Done", "Data Save Successfully", "success");
-        await createSerialNo(serialData);
-        serialRefresh();
-        resetForm();
-      } else {
-        swal(
-          "Not Possible!",
-          "An problem occurred while creating the data",
-          "error"
+      if(id){
+        const response = await updateSingleProductionInfo(
+          updateProductionData
         );
+        console.log(response);
+        if (response?.data?.status === 200) {
+          navigate("/main-view/production-list");
+          swal("Done", "Data Save Successfully", "success");
+          resetForm();
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
       }
+      else{
+        const serialData = {
+          serialNo: serialNo?.serialNo,
+          type: "production",
+          year: new Date().toLocaleDateString("en-CA"),
+          makeby: makebyUser,
+          updateby: "",
+        };
+        const newProductionInfo = {
+          productionDate: values.productionDate,
+          batchNo: values.batchNo,
+          totalBatch: values.totalBatch,
+          receipeQtyRatio: values.receipeQtyRatio,
+          productionItemName: values.productionItemName,
+          productionQty: parseFloat(values.productionQty),
+          productionStart: values.productionStart,
+          productionEnd: values.productionEnd,
+          totalHour: parseFloat(values.totalHour),
+          wastageQty: parseFloat(values.wastageQty),
+          expectedProductionQtyPerBatch: parseFloat(
+            values.expectedProductionQtyPerBatch
+          ),
+          expectedProductionQty: parseFloat(values.expectedProductionQty),
+          excessOrLessProductionQty: parseFloat(values.excessOrLessProductionQty),
+          productionStatus:values.productionStatus,
+          makeBy: makebyUser,
+          updateBy: null,
+          makeDate: new Date(),
+          updateDate: null,
+          detailsData: [],
+        };
+        values.detailsData.map((item) => {
+          newProductionInfo.detailsData.push({
+            itemId: item.itemId,
+            receipe: item.receipe,
+            materialUsed: parseFloat(item.materialUsed),
+            asPerRatio: parseFloat(item.asPerRatio),
+            excess: parseFloat(item.excess),
+            less: parseFloat(item.less),
+            consumptionStatus:item.consumptionStatus
+          });
+        });
+        console.log(JSON.stringify(newProductionInfo));
+        const response = await insertProductionData(newProductionInfo);
+        if (response.data.status === 200) {
+          swal("Done", "Data Save Successfully", "success");
+          await createSerialNo(serialData);
+          serialRefresh();
+          resetForm();
+        } else {
+          swal(
+            "Not Possible!",
+            "An problem occurred while creating the data",
+            "error"
+          );
+        }
+      }
+     
     } catch (err) {
       console.error(err);
       swal("Relax!", "An problem occurred while creating the data", "error");
@@ -175,15 +248,10 @@ const ProductionCommonPart = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values)
+                    console.log(values);
                     return (
                       <div
                         className=" shadow-lg py-2 px-5"
-                        // style={{
-                        //   overflowY: "hidden",
-                        //   height: "calc(95vh - 120px)",
-                        //   zIndex: "9999",
-                        // }}
                       >
                         <div class="container-fluid">
                           <div class="row justify-content-center">
@@ -195,7 +263,9 @@ const ProductionCommonPart = () => {
                                     fontWeight: "bold",
                                   }}
                                 >
-                                  Production Form
+                                  {id
+                                    ? " Production Update Form"
+                                    : " Production Insert Form"}
                                 </h2>
                                 <div>
                                   <button
@@ -207,7 +277,7 @@ const ProductionCommonPart = () => {
                                       height: "25px",
                                     }}
                                     onClick={() => {
-                                      // navigate("/main-view/po-list");
+                                      navigate("/main-view/production-list");
                                     }}
                                   >
                                     <FontAwesomeIcon
@@ -219,13 +289,19 @@ const ProductionCommonPart = () => {
                               </div>
                               {
                                 <ProductionSingleInfo
-                                  startDate={startDate}
-                                  setStartDate={setStartDate}
+                                  startDates={startDates}
+                                  setStartDates={setStartDates}
                                   setFieldValue={setFieldValue}
                                   touched={touched}
                                   errors={errors}
                                   values={values}
                                   serialValue={serialValue}
+                                  id={id}
+                                  makebyUser={makebyUser}
+                                  setUpdateProductionData={
+                                    setUpdateProductionData
+                                  }
+                                  updateProductionData={updateProductionData}
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -244,17 +320,28 @@ const ProductionCommonPart = () => {
                                       form="pocreation-form"
                                       className="border-0 "
                                       style={{
-                                        backgroundColor:
-                                          isValid && dirty ? "#2DDC1B" : "gray",
+                                        backgroundColor: id
+                                          ? areFieldsEmpty()
+                                            ? "gray"
+                                            : "#2DDC1B"
+                                          : isValid && dirty
+                                          ? "#2DDC1B"
+                                          : "gray",
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
-                                      disabled={!(isValid && dirty)}
+                                      disabled={
+                                        id
+                                          ? areFieldsEmpty()
+                                            ? true
+                                            : false
+                                          : !(isValid && dirty)
+                                      }
                                     >
-                                      Save
+                                    {id ? "Update" : "Save"}
                                     </button>
                                     <div
                                       className="border-0 "
@@ -269,14 +356,36 @@ const ProductionCommonPart = () => {
                                         width: "100px",
                                       }}
                                       onClick={() => {
-                                        ArrayHelperRef.current.push({
+                                        if (id) {
+                                          setUpdateProductionData((prev) => {
+                                            const temp__details = [
+                                              ...prev.detailsData,
+                                            ];
+                                            temp__details.push({
+                                              itemId: "",
+                                              receipe: "",
+                                              materialUsed: "",
+                                              asPerRatio: "",
+                                              excess: "",
+                                              less: "",
+                                              consumptionStatus:""
+                                            });
+                                            return {
+                                              ...prev,
+                                              detailsData: [...temp__details],
+                                            };
+                                          });
+                                        } else {
+                                          ArrayHelperRef.current.push({
                                             itemId: "",
                                             receipe: "",
                                             materialUsed: "",
                                             asPerRatio: "",
                                             excess: "",
                                             less: "",
-                                          },);
+                                            consumptionStatus:""
+                                          });
+                                        }
                                       }}
                                     >
                                       <FontAwesomeIcon
@@ -288,7 +397,21 @@ const ProductionCommonPart = () => {
                                 </div>
                               </div>
 
-                              {
+                              {id ? (
+                                <UpdateProduction
+                                  makebyUser={makebyUser}
+                                  cftData={cftData}
+                                  updateProductionData={updateProductionData}
+                                  rawMaterialsData={rawMaterialsData}
+                                  receipeOptions={receipeOptions}
+                                  setUpdateProductionData={
+                                    setUpdateProductionData
+                                  }
+                                  receipeOptionsLessQty={receipeOptionsLessQty}
+                                  touched={touched}
+                                  errors={errors}
+                                ></UpdateProduction>
+                              ) : (
                                 <InsertProduction
                                   details={details}
                                   setFieldValue={setFieldValue}
@@ -296,8 +419,12 @@ const ProductionCommonPart = () => {
                                   errors={errors}
                                   arrayHelpers={arrayHelpers}
                                   values={values}
+                                  receipeOptions={receipeOptions}
+                                  cftData={cftData}
+                                  receipeOptionsLessQty={receipeOptionsLessQty}
+                                  rawMaterialsData={rawMaterialsData}
                                 ></InsertProduction>
-                              }
+                              )}
                             </div>
                           </div>
                         </div>

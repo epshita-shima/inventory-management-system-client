@@ -3,19 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
 
-const InsertProduction = ({
-  details,
-  setFieldValue,
+const UpdateProduction = ({
+  makebyUser,
+  cftData,
+  updateProductionData,
+  rawMaterialsData,
+  receipeOptions,
+  setUpdateProductionData,
+  receipeOptionsLessQty,
   touched,
   errors,
-  arrayHelpers,
-  values,
-  receipeOptions,
-  cftData,
-  rawMaterialsData,
-  receipeOptionsLessQty
 }) => {
-
+  console.log(JSON.stringify(updateProductionData))
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
@@ -65,18 +64,13 @@ const InsertProduction = ({
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
             <th className="bg-white text-center  align-items-center ">
-              Consumption Status
-              <span className="text-danger fw-bold fs-2">*</span>
-            </th>
-            <th className="bg-white text-center  align-items-center ">
               Action
             </th>
           </tr>
         </thead>
         <tbody>
-          {details && details.length > 0
-            ? details.map((detail, index) => {
-                
+          {updateProductionData && updateProductionData?.detailsData?.length > 0
+            ? updateProductionData?.detailsData?.map((detail, index) => {
                 return (
                   <tr key={index}>
                     <td className="text-center  align-middle">{index + 1}</td>
@@ -119,56 +113,72 @@ const InsertProduction = ({
                               },
                             })}
                             onChange={(e) => {
-                              if(values.receipeQtyRatio ==1000){
+                              if (
+                                updateProductionData?.receipeQtyRatio == 1000
+                              ) {
                                 const receipeData = receipeOptions.find(
                                   (x) => x.value == e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label
                                   : null;
-                                const findCFTPerKG = getCftPerKgByItemId(e.value);
-                                const calculateAsPerRatio =
-                                  (labelData / findCFTPerKG) * values.totalBatch;
-                              
-                                setFieldValue(
-                                  `detailsData.${index}.itemId`,
+                                const findCFTPerKG = getCftPerKgByItemId(
                                   e.value
                                 );
-                                setFieldValue(
-                                  `detailsData.${index}.receipe`,
-                                  labelData
+                                const calculateAsPerRatio =
+                                  (labelData / findCFTPerKG) *
+                                  updateProductionData?.totalBatch;
+                                setUpdateProductionData((prev) => {
+                                  const temp_details = [...prev.detailsData];
+                                  const newDetail = { ...temp_details[index] };
+                                  newDetail["itemId"] = e.value;
+                                  newDetail["receipe"] = labelData;
+                                  newDetail["asPerRatio"] =parseFloat(calculateAsPerRatio);
+
+                                  temp_details[index] = newDetail;
+
+                                  return {
+                                    ...prev,
+                                    detailsData: temp_details,
+                                    updateBy: makebyUser,
+                                    updateDate: new Date(),
+                                  };
+                                });
+                              } else if (
+                                updateProductionData?.receipeQtyRatio == 1000
+                              ) {
+                                const receipeData = receipeOptionsLessQty.find(
+                                  (x) => x.value == e.value
                                 );
-                                setFieldValue(
-                                  `detailsData.${index}.asPerRatio`,
-                                  Math.round(calculateAsPerRatio *100)/100
+                                const labelData = receipeData
+                                  ? receipeData.label
+                                  : null;
+                                console.log(labelData);
+                                const findCFTPerKG = getCftPerKgByItemId(
+                                  e.value
                                 );
+                                console.log(findCFTPerKG);
+                                const calculateAsPerRatio =
+                                  (labelData / findCFTPerKG == undefined
+                                    ? 0
+                                    : findCFTPerKG) *
+                                  updateProductionData?.totalBatch;
+                                setUpdateProductionData((prev) => {
+                                  const temp_details = [...prev.detailsData];
+                                  const newDetail = { ...temp_details[index] };
+                                  newDetail["itemId"] = e.value;
+                                  newDetail["receipe"] = labelData;
+                                  newDetail["asPerRatio"] = parseFloat(calculateAsPerRatio);
+                                  temp_details[index] = newDetail;
+
+                                  return {
+                                    ...prev,
+                                    detailsData: temp_details,
+                                    updateBy: makebyUser,
+                                    updateDate: new Date(),
+                                  };
+                                });
                               }
-                            else{
-                              const receipeData = receipeOptionsLessQty.find(
-                                (x) => x.value == e.value
-                              );
-                              const labelData = receipeData
-                                ? receipeData.label
-                                : null;
-                                console.log(labelData)
-                              const findCFTPerKG = getCftPerKgByItemId(e.value);
-                              console.log(findCFTPerKG)
-                              const calculateAsPerRatio =
-                                (labelData / findCFTPerKG ==undefined ? 0 :findCFTPerKG) * values.totalBatch;
-                            console.log(findCFTPerKG)
-                              setFieldValue(
-                                `detailsData.${index}.itemId`,
-                                e.value
-                              );
-                              setFieldValue(
-                                `detailsData.${index}.receipe`,
-                                labelData
-                              );
-                              setFieldValue(
-                                `detailsData.${index}.asPerRatio`,
-                                Math.round(calculateAsPerRatio *100)/100
-                              );
-                            }
                             }}
                           ></Select>
                         </div>
@@ -231,34 +241,74 @@ const InsertProduction = ({
                         onChange={(e) => {
                           const value1 = parseFloat(e.target.value);
                           const value2 = parseFloat(detail.asPerRatio);
-                            const calculateExcessOrLess = value1 - value2;
-                            console.log(calculateExcessOrLess)
-                            if (calculateExcessOrLess == 0) {
-                              setFieldValue(`detailsData.${index}.less`, 0);
-                              setFieldValue(`detailsData.${index}.excess`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "No Change");
 
+                          if (isNaN(value1) || isNaN(value2)) {
+                            console.error(
+                              "Invalid input: one of the values is not a number"
+                            );
+                          } else {
+                            const calculateExcessOrLess = value1 - value2;
+
+                            if (calculateExcessOrLess == 0) {
+                              setUpdateProductionData((prev) => {
+                                const temp_details = [...prev.detailsData];
+                                const newDetail = { ...temp_details[index] };
+                                newDetail["less"] = 0;
+                                newDetail["excess"] = 0;
+                                temp_details[index] = newDetail;
+                                return {
+                                  ...prev,
+                                  detailsData: temp_details,
+                                  updateBy: makebyUser,
+                                  updateDate: new Date(),
+                                };
+                              });
                             } else if (calculateExcessOrLess < 0) {
-                              setFieldValue(
-                                `detailsData.${index}.less`,
-                                Math.abs(Math.round(calculateExcessOrLess *100)/100)
-                              );
-                              setFieldValue(`detailsData.${index}.excess`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "Less");
+                              setUpdateProductionData((prev) => {
+                                const temp_details = [...prev.detailsData];
+                                const newDetail = { ...temp_details[index] };
+                                newDetail["less"] = Math.abs(
+                                  calculateExcessOrLess
+                                );
+                                newDetail["excess"] = 0;
+                                temp_details[index] = newDetail;
+                                return {
+                                  ...prev,
+                                  detailsData: temp_details,
+                                  updateBy: makebyUser,
+                                  updateDate: new Date(),
+                                };
+                              });
                             } else if (calculateExcessOrLess > 0) {
-                              setFieldValue(
-                                `detailsData.${index}.excess`,
-                                Math.abs(Math.round(calculateExcessOrLess)*100/100)
-                              );
-                              setFieldValue(`detailsData.${index}.less`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "Excess");
+                              setUpdateProductionData((prev) => {
+                                const temp_details = [...prev.detailsData];
+                                const newDetail = { ...temp_details[index] };
+                                newDetail["less"] = 0;
+                                newDetail["excess"] = Math.abs(
+                                  calculateExcessOrLess
+                                );
+                                temp_details[index] = newDetail;
+                                return {
+                                  ...prev,
+                                  detailsData: temp_details,
+                                  updateBy: makebyUser,
+                                  updateDate: new Date(),
+                                };
+                              });
                             }
-                          
-                          
-                          setFieldValue(
-                            `detailsData.${index}.materialUsed`,
-                            e.target.value
-                          );
+                          }
+                          setUpdateProductionData((prev) => {
+                            const temp_details = [...prev.detailsData];
+                            const newDetail = { ...temp_details[index] };
+                            newDetail["materialUsed"] = parseFloat(e.target.value);
+                            temp_details[index] = newDetail;
+                            return {
+                              ...prev,
+                              detailsData: temp_details,
+                              updateBy: makebyUser,
+                              updateDate: new Date(),
+                            };
+                          });
                         }}
                       />
                       <br />
@@ -288,12 +338,12 @@ const InsertProduction = ({
                         }}
                       />
                     </td>
-                    <td className="text-center  align-items-center">
+                    <td className="text-center align-items-center">
                       <Field
                         type="text"
                         name={`detailsData.${index}.excess`}
                         placeholder="Excess"
-                        value={detail?.excess == 0 ? "-" :detail?.excess}
+                        value={detail?.excess==0 ? "-": detail?.excess  }
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -310,24 +360,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.Less`}
                         placeholder="Less"
-                        value={detail?.less == 0 ? "-" : detail?.less }
-                        disabled
-                        style={{
-                          border: "1px solid #2DDC1B",
-                          padding: "5px",
-                          width: "100%",
-                          borderRadius: "5px",
-                          height: "38px",
-                          textAlign: "center",
-                        }}
-                      />
-                    </td>
-                    <td className="text-center  align-items-center">
-                      <Field
-                        type="text"
-                        name={`detailsData.${index}.consumptionStatus`}
-                        placeholder="Consumption Status"
-                        value={ detail?.consumptionStatus }
+                        value={detail?.less ==0? "-" : detail?.less  }
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -342,9 +375,20 @@ const InsertProduction = ({
                     <td className="text-center  align-middle">
                       <button
                         type="button"
-                        className="border-0 rounded  bg-transparent"
+                        className=" border-0 rounded  bg-transparent"
                         onClick={() => {
-                          arrayHelpers.remove(index, 1);
+                          setUpdateProductionData((prev) => {
+                            const temp__details = [...prev.detailsData];
+                            if (temp__details.length > 1)
+                              temp__details.splice(index, 1);
+
+                            return {
+                              ...prev,
+                              detailsData: [...temp__details],
+                              updateBy: makebyUser,
+                              updateDate: new Date(),
+                            };
+                          });
                         }}
                       >
                         <FontAwesomeIcon
@@ -363,4 +407,4 @@ const InsertProduction = ({
   );
 };
 
-export default InsertProduction;
+export default UpdateProduction;

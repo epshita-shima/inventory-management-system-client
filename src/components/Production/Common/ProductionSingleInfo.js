@@ -9,13 +9,17 @@ import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminf
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 const ProductionSingleInfo = ({
-  startDate,
-  setStartDate,
+  startDates,
+  setStartDates,
   setFieldValue,
   touched,
   errors,
   values,
   serialValue,
+  id,
+  updateProductionData,
+  setUpdateProductionData,
+  makebyUser,
 }) => {
   const [proStartDate, setProStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -25,20 +29,7 @@ const ProductionSingleInfo = ({
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
   ];
-  function calculateHoursDifference(startDate, endDate) {
-    // Parse the dates
-    const start = new Date(startDate);
-    const end = new Date(endDate);
 
-    // Calculate the difference in milliseconds
-    const differenceInMilliseconds = end - start;
-    // Convert milliseconds to hours
-    const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-
-    return differenceInHours;
-  }
-
-  const hoursDifference = calculateHoursDifference(proStartDate, endDate);
   return (
     <div class="row row-cols-2 row-cols-lg-3">
       <div class="col-6 col-lg-4">
@@ -47,25 +38,50 @@ const ProductionSingleInfo = ({
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker"
-            value={startDate}
+            value={id ? updateProductionData?.productionDate : startDates}
             calendarClassName="custom-calendar"
-            selected={startDate}
+            selected={startDates}
             required
             onChange={(startDate) => {
-              const makeBatchNo = `MEB-${startDate.toLocaleDateString(
-                "en-CA"
-              )}-${
-                serialValue?.serialNo === undefined
-                  ? "1"
-                  : serialValue?.serialNo
-              }`;
+              console.log(startDate)
+              if (id) {
+                const getBatchNo = updateProductionData?.batchNo;
+                const parts = getBatchNo.split("-");
+                const removeDashFromDate=startDate.toLocaleDateString(
+                  "en-CA"
+                )
+                const removeDash=removeDashFromDate.replace(/-/g,'')
+                const finalUpdateBatch = parts[parts.length - 1];
+                const makeBatchNo = `MEB-${removeDash}-${
+                  serialValue?.serialNo === undefined ? "1" : finalUpdateBatch
+                }`;
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  productionDate: startDate.toLocaleDateString(
+                    "en-CA"
+                  ),
+                  batchNo: makeBatchNo,
+                  updateBy: makebyUser,
+                  updateDate: new Date(),
+                }));
+              } else {
+                const removeDashFromDate=startDate.toLocaleDateString(
+                  "en-CA"
+                )
+                const removeDash=removeDashFromDate.replace(/-/g,'')
+                const makeBatchNo = `MEB-${removeDash}-${
+                  serialValue?.serialNo === undefined
+                    ? "1"
+                    : serialValue?.serialNo
+                }`;
 
-              setStartDate(startDate.toLocaleDateString("en-CA"));
-              setFieldValue(
-                "productionDate",
-                startDate.toLocaleDateString("en-CA")
-              );
-              setFieldValue("batchNo", makeBatchNo);
+                setStartDates(startDate.toLocaleDateString("en-CA"));
+                setFieldValue(
+                  "productionDate",
+                  startDate.toLocaleDateString("en-CA")
+                );
+                setFieldValue("batchNo", makeBatchNo);
+              }
             }}
           />
         </div>
@@ -78,7 +94,7 @@ const ProductionSingleInfo = ({
           name={`batchNo`}
           placeholder="Batch No"
           disabled
-          value={values.batchNo}
+          value={id ? updateProductionData?.batchNo : values.batchNo}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -96,7 +112,7 @@ const ProductionSingleInfo = ({
           type="number"
           name={`totalBatch`}
           placeholder="Total Batch"
-          value={values.totalBatch}
+          value={id ? updateProductionData?.totalBatch : values.totalBatch}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -106,10 +122,24 @@ const ProductionSingleInfo = ({
             height: "38px",
           }}
           onChange={(e) => {
-            const expectQty =
-              e.target.value * values.expectedProductionQtyPerBatch;
-            setFieldValue("totalBatch", e.target.value);
-            setFieldValue("expectedProductionQty", expectQty);
+            if (id) {
+              const expectQty =
+                e.target.value *
+                updateProductionData?.expectedProductionQtyPerBatch;
+              console.log(expectQty);
+              setUpdateProductionData((prevData) => ({
+                ...prevData,
+                totalBatch: e.target.value,
+                expectedProductionQty: expectQty,
+                updateBy: makebyUser,
+                updateDate: new Date(),
+              }));
+            } else {
+              const expectQty =
+                e.target.value * values.expectedProductionQtyPerBatch;
+              setFieldValue("totalBatch", e.target.value);
+              setFieldValue("expectedProductionQty", expectQty);
+            }
           }}
         />
       </div>
@@ -128,9 +158,17 @@ const ProductionSingleInfo = ({
                 label: "Select receipe qty",
                 value: 0,
               }}
-              value={receipeQtyDropdown.filter(function (option) {
-                return option.value === values.receipeQtyRatio;
-              })}
+              value={
+                id
+                  ? receipeQtyDropdown.filter(function (option) {
+                      return (
+                        option.value === updateProductionData?.receipeQtyRatio
+                      );
+                    })
+                  : receipeQtyDropdown.filter(function (option) {
+                      return option.value === values.receipeQtyRatio;
+                    })
+              }
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -154,13 +192,18 @@ const ProductionSingleInfo = ({
                 },
               })}
               onChange={(e) => {
-                setFieldValue("receipeQtyRatio", e.value);
+                if (id) {
+                  setUpdateProductionData((prevData) => ({
+                    ...prevData,
+                    receipeQtyRatio: e.value,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }));
+                } else {
+                  setFieldValue("receipeQtyRatio", e.value);
+                }
               }}
             ></Select>
-
-            {/* {touched.values.receipeQtyRatio && errors.values.receipeQtyRatio && (
-              <div className="text-danger">{errors.values.receipeQtyRatio}</div>
-            )} */}
           </div>
         </div>
       </div>
@@ -178,9 +221,18 @@ const ProductionSingleInfo = ({
                 label: "Select Production Item Name",
                 value: 0,
               }}
-              value={finishGoodsOptions.filter(function (option) {
-                return option.value === values.productionItemName;
-              })}
+              value={
+                id
+                  ? finishGoodsOptions.filter(function (option) {
+                      return (
+                        option.value ===
+                        updateProductionData?.productionItemName
+                      );
+                    })
+                  : finishGoodsOptions.filter(function (option) {
+                      return option.value === values.productionItemName;
+                    })
+              }
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -204,26 +256,46 @@ const ProductionSingleInfo = ({
                 },
               })}
               onChange={(e) => {
-                const expectQty = values.totalBatch * e.productionQtyPerBatch;
-                setFieldValue("productionItemName", e.value);
-                setFieldValue(
-                  "expectedProductionQtyPerBatch",
-                  e.productionQtyPerBatch
-                );
-                setFieldValue("expectedProductionQty", expectQty);
-                const calculateExcessOrLess = Math.abs(
-                  values.productionQty - expectQty
-                );
-                setFieldValue(
-                  "excessOrLessProductionQty",
-                  calculateExcessOrLess
-                );
+                if (id) {
+                  const expectQty =
+                    updateProductionData?.totalBatch * e.productionQtyPerBatch;
+                  const calculateExcessOrLess = Math.abs(
+                    updateProductionData?.productionQty - expectQty
+                  );
+                  setUpdateProductionData((prevData) => ({
+                    ...prevData,
+                    productionItemName: e.value,
+                    expectedProductionQtyPerBatch: e.productionQtyPerBatch,
+                    expectedProductionQty: expectQty,
+                    calculateExcessOrLess: calculateExcessOrLess,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }));
+                } else {
+                  const expectQty = values.totalBatch * e.productionQtyPerBatch;
+                  setFieldValue("productionItemName", e.value);
+                  setFieldValue(
+                    "expectedProductionQtyPerBatch",
+                    e.productionQtyPerBatch
+                  );
+                  setFieldValue("expectedProductionQty", expectQty);
+                  const calculateExcessOrLess = Math.abs(
+                    values.productionQty - expectQty
+                  );
+                  setFieldValue(
+                    "excessOrLessProductionQty",
+                    calculateExcessOrLess
+                  );
+                }
               }}
             ></Select>
 
-            {touched.productionItemName && errors.productionItemName && (
-              <div className="text-danger">{errors.productionItemName}</div>
-            )}
+            {id
+              ? ""
+              : touched.productionItemName &&
+                errors.productionItemName && (
+                  <div className="text-danger">{errors.productionItemName}</div>
+                )}
           </div>
         </div>
       </div>
@@ -234,7 +306,9 @@ const ProductionSingleInfo = ({
           type="number"
           name={`productionQty`}
           placeholder="Production Qty"
-          value={values.productionQty}
+          value={
+            id ? updateProductionData?.productionQty : values.productionQty
+          }
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -244,11 +318,28 @@ const ProductionSingleInfo = ({
             height: "38px",
           }}
           onChange={(e) => {
-            const calculateExcessOrLess = Math.abs(
-              e.target.value - values.expectedProductionQty
-            );
-            setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
-            setFieldValue("productionQty", e.target.value);
+            if (id) {
+              const excessOrLess= e.target.value - updateProductionData?.expectedProductionQty
+              const calculateExcessOrLess = Math.abs(
+                e.target.value - updateProductionData?.expectedProductionQty
+              );
+              setUpdateProductionData((prevData) => ({
+                ...prevData,
+                excessOrLessProductionQty: calculateExcessOrLess,
+                productionQty: e.target.value,
+                productionStatus:excessOrLess <0 ? "Less" : "Excess",
+                updateBy: makebyUser,
+                updateDate: new Date(),
+              }));
+            } else {
+              const excessOrLess= e.target.value - values.expectedProductionQty
+              const calculateExcessOrLess = Math.abs(
+                e.target.value - values.expectedProductionQty
+              );
+              setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+              setFieldValue("productionQty", e.target.value);
+              setFieldValue("productionStatus",excessOrLess <0 ? "Less" : "Excess")
+            }
           }}
         />
       </div>
@@ -258,17 +349,45 @@ const ProductionSingleInfo = ({
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker"
-            value={proStartDate}
+            value={id ? updateProductionData?.productionStart : proStartDate}
             calendarClassName="custom-calendar"
-            selected={startDate}
+            selected={proStartDate}
             required
             onChange={(startDate) => {
-              setFieldValue('totalHour',hoursDifference)
               setProStartDate(startDate.toLocaleDateString("en-CA"));
-              setFieldValue(
-                "productionStart",
-                startDate.toLocaleDateString("en-CA")
-              );
+              if (id) {
+                const start = new Date(startDate);
+                const end = new Date(updateProductionData?.productionEnd);
+
+                console.log(end, start);
+                const differenceInMilliseconds = end - start;
+                const differenceInHours =
+                  differenceInMilliseconds / (1000 * 60 * 60);
+                console.log(differenceInHours);
+
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  totalHour: differenceInHours,
+                  productionStart: startDate.toLocaleDateString("en-CA"),
+                  updateBy: makebyUser,
+                  updateDate: new Date(),
+                }));
+              } else {
+                const start = new Date(proStartDate);
+                const end = new Date(endDate);
+                console.log(end, start);
+                const differenceInMilliseconds = end - start;
+                const differenceInHours =
+                  differenceInMilliseconds / (1000 * 60 * 60);
+                console.log(differenceInHours);
+
+                setFieldValue("totalHour", differenceInHours);
+
+                setFieldValue(
+                  "productionStart",
+                  startDate.toLocaleDateString("en-CA")
+                );
+              }
             }}
           />
         </div>
@@ -279,17 +398,42 @@ const ProductionSingleInfo = ({
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker"
-            value={endDate}
+            value={id ? updateProductionData?.productionEnd : endDate}
             calendarClassName="custom-calendar"
-            selected={startDate}
+            selected={endDate}
             required
             onChange={(startDate) => {
-              setFieldValue('totalHour',hoursDifference)
               setEndDate(startDate.toLocaleDateString("en-CA"));
-              setFieldValue(
-                "productionEnd",
-                startDate.toLocaleDateString("en-CA")
-              );
+              if (id) {
+                const start = new Date(updateProductionData?.productionStart);
+                const end = new Date(startDate);
+                console.log(end, start);
+                const differenceInMilliseconds = end - start;
+                const differenceInHours =
+                  differenceInMilliseconds / (1000 * 60 * 60);
+                console.log(differenceInHours);
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  totalHour: differenceInHours,
+                  productionEnd: startDate.toLocaleDateString("en-CA"),
+                  updateBy: makebyUser,
+                  updateDate: new Date(),
+                }));
+              } else {
+                const start = new Date(proStartDate);
+                const end = new Date(endDate);
+                console.log(end, start);
+                const differenceInMilliseconds = end - start;
+                const differenceInHours =
+                  differenceInMilliseconds / (1000 * 60 * 60);
+                console.log(differenceInHours);
+
+                setFieldValue("totalHour", differenceInHours);
+                setFieldValue(
+                  "productionEnd",
+                  startDate.toLocaleDateString("en-CA")
+                );
+              }
             }}
           />
         </div>
@@ -303,7 +447,7 @@ const ProductionSingleInfo = ({
           name={`totalHour`}
           placeholder="Total Hour"
           disabled
-          value={hoursDifference}
+          value={id ? updateProductionData?.totalHour : values.totalHour}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -322,7 +466,7 @@ const ProductionSingleInfo = ({
           type="text"
           name={`wastageQty`}
           placeholder="Wastage Qty"
-          value={values.wastageQty}
+          value={id ? updateProductionData?.wastageQty : values.wastageQty}
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -332,7 +476,16 @@ const ProductionSingleInfo = ({
             height: "38px",
           }}
           onChange={(e) => {
-            setFieldValue("wasteageQty", e.target.value);
+            if (id) {
+              setUpdateProductionData((prevData) => ({
+                ...prevData,
+                wastageQty: e.target.value,
+                updateBy: makebyUser,
+                updateDate: new Date(),
+              }));
+            } else {
+              setFieldValue("wastageQty", e.target.value);
+            }
           }}
         />
       </div>
@@ -344,7 +497,11 @@ const ProductionSingleInfo = ({
           name={`expectedProductionQtyPerBatch`}
           placeholder="Expected Production Qty (Per Batch)"
           disabled
-          value={values.expectedProductionQtyPerBatch}
+          value={
+            id
+              ? updateProductionData?.expectedProductionQtyPerBatch
+              : values.expectedProductionQtyPerBatch
+          }
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -363,7 +520,11 @@ const ProductionSingleInfo = ({
           name={`expectedProductionQty`}
           placeholder="Expected Production Qty"
           disabled
-          value={values.expectedProductionQty}
+          value={
+            id
+              ? updateProductionData?.expectedProductionQty
+              : values.expectedProductionQty
+          }
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -382,7 +543,34 @@ const ProductionSingleInfo = ({
           name={`excessOrLessProductionQty`}
           placeholder="Excess Or Less Production Qty"
           disabled
-          value={values.excessOrLessProductionQty}
+          value={
+            id
+              ? updateProductionData?.excessOrLessProductionQty
+              : values.excessOrLessProductionQty
+          }
+          style={{
+            border: "1px solid #2DDC1B",
+            padding: "5px",
+            width: "100%",
+            borderRadius: "5px",
+            textAlign: "center",
+            height: "38px",
+          }}
+        />
+      </div>
+      <div class="col-6 col-lg-4 mt-2">
+        <label htmlFor="paymentId">Production Status</label>
+        <br />
+        <Field
+          type="text"
+          name={`productionStatus`}
+          placeholder="Production Status"
+          disabled
+          value={
+            id
+              ? updateProductionData?.productionStatus
+              : values.productionStatus
+          }
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",

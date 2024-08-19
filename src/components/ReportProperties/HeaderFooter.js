@@ -30,13 +30,11 @@ const downloadPDF = (companyinfo,reportTitle) => {
   // Save the PDF
   doc.save(`${fileName}.pdf`);
 };
-
-const downloadAllPDF = (companyinfo,reportTitle) => {
+const downloadProductionPDF = (companyinfo,reportTitle) => {
   const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
   const doc = new jsPDF();
- 
   doc.autoTable({
-    html: "#my-table2",
+    html: "#production-table",
     startY: 50,
     margin: { top: 50, bottom: 32 },
     headerStyles: {
@@ -60,6 +58,36 @@ const downloadAllPDF = (companyinfo,reportTitle) => {
   addFooter(doc, companyinfo,reportTitle);
 
   // Save the PDF
+  doc.save(`${fileName}.pdf`);
+};
+
+const downloadAllPDF = (companyinfo,reportTitle) => {
+  const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
+  const doc = new jsPDF();
+ 
+  doc.autoTable({
+    html: "#my-table2",
+    startY: 50,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128], 
+      textColor: [255, 255, 255], 
+    },
+    theme: "grid",
+    tableLineWidth: 0.5, 
+    styles: {
+      lineColor: [0, 0, 0], 
+      textColor: [0, 0, 0],
+      font: "times",
+      fontSize: 10,
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center"; 
+    },
+  });
+
+  addFooter(doc, companyinfo,reportTitle);
+
   doc.save(`${fileName}.pdf`);
 };
 
@@ -402,4 +430,4 @@ if(companyinfo && companyinfo?.companyinfo[0]){
     }
   };
 
-export { downloadPDF,downloadAllPDF,downloadInactivePDF ,downloadImage,downloadAllImage};
+export { downloadPDF,downloadAllPDF,downloadInactivePDF ,downloadImage,downloadAllImage,downloadProductionPDF};

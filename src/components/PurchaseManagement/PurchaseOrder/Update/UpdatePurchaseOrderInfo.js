@@ -3,22 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
 import '../Insert/InsertPurchaseOrder.css'
+
 const UpdatePurchaseOrderInfo = ({
-  arrayHelpers,
   purchaseOrderAllInformation,
   setPurchaseOrderAllInformation,
   setTotalGrandQuantity,
   setTotalGrandTotalAmount,
   rawMaterialItemOptions,
-  setFieldValue,
   setActiveItemInfoModal,
   setAcivePaymentModal,
   setActiveSupplierModal,
   setAciveBankInfoModal,
   touched,
   errors,
-  totalGrandQuantity,
-  totalGrandTotalAmount,
   makebyUser,
 }) => {
   const handleKeyUp = (e, index, detail) => {
@@ -54,7 +51,6 @@ const UpdatePurchaseOrderInfo = ({
   };
   return (
     <div className="insertpo-responsive-custom" 
-    // style={{ height: "300px", overflowY: "auto" }}
     >
       <table className="table w-full table-bordered">
         <thead className="w-100">
