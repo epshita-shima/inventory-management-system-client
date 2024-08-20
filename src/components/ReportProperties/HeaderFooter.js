@@ -32,8 +32,8 @@ const downloadPDF = (companyinfo,reportTitle) => {
 };
 const downloadProductionPDF = (companyinfo,reportTitle) => {
   const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
-  const doc = new jsPDF();
-  doc.autoTable({
+  const doc1 = new jsPDF();
+  doc1.autoTable({
     html: "#production-table",
     startY: 50,
     margin: { top: 50, bottom: 32 },
@@ -48,6 +48,13 @@ const downloadProductionPDF = (companyinfo,reportTitle) => {
       textColor: [0, 0, 0],
       font: "times", // All text color
       fontSize: 10,
+      // overflow: 'linebreak',
+      // cellWidth: 'wrap',
+    },
+    columnStyles: {
+      0: {cellWidth: 'auto'}, // Example for the first column
+      1: {cellWidth: 'auto'}, // Example for the second column
+      // You can specify auto or a specific width for each column
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center"; // Align all cell content to center
@@ -55,10 +62,47 @@ const downloadProductionPDF = (companyinfo,reportTitle) => {
   });
 
   // Add footer text to each page
-  addFooter(doc, companyinfo,reportTitle);
+  addFooter(doc1, companyinfo,reportTitle);
 
   // Save the PDF
-  doc.save(`${fileName}.pdf`);
+  doc1.save(`${fileName}.pdf`);
+};
+const downloadProductionPDFPERBatch = (companyinfo,reportTitle) => {
+  const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
+  const doc1 = new jsPDF('landscape');
+  doc1.autoTable({
+    html: "#production-table-per-batch",
+    startY: 50,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128], // Change the color here, e.g., red
+      textColor: [255, 255, 255], // Header text color
+    },
+    theme: "grid",
+    tableLineWidth: 0.5, // Border width for the whole table
+    styles: {
+      lineColor: [0, 0, 0], // Color for all borders
+      textColor: [0, 0, 0],
+      font: "times", // All text color
+      fontSize: 10,
+      // overflow: 'linebreak',
+      // cellWidth: 'wrap',
+    },
+    columnStyles: {
+      0: {cellWidth: 'auto'}, // Example for the first column
+      1: {cellWidth: 'auto'}, // Example for the second column
+      // You can specify auto or a specific width for each column
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center"; // Align all cell content to center
+    },
+  });
+
+  // Add footer text to each page
+  addFooter(doc1, companyinfo,reportTitle);
+
+  // Save the PDF
+  doc1.save(`${fileName}.pdf`);
 };
 
 const downloadAllPDF = (companyinfo,reportTitle) => {
@@ -430,4 +474,4 @@ if(companyinfo && companyinfo?.companyinfo[0]){
     }
   };
 
-export { downloadPDF,downloadAllPDF,downloadInactivePDF ,downloadImage,downloadAllImage,downloadProductionPDF};
+export { downloadPDF,downloadAllPDF,downloadInactivePDF ,downloadImage,downloadAllImage,downloadProductionPDF,downloadProductionPDFPERBatch};

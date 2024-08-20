@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import swal from "sweetalert";
 import {
   faDownload,
+  faFilePdf,
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -22,7 +23,7 @@ import { downloadGRNPDF } from "../../../ReportProperties/handleGRNReport";
 import handleGRNDownload from "../../../ReportProperties/handleGRNExcel";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
-import { downloadProductionPDF } from "../../../ReportProperties/HeaderFooter";
+import { downloadProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
 
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -42,8 +43,8 @@ const ProductionInfoList = ({ permission }) => {
   const reportTitle = "Production REPORT";
   const [executeQuery, setExecuteQuery] = useState(false);
   const [filters, setFilters] = useState({
-    fromDate: "",
-    toDate: "",
+    fromDate: fromDate,
+    toDate: toDate,
   });
   console.log(filters);
   const [trigger, { data: filteredDatas, error, isFetching }] =
@@ -52,8 +53,8 @@ const ProductionInfoList = ({ permission }) => {
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
-      trigger(filters); // Trigger the query
-      setExecuteQuery(false); // Reset executeQuery after triggering the query
+      trigger(filters); 
+      setExecuteQuery(false); 
     }
   }, [executeQuery, trigger, filters]);
 
@@ -126,6 +127,37 @@ const ProductionInfoList = ({ permission }) => {
       grow: 2,
       cell: (filteredData) => (
         <div className="d-flex justify-content-between align-content-center">
+            {permission?.isPDF ? (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Update item"
+              style={{
+                color: `${
+                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                } `,
+                border: `${
+                  filteredData?.detailsData?.length == 0
+                    ? "2px solid gray"
+                    : "2px solid orange"
+                }`,
+                padding: "3px",
+                borderRadius: "5px",
+              }}
+              onClick={() => {
+                downloadProductionPDFPERBatch(
+                  { companyinfo },
+                  reportTitle
+                );
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+            </a>
+          ) : (
+            ""
+          )}
           {permission?.isUpdated ? (
             <a
               target="_blank"
@@ -320,12 +352,6 @@ const ProductionInfoList = ({ permission }) => {
     reportTitle,
   ]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
   return (
     <div className="row px-5 mx-4 ">
       <ListHeading
@@ -341,7 +367,7 @@ const ProductionInfoList = ({ permission }) => {
         <div>
           {/* <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
           <hr /> */}
-          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-75 d-md-block">
+          <div className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block" style={{width:'55%'}}>
             <div className="ms-lg-4 margin-md">
               <label htmlFor="">From Date</label>
               <br />
@@ -380,8 +406,6 @@ const ProductionInfoList = ({ permission }) => {
                 selected={toDate}
                 required
                 onChange={(toDate) => {
-                  console.log(toDate);
-
                   setFilters((prevFilters) => ({
                     ...prevFilters,
                     toDate: toDate?.toLocaleDateString("en-CA"),
@@ -441,24 +465,7 @@ const ProductionInfoList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            <div className="width-lg-16 margin-md">
-              <button
-                style={{
-                  backgroundColor: "white",
-                  border: "1px solid #2DDC1B",
-                  color: "#2DDC1B",
-                  fontWeight: "900",
-                  padding: "5px 10px",
-                  fontSize: "14px",
-                  borderRadius: "5px",
-                  width: "150px",
-                  height: "38px",
-                  marginTop: "25px",
-                }}
-              >
-                Summary
-              </button>
-            </div>
+            
           </div>
           <div></div>
         </div>
@@ -485,25 +492,12 @@ const ProductionInfoList = ({ permission }) => {
       <table id="production-table" className="d-none">
         <thead>
           <tr>
+            <th>Sl.</th>
             <th>Production Date</th>
             <th>Batch No</th>
             <th>Total Batch</th>
-            <th>Receipe Qty Ratio</th>
-            <th>Production Item Name</th>
             <th>Production Qty</th>
-            <th>Production Start Date</th>
-            <th>Production End Date</th>
-            <th>Total Hour</th>
-            <th>Wastage Qty</th>
-            <th>Expected ProductionQty(Per Batch)</th>
-            <th>Expected Production Qty</th>
-            <th>ExcessOrLess Production Qty</th>
-            <th>Item Name</th>
-            <th>Receipe</th>
-            <th>Material Used</th>
-            <th>As Per Ratio</th>
-            <th>Excess</th>
-            <th>Less</th>
+          
           </tr>
         </thead>
         <tbody> {filteredData?.map((item, index) => (
@@ -512,6 +506,43 @@ const ProductionInfoList = ({ permission }) => {
               <td>{item.productionDate}</td>
               <td>{item.batchNo}</td>
               <td>{item.totalBatch}</td>
+              <td>{item.productionQty}</td>
+            </tr>
+          ))}
+          </tbody>
+      </table>
+      <table id="production-table-per-batch" className="d-none">
+        <thead>
+          <tr>
+            <th>Sl.</th>
+            <th>Production Date</th>
+            <th>Batch No</th>
+            <th>Total Batch</th>
+            <th>Receipe Qty</th>
+            <th>Production Item</th>
+            <th>Production Qty</th>
+            <th>Production StartDate</th>
+            <th>Production EndDate</th>
+            <th>Total Hour</th>
+            <th>Wastage Qty</th>
+            <th>Expected ProductionQty(Per Batch)</th>
+            <th>Expected Production Qty</th>
+            <th>ExcessOrLess Production Qty</th>
+            <th>Item Name</th>
+            <th>Receipe</th>
+            <th>Material</th>
+            <th>As Per Ratio</th>
+            <th>Excess</th>
+            <th>Less</th>/
+          </tr>
+        </thead>
+        <tbody> {filteredData?.map((item, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{item.productionDate}</td>
+              <td>{item.batchNo}</td>
+              <td>{item.totalBatch}</td>
+              <td>{item.productionQty}</td>
               <td>{item.receipeQtyRatio}</td>
               <td>{item.productionItemName}</td>
               <td>{item.itemStatus}</td>

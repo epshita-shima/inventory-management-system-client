@@ -338,7 +338,16 @@ const ProductionSingleInfo = ({
               );
               setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
               setFieldValue("productionQty", e.target.value);
-              setFieldValue("productionStatus",excessOrLess <0 ? "Less" : "Excess")
+              if(excessOrLess == 0){
+                setFieldValue("productionStatus", "No Change")
+              }
+              else if(excessOrLess < 0){
+                setFieldValue("productionStatus", "Less")
+              }
+              else{
+                setFieldValue("productionStatus", "Excess")
+              }
+              
             }
           }}
         />
