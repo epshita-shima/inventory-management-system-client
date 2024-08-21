@@ -233,8 +233,6 @@ var reportTitle="All User list"
           </div>
         </div>
       </div>
-
-     
     </>
   );
 };

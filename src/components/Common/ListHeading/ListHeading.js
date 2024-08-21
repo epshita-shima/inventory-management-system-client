@@ -91,7 +91,6 @@ const ListHeading = ({
         totalActive = finishGoodActiveStatus?.length;
         totalInActive = finishGoodInActiveStatus?.length;
       } else if (searchItem[0]?.menuId === MenuIdCollection.userSeting) {
-        console.log("fg");
         grandTotal = user?.length;
         totalActive = activeUser?.length;
         totalInActive = inActiveUser?.length;

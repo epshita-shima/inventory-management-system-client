@@ -33,42 +33,42 @@ const InsertProduction = ({
       <table className="table table-bordered">
         <thead className="w-100">
           <tr>
-            <th className="bg-white text-center  align-items-center">Sl</th>
+            <th className="bg-white text-center align-items-center">Sl</th>
 
             <th
-              className="bg-white text-center  align-items-center"
+              className="bg-white text-center align-items-center"
               style={{ width: "20%" }}
             >
               Item Name
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               Receipe
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
 
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               Material Used
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               As Per Ratio
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
 
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               (+) Excess
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               (-) Less
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center d-none">
               Consumption Status
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center  align-items-center ">
+            <th className="bg-white text-center align-items-center ">
               Action
             </th>
           </tr>
@@ -254,7 +254,6 @@ const InsertProduction = ({
                               setFieldValue(`detailsData.${index}.consumptionStatus`, "Excess");
                             }
                           
-                          
                           setFieldValue(
                             `detailsData.${index}.materialUsed`,
                             e.target.value
@@ -322,7 +321,7 @@ const InsertProduction = ({
                         }}
                       />
                     </td>
-                    <td className="text-center  align-items-center">
+                    <td className="text-center  align-items-center d-none">
                       <Field
                         type="text"
                         name={`detailsData.${index}.consumptionStatus`}

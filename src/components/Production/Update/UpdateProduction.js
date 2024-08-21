@@ -33,7 +33,6 @@ const UpdateProduction = ({
         <thead className="w-100">
           <tr>
             <th className="bg-white text-center  align-items-center">Sl</th>
-
             <th
               className="bg-white text-center  align-items-center"
               style={{ width: "20%" }}
@@ -45,7 +44,6 @@ const UpdateProduction = ({
               Receipe
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-
             <th className="bg-white text-center  align-items-center ">
               Material Used
               <span className="text-danger fw-bold fs-2">*</span>
@@ -54,13 +52,16 @@ const UpdateProduction = ({
               As Per Ratio
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-
             <th className="bg-white text-center  align-items-center ">
               (+) Excess
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
             <th className="bg-white text-center  align-items-center ">
               (-) Less
+              <span className="text-danger fw-bold fs-2">*</span>
+            </th>
+            <th className="bg-white text-center  align-items-center d-none">
+              Consumption Status
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
             <th className="bg-white text-center  align-items-center ">
@@ -361,6 +362,23 @@ const UpdateProduction = ({
                         name={`detailsData.${index}.Less`}
                         placeholder="Less"
                         value={detail?.less ==0? "-" : detail?.less  }
+                        disabled
+                        style={{
+                          border: "1px solid #2DDC1B",
+                          padding: "5px",
+                          width: "100%",
+                          borderRadius: "5px",
+                          height: "38px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </td>
+                    <td className="text-center  align-items-center d-none">
+                      <Field
+                        type="text"
+                        name={`detailsData.${index}.consumptionStatus`}
+                        placeholder="Consumption Status"
+                        value={ detail?.consumptionStatus }
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",

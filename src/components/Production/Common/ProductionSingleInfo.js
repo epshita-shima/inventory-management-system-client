@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Field } from "formik";
-import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import './ProductionDatePicker.css'
+
 const ProductionSingleInfo = ({
   startDates,
   setStartDates,
@@ -21,23 +20,45 @@ const ProductionSingleInfo = ({
   setUpdateProductionData,
   makebyUser,
 }) => {
-  const [proStartDate, setProStartDate] = useState(new Date());
+  const [proStartDate, setProStartDate] = useState('');
   const [endDate, setEndDate] = useState(new Date());
+  const [differenceInHours, setDifferenceInHours] = useState(null);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
   const finishGoodsOptions = rawMaterialItemDropdown(finishGoodsItem);
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
   ];
+  const handleStartDateChange = (event) => {
+    setProStartDate(event.target.value);
+    setFieldValue('productionStart',event.target.value)
+  };
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+    setFieldValue('productionEnd',event.target.value)
+  };
 
+  useEffect(() => {
+    if (proStartDate && endDate) {
+      const startDate = new Date(proStartDate);
+      const endDateObj = new Date(endDate);
+      const differenceInMilliseconds = endDateObj - startDate;
+      const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
+      setDifferenceInHours(differenceInHours.toFixed(2));
+      setFieldValue('totalHour',differenceInHours.toFixed(2))
+    } else {
+      setDifferenceInHours(null); // Reset if either date is not set
+    }
+  }, [proStartDate, endDate,setFieldValue]);
+  console.log(differenceInHours)
   return (
     <div class="row row-cols-2 row-cols-lg-3">
-      <div class="col-6 col-lg-4">
+      <div class="col-6 col-lg-3">
         <label htmlFor="productionDate">Production Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
-            className="text-center custom-datepicker"
+            className="text-center custom-datepicker-production"
             value={id ? updateProductionData?.productionDate : startDates}
             calendarClassName="custom-calendar"
             selected={startDates}
@@ -86,7 +107,62 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-6 col-lg-3 mt-2">
+        <label htmlFor="productionStart">Production Start</label>
+        <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
+        <input
+        type="datetime-local"
+        id="dateInput"
+        value={proStartDate}
+        onChange={handleStartDateChange}
+        style={{width:'100%',
+          height:'38px',
+          borderRadius:'5px',
+          padding:'10px',
+          border:'1px solid #2DDC1B',
+          outline:'none'
+        }}
+      />
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 mt-2">
+        <label htmlFor="supplierId">Production End</label>
+        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+        <input
+        type="datetime-local"
+        id="dateInput"
+        value={endDate}
+        onChange={handleEndDateChange}
+        style={{width:'100%',
+          height:'38px',
+          borderRadius:'5px',
+          padding:'10px',
+          border:'1px solid #2DDC1B',
+          outline:'none'
+        }}
+      />
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 mt-3">
+        <label htmlFor="paymentId">Total Hour</label>
+        <br />
+        <Field
+          type="text"
+          name={`totalHour`}
+          placeholder="Total Hour"
+          disabled
+          value={id ? updateProductionData?.totalHour : values.totalHour}
+          style={{
+            border: "1px solid #2DDC1B",
+            padding: "5px",
+            width: "100%",
+            borderRadius: "5px",
+            textAlign: "center",
+            height: "38px",
+          }}
+        />
+      </div>
+      <div class="col-6 col-lg-3 d-none">
         <label htmlFor="paymentId">Batch NO</label>
         <br />
         <Field
@@ -105,9 +181,8 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="totalBatch">Total Batch</label>
-        <br />
         <Field
           type="number"
           name={`totalBatch`}
@@ -143,71 +218,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-
-      <div class="col-6 col-lg-4 mt-2">
-        <label htmlFor="receipeQtyRatio">Receipe Qty Ratio</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
-          <div className="w-100">
-            <Select
-              class="form-select"
-              className="w-100 mb-3"
-              aria-label="Default select example"
-              name="receipeinfo"
-              options={receipeQtyDropdown}
-              defaultValue={{
-                label: "Select receipe qty",
-                value: 0,
-              }}
-              value={
-                id
-                  ? receipeQtyDropdown.filter(function (option) {
-                      return (
-                        option.value === updateProductionData?.receipeQtyRatio
-                      );
-                    })
-                  : receipeQtyDropdown.filter(function (option) {
-                      return option.value === values.receipeQtyRatio;
-                    })
-              }
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  width: "100%",
-                  borderColor: state.isFocused ? "#fff" : "#fff",
-                  border: "1px solid #2DDC1B",
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
-                }),
-              }}
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary25: "#B8FEB3",
-                  primary: "#2DDC1B",
-                },
-              })}
-              onChange={(e) => {
-                if (id) {
-                  setUpdateProductionData((prevData) => ({
-                    ...prevData,
-                    receipeQtyRatio: e.value,
-                    updateBy: makebyUser,
-                    updateDate: new Date(),
-                  }));
-                } else {
-                  setFieldValue("receipeQtyRatio", e.value);
-                }
-              }}
-            ></Select>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-lg-4 mt-2">
+      <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="productionItemName">Production Item Name</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -299,7 +310,9 @@ const ProductionSingleInfo = ({
           </div>
         </div>
       </div>
-      <div class="col-6 col-lg-4 mt-2">
+     
+     
+      <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="productionQty">Production Qty</label>
         <br />
         <Field
@@ -352,123 +365,9 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4 mt-2">
-        <label htmlFor="productionStart">Production Start</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
-          <DatePicker
-            dateFormat="y-MM-dd"
-            className="text-center custom-datepicker"
-            value={id ? updateProductionData?.productionStart : proStartDate}
-            calendarClassName="custom-calendar"
-            selected={proStartDate}
-            required
-            onChange={(startDate) => {
-              setProStartDate(startDate.toLocaleDateString("en-CA"));
-              if (id) {
-                const start = new Date(startDate);
-                const end = new Date(updateProductionData?.productionEnd);
-
-                console.log(end, start);
-                const differenceInMilliseconds = end - start;
-                const differenceInHours =
-                  differenceInMilliseconds / (1000 * 60 * 60);
-                console.log(differenceInHours);
-
-                setUpdateProductionData((prevData) => ({
-                  ...prevData,
-                  totalHour: differenceInHours,
-                  productionStart: startDate.toLocaleDateString("en-CA"),
-                  updateBy: makebyUser,
-                  updateDate: new Date(),
-                }));
-              } else {
-                const start = new Date(proStartDate);
-                const end = new Date(endDate);
-                console.log(end, start);
-                const differenceInMilliseconds = end - start;
-                const differenceInHours =
-                  differenceInMilliseconds / (1000 * 60 * 60);
-                console.log(differenceInHours);
-
-                setFieldValue("totalHour", differenceInHours);
-
-                setFieldValue(
-                  "productionStart",
-                  startDate.toLocaleDateString("en-CA")
-                );
-              }
-            }}
-          />
-        </div>
-      </div>
-      <div class="col-6 col-lg-4 mt-2">
-        <label htmlFor="supplierId">Production End</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
-          <DatePicker
-            dateFormat="y-MM-dd"
-            className="text-center custom-datepicker"
-            value={id ? updateProductionData?.productionEnd : endDate}
-            calendarClassName="custom-calendar"
-            selected={endDate}
-            required
-            onChange={(startDate) => {
-              setEndDate(startDate.toLocaleDateString("en-CA"));
-              if (id) {
-                const start = new Date(updateProductionData?.productionStart);
-                const end = new Date(startDate);
-                console.log(end, start);
-                const differenceInMilliseconds = end - start;
-                const differenceInHours =
-                  differenceInMilliseconds / (1000 * 60 * 60);
-                console.log(differenceInHours);
-                setUpdateProductionData((prevData) => ({
-                  ...prevData,
-                  totalHour: differenceInHours,
-                  productionEnd: startDate.toLocaleDateString("en-CA"),
-                  updateBy: makebyUser,
-                  updateDate: new Date(),
-                }));
-              } else {
-                const start = new Date(proStartDate);
-                const end = new Date(endDate);
-                console.log(end, start);
-                const differenceInMilliseconds = end - start;
-                const differenceInHours =
-                  differenceInMilliseconds / (1000 * 60 * 60);
-                console.log(differenceInHours);
-
-                setFieldValue("totalHour", differenceInHours);
-                setFieldValue(
-                  "productionEnd",
-                  startDate.toLocaleDateString("en-CA")
-                );
-              }
-            }}
-          />
-        </div>
-      </div>
-
-      <div class="col-6 col-lg-4 mt-2">
-        <label htmlFor="paymentId">Total Hour</label>
-        <br />
-        <Field
-          type="text"
-          name={`totalHour`}
-          placeholder="Total Hour"
-          disabled
-          value={id ? updateProductionData?.totalHour : values.totalHour}
-          style={{
-            border: "1px solid #2DDC1B",
-            padding: "5px",
-            width: "100%",
-            borderRadius: "5px",
-            textAlign: "center",
-            height: "38px",
-          }}
-        />
-      </div>
-
-      <div class="col-6 col-lg-4 mt-2">
+      
+  
+      <div class="col-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Wastage Qty</label>
         <br />
         <Field
@@ -498,7 +397,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4 mt-2">
+      <div class="col-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty (Per Batch)</label>
         <br />
         <Field
@@ -521,7 +420,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4 mt-2">
+      <div class="col-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty</label>
         <br />
         <Field
@@ -544,7 +443,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4 mt-2">
+      <div class="col-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Excess Or Less Production Qty</label>
         <br />
         <Field
@@ -567,9 +466,8 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4 mt-2">
+      <div class="col-6 col-lg-3 mt-3 d-none">
         <label htmlFor="paymentId">Production Status</label>
-        <br />
         <Field
           type="text"
           name={`productionStatus`}
@@ -589,6 +487,69 @@ const ProductionSingleInfo = ({
             height: "38px",
           }}
         />
+      </div>
+      <div class="col-6 col-lg-3 mt-3">
+        <label htmlFor="receipeQtyRatio">Receipe Qty Ratio</label>
+        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+          <div className="w-100">
+            <Select
+              class="form-select"
+              className="w-100 mb-3"
+              aria-label="Default select example"
+              name="receipeinfo"
+              options={receipeQtyDropdown}
+              defaultValue={{
+                label: "Select receipe qty",
+                value: 0,
+              }}
+              value={
+                id
+                  ? receipeQtyDropdown.filter(function (option) {
+                      return (
+                        option.value === updateProductionData?.receipeQtyRatio
+                      );
+                    })
+                  : receipeQtyDropdown.filter(function (option) {
+                      return option.value === values.receipeQtyRatio;
+                    })
+              }
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  width: "100%",
+                  borderColor: state.isFocused ? "#fff" : "#fff",
+                  border: "1px solid #2DDC1B",
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 9999,
+                  height: "auto",
+                  // overflowY: "scroll",
+                }),
+              }}
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  primary25: "#B8FEB3",
+                  primary: "#2DDC1B",
+                },
+              })}
+              onChange={(e) => {
+                if (id) {
+                  setUpdateProductionData((prevData) => ({
+                    ...prevData,
+                    receipeQtyRatio: e.value,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }));
+                } else {
+                  setFieldValue("receipeQtyRatio", e.value);
+                }
+              }}
+            ></Select>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -18,20 +18,24 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import Select from "react-select";
-import { downloadGRNPDF } from "../../../ReportProperties/handleGRNReport";
-import handleGRNDownload from "../../../ReportProperties/handleGRNExcel";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import ListHeading from "../../../Common/ListHeading/ListHeading";
-import { downloadProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
+
+import {
+  downloadProductionPDF,
+  downloadProductionPDFPERBatch,
+} from "../../../ReportProperties/HeaderFooter";
+import ProductionListHeading from "../../../Common/ListHeading/ProductionListHeading";
+import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { refetch } = useGetAllProductionInformationQuery(undefined);
-
+const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-
+const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
   const [deleteProductionInfo] = useDeleteProductionInformationMutation();
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -40,21 +44,27 @@ const ProductionInfoList = ({ permission }) => {
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
   const [filteredData, setFilteredData] = useState([]);
   const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
-  const reportTitle = "Production REPORT";
+  const reportTitle = "PRODUCTION REPORT";
   const [executeQuery, setExecuteQuery] = useState(false);
   const [filters, setFilters] = useState({
     fromDate: fromDate,
     toDate: toDate,
   });
-  console.log(filters);
+  const [perBatchProductionData,setPerBatchProductionData]=useState([])
+  const [totalProduction, setTotalProduction] = useState([]);
+  const [lastOneMonthProduction, setLastOneMonthProduction] = useState([]);
+  const [lastOneWeekData, setLastOneWeekData] = useState([]);
+  const [yesterdayData, setYesterDayData] = useState([]);
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredProductionInfoQuery();
 
+    console.log(rawItemInfo)
+    console.log(finishGoods)
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
-      trigger(filters); 
-      setExecuteQuery(false); 
+      trigger(filters);
+      setExecuteQuery(false);
     }
   }, [executeQuery, trigger, filters]);
 
@@ -68,7 +78,36 @@ const ProductionInfoList = ({ permission }) => {
         button: "OK",
       });
     } else {
-      setFilteredData(filteredDatas || []); // Ensure filteredDatas is not null/undefined
+      const today = new Date();
+      const lastMonthDate = new Date();
+      const lastWeekDate = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+      lastMonthDate.setMonth(today.getMonth() - 1);
+      lastWeekDate.setDate(today.getDate() - 7);
+      setFilteredData(filteredDatas || []);
+      setTotalProduction(filteredDatas);
+
+      const filteredLastMonthData = filteredDatas?.filter((item) => {
+        const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
+        return itemDate >= lastMonthDate && itemDate <= today;
+      });
+      const filteredOneWeekData = filteredDatas?.filter((item) => {
+        const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
+        return itemDate >= lastWeekDate && itemDate <= today;
+      });
+      const filteredYesterdayData = filteredDatas?.filter((item) => {
+        const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
+
+        return (
+          itemDate.getDate() === yesterday.getDate() &&
+          itemDate.getMonth() === yesterday.getMonth() &&
+          itemDate.getFullYear() === yesterday.getFullYear()
+        );
+      });
+      setLastOneMonthProduction(filteredLastMonthData);
+      setLastOneWeekData(filteredOneWeekData);
+      setYesterDayData(filteredYesterdayData);
     }
   }, [filteredDatas]);
 
@@ -127,7 +166,7 @@ const ProductionInfoList = ({ permission }) => {
       grow: 2,
       cell: (filteredData) => (
         <div className="d-flex justify-content-between align-content-center">
-            {permission?.isPDF ? (
+          {permission?.isPDF ? (
             <a
               target="_blank"
               className={` action-icon `}
@@ -147,10 +186,8 @@ const ProductionInfoList = ({ permission }) => {
                 borderRadius: "5px",
               }}
               onClick={() => {
-                downloadProductionPDFPERBatch(
-                  { companyinfo },
-                  reportTitle
-                );
+                setPerBatchProductionData(filteredData)
+                downloadProductionPDFPERBatch(filteredData,finishGoods,{ companyinfo }, reportTitle,fromDate, toDate);
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -203,42 +240,36 @@ const ProductionInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                
-                  swal({
-                    title: "Are you sure to delete this item?",
-                    text: "If once deleted, this item will not recovery.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                  }).then(async (willDelete) => {
-                    if (willDelete) {
-                      const response = await deleteProductionInfo(
-                        filteredData?._id
-                      ).unwrap();
-                      console.log(response);
-                      if (response.status === 200) {
-                        swal(
-                          "Deleted!",
-                          "Your selected item has been deleted!",
-                          {
-                            icon: "success",
-                          }
-                        );
-                        await refetch();
+                swal({
+                  title: "Are you sure to delete this item?",
+                  text: "If once deleted, this item will not recovery.",
+                  icon: "warning",
+                  buttons: true,
+                  dangerMode: true,
+                }).then(async (willDelete) => {
+                  if (willDelete) {
+                    const response = await deleteProductionInfo(
+                      filteredData?._id
+                    ).unwrap();
+                    console.log(response);
+                    if (response.status === 200) {
+                      swal("Deleted!", "Your selected item has been deleted!", {
+                        icon: "success",
+                      });
+                      await refetch();
 
-                        setIsFetchAfterDeleteData(true);
-                      } else {
-                        swal(
-                          "Error",
-                          "An error occurred while creating the data",
-                          "error"
-                        );
-                      }
+                      setIsFetchAfterDeleteData(true);
                     } else {
-                      swal(" Cancel! Your selected item is safe!");
+                      swal(
+                        "Error",
+                        "An error occurred while creating the data",
+                        "error"
+                      );
                     }
-                  });
-                
+                  } else {
+                    swal(" Cancel! Your selected item is safe!");
+                  }
+                });
               }}
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
@@ -309,10 +340,7 @@ const ProductionInfoList = ({ permission }) => {
                     onClick={() => {
                       console.log(filteredData, companyinfo);
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadProductionPDF(
-                          { companyinfo },
-                          reportTitle
-                        );
+                        downloadProductionPDF({ companyinfo }, reportTitle,fromDate,toDate);
                       }
                     }}
                   >
@@ -324,7 +352,7 @@ const ProductionInfoList = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleGRNDownload(filteredData, companyinfo, reportTitle);
+                      handleProductionExcel(filteredData, companyinfo, reportTitle);
                     }}
                   >
                     Excel
@@ -348,26 +376,28 @@ const ProductionInfoList = ({ permission }) => {
     filterText,
     filteredData,
     resetPaginationToggle,
+    fromDate,
+    toDate,
     companyinfo,
     reportTitle,
   ]);
 
   return (
     <div className="row px-5 mx-4 ">
-      <ListHeading
-        // purchaseInCash={purchaseInCash}
-        // purchaseInLCAtSight={purchaseInLCAtSight}
-        // purchaseOrderApproveData={purchaseOrderApproveData}
-        // purchaseOrderUnApproveData={purchaseOrderUnApproveData}
-        // purchaseInfoData={purchaseInfoData}
-        // purchaseOrderList={purchaseOrderList}
-        // setPurchaseOrderList={setPurchaseOrderList}
-      ></ListHeading>
+      <ProductionListHeading
+        totalProduction={totalProduction}
+        lastOneMonthProduction={lastOneMonthProduction}
+        lastOneWeekData={lastOneWeekData}
+        yesterdayData={yesterdayData}
+      ></ProductionListHeading>
       <div className="col userlist-table mt-4">
         <div>
           {/* <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
           <hr /> */}
-          <div className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block" style={{width:'55%'}}>
+          <div
+            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
+            style={{ width: "55%" }}
+          >
             <div className="ms-lg-4 margin-md">
               <label htmlFor="">From Date</label>
               <br />
@@ -414,7 +444,7 @@ const ProductionInfoList = ({ permission }) => {
                 }}
               />
             </div>
-            
+
             <div>
               <button
                 className="border-0 "
@@ -465,7 +495,6 @@ const ProductionInfoList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            
           </div>
           <div></div>
         </div>
@@ -497,10 +526,11 @@ const ProductionInfoList = ({ permission }) => {
             <th>Batch No</th>
             <th>Total Batch</th>
             <th>Production Qty</th>
-          
           </tr>
         </thead>
-        <tbody> {filteredData?.map((item, index) => (
+        <tbody>
+          {" "}
+          {filteredData?.map((item, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{item.productionDate}</td>
@@ -509,46 +539,66 @@ const ProductionInfoList = ({ permission }) => {
               <td>{item.productionQty}</td>
             </tr>
           ))}
-          </tbody>
+        </tbody>
       </table>
-      <table id="production-table-per-batch" className="d-none">
+
+      <table id="production-table-single" className="d-none">
         <thead>
           <tr>
             <th>Sl.</th>
             <th>Production Date</th>
             <th>Batch No</th>
             <th>Total Batch</th>
-            <th>Receipe Qty</th>
-            <th>Production Item</th>
             <th>Production Qty</th>
-            <th>Production StartDate</th>
-            <th>Production EndDate</th>
-            <th>Total Hour</th>
-            <th>Wastage Qty</th>
-            <th>Expected ProductionQty(Per Batch)</th>
-            <th>Expected Production Qty</th>
-            <th>ExcessOrLess Production Qty</th>
-            <th>Item Name</th>
-            <th>Receipe</th>
-            <th>Material</th>
-            <th>As Per Ratio</th>
-            <th>Excess</th>
-            <th>Less</th>/
           </tr>
         </thead>
-        <tbody> {filteredData?.map((item, index) => (
+        <tbody>
+          {" "}
+          {/* {perBatchProductionData?.map((item, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td> */}
+              <tr>
+              <td>{perBatchProductionData?.productionDate}</td>
+              <td>{perBatchProductionData?.batchNo}</td>
+              <td>{perBatchProductionData?.totalBatch}</td>
+              <td>{perBatchProductionData?.productionQty}</td>
+              </tr>
+              
+            {/* </tr>
+          ))} */}
+        </tbody>
+      </table>
+      <table id="production-table-per-batch" className="d-none">
+        <thead>
+          <tr>
+            <th>Sl.</th>
+            <th>Item Name</th>
+            <th>Receipe</th>
+            <th>Material Used</th>
+            <th>As Per Ratio</th>
+            <th>Excess</th>
+            <th>Less</th>
+          </tr>
+        </thead>
+        <tbody>
+          {perBatchProductionData?.detailsData?.map((item, index) => {
+              const itemNames = rawItemInfo
+              ?.find((items) =>
+                item.itemId=== items._id
+              )
+            
+            return(
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{item.productionDate}</td>
-              <td>{item.batchNo}</td>
-              <td>{item.totalBatch}</td>
-              <td>{item.productionQty}</td>
-              <td>{item.receipeQtyRatio}</td>
-              <td>{item.productionItemName}</td>
-              <td>{item.itemStatus}</td>
+              <td>{itemNames?.itemName || 'N/A'}</td>
+              <td>{item.receipe}</td>
+              <td>{item.materialUsed}</td>
+              <td>{item.asPerRatio}</td>
+              <td>{item.excess == 0 ? "-" : item.excess}</td>
+              <td>{item.less == 0 ? "-" :item.less }</td>
             </tr>
-          ))}
-          </tbody>
+          )})}
+        </tbody>
       </table>
     </div>
   );
