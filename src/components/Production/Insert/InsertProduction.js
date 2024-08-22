@@ -2,7 +2,7 @@ import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
-
+import swal from "sweetalert";
 const InsertProduction = ({
   details,
   setFieldValue,
@@ -13,9 +13,8 @@ const InsertProduction = ({
   receipeOptions,
   cftData,
   rawMaterialsData,
-  receipeOptionsLessQty
+  receipeOptionsLessQty,
 }) => {
-
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
@@ -68,15 +67,12 @@ const InsertProduction = ({
               Consumption Status
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
-            <th className="bg-white text-center align-items-center ">
-              Action
-            </th>
+            <th className="bg-white text-center align-items-center ">Action</th>
           </tr>
         </thead>
         <tbody>
           {details && details.length > 0
             ? details.map((detail, index) => {
-                
                 return (
                   <tr key={index}>
                     <td className="text-center  align-middle">{index + 1}</td>
@@ -119,17 +115,23 @@ const InsertProduction = ({
                               },
                             })}
                             onChange={(e) => {
-                              if(values.receipeQtyRatio ==1000){
+                              if(values.receipeQtyRatio == ''){
+                                swal("Not Possible", "Please select Receipe qty ratio", "warning");
+                              }
+                             else if (values.receipeQtyRatio == 1000) {
                                 const receipeData = receipeOptions.find(
                                   (x) => x.value == e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label
                                   : null;
-                                const findCFTPerKG = getCftPerKgByItemId(e.value);
+                                const findCFTPerKG = getCftPerKgByItemId(
+                                  e.value
+                                );
                                 const calculateAsPerRatio =
-                                  (labelData / findCFTPerKG) * values.totalBatch;
-                              
+                                  (labelData / findCFTPerKG) *
+                                  values.totalBatch;
+
                                 setFieldValue(
                                   `detailsData.${index}.itemId`,
                                   e.value
@@ -140,35 +142,38 @@ const InsertProduction = ({
                                 );
                                 setFieldValue(
                                   `detailsData.${index}.asPerRatio`,
-                                  Math.round(calculateAsPerRatio *100)/100
+                                  Math.round(calculateAsPerRatio * 100) / 100
+                                );
+                              } else if(values.receipeQtyRatio == 938) {
+                                const receipeData = receipeOptionsLessQty.find(
+                                  (x) => x.value == e.value
+                                );
+                                const labelData = receipeData
+                                  ? receipeData.label
+                                  : null;
+                                console.log(labelData);
+                                const findCFTPerKG = getCftPerKgByItemId(
+                                  e.value
+                                );
+                                console.log(findCFTPerKG);
+                                const calculateAsPerRatio =
+                                  (labelData / findCFTPerKG == undefined
+                                    ? 0
+                                    : findCFTPerKG) * values.totalBatch;
+                                console.log(findCFTPerKG);
+                                setFieldValue(
+                                  `detailsData.${index}.itemId`,
+                                  e.value
+                                );
+                                setFieldValue(
+                                  `detailsData.${index}.receipe`,
+                                  labelData
+                                );
+                                setFieldValue(
+                                  `detailsData.${index}.asPerRatio`,
+                                  Math.round(calculateAsPerRatio * 100) / 100
                                 );
                               }
-                            else{
-                              const receipeData = receipeOptionsLessQty.find(
-                                (x) => x.value == e.value
-                              );
-                              const labelData = receipeData
-                                ? receipeData.label
-                                : null;
-                                console.log(labelData)
-                              const findCFTPerKG = getCftPerKgByItemId(e.value);
-                              console.log(findCFTPerKG)
-                              const calculateAsPerRatio =
-                                (labelData / findCFTPerKG ==undefined ? 0 :findCFTPerKG) * values.totalBatch;
-                            console.log(findCFTPerKG)
-                              setFieldValue(
-                                `detailsData.${index}.itemId`,
-                                e.value
-                              );
-                              setFieldValue(
-                                `detailsData.${index}.receipe`,
-                                labelData
-                              );
-                              setFieldValue(
-                                `detailsData.${index}.asPerRatio`,
-                                Math.round(calculateAsPerRatio *100)/100
-                              );
-                            }
                             }}
                           ></Select>
                         </div>
@@ -231,29 +236,41 @@ const InsertProduction = ({
                         onChange={(e) => {
                           const value1 = parseFloat(e.target.value);
                           const value2 = parseFloat(detail.asPerRatio);
-                            const calculateExcessOrLess = value1 - value2;
-                            console.log(calculateExcessOrLess)
-                            if (calculateExcessOrLess == 0) {
-                              setFieldValue(`detailsData.${index}.less`, 0);
-                              setFieldValue(`detailsData.${index}.excess`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "No Change");
+                          const calculateExcessOrLess = value1 - value2;
+                          console.log(calculateExcessOrLess);
+                          if (calculateExcessOrLess == 0) {
+                            setFieldValue(`detailsData.${index}.less`, 0);
+                            setFieldValue(`detailsData.${index}.excess`, 0);
+                            setFieldValue(
+                              `detailsData.${index}.consumptionStatus`,
+                              "No Change"
+                            );
+                          } else if (calculateExcessOrLess < 0) {
+                            setFieldValue(
+                              `detailsData.${index}.less`,
+                              Math.abs(
+                                Math.round(calculateExcessOrLess * 100) / 100
+                              )
+                            );
+                            setFieldValue(`detailsData.${index}.excess`, 0);
+                            setFieldValue(
+                              `detailsData.${index}.consumptionStatus`,
+                              "Less"
+                            );
+                          } else if (calculateExcessOrLess > 0) {
+                            setFieldValue(
+                              `detailsData.${index}.excess`,
+                              Math.abs(
+                                (Math.round(calculateExcessOrLess) * 100) / 100
+                              )
+                            );
+                            setFieldValue(`detailsData.${index}.less`, 0);
+                            setFieldValue(
+                              `detailsData.${index}.consumptionStatus`,
+                              "Excess"
+                            );
+                          }
 
-                            } else if (calculateExcessOrLess < 0) {
-                              setFieldValue(
-                                `detailsData.${index}.less`,
-                                Math.abs(Math.round(calculateExcessOrLess *100)/100)
-                              );
-                              setFieldValue(`detailsData.${index}.excess`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "Less");
-                            } else if (calculateExcessOrLess > 0) {
-                              setFieldValue(
-                                `detailsData.${index}.excess`,
-                                Math.abs(Math.round(calculateExcessOrLess)*100/100)
-                              );
-                              setFieldValue(`detailsData.${index}.less`, 0);
-                              setFieldValue(`detailsData.${index}.consumptionStatus`, "Excess");
-                            }
-                          
                           setFieldValue(
                             `detailsData.${index}.materialUsed`,
                             e.target.value
@@ -292,7 +309,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.excess`}
                         placeholder="Excess"
-                        value={detail?.excess == 0 ? "-" :detail?.excess}
+                        value={detail?.excess == 0 ? "-" : detail?.excess}
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -309,7 +326,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.Less`}
                         placeholder="Less"
-                        value={detail?.less == 0 ? "-" : detail?.less }
+                        value={detail?.less == 0 ? "-" : detail?.less}
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -326,7 +343,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.consumptionStatus`}
                         placeholder="Consumption Status"
-                        value={ detail?.consumptionStatus }
+                        value={detail?.consumptionStatus}
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",

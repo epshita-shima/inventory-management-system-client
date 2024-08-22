@@ -1,61 +1,45 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleProductionExcel = (
+const handleProductionExcelPerBatch = (
   data,
-  finishGoods,
+  rawItemInfo,
+  supplierInfo,
+  purchaseInfoData,
   companyinfo,
   reportTitle
 ) => {
-  const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("GRNlist Report");
+  let totalReceivedQuantity = 0;
+  let totalAmount = 0;
 
   const columnsToInclude = [
-    "productionDate",
-    "batchNo",
-    "totalBatch",
-    "receipeQtyRatio",
-    "productionItemName",
-    "productionQty",
-    "productionStart",
-    "productionEnd",
-    "totalHour",
-    "wastageQty",
-    "expectedProductionQtyPerBatch",
-    "expectedProductionQty",
-    // "productionStatus",
-    // "itemId",
-    // "receipe",
-    // "materialUsed",
-    // "asPerRatio",
-    // "excess",
-    // "less",
-    // "consumptionStatus",
+    "receiveDate",
+    "supplierId",
+    "supplierPoNo",
+    "itemName",
+    "grnSerialNo",
+    "challanNo",
+    "currency",
+    "receiveQty",
+    "unitPrice",
+    "totalAmount",
   ];
 
-
+  console.log(columnsToInclude)
   let dynamicColumns = [
-    { header: "Production Date", key: "productionDate", width: 15 },
-    { header: "Batch No", key: "batchNo", width: 15 },
-    { header: "Total Batch", key: "totalBatch", width: 20 },
-    { header: 'Receipe Qty Ratio', key: 'receipeQtyRatio', width: 20 },
-    { header: 'Production ItemName', key: 'productionItemName', width: 20 },
-    { header: 'Production Qty', key: 'productionQty', width: 20 },
-    { header: 'Production Start', key: 'productionStart', width: 20 },
-    { header: 'Production End', key: 'productionEnd', width: 20 },
-    { header: 'Total Hour', key: 'totalHour', width: 20 },
-    { header: 'Wastage Qty', key: 'wastageQty', width: 20 },
-    { header: 'Expected Production Qty(PerBatch)', key: 'expectedProductionQtyPerBatch', width: 20 },
-    { header: 'Expected Production Qty', key: 'expectedProductionQty', width: 20 },
-    // { header: 'Production Status', key: 'productionStatus', width: 20 },
-    // { header: 'Item Id', key: 'itemId', width: 20 },
-    // { header: 'Receipe', key: 'receipe', width: 20 },
-    // { header: 'Material Used', key: 'materialUsed', width: 20 },
-    // { header: 'As Per Ratio', key: 'asPerRatio', width: 20 },
-    // { header: 'Excess', key: 'excess', width: 20 },
-    // { header: 'Less', key: 'less', width: 20 },
-    // { header: 'Consumption Status', key: 'consumptionStatus', width: 20 },
+    { header: "Receive Date", key: "receiveDate", width: 15 },
+    { header: "Supplier Id", key: "supplierId", width: 15 },
+    { header: "Supplier Po No", key: "supplierPoNo", width: 20 },
+    { header: 'Item Name', key: 'itemName', width: 20 },
+    { header: 'GRN SerialNo', key: 'grnSerialNo', width: 20 },
+    { header: 'Challan No', key: 'challanNo', width: 20 },
+    { header: 'Currency', key: 'currency', width: 20 },
+    { header: 'Receive Qty', key: 'receiveQty', width: 20 },
+    { header: 'Unit Price', key: 'unitPrice', width: 20 },
+    { header: 'Total Amount', key: 'totalAmount', width: 20 },
   ];
   
   columnsToInclude.forEach((item, index) => {
@@ -141,39 +125,42 @@ const handleProductionExcel = (
   // }));
 
 
+  data.forEach((item) => {
+    totalReceivedQuantity += parseFloat(item.grandTotalReceivedQuantity);
+    totalAmount += parseFloat(item.grandTotalAmount);
+  });
+
 
   data.forEach((item) => {
-    const itemName = finishGoods
-      ?.filter((items) => item?.productionItemName === items._id)
+    const itemName = rawItemInfo
+      ?.filter((items) =>
+        item?.detailsData?.some((detail) => detail?.itemId === items._id)
+      )
       .map((filteredItem) => filteredItem.itemName)
       .join(", ");
-      
-      console.log(itemName)
+    const supplierName = supplierInfo
+      ?.filter((rawItem) => rawItem._id === item.supplierId)
+      .map((filteredItem) => filteredItem.supplierName)
+      .join(", ");
     const unitPrice = item.detailsData
       .map((detail) => detail.unitPrice)
       .join(", ");
+    const currency = purchaseInfoData
+      ?.filter((poItem) => poItem._id === item.pOSingleId)
+      .map((filteredItem) => filteredItem.currencyId)
+      .join(",");
 
     const values = {
-      productionDate:item.productionDate,
-      batchNo:item.batchNo,
-      totalBatch:item.totalBatch,
-      receipeQtyRatio:item.receipeQtyRatio,
-      productionItemName:itemName,
-      productionQty:item.productionQty,
-      productionStart:item.productionStart,
-      productionEnd:item.productionEnd,
-      totalHour:item.totalHour,
-      wastageQty:item.wastageQty,
-      expectedProductionQtyPerBatch:item.expectedProductionQtyPerBatch,
-      expectedProductionQty:item.expectedProductionQty,
-      // productionStatus:item.productionStatus,
-      // itemId:"",
-      // receipe:"",
-      // materialUsed:"",
-      // asPerRatio:"",
-      // excess:"",
-      // less:"",
-      // consumptionStatus:"",
+      receiveDate: item.receiveDate,
+      supplierId: supplierName,
+      supplierPoNo: item.supplierPoNo,
+      itemName: itemName,
+      grnSerialNo: item.grnSerialNo,
+      challanNo: item.challanNo,
+      currency: currency,
+      receiveQty: item.grandTotalReceivedQuantity,
+      unitPrice: unitPrice,
+      totalAmount: item.grandTotalAmount,
     };
  
   const singleRow = worksheet.addRow(dynamicColumns.map((col) =>
@@ -195,26 +182,16 @@ const handleProductionExcel = (
   });
 
   const datas = {
-    productionDate:"",
-    batchNo:"",
-    totalBatch:"",
-    receipeQtyRatio:"",
-    productionItemName:"",
-    productionQty:"",
-    productionStart:"",
-    productionEnd:"",
-    totalHour:"",
-    wastageQty:"",
-    expectedProductionQtyPerBatch:"",
-    expectedProductionQty:"",
-    // productionStatus:"",
-    // itemId:"",
-    // receipe:"",
-    // materialUsed:"",
-    // asPerRatio:"",
-    // excess:"",
-    // less:"",
-    // consumptionStatus:"",
+    receiveDate: "",
+    supplierId: "",
+    supplierPoNo: "",
+    itemName: "",
+    grnSerialNo: "",
+    challanNo: "",
+    currency: "Grand Total",
+    receiveQty: totalReceivedQuantity,
+    unitPrice: "",
+    totalAmount: totalAmount,
   };
   const footerRow = worksheet.addRow(columnsToInclude.map((col) =>
     datas[col]
@@ -235,4 +212,4 @@ const handleProductionExcel = (
   });
 };
 
-export default handleProductionExcel;
+export default handleProductionExcelPerBatch;

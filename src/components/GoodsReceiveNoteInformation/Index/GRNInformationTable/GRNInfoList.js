@@ -59,8 +59,8 @@ const GRNInfoList = ({ permission }) => {
   const [filters, setFilters] = useState({
     supplierPONo: "",
     supplierId: "",
-    fromDate: "",
-    toDate: "",
+    fromDate:new Date().toLocaleDateString("en-CA"),
+    toDate: new Date().toLocaleDateString("en-CA"),
     selectMonth: [],
   });
 
@@ -745,8 +745,8 @@ const GRNInfoList = ({ permission }) => {
                   ...prevFilters,
                   supplierPONo: "",
                   supplierId: "",
-                  fromDate: "",
-                  toDate: "",
+                  fromDate: new Date().toLocaleDateString("en-CA"),
+                  toDate: new Date().toLocaleDateString("en-CA"),
                   selectMonth: [],
                 }));
                 setSelectSupplierName("");
@@ -799,7 +799,7 @@ const GRNInfoList = ({ permission }) => {
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
-console.log(group)
+
             const totalGroupWaysQuantity = group?.reduce(
               (accumulator, currentValue) => {
                 const amount = parseFloat(

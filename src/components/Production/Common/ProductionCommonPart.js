@@ -215,6 +215,10 @@ const ProductionCommonPart = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
+              totalBatch:Yup.number().required("Required"),
+              productionItemName:Yup.string().required("Required"),
+              productionQty:Yup.string().required("Required"),
+              wastageQty:Yup.string().required("Required"),
               detailsData: Yup.array().of(
                 Yup.object().shape({
                   itemId: Yup.string().required("Required"),

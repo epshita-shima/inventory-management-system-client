@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import { Field } from "formik";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
-import './ProductionDatePicker.css'
+import "./ProductionDatePicker.css";
 
 const ProductionSingleInfo = ({
   startDates,
@@ -20,37 +20,83 @@ const ProductionSingleInfo = ({
   setUpdateProductionData,
   makebyUser,
 }) => {
-  const [proStartDate, setProStartDate] = useState('');
+  const [proStartDate, setProStartDate] = useState("");
   const [endDate, setEndDate] = useState(new Date());
-  const [differenceInHours, setDifferenceInHours] = useState(null);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
   const finishGoodsOptions = rawMaterialItemDropdown(finishGoodsItem);
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
   ];
+
   const handleStartDateChange = (event) => {
-    setProStartDate(event.target.value);
-    setFieldValue('productionStart',event.target.value)
+    if (id) {
+      setUpdateProductionData((prevData) => ({
+        ...prevData,
+        productionStart: event.target.value,
+        updateBy: makebyUser,
+        updateDate: new Date(),
+      }));
+    } else {
+      setProStartDate(event.target.value);
+      setFieldValue("productionStart", event.target.value);
+    }
   };
+
   const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-    setFieldValue('productionEnd',event.target.value)
+    if (id) {
+      setUpdateProductionData((prevData) => ({
+        ...prevData,
+        productionEnd: event.target.value,
+        updateBy: makebyUser,
+        updateDate: new Date(),
+      }));
+    } else {
+      setEndDate(event.target.value);
+      setFieldValue("productionEnd", event.target.value);
+    }
   };
 
   useEffect(() => {
-    if (proStartDate && endDate) {
+    if (id) {
+      const startDate = new Date(updateProductionData?.productionStart);
+      const endDateObj = new Date(updateProductionData?.productionEnd);
+      const differenceInMilliseconds = endDateObj - startDate;
+      const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
+      setUpdateProductionData((prevData) => ({
+        ...prevData,
+        totalHour: differenceInHours.toFixed(2),
+        updateBy: makebyUser,
+        updateDate: new Date(),
+      }));
+    } else {
       const startDate = new Date(proStartDate);
       const endDateObj = new Date(endDate);
       const differenceInMilliseconds = endDateObj - startDate;
       const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-      setDifferenceInHours(differenceInHours.toFixed(2));
-      setFieldValue('totalHour',differenceInHours.toFixed(2))
-    } else {
-      setDifferenceInHours(null); // Reset if either date is not set
+      setFieldValue("totalHour", differenceInHours.toFixed(2));
     }
-  }, [proStartDate, endDate,setFieldValue]);
-  console.log(differenceInHours)
+  }, [
+    proStartDate,
+    endDate,
+    setFieldValue,
+    id,
+    setUpdateProductionData,
+    updateProductionData?.productionStart,
+    updateProductionData?.productionEnd,
+    makebyUser,
+  ]);
+
+  useEffect(() => {
+    const removeDashFromDate = new Date(startDates).toLocaleDateString("en-CA");
+    const removeDash = removeDashFromDate.replace(/-/g, "");
+    const makeBatchNo = `MEB-${removeDash}-${
+      serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+    }`;
+    setFieldValue("productionDate", new Date(startDates).toLocaleDateString("en-CA"));
+    setFieldValue("batchNo", makeBatchNo);
+  }, [serialValue?.serialNo, setFieldValue, startDates]);
+
   return (
     <div class="row row-cols-2 row-cols-lg-3">
       <div class="col-6 col-lg-3">
@@ -64,32 +110,28 @@ const ProductionSingleInfo = ({
             selected={startDates}
             required
             onChange={(startDate) => {
-              console.log(startDate)
+              console.log(startDate);
               if (id) {
                 const getBatchNo = updateProductionData?.batchNo;
                 const parts = getBatchNo.split("-");
-                const removeDashFromDate=startDate.toLocaleDateString(
-                  "en-CA"
-                )
-                const removeDash=removeDashFromDate.replace(/-/g,'')
+                const removeDashFromDate =
+                  startDate.toLocaleDateString("en-CA");
+                const removeDash = removeDashFromDate.replace(/-/g, "");
                 const finalUpdateBatch = parts[parts.length - 1];
                 const makeBatchNo = `MEB-${removeDash}-${
                   serialValue?.serialNo === undefined ? "1" : finalUpdateBatch
                 }`;
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
-                  productionDate: startDate.toLocaleDateString(
-                    "en-CA"
-                  ),
+                  productionDate: startDate.toLocaleDateString("en-CA"),
                   batchNo: makeBatchNo,
                   updateBy: makebyUser,
                   updateDate: new Date(),
                 }));
               } else {
-                const removeDashFromDate=startDate.toLocaleDateString(
-                  "en-CA"
-                )
-                const removeDash=removeDashFromDate.replace(/-/g,'')
+                const removeDashFromDate =
+                  startDate.toLocaleDateString("en-CA");
+                const removeDash = removeDashFromDate.replace(/-/g, "");
                 const makeBatchNo = `MEB-${removeDash}-${
                   serialValue?.serialNo === undefined
                     ? "1"
@@ -110,37 +152,39 @@ const ProductionSingleInfo = ({
       <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="productionStart">Production Start</label>
         <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
-        <input
-        type="datetime-local"
-        id="dateInput"
-        value={proStartDate}
-        onChange={handleStartDateChange}
-        style={{width:'100%',
-          height:'38px',
-          borderRadius:'5px',
-          padding:'10px',
-          border:'1px solid #2DDC1B',
-          outline:'none'
-        }}
-      />
+          <input
+            type="datetime-local"
+            id="dateInput"
+            value={id ? updateProductionData?.productionStart : proStartDate}
+            onChange={handleStartDateChange}
+            style={{
+              width: "100%",
+              height: "38px",
+              borderRadius: "5px",
+              padding: "10px",
+              border: "1px solid #2DDC1B",
+              outline: "none",
+            }}
+          />
         </div>
       </div>
       <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="supplierId">Production End</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
-        <input
-        type="datetime-local"
-        id="dateInput"
-        value={endDate}
-        onChange={handleEndDateChange}
-        style={{width:'100%',
-          height:'38px',
-          borderRadius:'5px',
-          padding:'10px',
-          border:'1px solid #2DDC1B',
-          outline:'none'
-        }}
-      />
+          <input
+            type="datetime-local"
+            id="dateInput"
+            value={id ? updateProductionData?.productionEnd : endDate}
+            onChange={handleEndDateChange}
+            style={{
+              width: "100%",
+              height: "38px",
+              borderRadius: "5px",
+              padding: "10px",
+              border: "1px solid #2DDC1B",
+              outline: "none",
+            }}
+          />
         </div>
       </div>
       <div class="col-6 col-lg-3 mt-3">
@@ -151,7 +195,13 @@ const ProductionSingleInfo = ({
           name={`totalHour`}
           placeholder="Total Hour"
           disabled
-          value={id ? updateProductionData?.totalHour : values.totalHour}
+          value={
+            id
+              ? updateProductionData?.totalHour
+              : values.totalHour === "NaN"
+              ? 0
+              : values.totalHour
+          }
           style={{
             border: "1px solid #2DDC1B",
             padding: "5px",
@@ -310,8 +360,7 @@ const ProductionSingleInfo = ({
           </div>
         </div>
       </div>
-     
-     
+
       <div class="col-6 col-lg-3 mt-2">
         <label htmlFor="productionQty">Production Qty</label>
         <br />
@@ -332,7 +381,8 @@ const ProductionSingleInfo = ({
           }}
           onChange={(e) => {
             if (id) {
-              const excessOrLess= e.target.value - updateProductionData?.expectedProductionQty
+              const excessOrLess =
+                e.target.value - updateProductionData?.expectedProductionQty;
               const calculateExcessOrLess = Math.abs(
                 e.target.value - updateProductionData?.expectedProductionQty
               );
@@ -340,33 +390,30 @@ const ProductionSingleInfo = ({
                 ...prevData,
                 excessOrLessProductionQty: calculateExcessOrLess,
                 productionQty: e.target.value,
-                productionStatus:excessOrLess <0 ? "Less" : "Excess",
+                productionStatus: excessOrLess < 0 ? "Less" : "Excess",
                 updateBy: makebyUser,
                 updateDate: new Date(),
               }));
             } else {
-              const excessOrLess= e.target.value - values.expectedProductionQty
+              const excessOrLess =
+                e.target.value - values.expectedProductionQty;
               const calculateExcessOrLess = Math.abs(
                 e.target.value - values.expectedProductionQty
               );
               setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
               setFieldValue("productionQty", e.target.value);
-              if(excessOrLess == 0){
-                setFieldValue("productionStatus", "No Change")
+              if (excessOrLess == 0) {
+                setFieldValue("productionStatus", "No Change");
+              } else if (excessOrLess < 0) {
+                setFieldValue("productionStatus", "Less");
+              } else {
+                setFieldValue("productionStatus", "Excess");
               }
-              else if(excessOrLess < 0){
-                setFieldValue("productionStatus", "Less")
-              }
-              else{
-                setFieldValue("productionStatus", "Excess")
-              }
-              
             }
           }}
         />
       </div>
-      
-  
+
       <div class="col-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Wastage Qty</label>
         <br />

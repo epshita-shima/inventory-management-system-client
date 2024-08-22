@@ -32,10 +32,11 @@ import { useGetAllItemInformationQuery } from "../../../../redux/features/itemin
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const { refetch } = useGetAllProductionInformationQuery(undefined);
-const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
+  const { data: productionInitialData, refetch } =
+    useGetAllProductionInformationQuery(undefined);
+  const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
+  const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const [deleteProductionInfo] = useDeleteProductionInformationMutation();
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -50,16 +51,14 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
     fromDate: fromDate,
     toDate: toDate,
   });
-  const [perBatchProductionData,setPerBatchProductionData]=useState([])
-  const [totalProduction, setTotalProduction] = useState([]);
+  const [perBatchProductionData, setPerBatchProductionData] = useState([]);
+  // const [totalProduction, setTotalProduction] = useState([]);
   const [lastOneMonthProduction, setLastOneMonthProduction] = useState([]);
   const [lastOneWeekData, setLastOneWeekData] = useState([]);
   const [yesterdayData, setYesterDayData] = useState([]);
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredProductionInfoQuery();
 
-    console.log(rawItemInfo)
-    console.log(finishGoods)
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -86,17 +85,17 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
       lastMonthDate.setMonth(today.getMonth() - 1);
       lastWeekDate.setDate(today.getDate() - 7);
       setFilteredData(filteredDatas || []);
-      setTotalProduction(filteredDatas);
+      // setTotalProduction(filteredDatas);
 
-      const filteredLastMonthData = filteredDatas?.filter((item) => {
+      const filteredLastMonthData = productionInitialData?.filter((item) => {
         const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
         return itemDate >= lastMonthDate && itemDate <= today;
       });
-      const filteredOneWeekData = filteredDatas?.filter((item) => {
+      const filteredOneWeekData = productionInitialData?.filter((item) => {
         const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
         return itemDate >= lastWeekDate && itemDate <= today;
       });
-      const filteredYesterdayData = filteredDatas?.filter((item) => {
+      const filteredYesterdayData = productionInitialData?.filter((item) => {
         const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
 
         return (
@@ -109,7 +108,7 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
       setLastOneWeekData(filteredOneWeekData);
       setYesterDayData(filteredYesterdayData);
     }
-  }, [filteredDatas]);
+  }, [filteredDatas, productionInitialData]);
 
   useEffect(() => {
     if (isFetchAfterDeleteData) {
@@ -186,8 +185,14 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
                 borderRadius: "5px",
               }}
               onClick={() => {
-                setPerBatchProductionData(filteredData)
-                downloadProductionPDFPERBatch(filteredData,finishGoods,{ companyinfo }, reportTitle,fromDate, toDate);
+                setPerBatchProductionData(filteredData);
+                downloadProductionPDFPERBatch(
+                  filteredData,
+                  finishGoods,
+                  rawItemInfo,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -340,7 +345,12 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
                     onClick={() => {
                       console.log(filteredData, companyinfo);
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadProductionPDF({ companyinfo }, reportTitle,fromDate,toDate);
+                        downloadProductionPDF(
+                          { companyinfo },
+                          reportTitle,
+                          fromDate,
+                          toDate
+                        );
                       }
                     }}
                   >
@@ -352,7 +362,12 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleProductionExcel(filteredData, companyinfo, reportTitle);
+                      handleProductionExcel(
+                        filteredData,
+                        finishGoods,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -374,6 +389,7 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
     );
   }, [
     filterText,
+    finishGoods,
     filteredData,
     resetPaginationToggle,
     fromDate,
@@ -385,7 +401,8 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
   return (
     <div className="row px-5 mx-4 ">
       <ProductionListHeading
-        totalProduction={totalProduction}
+      permission={permission}
+        totalProduction={productionInitialData}
         lastOneMonthProduction={lastOneMonthProduction}
         lastOneWeekData={lastOneWeekData}
         yesterdayData={yesterdayData}
@@ -481,12 +498,8 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
                   setFromDate(new Date()?.toLocaleDateString("en-CA"));
                   setToDate(new Date()?.toLocaleDateString("en-CA"));
                   setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    supplierPONo: "",
-                    supplierId: "",
-                    fromDate: "",
-                    toDate: "",
-                    selectMonth: [],
+                    fromDate: new Date()?.toLocaleDateString("en-CA"),
+                    toDate: new Date()?.toLocaleDateString("en-CA"),
                   }));
 
                   setIsTableDisplay(false);
@@ -518,6 +531,29 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
         ) : null}
       </div>
 
+      <table id="table-total-production" className="d-none">
+        <thead>
+          <tr>
+            <th>Sl.</th>
+            <th>Production Date</th>
+            <th>Batch No</th>
+            <th>Total Batch</th>
+            <th>Production Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {" "}
+          {productionInitialData?.map((item, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{item.productionDate}</td>
+              <td>{item.batchNo}</td>
+              <td>{item.totalBatch}</td>
+              <td>{item.productionQty}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <table id="production-table" className="d-none">
         <thead>
           <tr>
@@ -557,47 +593,14 @@ const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
           {/* {perBatchProductionData?.map((item, index) => (
             <tr key={index}>
               <td>{index + 1}</td> */}
-              <tr>
-              <td>{perBatchProductionData?.productionDate}</td>
-              <td>{perBatchProductionData?.batchNo}</td>
-              <td>{perBatchProductionData?.totalBatch}</td>
-              <td>{perBatchProductionData?.productionQty}</td>
-              </tr>
-              
-            {/* </tr>
-          ))} */}
-        </tbody>
-      </table>
-      <table id="production-table-per-batch" className="d-none">
-        <thead>
           <tr>
-            <th>Sl.</th>
-            <th>Item Name</th>
-            <th>Receipe</th>
-            <th>Material Used</th>
-            <th>As Per Ratio</th>
-            <th>Excess</th>
-            <th>Less</th>
+            <td>{perBatchProductionData?.productionDate}</td>
+            <td>{perBatchProductionData?.batchNo}</td>
+            <td>{perBatchProductionData?.totalBatch}</td>
+            <td>{perBatchProductionData?.productionQty}</td>
           </tr>
-        </thead>
-        <tbody>
-          {perBatchProductionData?.detailsData?.map((item, index) => {
-              const itemNames = rawItemInfo
-              ?.find((items) =>
-                item.itemId=== items._id
-              )
-            
-            return(
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{itemNames?.itemName || 'N/A'}</td>
-              <td>{item.receipe}</td>
-              <td>{item.materialUsed}</td>
-              <td>{item.asPerRatio}</td>
-              <td>{item.excess == 0 ? "-" : item.excess}</td>
-              <td>{item.less == 0 ? "-" :item.less }</td>
-            </tr>
-          )})}
+          {/* </tr>
+          ))} */}
         </tbody>
       </table>
     </div>

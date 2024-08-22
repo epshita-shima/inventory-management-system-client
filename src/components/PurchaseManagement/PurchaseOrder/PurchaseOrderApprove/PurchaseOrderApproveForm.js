@@ -134,15 +134,9 @@ const PurchaseOrderApproveForm = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      style={{ height: 'calc(98vh - 120px)', overflowY: 'scroll'}}
+      style={{ height: "calc(98vh - 120px)", overflowY: "scroll" }}
     >
       <div class="">
-        <h2
-          style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}
-        >
-          PO Approval Form
-        </h2>
-
         <ListHeading
           purchaseInCash={purchaseInCash}
           purchaseInLCAtSight={purchaseInLCAtSight}

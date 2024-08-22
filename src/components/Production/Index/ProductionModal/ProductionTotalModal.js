@@ -3,16 +3,19 @@ import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import { downloadProductionPDF } from "../../../ReportProperties/HeaderFooter";
+import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { downloadHeadingProductionPDF, downloadProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
-const ProductionTotalModal = ({ totalProduction }) => {
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
+const ProductionTotalModal = ({ totalProduction,permission}) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
   const reportTitle = "PRODUCTION REPORT";
-  
+  const {data:finishGoods}=useGetAllItemInformationQuery(undefined)
+  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
   const columns = [
     {
       name: "Sl.",
@@ -48,6 +51,51 @@ const ProductionTotalModal = ({ totalProduction }) => {
       sortable: true,
       center: true,
       filterable: true,
+    },
+    {
+      name: "Action",
+      button: true,
+      width: "120px",
+      grow: 2,
+      cell: (filteredData) => (
+        <div className="d-flex justify-content-between align-content-center">
+          {permission?.isPDF ? (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Update item"
+              style={{
+                color: `${
+                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                } `,
+                border: `${
+                  filteredData?.detailsData?.length == 0
+                    ? "2px solid gray"
+                    : "2px solid orange"
+                }`,
+                padding: "3px",
+                borderRadius: "5px",
+              }}
+              onClick={() => {
+                downloadProductionPDFPERBatch(
+                  filteredData,
+                  finishGoods,
+                  rawItemInfo,
+                  { companyinfo },
+                  reportTitle
+                );
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+            </a>
+          ) : (
+            ""
+          )}
+      
+        </div>
+      ),
     },
   ];
 
@@ -108,7 +156,7 @@ const ProductionTotalModal = ({ totalProduction }) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadProductionPDF({ companyinfo }, reportTitle);
+                        downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
                       }
                     }}
                   >
@@ -122,6 +170,7 @@ const ProductionTotalModal = ({ totalProduction }) => {
                     onClick={() => {
                      handleProductionExcel(
                         totalProduction,
+                        finishGoods,
                         companyinfo,
                         reportTitle
                       );

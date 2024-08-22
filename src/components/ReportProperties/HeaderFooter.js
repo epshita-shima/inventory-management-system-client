@@ -69,8 +69,62 @@ const downloadProductionPDF = (companyinfo, reportTitle,fromDate,toDate) => {
   doc1.save(`${fileName}.pdf`);
 };
 
-const downloadProductionPDFPERBatch = (data,finishGoods,companyinfo, reportTitle,fromDate, toDate) => {
-  console.log(finishGoods)
+const downloadHeadingProductionPDF = (data,companyinfo, reportTitle) => {
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
+  const doc1 = new jsPDF();
+  const finalRows = data?.map((row, index) => [
+    index + 1,
+    row.productionDate,
+    row.batchNo,
+    row.totalBatch,
+    row.productionQty,
+  ]);
+  doc1.autoTable({
+    head: [
+      [
+        "Sl.",
+        "PRoduction Date",
+        "Batch No",
+        "Total Batch",
+        "Production Qty",
+      ],
+    ],
+    body:finalRows,
+    startY:  55,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128], // Change the color here, e.g., red
+      textColor: [255, 255, 255], // Header text color
+    },
+    theme: "grid",
+    tableLineWidth: 0.5, // Border width for the whole table
+    styles: {
+      lineColor: [0, 0, 0], // Color for all borders
+      textColor: [0, 0, 0],
+      font: "times", // All text color
+      fontSize: 10,
+      // overflow: 'linebreak',
+      // cellWidth: 'wrap',
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" }, // Example for the first column
+      1: { cellWidth: "auto" }, // Example for the second column
+      // You can specify auto or a specific width for each column
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center"; // Align all cell content to center
+    },
+  });
+
+  // Add footer text to each page
+  addFooter(doc1, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc1.save(`${fileName}.pdf`);
+};
+
+const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo, reportTitle) => {
+  
   const itemNames = finishGoods
   ?.find((item) =>
      data?.productionItemName === item._id
@@ -88,7 +142,7 @@ const downloadProductionPDFPERBatch = (data,finishGoods,companyinfo, reportTitle
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false, // Use 24-hour time format
+      hour12: false, 
     };
     return date.toLocaleString('en-US', options);
   };
@@ -98,11 +152,7 @@ const downloadProductionPDFPERBatch = (data,finishGoods,companyinfo, reportTitle
     return date.toLocaleDateString("en-US", options);
   };
   const checkExcessOrLessProductionQty = data?.productionStatus === 'Less';
-
-  // Set the text color based on the condition
-
   
-
   const formattedProductionDate = formatDate1(data.productionDate);
   const formatteProductionStartDate = formatDate(data.productionStart);
   const formattedPRoductionEndDate = formatDate(data.productionEnd);
@@ -203,8 +253,31 @@ const downloadProductionPDFPERBatch = (data,finishGoods,companyinfo, reportTitle
   const finalY = doc.previousAutoTable.finalY || 80;
 
   // Second table
+  const finalRows = data?.detailsData?.map((row, index) => [
+    index + 1,
+    rawItemInfo
+      ?.filter((rawItem) => rawItem._id === row.itemId)
+      .map((filteredItem) => filteredItem.itemName)
+      .join(", "),
+    row.receipe,
+    row.materialUsed,
+    row.asPerRatio,
+    row.excess,
+    row.less,
+  ]);
   doc.autoTable({
-    html: "#production-table-per-batch",
+    head: [
+      [
+        "Sl.",
+        "Item Name",
+        "Receipe",
+        "Material Used",
+        "As Per Ratio",
+        "Excess",
+        "Less",
+      ],
+    ],
+    body:finalRows,
     startY: finalY + 10, // Start the second table a bit below the first one
     margin: { top: 50, bottom: 32 },
     headerStyles: {
@@ -791,4 +864,5 @@ export {
   downloadAllImage,
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
+  downloadHeadingProductionPDF
 };

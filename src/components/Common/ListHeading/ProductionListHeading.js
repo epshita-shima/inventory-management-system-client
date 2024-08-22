@@ -6,11 +6,17 @@ const ProductionListHeading = ({
   lastOneMonthProduction,
   lastOneWeekData,
   yesterdayData,
+  permission
 }) => {
+  console.log(JSON.stringify(totalProduction))
   const [lastMonthModal, setLastMonthModal] = useState(false);
   const [totalProductionModal, setTotalProductionModal] = useState(false);
   const [lastOneWeekProdactionModal,setLastOneWeekProductionModal]=useState(false)
   const [yesterdayProductionModal,setYesterdayProductionModal]=useState(false)
+  const totalProductionQty = totalProduction?.reduce((total, report) => total + report.productionQty, 0);
+  const totalLastOneMonthProduction = lastOneMonthProduction?.reduce((total, report) => total + report.productionQty, 0);
+  const totalLastlastOneWeekData = lastOneWeekData?.reduce((total, report) => total + report.productionQty, 0);
+  const totalYesterdayData = yesterdayData?.reduce((total, report) => total + report.productionQty, 0);
   return (
     <div>
       <div class="row">
@@ -47,9 +53,9 @@ const ProductionListHeading = ({
               </p>
               <h5
                 class="card-text"
-                style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
+                style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalProduction?.length ? totalProduction?.length : 0}
+                {totalProductionQty}
               </h5>
             </div>
           </div>
@@ -93,11 +99,9 @@ const ProductionListHeading = ({
               </p>
               <h5
                 class="card-text"
-                style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
+                style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {lastOneMonthProduction?.length
-                  ? lastOneMonthProduction?.length
-                  : 0}
+                {totalLastOneMonthProduction}
               </h5>
             </div>
           </div>
@@ -141,9 +145,9 @@ const ProductionListHeading = ({
               </p>
               <h5
                 class="card-text"
-                style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
+                style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {lastOneWeekData?.length ? lastOneWeekData?.length : 0}
+                {totalLastlastOneWeekData}
               </h5>
             </div>
           </div>
@@ -152,7 +156,7 @@ const ProductionListHeading = ({
           <div
             class="cardbox shadow-lg"
             style={{
-              borderLeft: "12px solid red",
+              borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
               height: "80px",
               width: "100%",
@@ -187,9 +191,9 @@ const ProductionListHeading = ({
               </p>
               <h5
                 class="card-text"
-                style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
+                style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {yesterdayData?.length ? yesterdayData?.length : 0}
+                {totalYesterdayData}
               </h5>
             </div>
           </div>
@@ -197,16 +201,16 @@ const ProductionListHeading = ({
       </div>
 
       {totalProductionModal && (
-        <ProductionTotalModal totalProduction={totalProduction} />
+        <ProductionTotalModal totalProduction={totalProduction} permission={permission}/>
       )}
       {lastMonthModal && (
-        <ProductionTotalModal totalProduction={lastOneMonthProduction} />
+        <ProductionTotalModal totalProduction={lastOneMonthProduction} permission={permission}/>
       )}
       {lastOneWeekProdactionModal && (
-        <ProductionTotalModal totalProduction={lastOneWeekData} />
+        <ProductionTotalModal totalProduction={lastOneWeekData} permission={permission} />
       )}
       {yesterdayProductionModal && (
-        <ProductionTotalModal totalProduction={yesterdayData} />
+        <ProductionTotalModal totalProduction={yesterdayData} permission={permission} />
       )}
     </div>
   );
