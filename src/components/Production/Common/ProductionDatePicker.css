@@ -64,8 +64,23 @@ input[type="number"] {
 
 @media (min-width: 333px) and (max-width: 577px) {
   .insertpo-responsive-custom {
-    height: calc(30vh - 120px); /* Smaller height for small screens */
+    height: calc(30vh - 120px); 
   }
+  .custom-datepicker-production {
+    width: 168px;
+  }
+  .custom-calendar {
+    background-color: #B8FEB3;
+    width: 200px;
+  }
+  .custom-calendar .react-datepicker__day,
+  .custom-calendar .react-datepicker__day-name {
+    width: 11.28%; /* Each day takes 1/7th of the width */
+  }
+  .custom-calendar .react-datepicker__day--selected,
+.custom-calendar .react-datepicker__day--keyboard-selected {
+  font-size: 12px; /* Change the selected day text size */
+}
 }
 
 @media (min-width: 577px) and (max-width: 768px) {

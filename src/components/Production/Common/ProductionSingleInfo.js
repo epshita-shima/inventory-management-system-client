@@ -3,9 +3,14 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { Field } from "formik";
-import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import {
+  finishGoodsWithSizeItemDropdown,
+  rawMaterialItemDropdown,
+} from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import "./ProductionDatePicker.css";
+import swal from "sweetalert";
+import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 
 const ProductionSingleInfo = ({
   startDates,
@@ -16,18 +21,35 @@ const ProductionSingleInfo = ({
   values,
   serialValue,
   id,
+  cftData,
   updateProductionData,
   setUpdateProductionData,
   makebyUser,
 }) => {
   const [proStartDate, setProStartDate] = useState("");
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState("");
+  const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
-  const finishGoodsOptions = rawMaterialItemDropdown(finishGoodsItem);
+  const finishGoodsOptions = finishGoodsWithSizeItemDropdown(
+    finishGoodsItem,
+    sizeInfo
+  );
+
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
   ];
+
+  function getCftPerKgByItemId(itemId) {
+    for (const entry of cftData) {
+      const itemData = entry.detailsData.find(
+        (detail) => detail.itemId == itemId
+      );
+      if (itemData) {
+        return itemData.cftPerKg;
+      }
+    }
+  }
 
   const handleStartDateChange = (event) => {
     if (id) {
@@ -70,11 +92,13 @@ const ProductionSingleInfo = ({
         updateDate: new Date(),
       }));
     } else {
-      const startDate = new Date(proStartDate);
-      const endDateObj = new Date(endDate);
-      const differenceInMilliseconds = endDateObj - startDate;
-      const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-      setFieldValue("totalHour", differenceInHours.toFixed(2));
+      if (proStartDate && endDate) {
+        const startDate = new Date(proStartDate);
+        const endDateObj = new Date(endDate);
+        const differenceInMilliseconds = endDateObj - startDate;
+        const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
+        setFieldValue("totalHour", differenceInHours.toFixed(2));
+      }
     }
   }, [
     proStartDate,
@@ -93,13 +117,16 @@ const ProductionSingleInfo = ({
     const makeBatchNo = `MEB-${removeDash}-${
       serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
     }`;
-    setFieldValue("productionDate", new Date(startDates).toLocaleDateString("en-CA"));
+    setFieldValue(
+      "productionDate",
+      new Date(startDates).toLocaleDateString("en-CA")
+    );
     setFieldValue("batchNo", makeBatchNo);
   }, [serialValue?.serialNo, setFieldValue, startDates]);
 
   return (
-    <div class="row row-cols-2 row-cols-lg-3">
-      <div class="col-6 col-lg-3">
+    <div class="row row-cols-1 row-cols-lg-3">
+      <div class="col-sm-12 col-md-6 col-lg-3">
         <label htmlFor="productionDate">Production Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
@@ -149,7 +176,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionStart">Production Start</label>
         <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
           <input
@@ -168,7 +195,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="supplierId">Production End</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <input
@@ -187,7 +214,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Total Hour</label>
         <br />
         <Field
@@ -212,7 +239,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 d-none">
+      <div class="col-sm-12 col-md-6col-lg-3 d-none">
         <label htmlFor="paymentId">Batch NO</label>
         <br />
         <Field
@@ -231,7 +258,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="totalBatch">Total Batch</label>
         <Field
           type="number"
@@ -252,11 +279,128 @@ const ProductionSingleInfo = ({
                 e.target.value *
                 updateProductionData?.expectedProductionQtyPerBatch;
               console.log(expectQty);
+              const excessOrLess =
+                updateProductionData?.productionQty - expectQty;
+              console.log(
+                updateProductionData?.productionQty,
+                expectQty,
+                excessOrLess
+              );
+              const calculateExcessOrLess = Math.abs(
+                updateProductionData?.productionQty - expectQty
+              );
+              // setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+              if (excessOrLess == 0) {
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  totalBatch: e.target.value,
+                  productionStatus:  "No Change",
+                  updateBy: makebyUser,
+                  excessOrLessProductionQty: calculateExcessOrLess,
+                  updateDate: new Date(),
+                }));
+              } else if (excessOrLess < 0) {
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  totalBatch: e.target.value,
+                  productionStatus:  "Less",
+                  updateBy: makebyUser,
+                  excessOrLessProductionQty: calculateExcessOrLess,
+                  updateDate: new Date(),
+                }));
+              } else {
+                setUpdateProductionData((prevData) => ({
+                  ...prevData,
+                  totalBatch: e.target.value,
+                  productionStatus: "Excess",
+                  updateBy: makebyUser,
+                  excessOrLessProductionQty: calculateExcessOrLess,
+                  updateDate: new Date(),
+                }));
+              }
+
+              updateProductionData?.detailsData.forEach((detail, index) => {
+                const findCFTPerKG = getCftPerKgByItemId(detail.itemId);
+                const calculateAsPerRationBasedTotalBatch =
+                  (detail.receipe / findCFTPerKG) * e.target.value;
+                console.log(
+                  detail.receipe , findCFTPerKG ,e.target.value,detail.itemId
+                );
+                const value1 = parseFloat(detail.materialUsed);
+                const value2 = parseFloat(calculateAsPerRationBasedTotalBatch);
+                const calculateExcessOrLess = value1 - value2;
+                console.log(calculateExcessOrLess);
+                if (calculateExcessOrLess == 0) {
+                  setUpdateProductionData((prev) => {
+                    const temp_details = [...prev.detailsData];
+                    const newDetail = { ...temp_details[index] };
+                    newDetail["less"] = 0;
+                    newDetail["excess"] = 0;
+                    newDetail["consumptionStatus"] = "No Change";
+                    temp_details[index] = newDetail;
+                    return {
+                      ...prev,
+                      detailsData: temp_details,
+                      updateBy: makebyUser,
+                      updateDate: new Date(),
+                    };
+                  });
+                } else if (calculateExcessOrLess < 0) {
+                
+                  setUpdateProductionData((prev) => {
+                    const temp_details = [...prev.detailsData];
+                    const newDetail = { ...temp_details[index] };
+                    newDetail["less"] = Math.abs(Math.round(calculateExcessOrLess * 100) / 100);
+                    newDetail["excess"] = 0;
+                    newDetail["consumptionStatus"] = "Less";
+                    temp_details[index] = newDetail;
+                    return {
+                      ...prev,
+                      detailsData: temp_details,
+                      updateBy: makebyUser,
+                      updateDate: new Date(),
+                    };
+                  });
+                } else if (calculateExcessOrLess > 0) {
+                 
+                  setUpdateProductionData((prev) => {
+                    const temp_details = [...prev.detailsData];
+                    const newDetail = { ...temp_details[index] };
+                    newDetail["excess"] = Math.abs(Math.round(calculateExcessOrLess * 100) / 100);
+                    newDetail["less"] = 0;
+                    newDetail["consumptionStatus"] = "Excess";
+                    temp_details[index] = newDetail;
+                    return {
+                      ...prev,
+                      detailsData: temp_details,
+                      updateBy: makebyUser,
+                      updateDate: new Date(),
+                    };
+                  });
+                }
+               
+                setUpdateProductionData((prev) => {
+                  const temp_details = [...prev.detailsData];
+                  const newDetail = { ...temp_details[index] };
+                  newDetail["asPerRatio"] = parseFloat(
+                    Math.round(calculateAsPerRationBasedTotalBatch * 100) / 100
+                  );
+                  temp_details[index] = newDetail;
+
+                  return {
+                    ...prev,
+                    detailsData: temp_details,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  };
+                });
+              });
               setUpdateProductionData((prevData) => ({
                 ...prevData,
                 totalBatch: e.target.value,
                 expectedProductionQty: expectQty,
                 updateBy: makebyUser,
+                excessOrLessProductionQty: calculateExcessOrLess,
                 updateDate: new Date(),
               }));
             } else {
@@ -264,11 +408,70 @@ const ProductionSingleInfo = ({
                 e.target.value * values.expectedProductionQtyPerBatch;
               setFieldValue("totalBatch", e.target.value);
               setFieldValue("expectedProductionQty", expectQty);
+              const excessOrLess = values.productionQty - expectQty;
+              console.log(values.productionQty, expectQty, excessOrLess);
+              const calculateExcessOrLess = Math.abs(
+                values.productionQty - expectQty
+              );
+              setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+              if (excessOrLess == 0) {
+                setFieldValue("productionStatus", "No Change");
+              } else if (excessOrLess < 0) {
+                setFieldValue("productionStatus", "Less");
+              } else {
+                setFieldValue("productionStatus", "Excess");
+              }
+              values.detailsData.forEach((detail, index) => {
+                if (detail.asPerRatio) {
+                  const calculateAsPerRationBasedTotalBatch =
+                    (detail.receipeLabelData / detail.singleValueCFTPerKg) *
+                    e.target.value;
+                  const value1 = parseFloat(detail.materialUsed);
+                  const value2 = parseFloat(
+                    calculateAsPerRationBasedTotalBatch
+                  );
+                  const calculateExcessOrLess = value1 - value2;
+                  console.log(calculateExcessOrLess);
+                  if (calculateExcessOrLess == 0) {
+                    setFieldValue(`detailsData.${index}.less`, 0);
+                    setFieldValue(`detailsData.${index}.excess`, 0);
+                    setFieldValue(
+                      `detailsData.${index}.consumptionStatus`,
+                      "No Change"
+                    );
+                  } else if (calculateExcessOrLess < 0) {
+                    setFieldValue(
+                      `detailsData.${index}.less`,
+                      Math.abs(Math.round(calculateExcessOrLess * 100) / 100)
+                    );
+                    setFieldValue(`detailsData.${index}.excess`, 0);
+                    setFieldValue(
+                      `detailsData.${index}.consumptionStatus`,
+                      "Less"
+                    );
+                  } else if (calculateExcessOrLess > 0) {
+                    setFieldValue(
+                      `detailsData.${index}.excess`,
+                      Math.abs((Math.round(calculateExcessOrLess) * 100) / 100)
+                    );
+                    setFieldValue(`detailsData.${index}.less`, 0);
+                    setFieldValue(
+                      `detailsData.${index}.consumptionStatus`,
+                      "Excess"
+                    );
+                  }
+                  setFieldValue(
+                    `detailsData.${index}.asPerRatio`,
+                    calculateAsPerRationBasedTotalBatch,
+                    false
+                  );
+                }
+              });
             }
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionItemName">Production Item Name</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -333,20 +536,30 @@ const ProductionSingleInfo = ({
                     updateDate: new Date(),
                   }));
                 } else {
-                  const expectQty = values.totalBatch * e.productionQtyPerBatch;
-                  setFieldValue("productionItemName", e.value);
-                  setFieldValue(
-                    "expectedProductionQtyPerBatch",
-                    e.productionQtyPerBatch
-                  );
-                  setFieldValue("expectedProductionQty", expectQty);
-                  const calculateExcessOrLess = Math.abs(
-                    values.productionQty - expectQty
-                  );
-                  setFieldValue(
-                    "excessOrLessProductionQty",
-                    calculateExcessOrLess
-                  );
+                  console.log(e);
+                  if (e.productionQtyPerBatch) {
+                    const expectQty =
+                      values.totalBatch * e.productionQtyPerBatch;
+                    setFieldValue("productionItemName", e.value);
+                    setFieldValue(
+                      "expectedProductionQtyPerBatch",
+                      e.productionQtyPerBatch
+                    );
+                    setFieldValue("expectedProductionQty", expectQty);
+                    const calculateExcessOrLess = Math.abs(
+                      values.productionQty - expectQty
+                    );
+                    setFieldValue(
+                      "excessOrLessProductionQty",
+                      calculateExcessOrLess
+                    );
+                  } else {
+                    swal(
+                      "Relax!",
+                      "Production Per Batch not Decleared, Please Contact with HO",
+                      "warning"
+                    );
+                  }
                 }
               }}
             ></Select>
@@ -361,7 +574,7 @@ const ProductionSingleInfo = ({
         </div>
       </div>
 
-      <div class="col-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionQty">Production Qty</label>
         <br />
         <Field
@@ -414,7 +627,7 @@ const ProductionSingleInfo = ({
         />
       </div>
 
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Wastage Qty</label>
         <br />
         <Field
@@ -444,7 +657,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty (Per Batch)</label>
         <br />
         <Field
@@ -467,7 +680,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty</label>
         <br />
         <Field
@@ -490,7 +703,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Excess Or Less Production Qty</label>
         <br />
         <Field
@@ -513,7 +726,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-3 d-none">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3 d-none">
         <label htmlFor="paymentId">Production Status</label>
         <Field
           type="text"
@@ -535,7 +748,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-3 mt-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="receipeQtyRatio">Receipe Qty Ratio</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">

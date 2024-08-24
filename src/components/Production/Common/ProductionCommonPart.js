@@ -54,8 +54,8 @@ const ProductionCommonPart = () => {
     receipeQtyRatio: "",
     productionItemName: "",
     productionQty: "",
-    productionStart: new Date(),
-    productionEnd: new Date(),
+    productionStart: "",
+    productionEnd: "",
     totalHour: "",
     wastageQty: "",
     expectedProductionQtyPerBatch: "",
@@ -74,7 +74,9 @@ const ProductionCommonPart = () => {
         asPerRatio: "",
         excess: "",
         less: "",
-        consumptionStatus:""
+        consumptionStatus:"",
+        receipeLabelData:"",
+        singleValueCFTPerKg:''
       },
     ],
   };
@@ -97,9 +99,11 @@ const ProductionCommonPart = () => {
   ];
 
   const areFieldsEmpty = () => {
-    return updateProductionData?.detailsData?.some(
+    return( 
+      !updateProductionData?.totalBatch || !updateProductionData?.productionQty || !updateProductionData?.wastageQty ||
+       updateProductionData?.detailsData?.some(
       (field) => !field.itemId || !field.materialUsed
-    );
+    ))
   };
 
   useEffect(() => {
@@ -217,7 +221,9 @@ const ProductionCommonPart = () => {
             validationSchema={Yup.object({
               totalBatch:Yup.number().required("Required"),
               productionItemName:Yup.string().required("Required"),
-              productionQty:Yup.string().required("Required"),
+              productionStart:Yup.string().required("Required"),
+              productionEnd:Yup.string().required("Required"),
+              productionQty:Yup.date().required("Required"),
               wastageQty:Yup.string().required("Required"),
               detailsData: Yup.array().of(
                 Yup.object().shape({
@@ -260,16 +266,18 @@ const ProductionCommonPart = () => {
                         <div class="container-fluid">
                           <div class="row justify-content-center">
                             <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-                              <div className="d-flex justify-content-between align-items-center">
+                              <div className="d-lg-flex justify-content-between align-items-center">
                                 <h2
                                   style={{
                                     fontSize: "24px",
                                     fontWeight: "bold",
                                   }}
                                 >
-                                  {id
-                                    ? " Production Update Form"
-                                    : " Production Insert Form"}
+                                  {
+                                  id
+                                    ? "Production Update Form"
+                                    : "Production Insert Form"
+                                    }
                                 </h2>
                                 <div>
                                   <button
@@ -306,6 +314,7 @@ const ProductionCommonPart = () => {
                                     setUpdateProductionData
                                   }
                                   updateProductionData={updateProductionData}
+                                  cftData={cftData}
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -318,7 +327,7 @@ const ProductionCommonPart = () => {
                                   Details Information
                                 </h2>
                                 <div className="d-flex justify-content-between align-items-center mb-4">
-                                  <div className="d-flex justify-content-between">
+                                  <div className="d-lg-flex justify-content-between">
                                     <button
                                       type="submit"
                                       form="pocreation-form"
@@ -334,6 +343,7 @@ const ProductionCommonPart = () => {
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
+                                        fontWeight:900,
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
@@ -348,16 +358,16 @@ const ProductionCommonPart = () => {
                                     {id ? "Update" : "Save"}
                                     </button>
                                     <div
-                                      className="border-0 "
+                                      className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"
                                       style={{
                                         // backgroundColor: "#00B987",
                                         backgroundColor: "#B8FEB3",
                                         color: "#000",
+                                        fontWeight:900,
                                         padding: "5px 10px",
                                         fontSize: "14px",
                                         borderRadius: "5px",
-                                        marginLeft: "5px",
-                                        width: "100px",
+                                        width: "110px",
                                       }}
                                       onClick={() => {
                                         if (id) {
@@ -387,15 +397,16 @@ const ProductionCommonPart = () => {
                                             asPerRatio: "",
                                             excess: "",
                                             less: "",
-                                            consumptionStatus:""
+                                            consumptionStatus:"",
+                                             receipeLabelData:"",
+        singleValueCFTPerKg:''
                                           });
                                         }
                                       }}
                                     >
                                       <FontAwesomeIcon
-                                        icon={faPlus}
-                                      ></FontAwesomeIcon>
-                                      Add Row
+                                        icon={faPlus} style={{fontWeight:900}}
+                                      ></FontAwesomeIcon> Add Row
                                     </div>
                                   </div>
                                 </div>

@@ -14,7 +14,7 @@ const UpdateProduction = ({
   touched,
   errors,
 }) => {
-  console.log(JSON.stringify(updateProductionData))
+  console.log(updateProductionData)
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
@@ -134,7 +134,7 @@ const UpdateProduction = ({
                                   const newDetail = { ...temp_details[index] };
                                   newDetail["itemId"] = e.value;
                                   newDetail["receipe"] = labelData;
-                                  newDetail["asPerRatio"] =parseFloat(calculateAsPerRatio);
+                                  newDetail["asPerRatio"] =parseFloat((Math.round(calculateAsPerRatio * 100) / 100));
 
                                   temp_details[index] = newDetail;
 

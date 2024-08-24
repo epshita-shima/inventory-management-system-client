@@ -1,6 +1,7 @@
 import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
+import { useEffect } from "react";
 import Select from "react-select";
 import swal from "sweetalert";
 const InsertProduction = ({
@@ -20,7 +21,6 @@ const InsertProduction = ({
       const itemData = entry.detailsData.find(
         (detail) => detail.itemId == itemId
       );
-      console.log(itemData);
       if (itemData) {
         return itemData.cftPerKg;
       }
@@ -29,43 +29,47 @@ const InsertProduction = ({
 
   return (
     <div className="">
-      <table className="table table-bordered">
+       <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+            <div class="table-responsive">
+            <table className="table table-bordered">
         <thead className="w-100">
           <tr>
             <th className="bg-white text-center align-items-center">Sl</th>
 
             <th
               className="bg-white text-center align-items-center"
-              style={{ width: "20%" }}
+              style={{ width: "25%" }}
             >
               Item Name
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
             <th className="bg-white text-center align-items-center ">
               Receipe
-              <span className="text-danger fw-bold fs-2">*</span>
             </th>
 
             <th className="bg-white text-center align-items-center ">
               Material Used
               <span className="text-danger fw-bold fs-2">*</span>
             </th>
+
             <th className="bg-white text-center align-items-center ">
               As Per Ratio
-              <span className="text-danger fw-bold fs-2">*</span>
+            
             </th>
 
             <th className="bg-white text-center align-items-center ">
               (+) Excess
-              <span className="text-danger fw-bold fs-2">*</span>
+             
             </th>
             <th className="bg-white text-center align-items-center ">
               (-) Less
-              <span className="text-danger fw-bold fs-2">*</span>
+             
             </th>
             <th className="bg-white text-center align-items-center d-none">
               Consumption Status
-              <span className="text-danger fw-bold fs-2">*</span>
+             
             </th>
             <th className="bg-white text-center align-items-center ">Action</th>
           </tr>
@@ -115,65 +119,145 @@ const InsertProduction = ({
                               },
                             })}
                             onChange={(e) => {
-                              if(values.receipeQtyRatio == ''){
-                                swal("Not Possible", "Please select Receipe qty ratio", "warning");
+                              if(values.receipeQtyRatio == ''  || values.totalBatch ==''){
+                                swal("Not Possible", "Please select Receipe qty ratio OR Fill Total Batch", "warning");
                               }
-                             else if (values.receipeQtyRatio == 1000) {
+                             else {
+                              if (values.receipeQtyRatio == 1000  ) {
+                               
                                 const receipeData = receipeOptions.find(
                                   (x) => x.value == e.value
                                 );
-                                const labelData = receipeData
-                                  ? receipeData.label
-                                  : null;
-                                const findCFTPerKG = getCftPerKgByItemId(
-                                  e.value
-                                );
-                                const calculateAsPerRatio =
-                                  (labelData / findCFTPerKG) *
-                                  values.totalBatch;
+                                if(receipeData){
+                                  console.log("receipeData",receipeData)
+                                  const labelData = receipeData
+                                    ? receipeData.label
+                                    : null;
+                                  const findCFTPerKG = getCftPerKgByItemId(
+                                    e.value
+                                  );
+                                  if(findCFTPerKG){
+                                    console.log(findCFTPerKG)
+                                    const calculateAsPerRatio =
+                                      (labelData / findCFTPerKG) *
+                                      values.totalBatch;
 
-                                setFieldValue(
-                                  `detailsData.${index}.itemId`,
-                                  e.value
-                                );
-                                setFieldValue(
-                                  `detailsData.${index}.receipe`,
-                                  labelData
-                                );
-                                setFieldValue(
-                                  `detailsData.${index}.asPerRatio`,
-                                  Math.round(calculateAsPerRatio * 100) / 100
-                                );
+                                    setFieldValue(
+                                      `detailsData.${index}.itemId`,
+                                      e.value
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.receipeLabelData`,
+                                      labelData
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.singleValueCFTPerKg`,
+                                      findCFTPerKG
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.receipe`,
+                                      labelData
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.asPerRatio`,
+                                      Math.round(calculateAsPerRatio * 100) / 100
+                                    );
+                                  }
+                                  else{
+                                    swal("Not Possible", "CFT PER KG Not Decleared,Please Contact with HO", "warning");
+                                  }
+                                }
+                                else{
+                                  swal("Not Possible", "Ratio Qty Not Decleared,Please Contact with HO", "warning");
+                                  setFieldValue(
+                                    `detailsData.${index}.itemId`,
+                                   ""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.receipe`,
+                                   ""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.asPerRatio`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.asPerRatio`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.materialUsed`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.excess`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.less`,""
+                                  );
+                                }
+                              
+                             
                               } else if(values.receipeQtyRatio == 938) {
                                 const receipeData = receipeOptionsLessQty.find(
                                   (x) => x.value == e.value
                                 );
-                                const labelData = receipeData
-                                  ? receipeData.label
-                                  : null;
-                                console.log(labelData);
-                                const findCFTPerKG = getCftPerKgByItemId(
-                                  e.value
-                                );
-                                console.log(findCFTPerKG);
-                                const calculateAsPerRatio =
-                                  (labelData / findCFTPerKG == undefined
-                                    ? 0
-                                    : findCFTPerKG) * values.totalBatch;
-                                console.log(findCFTPerKG);
-                                setFieldValue(
-                                  `detailsData.${index}.itemId`,
-                                  e.value
-                                );
-                                setFieldValue(
-                                  `detailsData.${index}.receipe`,
-                                  labelData
-                                );
-                                setFieldValue(
-                                  `detailsData.${index}.asPerRatio`,
-                                  Math.round(calculateAsPerRatio * 100) / 100
-                                );
+                                if(receipeData){
+                                  console.log("receipeData",receipeData)
+                                  const labelData = receipeData
+                                    ? receipeData.label
+                                    : null;
+                                  const findCFTPerKG = getCftPerKgByItemId(
+                                    e.value
+                                  );
+                                  if(findCFTPerKG){
+                                    console.log(findCFTPerKG)
+                                    const calculateAsPerRatio =
+                                      (labelData / findCFTPerKG) *
+                                      values.totalBatch;
+    
+                                    setFieldValue(
+                                      `detailsData.${index}.itemId`,
+                                      e.value
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.receipe`,
+                                      labelData
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.asPerRatio`,
+                                      Math.round(calculateAsPerRatio * 100) / 100
+                                    );
+                                  }
+                                  else{
+                                    swal("Not Possible", "CFT PER KG Not Decleared,Please Contact with HO", "warning");
+                                  }
+                                }
+                                else{
+                                  swal("Not Possible", "Ratio Qty Not Decleared,Please Contact with HO", "warning");
+                                  setFieldValue(
+                                    `detailsData.${index}.itemId`,
+                                   ""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.receipe`,
+                                   ""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.asPerRatio`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.asPerRatio`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.materialUsed`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.excess`,""
+                                  );
+                                  setFieldValue(
+                                    `detailsData.${index}.less`,""
+                                  );
+                                }
                               }
+                             }
                             }}
                           ></Select>
                         </div>
@@ -375,6 +459,11 @@ const InsertProduction = ({
             : null}
         </tbody>
       </table>
+            </div>
+            </div>
+            </div>
+            </div>
+      
     </div>
   );
 };
