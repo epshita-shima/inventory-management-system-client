@@ -4,7 +4,7 @@ const paymentInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllPaymentInformation: builder.query({
         query: () => "/paymentinfo",
-        providesTags: ["insertpaymentinfo"],
+        providesTags: ["insertpaymentinfo","deletepaymentinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
       }),
@@ -21,7 +21,18 @@ const paymentInfoApi= api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+    deletePaymentInformation: builder.mutation({
+      query: (id) => ({
+        url: `/paymentinfo/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["deletepaymentinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
   }),
 });
 
-export const {useGetAllPaymentInformationQuery,useInsertPaymentInformationMutation}=paymentInfoApi;
+export const {useGetAllPaymentInformationQuery,useInsertPaymentInformationMutation,useDeletePaymentInformationMutation}=paymentInfoApi;

@@ -33,6 +33,8 @@ import GRNInfoTable from "./components/GoodsReceiveNoteInformation/Index/GRNInfo
 import InsertProduction from "./components/Production/Insert/InsertProduction";
 import ProductionCommonPart from "./components/Production/Common/ProductionCommonPart";
 import ProductionListTable from "./components/Production/Index/ProductionListTable";
+import PaymentModeDataList from "./components/PaymentModeInformation/Index/PaymentModeDataList";
+import InsertPaymentOption from "./components/PaymentModeInformation/Insert/InsertPaymentOption";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -193,6 +195,8 @@ function App() {
               <Route path="production-list" element={<ProductionListTable></ProductionListTable>}></Route>
               <Route path="update-production-info/:id" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
 
+              <Route path="create-payment-mode" element={<InsertPaymentOption></InsertPaymentOption>}></Route>
+              <Route path="payment-list" element={<PaymentModeDataList></PaymentModeDataList>}></Route>
 
               {/* <Route
                 path="/main-view/user-list"

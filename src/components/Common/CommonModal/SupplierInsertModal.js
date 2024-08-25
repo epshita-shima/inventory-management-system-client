@@ -1,7 +1,7 @@
 import React from "react";
 import InsertSupplierInformation from "./../../SupplierProfile/Insert/InsertSupplierInformation";
 import InsertRmItemInfo from "./../../RMItemProfile/ItemProfileInformation/Insert/InsertRmItemInfo";
-import InsertPaymentOption from "../../PurchaseManagement/PaymentOption/Insert/InsertPaymentOption";
+import InsertPaymentOption from "../../PaymentModeInformation/Insert/InsertPaymentOption";
 import InsertBankInformation from "../../PurchaseManagement/BankInformation/Insert/InsertBankInformation";
 import './SupplierInsertModal.css'
 

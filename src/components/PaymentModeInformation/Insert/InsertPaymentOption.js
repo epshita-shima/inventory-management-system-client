@@ -1,14 +1,16 @@
-import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowAltCircleLeft, faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, FieldArray, Form, Formik } from "formik";
 import React, { useRef } from "react";
 import * as Yup from "yup";
 import Select from "react-select";
-import { useInsertPaymentInformationMutation } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useInsertPaymentInformationMutation } from "../../../redux/features/paymnetinformation/paymentInfoApi";
 import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
 
 const InsertPaymentOption = () => {
   const ArrayHelperRef = useRef();
+  const navigate = useNavigate();
   const [insertPaymentInfo, { isLoading }] =
     useInsertPaymentInformationMutation();
   const getUser = localStorage.getItem("user");
@@ -18,6 +20,7 @@ const InsertPaymentOption = () => {
   const paymentTypeOptions = [
     { value: "cash", label: "Cash" },
     { value: "lcatsight", label: "LC At Sight" },
+    { value: "test", label: "test" },
   ];
   const initialValues = {
     detailsData: [
@@ -88,8 +91,9 @@ const InsertPaymentOption = () => {
                     handleSubmit(e, values, resetForm);
                   }}
                 >
-                  <div className="d-flex align-items-center mb-4">
-                    <button
+                  <div className="d-flex justify-content-between align-items-center mb-4">
+                   <div className="d-flex  align-items-center">
+                   <button
                       type="submit"
                       form="paymnetinfocreation-form"
                       className="border-0 "
@@ -130,14 +134,33 @@ const InsertPaymentOption = () => {
                       <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add Row
                     </div>
 
-                   
+                   </div>
+                   <div>
+                   <button
+                              style={{
+                                backgroundColor: "#E55566",
+                                outline: "none",
+                                border: "none",
+                                color: "white",
+                                height: "25px",
+                              }}
+                              onClick={() => {
+                                navigate("/main-view/payment-list");
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faArrowAltCircleLeft}
+                              ></FontAwesomeIcon>
+                              Back to ItemList
+                            </button>
+                   </div>
                   </div>
                   <FieldArray
                     name="detailsData"
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(values);
+                      
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap"
