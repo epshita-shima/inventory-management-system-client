@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PurchaseOrderApproveList from "./PurchaseOrderApproveTable/PurchaseOrderApproveList";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import PurchaseOrderUnapproveList from "./PurchaseOrderUnapproveTable/PurchaseOrderUnapproveList";
@@ -31,7 +29,7 @@ const PurchaseOrderStatusListTable = ({
       const userSingleId = JSON.parse(getUserId);
       const userIdFromSession = userSingleId[0]?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;

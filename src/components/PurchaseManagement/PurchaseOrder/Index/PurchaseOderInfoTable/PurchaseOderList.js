@@ -19,13 +19,13 @@ import { useGetAllSupplierInformationQuery } from "../../../../../redux/features
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
-import numberToWords from "number-to-words";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
-
+import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
+import './PurchaseOderList.css'
 const PurchaseOderList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  const {data:bankInformation}=useGetAllBankInformationQuery(undefined)
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const [purchaseInCash, setPurchaseInCash] = useState([]);
   const [purchaseInLCAtSight, setPurchaseInInLCAtSight] = useState([]);
   const [purchaseOrderList, setPurchaseOrderList] = useState(true);
@@ -45,11 +45,9 @@ const PurchaseOderList = ({ permission }) => {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [deletePurchaseOrderInfo] = useDeletePurchaseOrderInformationMutation();
-  const [downloadPurchaseOrderData, setDownloadPurchaseOrderData] = useState(
-    []
-  );
+  const { data: grnDataInfo, refetch: grnRefetch } =
+    useGetAllGRNInformationQuery(undefined);
   const reportTitle = "PURCHASE ORDER";
-console.log(window.screen)
 
   useEffect(() => {
     const matches = purchaseInfoData
@@ -58,15 +56,16 @@ console.log(window.screen)
       })
       .filter((match) => match !== undefined);
 
-    const categorizedData = matches?.reduce((acc, curr) => {
+    const purchaseMatchedLCData = matches?.reduce((acc, curr) => {
       if (!acc[curr.paymentType]) {
         acc[curr.paymentType] = [];
       }
       acc[curr.paymentType].push(curr);
       return acc;
     }, {});
-    setPurchaseInCash(categorizedData?.cash);
-    setPurchaseInInLCAtSight(categorizedData?.lcatsight);
+    console.log(purchaseMatchedLCData)
+    setPurchaseInCash(purchaseMatchedLCData?.cash);
+    setPurchaseInInLCAtSight(purchaseMatchedLCData?.lcatsight);
 
     const approvePurchaseData = purchaseInfoData?.filter(
       (x) => x.approveStatus == true
@@ -78,7 +77,7 @@ console.log(window.screen)
 
     setPurchaseOrderApproveData(approvePurchaseData);
     setPurchaseOrderUnApproveData(unApprovePurchaseData);
-  }, [paymentData, purchaseInfoData, downloadPurchaseOrderData]);
+  }, [paymentData, purchaseInfoData]);
 
   const columns = [
     {
@@ -138,6 +137,36 @@ console.log(window.screen)
       width: "180px",
     },
     {
+      name: "Total Received Quantity",
+      selector: (purchaseInfoData) => {
+        const totalReceiveQuantity = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce(
+            (acc, cur) => acc + parseInt(cur.grandTotalReceivedQuantity, 10),
+            0
+          );
+        return totalReceiveQuantity;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
+    {
+      name: "Total Received Amount",
+      selector: (purchaseInfoData) => {
+        const totalReceiveAmount = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce((acc, cur) => acc + parseInt(cur.grandTotalAmount, 10), 0);
+        return totalReceiveAmount;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
+
+    {
       name: "PO Status",
       button: true,
       width: "180px",
@@ -191,7 +220,14 @@ console.log(window.screen)
                 borderRadius: "5px",
               }}
               onClick={() => {
-                downloadPOPDF(purchaseInfoData, rawMaterialItemInfo, bankInformation,paymentData,{ companyinfo }, reportTitle);
+                downloadPOPDF(
+                  purchaseInfoData,
+                  rawMaterialItemInfo,
+                  bankInformation,
+                  paymentData,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -245,33 +281,48 @@ console.log(window.screen)
                 marginLeft: "10px",
               }}
               onClick={() => {
-                swal({
-                  title: "Are you sure to delete this item?",
-                  text: "If once deleted, this item will not recovery.",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-                }).then(async (willDelete) => {
-                  if (willDelete) {
-                    const response = await deletePurchaseOrderInfo(
-                      purchaseInfoData?._id
-                    ).unwrap();
-                    console.log(response);
-                    if (response.status === 200) {
-                      swal("Deleted!", "Your selected item has been deleted!", {
-                        icon: "success",
-                      });
+                const matchData = grnDataInfo.find(
+                  (item) => item.pOSingleId == purchaseInfoData._id
+                );
+                if(matchData && matchData.length !==0) {
+                  swal(
+                    "Can not Delete!",
+                    "Because already received the goods.",
+                    "error"
+                  );
+                } else {
+                  swal({
+                    title: "Are you sure to delete this item?",
+                    text: "If once deleted, this item will not recovery.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                  }).then(async (willDelete) => {
+                    if (willDelete) {
+                      const response = await deletePurchaseOrderInfo(
+                        purchaseInfoData?._id
+                      ).unwrap();
+                      console.log(response);
+                      if (response.status === 200) {
+                        swal(
+                          "Deleted!",
+                          "Your selected item has been deleted!",
+                          {
+                            icon: "success",
+                          }
+                        );
+                      } else {
+                        swal(
+                          "Error",
+                          "An error occurred while creating the data",
+                          "error"
+                        );
+                      }
                     } else {
-                      swal(
-                        "Error",
-                        "An error occurred while creating the data",
-                        "error"
-                      );
+                      swal(" Cancel! Your selected item is safe!");
                     }
-                  } else {
-                    swal(" Cancel! Your selected item is safe!");
-                  }
-                });
+                  });
+                }
               }}
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
@@ -326,7 +377,10 @@ console.log(window.screen)
           <FontAwesomeIcon
             style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
             icon={faRefresh}
-            onClick={() => refetch()}
+            onClick={() => {
+              refetch();
+              grnRefetch();
+            }}
           ></FontAwesomeIcon>
           &nbsp;
         </div>
@@ -340,7 +394,7 @@ console.log(window.screen)
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch]);
+  }, [filterText, resetPaginationToggle, grnRefetch,refetch]);
 
   if (isPurchaseloading) {
     return (
@@ -363,7 +417,8 @@ console.log(window.screen)
   }
 
   return (
-    <div className="row px-5 mx-4">
+    <div className="row px-5 mx-4"
+     style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
       <ListHeading
         purchaseInCash={purchaseInCash}
         purchaseInLCAtSight={purchaseInLCAtSight}
@@ -374,13 +429,10 @@ console.log(window.screen)
         setPurchaseOrderList={setPurchaseOrderList}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4"
-        style={{
-          overflow: "scroll",
-          height: "420px",
-        }}
+        className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
+        // style={{ height: 'calc(90vh - 120px)', overflowY: 'scroll' }}
       >
-        <div className="shadow-lg ">
+        <div className="shadow-lg">
           <DataTable
             columns={columns}
             data={filteredItems}
@@ -393,7 +445,6 @@ console.log(window.screen)
           />
         </div>
       </div>
-
     </div>
   );
 };

@@ -87,7 +87,7 @@ console.log(selectedData)
     const fieldsToDisplay = ["itemName", "sizeId", "itemStatus"];
     columns = generateColumns(listData, fieldsToDisplay);
   } else if (searchItem[0]?.menuId == MenuIdCollection.cftinfolist) {
-    const fieldsToDisplay = ["openingDate", "kgPerUnit", "isActive"];
+    const fieldsToDisplay = ["openingDate", "cftPerKg", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
   } else if (searchItem[0]?.menuId == MenuIdCollection.supplierinfolist) {
     const fieldsToDisplay = ["supplierName", "mobileNo", "isActive"];

@@ -7,11 +7,15 @@ const MainView = ({singleUserData, setSingleUserData,setChangePassword, setReset
   const extraSmallScreenHeight = '50vh';
   const smallToMediumScreenHeight = '80vh';
   return (
-    <div style={{ position: 'relative' ,height: '100vh'}}>
-      <div style={{
+    <div
+    //  style={{ position: 'relative' }}
+     >
+      <div 
+      style={{
         '@media (maxWidth: 575.98px)': { height: extraSmallScreenHeight },
         '@media (minWidth: 576px) and (maxWidth: 768px)': { height: smallToMediumScreenHeight },
-      }}>
+      }}
+      >
     <Home singleUserData={singleUserData} setSingleUserData={setSingleUserData} setChangePassword={setChangePassword} setResetPassword={setResetPassword}></Home>
       <div style={{paddingTop: '20px',width:'100%'}}>
         <Outlet></Outlet>

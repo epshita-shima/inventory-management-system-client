@@ -28,6 +28,13 @@ import InsertPurchaseOrder from "./components/PurchaseManagement/PurchaseOrder/I
 import PurchaseOrderListTable from "./components/PurchaseManagement/PurchaseOrder/Index/PurchaseOrderListTable";
 import CommonPurchaseOrderInfo from "./components/PurchaseManagement/PurchaseOrder/Common/CommonPurchaseOrderInfo";
 import PurchaseOrderApproveForm from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseOrderApproveForm";
+import InsertGRNInfo from "./components/GoodsReceiveNoteInformation/Insert/InsertGRNInfo";
+import GRNInfoTable from "./components/GoodsReceiveNoteInformation/Index/GRNInfoTable";
+import InsertProduction from "./components/Production/Insert/InsertProduction";
+import ProductionCommonPart from "./components/Production/Common/ProductionCommonPart";
+import ProductionListTable from "./components/Production/Index/ProductionListTable";
+import PaymentModeDataList from "./components/PaymentModeInformation/Index/PaymentModeDataList";
+import InsertPaymentOption from "./components/PaymentModeInformation/Insert/InsertPaymentOption";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -179,6 +186,18 @@ function App() {
               ></Route>
               <Route path="update-purchaseinfo/:id" element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}></Route>
               <Route path="/main-view/po-approval" element={<PurchaseOrderApproveForm></PurchaseOrderApproveForm>}></Route>
+
+              <Route path="/main-view/grn-list" element={<GRNInfoTable></GRNInfoTable>}></Route>
+              <Route path="/main-view/create-grn" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
+              <Route path="update-grn-info/:id" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
+              
+              <Route path="create-production" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
+              <Route path="production-list" element={<ProductionListTable></ProductionListTable>}></Route>
+              <Route path="update-production-info/:id" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
+
+              <Route path="create-payment-mode" element={<InsertPaymentOption></InsertPaymentOption>}></Route>
+              <Route path="payment-list" element={<PaymentModeDataList></PaymentModeDataList>}></Route>
+
               {/* <Route
                 path="/main-view/user-list"
                 element={

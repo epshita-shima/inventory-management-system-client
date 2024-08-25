@@ -29,6 +29,7 @@ import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import handleCheckboxClick from './../../../Common/ListHeadingModal/Function/handleCheckboxClick';
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
+import './UserListInfo.js';
 
 const UserListInfo = ({
   setChangePassword,
@@ -437,11 +438,8 @@ const UserListInfo = ({
       <div class=" mt-5">
         <div class="row">
           <div
-            className="col userlist-table"
-            style={{
-              overflowX: "scroll",
-              height: "400px",
-            }}
+            className="col userlist-table main-table-view"
+            // style={{ height: 'calc(55vh - 120px)', overflowY: 'scroll' }}
           >
             <div className="shadow-lg overflow-x-auto flex-nowarp">
               <DataTable

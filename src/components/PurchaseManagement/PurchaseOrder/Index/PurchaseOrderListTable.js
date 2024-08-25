@@ -87,7 +87,7 @@ const PurchaseOrderListTable = () => {
       {permission?.isInserted ? (
         <div
           className={`position-absolute`}
-          style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
+          style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
         >
           <div className="">
             <a

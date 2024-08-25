@@ -13,13 +13,13 @@ import { useGetAllSupplierInformationQuery } from "../../../../../redux/features
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
 import swal from "sweetalert";
 import {
-  useDeletePurchaseOrderInformationMutation,
-  useUpdatePurchaseOrderInformationStatusMutation,
+  useDeletePurchaseOrderInformationMutation
 } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
+import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 
 const PurchaseOrderUnapproveList = ({
   permission,
@@ -41,18 +41,7 @@ const PurchaseOrderUnapproveList = ({
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
   const reportTitle = "PURCHASE ORDER";
-
-  // useEffect(()=>{
-  //   const unApprovePurchaseData = purchaseInfoData?.filter((item) => {
-  //     const makeDate = new Date(item.makeDate).toLocaleDateString("en-CA");
-  //     return (
-  //       item.approveStatus === false &&
-  //       makeDate >= fromDate &&
-  //       makeDate <= toDate
-  //     );
-  //   })
-  //   setPurchaseFilterUnApproveAllData(unApprovePurchaseData)
-  // },[purchaseInfoData,fromDate,toDate])
+  const {data:grnDataInfo}=useGetAllGRNInformationQuery(undefined)
 
   const columns = [
     {
@@ -71,6 +60,7 @@ const PurchaseOrderUnapproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width: "180px",
     },
 
     {
@@ -80,6 +70,7 @@ const PurchaseOrderUnapproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width: "260px",
     },
 
     {
@@ -93,6 +84,7 @@ const PurchaseOrderUnapproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width: "160px",
     },
 
     {
@@ -113,7 +105,32 @@ const PurchaseOrderUnapproveList = ({
       filterable: true,
       width: "180px",
     },
-
+    {
+      name: "Total Received Quantity",
+      selector: (purchaseInfoData) =>{
+        const totalReceiveQuantity =grnDataInfo
+        ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+        .reduce((acc, cur) => acc + parseInt(cur.grandTotalReceivedQuantity, 10), 0);
+        return totalReceiveQuantity;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
+    {
+      name: "Total Received Amount",
+      selector: (purchaseInfoData) =>{
+        const totalReceiveQuantity =grnDataInfo
+        ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+        .reduce((acc, cur) => acc + parseInt(cur.grandTotalAmount, 10), 0);
+        return totalReceiveQuantity;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
     {
       name: "Action",
       button: true,

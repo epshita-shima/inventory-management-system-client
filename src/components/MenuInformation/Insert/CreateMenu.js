@@ -1,4 +1,8 @@
-import { faArrowAltCircleLeft, faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowAltCircleLeft,
+  faPlus,
+  faXmarkCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
@@ -13,9 +17,8 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
 
-
 const CreateMenu = () => {
-  const { data: menuItems,isMenuloading } = useGetAllMenuItemsQuery();
+  const { data: menuItems, isMenuloading } = useGetAllMenuItemsQuery();
   const ArrayHelperRef = useRef();
   const [parentMenuName, setParentMenuName] = useState("");
   const [menuType, setMenuType] = useState("");
@@ -29,24 +32,28 @@ const CreateMenu = () => {
       navigate("/");
     }
   }, [navigate]);
-  
-if(isMenuloading){
- return <div className="d-flex justify-content-center align-items-center">
-  <button class="btn" style={{backgroundColor:'#2DDC1B',color:'white'}} type="button" disabled>
-<span
-  class="spinner-grow spinner-grow-sm"
-  role="status"
-  aria-hidden="true"
-></span>
-Loading...
-</button>
-</div>
-}
+
+  if (isMenuloading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <button
+          class="btn"
+          style={{ backgroundColor: "#2DDC1B", color: "white" }}
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    );
+  }
 
   console.log(parentMenuName);
- 
-
-
 
   const menuTypeOptions = [
     { value: "child", label: "Child" },
@@ -222,9 +229,8 @@ Loading...
           setMenuType("");
           setSelectedTopParentValue(null);
         }
-      } 
-      else {
-        values.detailsData.forEach( (item) => {
+      } else {
+        values.detailsData.forEach((item) => {
           if (item.menu_name == "") {
             swal("Not Possible!", "Data Not Found", {
               icon: "warning",
@@ -241,7 +247,7 @@ Loading...
                 }
               );
             } else {
-              function convertToMenuItem (data)  {
+              function convertToMenuItem(data) {
                 const { parentmenu, detailsData } = data;
                 console.log(detailsData);
                 const menuItems = detailsData?.map((item) => {
@@ -274,7 +280,7 @@ Loading...
               }
 
               const convertedData = convertToMenuItem(values);
-            swal({
+              swal({
                 title: "Are you sure these menus are top parent?",
                 text: "It will show as a top heading because you did not select any parent.",
                 icon: "warning",
@@ -328,12 +334,12 @@ Loading...
     <div
       className=" row px-4 mx-4"
       style={{
-        overflowY: "scroll",
-        height: "500px",
+        height: "calc(98vh - 120px)",
+        overflowY: "hidden",
       }}
     >
       <div class="overflow-hidden">
-        <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
+        <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon
@@ -359,18 +365,26 @@ Loading...
               </span>
             </div>
             <div>
-
-              <button 
-              style={{backgroundColor:'#E55566',outline:"none",border:'none',color:'white',height:'25px'}}
-              onClick={()=>{
-                navigate('/main-view/menu-list')
-              }}
-              ><FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon> Back to menulist</button>
+              <button
+                style={{
+                  backgroundColor: "#E55566",
+                  outline: "none",
+                  border: "none",
+                  color: "white",
+                  height: "25px",
+                }}
+                onClick={() => {
+                  navigate("/main-view/menu-list");
+                }}
+              >
+                <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon>{" "}
+                Back to menulist
+              </button>
             </div>
           </div>
           <div>
-            <div className="d-flex justify-content-between align-items-center w-75">
-              <div className="w-50 mt-4">
+            <div className="d-lg-flex justify-content-between align-items-center w-75">
+              <div className="w-lg-100 w-md-100 w-50 mt-4">
                 <label htmlFor="">Parent Name</label>
                 <Select
                   class="form-select"
@@ -412,7 +426,7 @@ Loading...
                   })}
                 ></Select>
               </div>
-              <div className=" mt-4" style={{ width: "40%" }}>
+              <div className="mt-4 w-lg-40 w-md-100 w-sm-50">
                 <label htmlFor="">Menu Type</label>
                 <Select
                   class="form-select"
@@ -479,7 +493,7 @@ Loading...
               className="border-0 "
               style={{
                 // backgroundColor: "#00B987",
-                backgroundColor:"#2DDC1B",
+                backgroundColor: "#2DDC1B",
                 color: "black",
                 padding: "5px 10px",
                 fontSize: "14px",
@@ -526,107 +540,121 @@ Loading...
                       const details = values.detailsData;
                       return (
                         <div
-                          className=" flex-1 items-center d-flex-nowrap"
-                          style={{ height: "200px", overflowY: "auto" }}
+                        // className=" flex-1 items-center d-flex-nowrap table-responsive-custom"
+                        // style={{
+                        //   height: "calc(60vh - 120px)",overflowY: "auto" }}
                         >
-                          <table className="table w-full table-bordered">
-                            <thead className="w-100">
-                              <tr>
-                                <th className="bg-white text-center align-middle  ">
-                                  Sl
-                                </th>
+                          <div class="container-fluid">
+                            <div class="row justify-content-center">
+                              <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                                <div class="table-responsive table-responsive-design">
+                                  <table className="table table-bordered">
+                                    <thead >
+                                      <tr>
+                                        <th className="bg-white text-center align-middle  ">
+                                          Sl
+                                        </th>
 
-                                <th className="bg-white text-center align-middle ">
-                                  Menu Name
-                                  <span className="text-danger fw-bold fs-2">
-                                    *
-                                  </span>
-                                </th>
-                                <th className="bg-white text-center align-middle ">
-                                  Action
-                                </th>
-                              </tr>
-                            </thead>
-                            {details && details.length > 0
-                              ? details.map((detail, index) => {
-                                  console.log(detail);
-                                  return (
-                                    <tbody>
-                                      <tr key={index}>
-                                        <td className="bg-white text-center align-middle">
-                                          {index + 1}
-                                        </td>
-
-                                        <td className="text-center align-middle">
-                                          <Field
-                                            type="text"
-                                            name={`detailsData.${index}.menu_name`}
-                                            placeholder="Parent / Child"
-                                            value={detail?.menu_name}
-                                            
-                                            style={{
-                                              border: "1px solid #2DDC1B",
-                                              padding: "5px",
-                                              width: "75%",
-                                              borderRadius: "5px",
-                                            }}
-                                            onClick={(e) => {
-                                              if (menuType == "") {
-                                                swal(
-                                                  "Not possible",
-                                                  "Please select menu type",
-                                                  "warning"
-                                                );
-                                              } else {
-                                                if (menuType == "parent") {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.menu_name`,
-                                                    e.target.value
-                                                  );
-                                                  setFieldValue(
-                                                    `detailsData.${index}.menu_type`,
-                                                    true
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.menu_name`,
-                                                    e.target.value
-                                                  );
-                                                  setFieldValue(
-                                                    `detailsData.${index}.menu_type`,
-                                                    false
-                                                  );
-                                                }
-                                              }
-                                            }}
-                                          />
-                                          <br />
-                                          <span className="text-danger">
-                                            <ErrorMessage
-                                              name={`detailsData.${index}.menu_name`}
-                                            />
+                                        <th className="bg-white text-center align-middle ">
+                                          Menu Name
+                                          <span className="text-danger fw-bold fs-2">
+                                            *
                                           </span>
-                                        </td>
-                                        <td className="text-center align-middle">
-                                          <button
-                                            type="button"
-                                            className=" border-0 rounded  bg-transparent"
-                                            onClick={() => {
-                                              arrayHelpers.remove(index, 1);
-                                            }}
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faXmarkCircle}
-                                              className="text-danger fs-1"
-                                            ></FontAwesomeIcon>
-                                          </button>
-                                        </td>
+                                        </th>
+                                        <th className="bg-white text-center align-middle ">
+                                          Action
+                                        </th>
                                       </tr>
-                                    </tbody>
-                                  );
-                                })
-                              : null}
-                          </table>
+                                    </thead>
+                                    {details && details.length > 0
+                                      ? details.map((detail, index) => {
+                                          console.log(detail);
+                                          return (
+                                            <tbody>
+                                              <tr key={index}>
+                                                <td className="bg-white text-center align-middle">
+                                                  {index + 1}
+                                                </td>
+
+                                                <td className="text-center align-middle">
+                                                  <Field
+                                                    type="text"
+                                                    name={`detailsData.${index}.menu_name`}
+                                                    placeholder="Parent / Child"
+                                                    value={detail?.menu_name}
+                                                    style={{
+                                                      border:
+                                                        "1px solid #2DDC1B",
+                                                      padding: "5px",
+                                                      width: "75%",
+                                                      borderRadius: "5px",
+                                                    }}
+                                                    onClick={(e) => {
+                                                      if (menuType == "") {
+                                                        swal(
+                                                          "Not possible",
+                                                          "Please select menu type",
+                                                          "warning"
+                                                        );
+                                                      } else {
+                                                        if (
+                                                          menuType == "parent"
+                                                        ) {
+                                                          setFieldValue(
+                                                            `detailsData.${index}.menu_name`,
+                                                            e.target.value
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.menu_type`,
+                                                            true
+                                                          );
+                                                        } else {
+                                                          setFieldValue(
+                                                            `detailsData.${index}.menu_name`,
+                                                            e.target.value
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.menu_type`,
+                                                            false
+                                                          );
+                                                        }
+                                                      }
+                                                    }}
+                                                  />
+                                                  <br />
+                                                  <span className="text-danger">
+                                                    <ErrorMessage
+                                                      name={`detailsData.${index}.menu_name`}
+                                                    />
+                                                  </span>
+                                                </td>
+                                                <td className="text-center align-middle">
+                                                  <button
+                                                    type="button"
+                                                    className=" border-0 rounded  bg-transparent"
+                                                    onClick={() => {
+                                                      arrayHelpers.remove(
+                                                        index,
+                                                        1
+                                                      );
+                                                    }}
+                                                  >
+                                                    <FontAwesomeIcon
+                                                      icon={faXmarkCircle}
+                                                      className="text-danger fs-1"
+                                                    ></FontAwesomeIcon>
+                                                  </button>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          );
+                                        })
+                                      : null}
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       );
                     }}

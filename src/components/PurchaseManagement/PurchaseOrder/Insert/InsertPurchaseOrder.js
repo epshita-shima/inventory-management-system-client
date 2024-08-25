@@ -19,12 +19,15 @@ const InsertPurchaseOrder = ({
   totalGrandTotalAmount,
   arrayHelpers,
 }) => {
+  console.log(window.screen)
   return (
-      <div style={{ height: "300px", overflowY: "auto" }}>
-        <table className="table w-full table-bordered">
+      <div className="insertpo-responsive-custom"
+      //  style={{ height: 'calc(42vh - 120px)', overflowY: "auto" }}
+       >
+        <table className="table table-bordered">
           <thead className="w-100">
             <tr>
-              <th className="bg-white text-center  align-items-center  ">Sl</th>
+              <th className="bg-white text-center  align-items-center">Sl</th>
 
               <th
                 className="bg-white text-center  align-items-center"
@@ -192,6 +195,7 @@ const InsertPurchaseOrder = ({
                           name={`detailsData.${index}.quantity`}
                           placeholder="Quantity"
                           value={detail?.quantity}
+                          
                           style={{
                             border: "1px solid #2DDC1B",
                             padding: "5px",
@@ -208,11 +212,11 @@ const InsertPurchaseOrder = ({
                               e.target.value
                             );
                             const calculateTotalAmount =
-                              e.target.value * detail.unitPrice;
-
+                            parseFloat((e.target.value * detail.unitPrice))
+                         
                             setFieldValue(
                               `detailsData.${index}.totalAmount`,
-                              calculateTotalAmount
+                              calculateTotalAmount.toFixed(2)
                             );
                             setFieldValue(
                               "grandTotalQuantity",
@@ -239,6 +243,7 @@ const InsertPurchaseOrder = ({
                           name={`detailsData.${index}.unitPrice`}
                           placeholder="Unit Price"
                           value={detail?.unitPrice}
+                          step="0.01"
                           style={{
                             border: "1px solid #2DDC1B",
                             padding: "5px",
@@ -254,10 +259,10 @@ const InsertPurchaseOrder = ({
                               e.target.value
                             );
                             const calculateTotalAmount =
-                              e.target.value * detail.quantity;
+                            parseFloat( e.target.value * detail.quantity);
                             setFieldValue(
                               `detailsData.${index}.totalAmount`,
-                              calculateTotalAmount
+                              calculateTotalAmount.toFixed(2)
                             );
                             setFieldValue(
                               "grandTotalAmount",

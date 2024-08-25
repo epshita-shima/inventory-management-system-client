@@ -285,10 +285,12 @@ const checkedData=mergedArray?.filter(x=>x.isChecked==true)
   
 
   return (
-    <div className="container-fluid p-0 m-0 usercreation-table" style={{
+    <div className="container-fluid p-0 m-0 usercreation-table" 
+    style={{
       overflowY:"scroll",
       height:'500px'
-    }}>
+    }}
+    >
 
       <div class="container">
         <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">

@@ -1,0 +1,33 @@
+.rawdata-main-view {
+    overflow-y: auto;
+  }
+  
+  @media (min-width: 333px) and (max-width: 577px) {
+    .rawdata-main-view {
+      height: calc(50vh - 120px); 
+    }
+  }
+  
+  @media (min-width: 577px) and (max-width: 768px) {
+    .rawdata-main-view {
+      height: calc(70vh - 120px); 
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .rawdata-main-view {
+      height: calc(75vh - 120px) !important; /* Default height for large screens */
+    }
+    
+  }
+  @media (min-width: 992px) {
+    .rawdata-main-view {
+      height: calc(75vh - 120px) !important; /* Default height for large screens */
+    }
+    
+  }
+  @media (min-width: 1024px) {
+    .rawdata-main-view {
+      height: calc(80vh - 120px) !important; 
+    }
+  }

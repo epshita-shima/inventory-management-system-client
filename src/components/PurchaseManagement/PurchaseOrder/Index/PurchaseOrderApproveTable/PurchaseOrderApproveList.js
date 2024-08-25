@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
-import { useDeletePurchaseOrderInformationMutation } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
+import React, { useMemo, useState } from "react";
+
 import DataTable from "react-data-table-component";
 
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 
 import { useGetAllSupplierInformationQuery } from "../../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
@@ -13,18 +13,23 @@ import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderR
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
-
-const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) => {
-
+import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
+import '../../PurchaseOrderApprove/PurchaseOrderAproveForm.css'
+const PurchaseOrderApproveList = ({
+  permission,
+  purchaseFilterApproveAllData,
+}) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  const {data:bankInformation}=useGetAllBankInformationQuery(undefined)
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const { data: rawMaterialItemInfo } =
     useGetAllRMItemInformationQuery(undefined);
- 
+
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
+  const { data: grnDataInfo, refetch: grnRefetch } =
+    useGetAllGRNInformationQuery(undefined);
 
   const reportTitle = "PURCHASE ORDER";
 
@@ -38,14 +43,17 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
     {
       name: "PO Make Date",
       selector: (purchaseFilterApproveAllData) =>
-        new Date(purchaseFilterApproveAllData?.makeDate).toLocaleDateString("en-CA"),
+        new Date(purchaseFilterApproveAllData?.makeDate).toLocaleDateString(
+          "en-CA"
+        ),
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "PO Number",
-      selector: (purchaseFilterApproveAllData) => purchaseFilterApproveAllData?.poNo,
+      selector: (purchaseFilterApproveAllData) =>
+        purchaseFilterApproveAllData?.poNo,
       sortable: true,
       center: true,
       filterable: true,
@@ -81,6 +89,35 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
       filterable: true,
       width: "180px",
     },
+    {
+      name: "Total Received Quantity",
+      selector: (purchaseInfoData) => {
+        const totalReceiveQuantity = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce(
+            (acc, cur) => acc + parseInt(cur.grandTotalReceivedQuantity, 10),
+            0
+          );
+        return totalReceiveQuantity;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
+    {
+      name: "Total Received Amount",
+      selector: (purchaseInfoData) => {
+        const totalReceiveAmount = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce((acc, cur) => acc + parseInt(cur.grandTotalAmount, 10), 0);
+        return totalReceiveAmount;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
+    },
 
     {
       name: "Action",
@@ -89,8 +126,7 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
       grow: 2,
       cell: (purchaseFilterApproveAllData) => (
         <div className="d-flex justify-content-between align-content-center">
-
-           {permission?.isPDF ? (
+          {permission?.isPDF ? (
             <a
               target="_blank"
               className={` action-icon `}
@@ -99,7 +135,9 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
               title="Update item"
               style={{
                 color: `${
-                  purchaseFilterApproveAllData?.items?.length == 0 ? "gray" : "orange"
+                  purchaseFilterApproveAllData?.items?.length == 0
+                    ? "gray"
+                    : "orange"
                 } `,
                 border: `${
                   purchaseFilterApproveAllData?.items?.length == 0
@@ -110,7 +148,14 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
                 borderRadius: "5px",
               }}
               onClick={() => {
-                downloadPOPDF(purchaseFilterApproveAllData, rawMaterialItemInfo, bankInformation,paymentData,{ companyinfo }, reportTitle);
+                downloadPOPDF(
+                  purchaseFilterApproveAllData,
+                  rawMaterialItemInfo,
+                  bankInformation,
+                  paymentData,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -183,7 +228,7 @@ const PurchaseOrderApproveList = ({ permission, purchaseFilterApproveAllData }) 
 
   return (
     <div className="row">
-      <div className="col userlist-table">
+      <div className="col userlist-table podata-main-view">
         <div className="shadow-lg ">
           <DataTable
             columns={columns}

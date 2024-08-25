@@ -1,7 +1,7 @@
 import React from "react";
 import InsertSupplierInformation from "./../../SupplierProfile/Insert/InsertSupplierInformation";
 import InsertRmItemInfo from "./../../RMItemProfile/ItemProfileInformation/Insert/InsertRmItemInfo";
-import InsertPaymentOption from "../../PurchaseManagement/PaymentOption/Insert/InsertPaymentOption";
+import InsertPaymentOption from "../../PaymentModeInformation/Insert/InsertPaymentOption";
 import InsertBankInformation from "../../PurchaseManagement/BankInformation/Insert/InsertBankInformation";
 import './SupplierInsertModal.css'
 
@@ -27,12 +27,12 @@ const SupplierInsertModal = ({
       style={{ overflow: "hidden" }}
     >
       <div
-        class="modal-dialog modal-dialog-centered modal-lg  modal-xl"
+        class="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
         role="document"
       >
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="commonInsertModalCenterLongTitle">
+            <h5 className="modal-title" id="commonInsertModalCenterLongTitle">
               {activeSupplierModal && "Insert Supplier Information"}
               {activeItemInfoModal && "Insert Raw Material Item Information"}
               {acivePaymentModal && "Insert Payment Information"}
@@ -60,7 +60,10 @@ const SupplierInsertModal = ({
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" style={{
+        overflowY: "scroll",
+        height: "calc(80vh - 120px)",
+      }}>
             {activeSupplierModal ? (
               <InsertSupplierInformation></InsertSupplierInformation>
             ) : (

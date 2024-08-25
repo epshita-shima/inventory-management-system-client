@@ -4,8 +4,8 @@ import { saveAs } from 'file-saver';
 const handleDownload = (data, companyinfo,reportTitle) => {
     const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Userlist Report');
-
+    const worksheet = workbook.addWorksheet('Supplierlist Report');
+console.log(companyinfo)
     // Merge and center header information
     const headerLength = data.length > 0 ? Object.keys(data[0]).length : 0;
 

@@ -11,6 +11,7 @@ import {
 import PurchaseOrderStatusListTable from "../Index/PurchaseOrderStatusListTable";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 
 const PurchaseOrderApproveForm = () => {
   const [approveStatus, setApproveStatus] = useState("");
@@ -34,7 +35,8 @@ const PurchaseOrderApproveForm = () => {
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
   const { data: purchaseInfoData, refetch } =
     useGetAllPurchaseOrderInformationQuery(undefined);
-
+  const { data: grnInfoData, refetch: grnRefetch } =
+    useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [updatePOApproveStatus] =
     useUpdatePurchaseOrderInformationStatusMutation();
@@ -72,7 +74,7 @@ const PurchaseOrderApproveForm = () => {
     // setPurchaseOrderApproveWithToDate(approvePurchaseDataWithToDate);
   }, [purchaseInfoData, paymentData]);
 
-  const handleStatus =(async () => {
+  const handleStatus = async () => {
     if (approveStatus === "approve" && toDate && fromDate) {
       setShowPurchaseOrderApproveListData(true);
       setShowPurchaseOrderUnApproveListData(false);
@@ -85,6 +87,14 @@ const PurchaseOrderApproveForm = () => {
         );
       });
       setPurchaseFilterApproveAllData(approvePurchaseData);
+      if (approvePurchaseData.length === 0) {
+        swal({
+          title: "Sorry!",
+          text: "No Data Available.",
+          icon: "warning",
+          button: "OK",
+        });
+      }
     } else if (approveStatus === "unapprove" && toDate && fromDate) {
       setShowPurchaseOrderUnApproveListData(true);
       setShowPurchaseOrderApproveListData(false);
@@ -98,15 +108,24 @@ const PurchaseOrderApproveForm = () => {
         );
       });
       setPurchaseFilterUnApproveAllData(unApprovePurchaseData);
+      if (unApprovePurchaseData.length === 0) {
+        swal({
+          title: "Sorry!",
+          text: "No Data Available.",
+          icon: "warning",
+          button: "OK",
+        });
+      }
     }
-  });
-  
+    grnRefetch();
+  };
+
   const handleApproveData = async (data) => {
     const response = await updatePOApproveStatus(data);
     if (response?.data?.status === 200) {
       swal("Done", "Data Save Successfully", "success");
       await refetch();
-      handleStatus()
+      handleStatus();
     } else if (response?.error?.status === 400) {
       swal("Not Possible!", response?.error?.data?.message, "error");
     }
@@ -115,18 +134,9 @@ const PurchaseOrderApproveForm = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      style={{
-        overflowY: "scroll",
-        height: "500px",
-      }}
+      style={{ height: "calc(98vh - 120px)", overflowY: "scroll" }}
     >
-      <div class="overflow-hidden">
-        <h2
-          style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}
-        >
-          PO Approval Form
-        </h2>
-
+      <div class="">
         <ListHeading
           purchaseInCash={purchaseInCash}
           purchaseInLCAtSight={purchaseInLCAtSight}
@@ -140,7 +150,7 @@ const PurchaseOrderApproveForm = () => {
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
           <div class="row row-cols-2 row-cols-lg-2 w-75">
-            <div className="col-6 col-lg-3 text-center mt-2">
+            <div className="col-12 col-lg-3 text-center mt-2">
               <label htmlFor="">Po Status</label>
               <div className="w-100">
                 <Select
@@ -186,9 +196,9 @@ const PurchaseOrderApproveForm = () => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker"
+                className="text-center custom-datepicker3"
                 //   value={id ? purchaseOrderAllInformation?.deliveryDate : fromDate}
-                calendarClassName="custom-calendar"
+                calendarClassName="custom-calendar3"
                 selected={fromDate}
                 required
                 onChange={(fromDate) => {
@@ -200,7 +210,7 @@ const PurchaseOrderApproveForm = () => {
                       button: "OK",
                     });
                   } else {
-                    setFromDate(fromDate.toLocaleDateString("en-CA"));
+                    setFromDate(fromDate?.toLocaleDateString("en-CA"));
                   }
                 }}
               />
@@ -210,9 +220,9 @@ const PurchaseOrderApproveForm = () => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker"
+                className="text-center custom-datepicker3"
                 //   value={id ? purchaseOrderAllInformation?.deliveryDate : fromDate}
-                calendarClassName="custom-calendar"
+                calendarClassName="custom-calendar3"
                 selected={toDate}
                 required
                 onChange={(toDate) => {
@@ -230,12 +240,12 @@ const PurchaseOrderApproveForm = () => {
                       button: "OK",
                     });
                   } else {
-                    setToDate(toDate.toLocaleDateString("en-CA"));
+                    setToDate(toDate?.toLocaleDateString("en-CA"));
                   }
                 }}
               />
             </div>
-            <div className="col-6 col-lg-3 mt-2">
+            <div className="col-6 col-lg-3 ms-sm-2 ms-lg-0 mt-2">
               <label htmlFor=""></label>
               <br />
               <button

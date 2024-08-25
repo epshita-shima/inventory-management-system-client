@@ -192,10 +192,7 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
       <div className="row p-5 mx-4">
         <div
           className="col userlist-table"
-          style={{
-            overflow: "scroll",
-            height: "450px",
-          }}
+          style={{ height: 'calc(90vh - 120px)', overflowY: 'scroll' }}
         >
           <div className="shadow-lg ">
             <DataTable

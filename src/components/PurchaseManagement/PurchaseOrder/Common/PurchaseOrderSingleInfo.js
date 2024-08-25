@@ -4,7 +4,6 @@ import React from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import swal from "sweetalert";
 
 const PurchaseOrderSingleInfo = ({
   id,
@@ -32,7 +31,7 @@ const PurchaseOrderSingleInfo = ({
     <div class="row row-cols-2 row-cols-lg-3">
       <div class="col-6 col-lg-4">
         <label htmlFor="supplierId">Supplier Name</label>
-        <div className="w-75 d-flex justify-content-between mt-2">
+        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <div className="w-100">
             <Select
               class="form-select"
@@ -96,7 +95,7 @@ const PurchaseOrderSingleInfo = ({
                   setFieldValue(
                     "poNo",
                     `PO-MEB-${e.sortName}-${formatedDate}-${
-                      serialValue?.serialNo == undefined
+                      serialValue?.serialNo === undefined
                         ? "1"
                         : serialValue?.serialNo
                     }`
@@ -105,9 +104,12 @@ const PurchaseOrderSingleInfo = ({
               }}
             ></Select>
 
-            {id? "" :touched.supplierId && errors.supplierId && (
-              <div className="text-danger">{errors.supplierId}</div>
-            )}
+            {id
+              ? ""
+              : touched.supplierId &&
+                errors.supplierId && (
+                  <div className="text-danger">{errors.supplierId}</div>
+                )}
           </div>
           <div className="ms-2 mt-2">
             <FontAwesomeIcon
@@ -130,7 +132,7 @@ const PurchaseOrderSingleInfo = ({
       </div>
       <div class="col-6 col-lg-4">
         <label htmlFor="paymentId">Payment</label>
-        <div className="w-75 d-flex justify-content-between mt-2">
+        <div className="w-lg-75  w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <div className="w-100">
             <Select
               class="form-select"
@@ -187,13 +189,16 @@ const PurchaseOrderSingleInfo = ({
               }}
             ></Select>
 
-            {id? "" : touched.supplierId && errors.supplierId && (
-              <div className="text-danger">{errors.supplierId}</div>
-            )}
+            {id
+              ? ""
+              : touched.supplierId &&
+                errors.supplierId && (
+                  <div className="text-danger">{errors.supplierId}</div>
+                )}
           </div>
           <div className="ms-2 mt-2">
             <FontAwesomeIcon
-              className="border  align-items-center text-center p-2 fs-3 rounded-5 text-light "
+              className="border align-items-center text-center p-2 fs-3 rounded-5 text-light "
               style={{
                 background: "#2DDC1B",
               }}
@@ -269,9 +274,12 @@ const PurchaseOrderSingleInfo = ({
               }}
             ></Select>
 
-            {id? "" :touched.bankId && errors.bankId && (
-              <div className="text-danger">{errors.bankId}</div>
-            )}
+            {id
+              ? ""
+              : touched.bankId &&
+                errors.bankId && (
+                  <div className="text-danger">{errors.bankId}</div>
+                )}
           </div>
           <div className="ms-2 mt-2">
             <FontAwesomeIcon
@@ -299,33 +307,30 @@ const PurchaseOrderSingleInfo = ({
         <DatePicker
           dateFormat="y-MM-dd"
           className="text-center custom-datepicker"
-          value={id ? purchaseOrderAllInformation?.deliveryDate : startDate}
+          value={
+            id
+              ? new Date(
+                  purchaseOrderAllInformation?.deliveryDate
+                ).toLocaleDateString("en-CA")
+              : startDate
+          }
           calendarClassName="custom-calendar"
           selected={startDate}
           required
           onChange={(startDate) => {
-            if (startDate > new Date()) {
-              swal({
-                title: "Select Valid Date",
-                text: "Date should be equal or earlier than today",
-                icon: "warning",
-                button: "OK",
-              });
+            if (id) {
+              setPurchaseOrderAllInformation((prevData) => ({
+                ...prevData,
+                deliveryDate: startDate.toLocaleDateString("en-CA"),
+                updateBy: makebyUser,
+                updateDate: new Date(),
+              }));
             } else {
-              if (id) {
-                setPurchaseOrderAllInformation((prevData) => ({
-                  ...prevData,
-                  deliveryDate: startDate.toLocaleDateString("en-CA"),
-                  updateBy: makebyUser,
-                  updateDate: new Date(),
-                }));
-              } else {
-                setStartDate(startDate.toLocaleDateString("en-CA"));
-                setFieldValue(
-                  "deliveryDate",
-                  startDate.toLocaleDateString("en-CA")
-                );
-              }
+              setStartDate(startDate.toLocaleDateString("en-CA"));
+              setFieldValue(
+                "deliveryDate",
+                startDate.toLocaleDateString("en-CA")
+              );
             }
           }}
         />
@@ -333,7 +338,7 @@ const PurchaseOrderSingleInfo = ({
       <div class="col-6 col-lg-4">
         <label htmlFor="Currency">Currency</label>
         <br />
-        <div className="w-75">
+        <div className="w-lg-75 w-md-100">
           <Select
             class="form-select"
             className="w-100 mb-3"
@@ -390,9 +395,12 @@ const PurchaseOrderSingleInfo = ({
           ></Select>
         </div>
         <br />
-        {id? "" : touched.currencyId && errors.currencyId && (
-          <div className="text-danger">{errors.currencyId}</div>
-        )}
+        {id
+          ? ""
+          : touched.currencyId &&
+            errors.currencyId && (
+              <div className="text-danger">{errors.currencyId}</div>
+            )}
       </div>
       <div class="col-6 col-lg-4">
         <label htmlFor="remarks">Remarks</label>
@@ -420,9 +428,12 @@ const PurchaseOrderSingleInfo = ({
               : setFieldValue(`remarks`, e.target.value);
           }}
         />
-        {id? "" :touched.remarks && errors.remarks && (
-          <div className="text-danger">{errors.remarks}</div>
-        )}
+        {id
+          ? ""
+          : touched.remarks &&
+            errors.remarks && (
+              <div className="text-danger">{errors.remarks}</div>
+            )}
       </div>
     </div>
   );

@@ -1,0 +1,84 @@
+.custom-datepicker2 {
+    border: 1px solid #2DDC1B;
+    padding: 5px;
+    border-radius: 5px;
+    outline: #2DDC1B;
+    width: 180px;
+    height: 38px;
+  }
+  .custom-datepicker-update{
+    border: 1px solid #2DDC1B;
+    padding: 8px;
+    border-radius: 5px;
+    outline: #2DDC1B;
+    width:200px;
+  }
+.custom-calendar2 .react-datepicker__current-month,
+.custom-calendar2 .react-datepicker__day,
+.custom-calendar2 .react-datepicker__day-name,
+.custom-calendar2 .react-datepicker__time-container {
+  font-size: 14px; /* Desired text size */
+}
+
+.custom-calendar2 .react-datepicker__header {
+  font-size: 18px; /* Change the header text size */
+}
+
+.custom-calendar2 .react-datepicker__day--selected,
+.custom-calendar2 .react-datepicker__day--keyboard-selected {
+  font-size: 14px; /* Change the selected day text size */
+}
+  .custom-calendar2 {
+    background-color: #B8FEB3;
+    width: 200px;
+  }
+  .custom-calendar2 .react-datepicker__month-container {
+    width: 100%; /* Ensure the month container takes the full width */
+
+  }
+  .custom-calendar2 .react-datepicker__header {
+    width: 100%;
+  }
+  
+  .custom-calendar2 .react-datepicker__day,
+.custom-calendar2 .react-datepicker__day-name {
+  width: 12.28%; /* Each day takes 1/7th of the width */
+  display: inline-block;
+  text-align: center;
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+
+input[type="number"]::-webkit-outer-spin-button, 
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+@media (min-width: 992px) {
+  .width-lg-23 {
+    width: 23%;
+  }
+  .width-lg-16{
+    width: 16%;
+  }
+}
+@media (max-width: 768px) {
+  .width-md-23 {
+    width: 100%;
+    margin-left: 0 !important;
+    margin-top: 5px;
+  }
+  .width-lg-16{
+    width: 100%;
+  }
+  .margin-md{
+    margin-top: 5px;
+    margin-left: 0 !important;
+  }
+}

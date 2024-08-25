@@ -1,15 +1,15 @@
 .custom-datepicker {
-    border: 1px solid #2DDC1B;
-    padding: 5px;
-    border-radius: 5px;
-    outline: #2DDC1B;
-  }
-  .custom-datepicker-update{
-    border: 1px solid #2DDC1B;
-    padding: 8px;
-    border-radius: 5px;
-    outline: #2DDC1B;
-  }
+  border: 1px solid #2ddc1b;
+  padding: 5px;
+  border-radius: 5px;
+  outline: #2ddc1b;
+}
+.custom-datepicker-update {
+  border: 1px solid #2ddc1b;
+  padding: 8px;
+  border-radius: 5px;
+  outline: #2ddc1b;
+}
 .custom-calendar .react-datepicker__current-month,
 .custom-calendar .react-datepicker__day,
 .custom-calendar .react-datepicker__day-name,
@@ -25,20 +25,19 @@
 .custom-calendar .react-datepicker__day--keyboard-selected {
   font-size: 14px; /* Change the selected day text size */
 }
-  .custom-calendar {
-    background-color: #B8FEB3;
-    width: 280px;
-    z-index: 9999,
-  }
-  .custom-calendar .react-datepicker__month-container {
-    width: 100%; /* Ensure the month container takes the full width */
+.custom-calendar {
+  background-color: #b8feb3;
+  width: 260px;
+  z-index: 9999;
+}
+.custom-calendar .react-datepicker__month-container {
+  width: 100%; /* Ensure the month container takes the full width */
+}
+.custom-calendar .react-datepicker__header {
+  width: 100%;
+}
 
-  }
-  .custom-calendar .react-datepicker__header {
-    width: 100%;
-  }
-  
-  .custom-calendar .react-datepicker__day,
+.custom-calendar .react-datepicker__day,
 .custom-calendar .react-datepicker__day-name {
   width: 13.28%; /* Each day takes 1/7th of the width */
   display: inline-block;
@@ -47,5 +46,57 @@
   text-overflow: ellipsis; /* Show ellipsis for overflow text */
   white-space: nowrap; /* Prevent text from wrapping */
 }
+/* @media (min-width: 992px) {
+  .width-lg-20 {
+    width: 20%;
+  }
+}
+@media (max-width: 768px) {
+  .width-lg-20 {
+    width: 100%;
+  }
+  .width-sm-20 {
+    width: 100%;
+  }
+  .custom-calendar {
+    width: 200px;
+  }
+} */
 
+.fixed-column {
+  max-width: 100%;
+}
+.table-responsive-custom {
+  overflow-y: auto;
+}
 
+@media (min-width: 333px) and (max-width: 577px) {
+  .table-responsive-custom {
+    height: calc(50vh - 120px); /* Smaller height for small screens */
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  .table-responsive-custom {
+    height: calc(60vh - 120px); /* Medium height for medium screens */
+  }
+}
+
+@media (min-width: 769px) {
+  .table-responsive-custom {
+    height: calc(62vh - 120px); /* Default height for large screens */
+  }
+}
+@media (min-width: 993px) {
+  .table-responsive-custom {
+    height: calc(80vh - 120px); /* Default height for large screens */
+  }
+}
+/* @media (max-width: 576px) {
+  .custom-datepicker {
+    width: 150px;
+  }
+  .custom-datepicker-update {
+    width: 150px;
+  }
+} */

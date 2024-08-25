@@ -90,12 +90,12 @@ const UpdateFgItemInfo = () => {
     <div
       className=" row px-4 mx-4"
       style={{
-        overflowY: "scroll",
-        height: "500px",
+        overflowY: "hidden",
+        height: "calc(100vh - 120px)",
       }}
     >
-      <div class="overflow-hidden">
-        <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
+      <div class="">
+        <div className="shadow-lg  p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon
@@ -140,7 +140,7 @@ const UpdateFgItemInfo = () => {
           </div>
           <div></div>
 
-          <div className="mt-3">
+          <div className="mt-3 table-responsive-custom">
             <Form
               id="itemcreation-form"
               onSubmit={(e) => {
@@ -365,6 +365,34 @@ const UpdateFgItemInfo = () => {
                     htmlFor="inputPassword5"
                     style={{ color: "#032339", letterSpacing: "1px" }}
                   >
+                   Production Qty(Per Batch)
+                  </Form.Label>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      name="productionQtyPerBatch"
+                      required
+                      aria-label="Recipient's production qty per batch"
+                      aria-describedby="basic-addon2"
+                      value={singleItemInfoData?.productionQtyPerBatch}
+                      autoComplete="off"
+                      onChange={(e) => {
+                        setSingleItemInfoData((prevData) => ({
+                          ...prevData,
+                          productionQtyPerBatch: e.target.value,
+                          updateBy: updatebyUser,
+                          updateDate: new Date(),
+                        }));
+                      }}
+                      style={{
+                        border: "1px solid #B8FEB3",
+                        background: "white",
+                      }}
+                    />
+                  </InputGroup>
+                  {/* <Form.Label
+                    htmlFor="inputPassword5"
+                    style={{ color: "#032339", letterSpacing: "1px" }}
+                  >
                     Item Status
                   </Form.Label>
                   <div class="form-check">
@@ -381,7 +409,7 @@ const UpdateFgItemInfo = () => {
                         }));
                       }}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="d-flex justify-content-center align-items-center mt-4 w-100">

@@ -13,6 +13,7 @@ import {
   useUpdateClientDetailsInfoMutation,
 } from "../../../redux/features/clientinformation/clientInfoApi";
 import swal from "sweetalert";
+import './InsertClientInformation.css'
 
 const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
@@ -40,14 +41,14 @@ const InsertClientInformation = () => {
         remarks: "",
         isActive: true,
         clientApproveStatus: false,
-        clientApproveDate: '',
+        clientApproveDate: "",
         isAccountPostingStatus: false,
-        vocuherNo: '',
-        voucherDate:'',
+        vocuherNo: "",
+        voucherDate: "",
         makeBy: makebyUser,
-        updateBy: '',
+        updateBy: "",
         makeDate: new Date(),
-        updateDate: '',
+        updateDate: "",
       },
     ],
   };
@@ -58,6 +59,7 @@ const InsertClientInformation = () => {
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
+    console.log(values.detailsData)
     try {
       if (id) {
         const response = await updateClientInfo(clientData);
@@ -95,13 +97,13 @@ const InsertClientInformation = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      style={{
-        overflowY: "scroll",
-        height: "500px",
-      }}
+      // style={{
+      //   height: "90%"
+      // }}
+
     >
-      <div class="overflow-hidden">
-        <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
+      <div class="">
+        <div className="">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon
@@ -199,9 +201,9 @@ const InsertClientInformation = () => {
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(values,!(isValid && dirty))
+                      console.log(values, !(isValid && dirty));
                       return (
-                        <div className="row shadow-lg pt-5 pb-3 w-75 d-flex justify-content-center mx-auto">
+                        <div className="row shadow-lg pt-5 pb-3 w-75 d-flex justify-content-center mx-auto rounded-4">
                           <div className="col-md-12">
                             {details && details.length > 0
                               ? details.map((detail, index) => {
@@ -209,7 +211,7 @@ const InsertClientInformation = () => {
                                   return (
                                     <div key={index}>
                                       <div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-12 col-lg-6 col-xl-6">
                                           <div className="mb-2">
                                             <label htmlFor="email">
                                               Client Name
@@ -467,14 +469,12 @@ const InsertClientInformation = () => {
                                                   </div>
                                                 )}
                                           </div>
-                                          
                                         </div>
 
-                                        <div className="col-md-6">
-                                         
+                                        <div className="col-md-12 col-lg-6 col-xl-6">
                                           <div className="mb-2 mt-2">
                                             <label htmlFor="tradeLicenceNo">
-                                            Trade Licence Number
+                                              Trade Licence Number
                                             </label>
                                             <Field
                                               type="text"
@@ -496,7 +496,8 @@ const InsertClientInformation = () => {
                                                 if (id) {
                                                   setClientData((prevData) => ({
                                                     ...prevData,
-                                                    tradeLicenceNo: e.target.value,
+                                                    tradeLicenceNo:
+                                                      e.target.value,
                                                     updateBy: updatebyUser,
                                                     updateDate: new Date(),
                                                   }));
@@ -679,7 +680,6 @@ const InsertClientInformation = () => {
                                                 )}
                                           </div>
                                         </div>
-
                                       </div>
                                       <div className="col-md-12">
                                         <div className="d-flex justify-content-center">

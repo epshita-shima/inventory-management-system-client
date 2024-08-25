@@ -13,12 +13,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
-import { downloadAllImage, downloadImage, downloadPDF } from "../../../ReportProperties/HeaderFooter";
+import {
+  downloadAllImage,
+  downloadImage,
+  downloadPDF,
+} from "../../../ReportProperties/HeaderFooter";
 import handleDownload from "../../../ReportProperties/HandelExcelDownload";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import { useDeleteCFTInfoMutation } from "../../../../redux/features/cftinformation/cftInfosApi";
+import "../../Insert/InsertCFTInfo.css";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
+import handleCFTExcel from "../../../ReportProperties/handleCFTExcel";
 const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   console.log(cftInfosData);
@@ -27,23 +34,22 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
   const [extractedInActiveDataForReport, setExtractedInActiveDataForReport] =
     useState([]);
-    const [activeImageForReport,setActiveImageForReport]=useState([])
-    const [inActiveImageForReport,setInActiveImageForReport]=useState([])
-    const [allImageForReport,setAllImageForReport]=useState([])
+  const [activeImageForReport, setActiveImageForReport] = useState([]);
+  const [inActiveImageForReport, setInActiveImageForReport] = useState([]);
+  const [allImageForReport, setAllImageForReport] = useState([]);
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [activeCFTInfosModal, setActiveCFTInfosModal] = useState(false);
   const [inActiveCFTInfosModal, setInActiveCFTInfosModal] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [deleteCFTInfoData] = useDeleteCFTInfoMutation();
+  const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [cftInfoActiveStatus, setCFTInfoActiveStaus] = useState([]);
   const [cftInfoInActiveStatus, setCFTInfoInActiveStatus] = useState([]);
-  const [isExisting, setIsExisting] = useState([]);
-  var reportTitle = "All CFT Info List";
+  const [filteredData, setFilteredData] = useState([]);
+  var reportTitle = "CFT TO KG Converter";
   var reportTitleActiveImage = "All CFT All Active Image";
   var reportTitleInActiveImage = "All CFT All InActive Image";
   var reportTitleForAllImage = "All CFT All Image";
-
-  console.log(cftInfosData);
 
   useEffect(() => {
     const cftInfoActiveStatus = cftInfosData?.filter(
@@ -53,46 +59,51 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       (item) => item.isActive == false
     );
     const cftInfoActiveStatusImage = cftInfosData?.filter(
-      (item) => item.isActive == true && item.image !=undefined
+      (item) => item.isActive == true && item.image != undefined
     );
     const cftInfoInActiveStatusWithImage = cftInfosData?.filter(
-      (item) => item.isActive == false && item.image !=undefined
+      (item) => item.isActive == false && item.image != undefined
     );
     const cftInfoAllStatusWithImage = cftInfosData?.filter(
-      (item) => item.image !=undefined
+      (item) => item.image != undefined
     );
 
     const extractedAllFields = cftInfosData?.map((item) => {
       return {
         openingDate: item.openingDate,
-        kgPerUnit: item.kgPerUnit,
+        closingDate: item.closingDate ? item.closingDate : "N/A",
+        cftPerKg: item.detailsData.map((items) => {
+          return items.cftPerKg;
+        }),
         isActive: item.isActive ? "Active" : "InActive",
       };
     });
-    const extractedActiveImageFields=cftInfoActiveStatusImage?.map((item)=>{
-      return{
-        image:item?.image,
-        makeDate:item.makeDate
+    const extractedActiveImageFields = cftInfoActiveStatusImage?.map((item) => {
+      return {
+        image: item?.image,
+        makeDate: item.makeDate,
+      };
+    });
+    const extractedInActiveImageFields = cftInfoInActiveStatusWithImage?.map(
+      (item) => {
+        return {
+          image: item?.image,
+          makeDate: item.makeDate,
+        };
       }
-    })
-    const extractedInActiveImageFields=cftInfoInActiveStatusWithImage?.map((item)=>{
-      return{
-        image:item?.image,
-        makeDate:item.makeDate
-      }
-    })
-    const extractedAllImageFields=cftInfoAllStatusWithImage?.map((item)=>{
-      return{
-        image:item?.image,
-        makeDate:item.makeDate,
-        status:item.isActive  ? "Active" : "InActive",
-      }
-    })
+    );
+    const extractedAllImageFields = cftInfoAllStatusWithImage?.map((item) => {
+      return {
+        image: item?.image,
+        makeDate: item.makeDate,
+        status: item.isActive ? "Active" : "InActive",
+      };
+    });
 
     const extractedFields = cftInfoActiveStatus?.map((item) => {
       return {
         openingDate: item.openingDate,
-        kgPerUnit: item.kgPerUnit,
+        cftPerKg: item.cftPerKg,
         isActive: item.isActive ? "Active" : "InActive",
       };
     });
@@ -100,19 +111,23 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
     const extractedInactiveFields = cftInfoInActiveStatus?.map((item) => {
       return {
         openingDate: item.openingDate,
-        kgPerUnit: item.kgPerUnit,
+        cftPerKg: item.cftPerKg,
         isActive: item.isActive ? "Active" : "InActive",
       };
     });
     setExtractedAllDataReport(extractedAllFields);
     setCFTInfoActiveStaus(cftInfoActiveStatus);
     setCFTInfoInActiveStatus(cftInfoInActiveStatus);
-    setExtractedDataForReport(extractedFields);
-    setExtractedInActiveDataForReport(extractedInactiveFields);
-    setActiveImageForReport(extractedActiveImageFields)
-    setInActiveImageForReport(extractedInActiveImageFields)
-    setAllImageForReport(extractedAllImageFields)
+    setExtractedDataForReport(cftInfoActiveStatus);
+    setExtractedInActiveDataForReport(cftInfoInActiveStatus);
+    setActiveImageForReport(extractedActiveImageFields);
+    setInActiveImageForReport(extractedInActiveImageFields);
+    setAllImageForReport(extractedAllImageFields);
   }, [cftInfosData?.unitId, cftInfosData]);
+
+  useEffect(() => {
+    setFilteredData(cftInfosData || []); // Ensure filteredDatas is not null/undefined
+  }, [cftInfosData]);
 
   const generateColumns = (data, fields) => {
     if (data?.length === 0) return [];
@@ -141,38 +156,46 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                   aria-label={`Checkbox for data item ${row.id}`}
                   checked={row.status} // Assuming status is a boolean field
                   onChange={(e) => {
-                  
                     const existing = cftInfosData?.filter(
-                      (x) => x.isActive == true
+                      (x) => x.isActive === true
                     );
                     console.log(existing.length, existing.length > 1);
-                  if(inActiveCFTInfosModal){
-                    if (existing.length > 0 || selectedData.length > 0) {
-                      swal(
-                        "Not Possible!",
-                        "There is an active CFT,Plase Close it first",
-                        "warning"
-                      );
-                      e.preventDefault();
-                      return;
+                    if (inActiveCFTInfosModal) {
+                      if (existing.length > 0 || selectedData.length > 0) {
+                        swal(
+                          "Not Possible!",
+                          "There is an active CFT, please close it first",
+                          "warning"
+                        );
+                        e.preventDefault();
+                        return;
+                      } else {
+                        handleCheckboxClick(row, setSelectedData);
+                      }
                     } else {
                       handleCheckboxClick(row, setSelectedData);
                     }
-                  }
-                  else{
-                    handleCheckboxClick(row, setSelectedData);
-                  }
-                  }} // Assuming handleCheckboxClick is defined elsewhere
+                  }}
                 />
               </a>
             </div>
           ),
         };
+      } else if (field === "cftPerKg") {
+        return {
+          name: "CFT Per Kg",
+          button: true,
+          width: "250px",
+          selector: (cftInfosData) => {
+            const totalItems = cftInfosData.detailsData;
+            return totalItems.length == 0 ? "N/A" : totalItems.length;
+          },
+        };
       } else {
         return {
           name: field.charAt(0).toUpperCase() + field.slice(1), // Capitalize the first letter
           selector: (row) => row[field],
-          sortable: true, // Optional: make columns sortable
+          sortable: true,
           center: true,
         };
       }
@@ -194,30 +217,32 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       filterable: true,
     },
     {
-      name: "Kg per CFT",
-      selector: (cftInfosData) => cftInfosData?.kgPerUnit,
+      name: "Number OF Items",
+      selector: (cftInfosData) => {
+        const totalItems = cftInfosData.detailsData;
+        return totalItems.length == 0 ? "N/A" : totalItems.length;
+      },
       sortable: true,
       center: true,
       filterable: true,
     },
-    {
-      name: "Status",
-      button: true,
-      width: "200px",
-      grow: 2,
-      cell: (cftInfosData) => (
-        <div style={{ textAlign: "center" }} onClick={()=>{
-     if(cftInfosData?.image){
-      window.open(`${process.env.REACT_APP_BASE_URL}/${cftInfosData?.image}`);
-     }
-          
-        }}>
-          {cftInfosData?.image ?'File uploaded' : 'No file upload'
-          }
-        </div>
-      ),
-    },
+    // {
+    //   name: "Status",
+    //   button: true,
+    //   width: "200px",
+    //   grow: 2,
+    //   cell: (cftInfosData) => (
+    //     <div style={{ textAlign: "center" }} onClick={()=>{
+    //  if(cftInfosData?.image){
+    //   window.open(`${process.env.REACT_APP_BASE_URL}/${cftInfosData?.image}`);
+    //  }
 
+    //     }}>
+    //       {cftInfosData?.image ?'File uploaded' : 'No file upload'
+    //       }
+    //     </div>
+    //   ),
+    // },
     {
       name: "Status",
       button: true,
@@ -424,8 +449,9 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleDownload(
-                        extractedAllDataReport,
+                      handleCFTExcel(
+                        cftInfosData,
+                        rawItemInfo,
                         companyinfo,
                         reportTitle
                       );
@@ -440,7 +466,11 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadImage(activeImageForReport,{ companyinfo }, reportTitleActiveImage);
+                        downloadImage(
+                          activeImageForReport,
+                          { companyinfo },
+                          reportTitleActiveImage
+                        );
                       }
                     }}
                   >
@@ -453,11 +483,15 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadImage(inActiveImageForReport,{ companyinfo }, reportTitleInActiveImage);
+                        downloadImage(
+                          inActiveImageForReport,
+                          { companyinfo },
+                          reportTitleInActiveImage
+                        );
                       }
                     }}
                   >
-                 Inactive Image
+                    Inactive Image
                   </a>
                 </li>
                 <li>
@@ -466,14 +500,17 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadAllImage(allImageForReport,{ companyinfo }, reportTitleForAllImage);
+                        downloadAllImage(
+                          allImageForReport,
+                          { companyinfo },
+                          reportTitleForAllImage
+                        );
                       }
                     }}
                   >
                     All Image
                   </a>
                 </li>
-              
               </ul>
             </div>
           </div>
@@ -488,8 +525,29 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch, companyinfo, reportTitle, extractedAllDataReport, activeImageForReport, reportTitleActiveImage, inActiveImageForReport, reportTitleInActiveImage, allImageForReport, reportTitleForAllImage]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    refetch,
+    companyinfo,
+    reportTitle,
+    activeImageForReport,
+    reportTitleActiveImage,
+    inActiveImageForReport,
+    reportTitleInActiveImage,
+    allImageForReport,
+    reportTitleForAllImage,
+    cftInfosData,
+    rawItemInfo,
+  ]);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return isNaN(date.getTime())
+      ? "N/A"
+      : date.toLocaleDateString("en-US", options);
+  };
   return (
     <div className="row px-5 mx-4">
       <ListHeading
@@ -500,13 +558,10 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
         setInActiveDataModal={setInActiveCFTInfosModal}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4"
-        style={{
-          overflow: "scroll",
-          height: "420px",
-        }}
+        className="col userlist-table mt-4 cftdata-main-view"
+        // style={{ height: 'calc(80vh - 120px)', overflowY: 'scroll' }}
       >
-        <div className="shadow-lg ">
+        <div className="shadow-lg">
           <DataTable
             columns={columns}
             data={filteredItems}
@@ -522,21 +577,63 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       <table id="my-table" className="d-none">
         <thead>
           <tr>
-            <th>Sl.</th>
             <th>Opening Date</th>
-            <th>KG per CFT</th>
-            <th>Status</th>
+            <th>Closing Date</th>
+            <th>Item Name</th>
+            <th>CFT Per KG</th>
           </tr>
         </thead>
         <tbody>
-          {extractedAllDataReport?.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{item.openingDate}</td>
-              <td>{item.kgPerUnit}</td>
-              <td>{item.isActive}</td>
-            </tr>
-          ))}
+          {cftInfosData?.map((items, key) => {
+            console.log(key, items);
+            const group = items?.detailsData;
+            const formattedOpeningDate = formatDate(items?.openingDate);
+            const formattedClosingDate = formatDate(items?.closingDate);
+            console.log(formattedClosingDate);
+            const rowSpan = group?.length;
+
+            return (
+              <>
+                {group?.map((row, rowIndex) => {
+                  console.log(row);
+                  const itemNames = rawItemInfo
+                    ?.filter((item) => row?.itemId === item._id)
+                    .map((filteredItem) => filteredItem.itemName)
+                    .join(", ");
+                  const quantity = row.cftPerKg;
+
+                  return (
+                    <tr key={row._id}>
+                      {rowIndex === 0 && (
+                        <>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedOpeningDate}
+                          </td>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedClosingDate}
+                          </td>
+                        </>
+                      )}
+                      <td>{itemNames}</td>
+                      <td>{quantity}</td>
+                    </tr>
+                  );
+                })}
+              </>
+            );
+          })}
         </tbody>
       </table>
       <table id="my-table2" className="d-none">
@@ -544,19 +641,61 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
           <tr>
             <th>Sl.</th>
             <th>Opening Date</th>
-            <th>KG per CFT</th>
-            <th>Status</th>
+            <th>Closing Date</th>
+            <th>Item Name</th>
+            <th>CFT Per KG</th>
           </tr>
         </thead>
         <tbody>
-          {extractedDataForReport?.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{item.openingDate}</td>
-              <td>{item.kgPerUnit}</td>
-              <td>{item.isActive}</td>
-            </tr>
-          ))}
+          {extractedDataForReport?.map((items, index) => {
+            const group = items?.detailsData;
+            const formattedOpeningDate = formatDate(items?.openingDate);
+            const formattedClosingDate = formatDate(items?.closingDate);
+            console.log(formattedClosingDate);
+            const rowSpan = group?.length;
+
+            return (
+              <>
+                {group?.map((row, rowIndex) => {
+                  console.log(row);
+                  const itemNames = rawItemInfo
+                    ?.filter((item) => row?.itemId === item._id)
+                    .map((filteredItem) => filteredItem.itemName)
+                    .join(", ");
+                  const quantity = row.cftPerKg;
+
+                  return (
+                    <tr key={row._id}>
+                      {rowIndex === 0 && (
+                        <>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedOpeningDate}
+                          </td>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedClosingDate}
+                          </td>
+                        </>
+                      )}
+                      <td>{itemNames}</td>
+                      <td>{quantity}</td>
+                    </tr>
+                  );
+                })}
+              </>
+            );
+          })}
         </tbody>
       </table>
 
@@ -565,19 +704,61 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
           <tr>
             <th>Sl.</th>
             <th>Opening Date</th>
-            <th>KG per CFT</th>
-            <th>Status</th>
+            <th>Closing Date</th>
+            <th>Item Name</th>
+            <th>CFT Per KG</th>
           </tr>
         </thead>
         <tbody>
-          {extractedInActiveDataForReport?.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{item.openingDate}</td>
-              <td>{item.kgPerUnit}</td>
-              <td>{item.isActive}</td>
-            </tr>
-          ))}
+          {extractedInActiveDataForReport?.map((items, index) => {
+            const group = items?.detailsData;
+            const formattedOpeningDate = formatDate(items?.openingDate);
+            const formattedClosingDate = formatDate(items?.closingDate);
+            console.log(formattedClosingDate);
+            const rowSpan = group?.length;
+
+            return (
+              <>
+                {group?.map((row, rowIndex) => {
+                  console.log(row);
+                  const itemNames = rawItemInfo
+                    ?.filter((item) => row?.itemId === item._id)
+                    .map((filteredItem) => filteredItem.itemName)
+                    .join(", ");
+                  const quantity = row.cftPerKg;
+
+                  return (
+                    <tr key={row._id}>
+                      {rowIndex === 0 && (
+                        <>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedOpeningDate}
+                          </td>
+                          <td
+                            rowSpan={rowSpan}
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            {formattedClosingDate}
+                          </td>
+                        </>
+                      )}
+                      <td>{itemNames}</td>
+                      <td>{quantity}</td>
+                    </tr>
+                  );
+                })}
+              </>
+            );
+          })}
         </tbody>
       </table>
       <table id="my-table-active-image" className="d-none">
@@ -593,7 +774,10 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{item.makeDate}</td>
-              <img src={`${process.env.REACT_APP_BASE_URL}/${item.image}`} alt="Image description" />
+              <img
+                src={`${process.env.REACT_APP_BASE_URL}/${item.image}`}
+                alt="Image description"
+              />
             </tr>
           ))}
         </tbody>

@@ -28,7 +28,7 @@
 }
   .custom-calendar {
     background-color: #B8FEB3;
-    width: 280px;
+    width: 260px;
   }
   .custom-calendar .react-datepicker__month-container {
     width: 100%; /* Ensure the month container takes the full width */
@@ -48,4 +48,36 @@
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
+.fixed-column {
+  max-width: 100%;
+}
+.table-responsive-custom {
+  overflow-y: auto;
+}
 
+@media (min-width: 333px) and (max-width: 577px) {
+  .table-responsive-custom {
+    height: calc(50vh - 120px); /* Smaller height for small screens */
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  .table-responsive-custom {
+    height: calc(60vh - 120px); /* Medium height for medium screens */
+    
+  }
+  .custom-calendar {
+    width: 200px;
+  }
+}
+
+@media (min-width: 769px) {
+  .table-responsive-custom {
+    height: calc(62vh - 120px); /* Default height for large screens */
+  }
+}
+@media (min-width: 993px) {
+  .table-responsive-custom {
+    height: calc(80vh - 120px); /* Default height for large screens */
+  }
+}

@@ -1,35 +1,92 @@
-.creat-menu-page{
-    height: 200px;
-    overflow-y: auto
+/* .creat-menu-page {
+  height: 200px;
+  overflow-y: auto;
 }
-@media (min-width: 576px) { .creat-menu-page{
+
+@media (min-width: 576px) {
+  .creat-menu-page {
     height: 150px;
-    overflow-y: auto
-} }
+    overflow-y: auto;
+  }
+}
 
-
-@media (min-width: 768px) { .creat-menu-page{
+@media (min-width: 768px) {
+  .creat-menu-page {
     height: 200px;
+    overflow-y: auto;
+  }
+  .table-responsive-design{
+    height: calc(62vh - 120px);
     overflow-y: auto
-}}
+  }
+ 
+}
 
 @media (min-width: 992px) {
-     .creat-menu-page{
+  .creat-menu-page {
     height: 200px;
-    overflow-y: auto
-} }
-
-@media (min-width: 1200px) { 
-    .creat-menu-page{
-        height: 500px;
-        overflow-y: auto
-    }
+    overflow-y: auto;
+  }
+  .w-lg-40 {
+    width: 40%;
+  }
+  
 }
 
+@media (min-width: 1200px) {
+  .creat-menu-page {
+    height: 500px;
+    overflow-y: auto;
+  }
+  .w-lg-40 {
+    width: 40%;
+  }
+  .table-responsive-design{
+    height: calc(73vh - 120px);
+    overflow-y: auto
+  }
+}
 
-@media (min-width: 1400px) { 
-    .creat-menu-page{
-        height: 700px;
-        overflow-y: auto
+@media (min-width: 1400px) {
+  .creat-menu-page {
+    height: 700px;
+    overflow-y: auto;
+  }
+} */
+.table-responsive-design {
+    overflow-y: auto;
+  }
+  
+  @media (min-width: 333px) and (max-width: 577px) {
+    .table-responsive-design {
+      height: calc(50vh - 120px); 
     }
- }
+  }
+  
+  @media (min-width: 577px) and (max-width: 768px) {
+    .table-responsive-design {
+      height: calc(60vh - 120px); 
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .table-responsive-design {
+      height: calc(65vh - 120px) !important; /* Default height for large screens */
+    }
+    .w-lg-40 {
+        width: 40%;
+      }
+  }
+  @media (min-width: 992px) {
+    .table-responsive-design {
+      height: calc(65vh - 120px) !important; /* Default height for large screens */
+    }
+    .w-lg-40 {
+        width: 40%;
+      }
+  }
+  @media (min-width: 1024px) {
+    .table-responsive-design {
+      height: calc(70vh - 120px) !important; 
+    }
+  }

@@ -8,7 +8,6 @@ import {
   useGetSerialNoQuery,
 } from "../../../../redux/api/apiSlice";
 import {
-  useGetAllPurchaseOrderInformationQuery,
   useGetSinglePurchaseOrderInformationQuery,
   useInsertPurchaseOrderInformationMutation,
   useUpdatePurchaseOrderInformationMutation,
@@ -33,6 +32,7 @@ import InsertPurchaseOrder from "../Insert/InsertPurchaseOrder";
 import PurchaseOrderSingleInfo from "./PurchaseOrderSingleInfo";
 import "../Insert/InsertPurchaseOrder.css";
 import UpdatePurchaseOrderInfo from "../Update/UpdatePurchaseOrderInfo";
+import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
@@ -59,6 +59,7 @@ const CommonPurchaseOrderInfo = () => {
   const [totalGrandTotalAmount, setTotalGrandTotalAmount] = useState(0);
   const [serialValue, setSerialValue] = useState([]);
   const { data: serialNo } = useGetSerialNoQuery(undefined);
+
   const [createSerialNo] = useCreateSerialNoMutation();
   const [insertPurchaseOrderInfo] = useInsertPurchaseOrderInformationMutation();
   const [updatePurchaseOrderInfo] = useUpdatePurchaseOrderInformationMutation();
@@ -100,20 +101,14 @@ const CommonPurchaseOrderInfo = () => {
 
   const currencyOptions = [
     {
-      value: "euro",
-      label: "EURO",
+      value: "BDT",
+      label: "BDT",
     },
     {
-      value: "taka",
-      label: "TAKA",
-    },
-    {
-      value: "dollar",
-      label: "DOLLAR",
+      value: "USD",
+      label: "USD",
     },
   ];
-
-  console.log(purchaseOderInfo);
 
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
@@ -135,6 +130,7 @@ const CommonPurchaseOrderInfo = () => {
       setPurchaseOrderAllInformation(purchaseOderInfo);
     }
   }, [id, serialNo, purchaseOderInfo]);
+
   if (isPurchaseLoading) {
     return <p>loading</p>;
   }
@@ -148,7 +144,6 @@ const CommonPurchaseOrderInfo = () => {
         !field.totalAmount
     );
   };
-  console.log(areFieldsEmpty());
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
@@ -192,305 +187,309 @@ const CommonPurchaseOrderInfo = () => {
     <div
       className=" row px-4 mx-4"
       style={{
-        overflowY: "scroll",
-        height: "500px",
+        overflow: "hidden",
+        height: "calc(98vh - 120px)",
+        zIndex: "9999",
       }}
     >
-      <div class="overflow-hidden">
-        <div className=" mt-2 mt-sm-4 mt-md-4 mt-lg-4 px-4 rounded-4">
-          <div className="mt-3">
-            <Formik
-              initialValues={initialValues}
-              validationSchema={Yup.object({
-                detailsData: Yup.array().of(
-                  Yup.object().shape({
-                    itemId: Yup.string().required("Required"),
-                    itemDescription: Yup.string().required("Required"),
-                    quantity: Yup.string().required("Required"),
-                    unitPrice: Yup.string().required("Required"),
-                    totalAmount: Yup.string().required("Required"),
-                  })
-                ),
-              })}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
-                resetForm({ values: initialValues });
-                setSubmitting(false);
-              }}
-            >
-              {({
-                values,
-                resetForm,
-                setFieldValue,
-                isSubmitting,
-                errors,
-                touched,
-                isValid,
-                dirty,
-              }) => (
-                <Form
-                  id="pocreation-form"
-                  onSubmit={(e) => {
-                    handleSubmit(e, values, resetForm);
-                  }}
-                >
-                  <FieldArray
-                    name="detailsData"
-                    render={(arrayHelpers) => {
-                      ArrayHelperRef.current = arrayHelpers;
-                      const details = values.detailsData;
-                      return (
-                        <div className=" flex-1 items-center d-flex-nowrap mt-3 shadow-lg py-2 px-5">
-                          <div>
+      <div class="">
+        <div className="px-4 rounded-4">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={Yup.object({
+              detailsData: Yup.array().of(
+                Yup.object().shape({
+                  itemId: Yup.string().required("Required"),
+                  itemDescription: Yup.string().required("Required"),
+                  quantity: Yup.string().required("Required"),
+                  unitPrice: Yup.string().required("Required"),
+                  totalAmount: Yup.string().required("Required"),
+                })
+              ),
+            })}
+            onSubmit={(values, { setSubmitting, resetForm }) => {
+              resetForm({ values: initialValues });
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              resetForm,
+              setFieldValue,
+              isSubmitting,
+              errors,
+              touched,
+              isValid,
+              dirty,
+            }) => (
+              <Form
+                id="pocreation-form"
+                onSubmit={(e) => {
+                  handleSubmit(e, values, resetForm);
+                }}
+              >
+                <FieldArray
+                  name="detailsData"
+                  render={(arrayHelpers) => {
+                    ArrayHelperRef.current = arrayHelpers;
+                    const details = values.detailsData;
+                    return (
+                      <div
+                        className=" shadow-lg py-2 px-5"
+                        // style={{
+                        //   overflowY: "hidden",
+                        //   height: "calc(95vh - 120px)",
+                        //   zIndex: "9999",
+                        // }}
+                      >
+                        <div class="container-fluid">
+                          <div class="row justify-content-center">
+                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
                             <div className="d-flex justify-content-between align-items-center">
-                              <h2
-                                style={{ fontSize: "24px", fontWeight: "bold" }}
-                              >
-                                Purchase Order Form
-                              </h2>
-                              <div>
-                                <button
-                                  style={{
-                                    backgroundColor: "#E55566",
-                                    outline: "none",
-                                    border: "none",
-                                    color: "white",
-                                    height: "25px",
-                                  }}
-                                  onClick={() => {
-                                    navigate("/main-view/po-list");
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faArrowAltCircleLeft}
-                                  ></FontAwesomeIcon>
-                                  Back to ItemList
-                                </button>
-                              </div>
-                            </div>
-
-                            <PurchaseOrderSingleInfo
-                              id={id}
-                              supplierOptions={supplierOptions}
-                              values={values}
-                              setFieldValue={setFieldValue}
-                              serialValue={serialValue}
-                              touched={touched}
-                              errors={errors}
-                              setActiveSupplierModal={setActiveSupplierModal}
-                              setAcivePaymentModal={setAcivePaymentModal}
-                              setActiveItemInfoModal={setActiveItemInfoModal}
-                              setAciveBankInfoModal={setAciveBankInfoModal}
-                              paymentTypeOptions={paymentTypeOptions}
-                              bankInfoOptions={bankInfoOptions}
-                              startDate={startDate}
-                              setStartDate={setStartDate}
-                              currencyOptions={currencyOptions}
-                              purchaseOrderAllInformation={
-                                purchaseOrderAllInformation
-                              }
-                              setPurchaseOrderAllInformation={
-                                setPurchaseOrderAllInformation
-                              }
-                              makebyUser={makebyUser}
-                            ></PurchaseOrderSingleInfo>
-                          </div>
+                          <h2 style={{ fontSize: "24px", fontWeight: "bold" }}>
+                            Purchase Order Form
+                          </h2>
                           <div>
-                            <h2
-                              style={{ fontSize: "20px", fontWeight: "bold" }}
+                            <button
+                              style={{
+                                backgroundColor: "#E55566",
+                                outline: "none",
+                                border: "none",
+                                color: "white",
+                                height: "25px",
+                              }}
+                              onClick={() => {
+                                navigate("/main-view/po-list");
+                              }}
                             >
-                              Details Information
-                            </h2>
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                              <div className="d-flex justify-content-between">
-                                <button
-                                  type="submit"
-                                  form="pocreation-form"
-                                  className="border-0 "
-                                  style={{
-                                    backgroundColor: id
-                                      ? areFieldsEmpty()
-                                        ? "gray"
-                                        : "#2DDC1B"
-                                      : isValid && dirty
-                                      ? "#2DDC1B"
-                                      : "gray",
-                                    color: "white",
-                                    padding: "5px 10px",
-                                    fontSize: "14px",
-                                    borderRadius: "5px",
-                                    width: "100px",
-                                  }}
-                                  disabled={
-                                    id
-                                      ? areFieldsEmpty()
-                                        ? true
-                                        : false
-                                      : !(isValid && dirty)
-                                  }
-                                >
-                                  {id ? "Update" : "Save"}
-                                </button>
-                                <div
-                                  className="border-0 "
-                                  style={{
-                                    // backgroundColor: "#00B987",
-                                    backgroundColor: "#B8FEB3",
-                                    color: "#000",
-                                    padding: "5px 10px",
-                                    fontSize: "14px",
-                                    borderRadius: "5px",
-                                    marginLeft: "5px",
-                                    width: "100px",
-                                  }}
-                                  onClick={() => {
-                                    if (id) {
-                                      setPurchaseOrderAllInformation((prev) => {
-                                        const temp__details = [
-                                          ...prev.detailsData,
-                                        ];
-                                        temp__details.push({
-                                          itemId: "",
-                                          itemDescription: "",
-                                          quantity: "",
-                                          unitPrice: "",
-                                          totalAmount: "",
-                                        });
-                                        return {
-                                          ...prev,
-                                          detailsData: [...temp__details],
-                                        };
-                                      });
-                                    } else {
-                                      ArrayHelperRef.current.push({
+                              <FontAwesomeIcon
+                                icon={faArrowAltCircleLeft}
+                              ></FontAwesomeIcon>
+                              Back to ItemList
+                            </button>
+                          </div>
+                        </div>
+
+                        <PurchaseOrderSingleInfo
+                          id={id}
+                          supplierOptions={supplierOptions}
+                          values={values}
+                          setFieldValue={setFieldValue}
+                          serialValue={serialValue}
+                          touched={touched}
+                          errors={errors}
+                          setActiveSupplierModal={setActiveSupplierModal}
+                          setAcivePaymentModal={setAcivePaymentModal}
+                          setActiveItemInfoModal={setActiveItemInfoModal}
+                          setAciveBankInfoModal={setAciveBankInfoModal}
+                          paymentTypeOptions={paymentTypeOptions}
+                          bankInfoOptions={bankInfoOptions}
+                          startDate={startDate}
+                          setStartDate={setStartDate}
+                          currencyOptions={currencyOptions}
+                          purchaseOrderAllInformation={
+                            purchaseOrderAllInformation
+                          }
+                          setPurchaseOrderAllInformation={
+                            setPurchaseOrderAllInformation
+                          }
+                          makebyUser={makebyUser}
+                        ></PurchaseOrderSingleInfo>
+
+                        <div>
+                          <h2 style={{ fontSize: "20px", fontWeight: "bold" }}>
+                            Details Information
+                          </h2>
+                          <div className="d-flex justify-content-between align-items-center mb-4">
+                            <div className="d-flex justify-content-between">
+                              <button
+                                type="submit"
+                                form="pocreation-form"
+                                className="border-0 "
+                                style={{
+                                  backgroundColor: id
+                                    ? areFieldsEmpty()
+                                      ? "gray"
+                                      : "#2DDC1B"
+                                    : isValid && dirty
+                                    ? "#2DDC1B"
+                                    : "gray",
+                                  color: "white",
+                                  padding: "5px 10px",
+                                  fontSize: "14px",
+                                  borderRadius: "5px",
+                                  width: "100px",
+                                }}
+                                disabled={
+                                  id
+                                    ? areFieldsEmpty()
+                                      ? true
+                                      : false
+                                    : !(isValid && dirty)
+                                }
+                              >
+                                {id ? "Update" : "Save"}
+                              </button>
+                              <div
+                                className="border-0 "
+                                style={{
+                                  // backgroundColor: "#00B987",
+                                  backgroundColor: "#B8FEB3",
+                                  color: "#000",
+                                  padding: "5px 10px",
+                                  fontSize: "14px",
+                                  borderRadius: "5px",
+                                  marginLeft: "5px",
+                                  width: "100px",
+                                }}
+                                onClick={() => {
+                                  if (id) {
+                                    setPurchaseOrderAllInformation((prev) => {
+                                      const temp__details = [
+                                        ...prev.detailsData,
+                                      ];
+                                      temp__details.push({
                                         itemId: "",
                                         itemDescription: "",
                                         quantity: "",
                                         unitPrice: "",
                                         totalAmount: "",
                                       });
-                                    }
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPlus}
-                                  ></FontAwesomeIcon>
-                                  Add Row
-                                </div>
+                                      return {
+                                        ...prev,
+                                        detailsData: [...temp__details],
+                                      };
+                                    });
+                                  } else {
+                                    ArrayHelperRef.current.push({
+                                      itemId: "",
+                                      itemDescription: "",
+                                      quantity: "",
+                                      unitPrice: "",
+                                      totalAmount: "",
+                                    });
+                                  }
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                ></FontAwesomeIcon>
+                                Add Row
                               </div>
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                  <label
-                                    htmlFor="grandTotalQuantity"
-                                    style={{ fontSize: "16px" }}
-                                  >
-                                    Grand Total Quantity
-                                  </label>
-                                  <Field
-                                    type="text"
-                                    name={`grandTotalQuantity`}
-                                    placeholder="Grand Total Quantity"
-                                    disabled
-                                    value={
-                                      id
-                                        ? purchaseOrderAllInformation?.grandTotalQuantity
-                                        : totalGrandQuantity
-                                    }
-                                    style={{
-                                      border: "1px solid #2DDC1B",
-                                      padding: "5px",
-                                      width: "50%",
-                                      borderRadius: "5px",
-                                      textAlign: "center",
-                                      marginLeft: "10px",
-                                      height: "38px",
-                                    }}
-                                  />
-                                </div>
-                                <div>
-                                  <label
-                                    htmlFor="grandTotalAmount"
-                                    style={{ fontSize: "16px" }}
-                                  >
-                                    Grand Total Amount
-                                  </label>
-                                  <Field
-                                    type="text"
-                                    name={`grandTotalAmount`}
-                                    placeholder="Grand Total Amount"
-                                    disabled
-                                    value={
-                                      id
-                                        ? purchaseOrderAllInformation?.grandTotalAmount
-                                        : totalGrandTotalAmount
-                                    }
-                                    style={{
-                                      border: "1px solid #2DDC1B",
-                                      padding: "5px",
-                                      width: "50%",
-                                      borderRadius: "5px",
-                                      marginLeft: "10px",
-                                      textAlign: "center",
-                                      height: "38px",
-                                    }}
-                                  />
-                                </div>
+                            </div>
+                            <div className="d-lg-flex justify-content-between align-items-center">
+                              <div>
+                                <label
+                                  htmlFor="grandTotalQuantity"
+                                  style={{ fontSize: "16px" }}
+                                >
+                                  Grand Total Quantity
+                                </label>
+                                <Field
+                                  type="text"
+                                  name={`grandTotalQuantity`}
+                                  placeholder="Grand Total Quantity"
+                                  disabled
+                                  value={
+                                    id
+                                      ? purchaseOrderAllInformation?.grandTotalQuantity
+                                      : totalGrandQuantity
+                                  }
+                                  style={{
+                                    border: "1px solid #2DDC1B",
+                                    padding: "5px",
+                                    width: "50%",
+                                    borderRadius: "5px",
+                                    textAlign: "center",
+                                    marginLeft: "10px",
+                                    height: "38px",
+                                  }}
+                                />
+                              </div>
+                              <div className="mt-md-2">
+                                <label
+                                  htmlFor="grandTotalAmount"
+                                  style={{ fontSize: "16px" }}
+                                >
+                                  Grand Total Amount
+                                </label>
+                                <Field
+                                  type="text"
+                                  name={`grandTotalAmount`}
+                                  placeholder="Grand Total Amount"
+                                  disabled
+                                  value={
+                                    id
+                                      ? purchaseOrderAllInformation?.grandTotalAmount
+                                      : totalGrandTotalAmount
+                                  }
+                                  style={{
+                                    border: "1px solid #2DDC1B",
+                                    padding: "5px",
+                                    width: "50%",
+                                    borderRadius: "5px",
+                                    marginLeft: "10px",
+                                    textAlign: "center",
+                                    height: "38px",
+                                  }}
+                                />
                               </div>
                             </div>
                           </div>
-
-                          {id ? (
-                            <UpdatePurchaseOrderInfo
-                              arrayHelpers={arrayHelpers}
-                              purchaseOrderAllInformation={
-                                purchaseOrderAllInformation
-                              }
-                              setPurchaseOrderAllInformation={
-                                setPurchaseOrderAllInformation
-                              }
-                              setTotalGrandQuantity={setTotalGrandQuantity}
-                              setTotalGrandTotalAmount={
-                                setTotalGrandTotalAmount
-                              }
-                              rawMaterialItemOptions={rawMaterialItemOptions}
-                              setFieldValue={setFieldValue}
-                              setActiveItemInfoModal={setActiveItemInfoModal}
-                              setAcivePaymentModal={setAcivePaymentModal}
-                              setActiveSupplierModal={setActiveSupplierModal}
-                              setAciveBankInfoModal={setAciveBankInfoModal}
-                              touched={touched}
-                              errors={errors}
-                              totalGrandQuantity={totalGrandQuantity}
-                              totalGrandTotalAmount={totalGrandTotalAmount}
-                              makebyUser={makebyUser}
-                            ></UpdatePurchaseOrderInfo>
-                          ) : (
-                            <InsertPurchaseOrder
-                              details={details}
-                              setTotalGrandQuantity={setTotalGrandQuantity}
-                              setTotalGrandTotalAmount={
-                                setTotalGrandTotalAmount
-                              }
-                              rawMaterialItemOptions={rawMaterialItemOptions}
-                              setFieldValue={setFieldValue}
-                              setActiveItemInfoModal={setActiveItemInfoModal}
-                              setAcivePaymentModal={setAcivePaymentModal}
-                              setActiveSupplierModal={setActiveSupplierModal}
-                              setAciveBankInfoModal={setAciveBankInfoModal}
-                              touched={touched}
-                              errors={errors}
-                              totalGrandQuantity={totalGrandQuantity}
-                              totalGrandTotalAmount={totalGrandTotalAmount}
-                              arrayHelpers={arrayHelpers}
-                            ></InsertPurchaseOrder>
-                          )}
                         </div>
-                      );
-                    }}
-                  />
-                </Form>
-              )}
-            </Formik>
-          </div>
+
+                        {id ? (
+                          <UpdatePurchaseOrderInfo
+                            arrayHelpers={arrayHelpers}
+                            purchaseOrderAllInformation={
+                              purchaseOrderAllInformation
+                            }
+                            setPurchaseOrderAllInformation={
+                              setPurchaseOrderAllInformation
+                            }
+                            setTotalGrandQuantity={setTotalGrandQuantity}
+                            setTotalGrandTotalAmount={setTotalGrandTotalAmount}
+                            rawMaterialItemOptions={rawMaterialItemOptions}
+                            setFieldValue={setFieldValue}
+                            setActiveItemInfoModal={setActiveItemInfoModal}
+                            setAcivePaymentModal={setAcivePaymentModal}
+                            setActiveSupplierModal={setActiveSupplierModal}
+                            setAciveBankInfoModal={setAciveBankInfoModal}
+                            touched={touched}
+                            errors={errors}
+                            totalGrandQuantity={totalGrandQuantity}
+                            totalGrandTotalAmount={totalGrandTotalAmount}
+                            makebyUser={makebyUser}
+                          ></UpdatePurchaseOrderInfo>
+                        ) : (
+                          <InsertPurchaseOrder
+                            details={details}
+                            setTotalGrandQuantity={setTotalGrandQuantity}
+                            setTotalGrandTotalAmount={setTotalGrandTotalAmount}
+                            rawMaterialItemOptions={rawMaterialItemOptions}
+                            setFieldValue={setFieldValue}
+                            setActiveItemInfoModal={setActiveItemInfoModal}
+                            setAcivePaymentModal={setAcivePaymentModal}
+                            setActiveSupplierModal={setActiveSupplierModal}
+                            setAciveBankInfoModal={setAciveBankInfoModal}
+                            touched={touched}
+                            errors={errors}
+                            totalGrandQuantity={totalGrandQuantity}
+                            totalGrandTotalAmount={totalGrandTotalAmount}
+                            arrayHelpers={arrayHelpers}
+                          ></InsertPurchaseOrder>
+                        )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    );
+                  }}
+                />
+              </Form>
+            )}
+          </Formik>
         </div>
         <SupplierInsertModal
           activeSupplierModal={activeSupplierModal}

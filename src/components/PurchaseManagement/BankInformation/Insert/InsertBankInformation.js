@@ -5,6 +5,7 @@ import React, { useRef } from "react";
 import * as Yup from "yup";
 import { useInsertBankInformationMutation } from "../../../../redux/features/bankinformation/bankInfoAPi";
 import swal from "sweetalert";
+import './InsertBankInformation.css'
 
 const InsertBankInformation = () => {
   const ArrayHelperRef = useRef();
@@ -53,10 +54,10 @@ const InsertBankInformation = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      style={{
-        overflowY: "scroll",
-        height: "500px",
-      }}
+      // style={{
+      //   overflowY: "scroll",
+      //   height: "500px",
+      // }}
     >
       <div class="overflow-hidden">
         <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
@@ -98,7 +99,7 @@ const InsertBankInformation = () => {
                     handleSubmit(e, values, resetForm);
                   }}
                 >
-                  <div className="d-flex align-items-center mb-4">
+                  <div className="d-lg-flex align-items-center mb-4">
                     <button
                       type="submit"
                       form="bankinfocreation-form"
@@ -116,14 +117,14 @@ const InsertBankInformation = () => {
                       {isLoading ? "Loading" : "Save"}
                     </button>
                     <div
-                      className="border-0 "
+                      className="border-0 mt-sm-2 mt-md-2 ms-lg-2 mt-lg-0"
                       style={{
                         backgroundColor: "#2DDC1B",
                         color: "#fff",
                         padding: "5px 10px",
                         fontSize: "14px",
                         borderRadius: "5px",
-                        marginLeft: "5px",
+                        width:'100px'
                       }}
                       onClick={() => {
                         ArrayHelperRef.current.push({
@@ -155,11 +156,12 @@ const InsertBankInformation = () => {
                       console.log(values);
                       return (
                         <div
-                          className=" flex-1 items-center d-flex-nowrap"
-                          style={{ height: "400px", overflowY: "auto" }}
+                          className=" flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom"
+                          // style={{ height: "400px", overflowY: "auto" }}
+
                         >
                           <div className="table-responsive">
-                            <table className="table w-full table-bordered">
+                            <table className="table table-bordered">
                               <thead className="w-100">
                                 <tr>
                                   <th
@@ -230,7 +232,6 @@ const InsertBankInformation = () => {
                                           <td className="bg-white text-center align-middle">
                                             {index + 1}
                                           </td>
-
                                           <td className="text-center align-middle">
                                             <Field
                                               type="text"

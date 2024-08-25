@@ -1,18 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Navbar from "../Navbar/Navbar";
 import "../../components/NestedDropdown.css";
-import { useGetNavbarQuery } from "../../redux/features/user/navbar/navbarApi";
-import DynamicNestedDropdown from "../../components/DynamicNestedDropdown";
 import { useGetAllUserQuery, useUpdateMultipleUserFieldMutation } from "../../redux/features/user/userApi";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Menubar } from "primereact/menubar";
 import "./Home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
-import ChangePasswordModal from "../Login/ChangePasswordModal";
-import Footer from "../Footer/Footer";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
@@ -90,7 +85,7 @@ console.log(menus)
           item?.username === menuListData[0]?.username &&
           item.password === menuListData[0]?.password
       );
-  console.log(userData[0]?.roleId ,userData[0]?.roleId =="65d48768a106fcb4f5c28071")
+ 
       if (userData[0]?.roleId === "65d48768a106fcb4f5c28071") {
         const updateProperties = (item) => {
           // Create a new object with the existing properties and set them to true

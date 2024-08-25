@@ -2,42 +2,42 @@ import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
+import '../Insert/InsertPurchaseOrder.css'
 
 const UpdatePurchaseOrderInfo = ({
-  arrayHelpers,
   purchaseOrderAllInformation,
   setPurchaseOrderAllInformation,
   setTotalGrandQuantity,
   setTotalGrandTotalAmount,
   rawMaterialItemOptions,
-  setFieldValue,
   setActiveItemInfoModal,
   setAcivePaymentModal,
   setActiveSupplierModal,
   setAciveBankInfoModal,
   touched,
   errors,
-  totalGrandQuantity,
-  totalGrandTotalAmount,
   makebyUser,
 }) => {
-  console.log(purchaseOrderAllInformation);
-  console.log('totalGrandQuantity',totalGrandQuantity,"totalGrandTotalAmount",totalGrandTotalAmount)
-  const handleKeyUp=(e,index,detail)=>{
+  const handleKeyUp = (e, index, detail) => {
     const inputValue = e.target.value;
-                            const parsedValue = parseInt(inputValue, 10); 
-    const calculateTotalAmount =
-      e.target.value * detail.unitPrice;
+    const parsedValue = parseInt(inputValue, 10);
+    const calculateTotalAmount = parseFloat(e.target.value * detail.unitPrice);
     setPurchaseOrderAllInformation((prev) => {
       const temp_details = [...prev.detailsData];
       const newDetail = { ...temp_details[index] };
-      newDetail["quantity"] = parsedValue;
-      console.log(newDetail["quantity"]);
-      newDetail["totalAmount"] = calculateTotalAmount;
+      newDetail["quantity"] = parsedValue
+  
+      newDetail["totalAmount"] = calculateTotalAmount.toFixed(2);
       temp_details[index] = newDetail;
 
-      const totalGrandQuantitys = temp_details.reduce((total, item) => total + parseFloat(item.quantity), 0);
-      const totalGrandTotalAmounts = temp_details.reduce((total, item) => total + item.totalAmount, 0);
+      const totalGrandQuantitys = temp_details.reduce(
+        (total, item) => total + parseFloat(item.quantity),
+        0
+      );
+      const totalGrandTotalAmounts = temp_details.reduce(
+        (total, item) => total + parseFloat(item.totalAmount),
+        0
+      );
 
       return {
         ...prev,
@@ -45,12 +45,13 @@ const UpdatePurchaseOrderInfo = ({
         updateBy: makebyUser,
         updateDate: new Date(),
         grandTotalQuantity: totalGrandQuantitys,
-        grandTotalAmount: totalGrandTotalAmounts,
+        grandTotalAmount: parseFloat(totalGrandTotalAmounts.toFixed(2)),
       };
-    })
-  }
+    });
+  };
   return (
-    <div style={{ height: "300px", overflowY: "auto" }}>
+    <div className="insertpo-responsive-custom" 
+    >
       <table className="table w-full table-bordered">
         <thead className="w-100">
           <tr>
@@ -110,10 +111,10 @@ const UpdatePurchaseOrderInfo = ({
                     Math.round(calGrandTotalQuantity * 100) / 100;
                   calTotalAmount += +singleTotalAmount;
                   getCalTotalAmount = Math.round(calTotalAmount * 100) / 100;
+                  console.log( getCalTotalAmount)
                   setTotalGrandQuantity(getCalGrandTotalQuantity);
                   setTotalGrandTotalAmount(getCalTotalAmount);
                 }
-            
 
                 return (
                   <tr key={index}>
@@ -194,7 +195,6 @@ const UpdatePurchaseOrderInfo = ({
                         </div>
                       </div>
                       <br />
-                    
                     </td>
 
                     <td className="text-center  align-items-center">
@@ -250,19 +250,18 @@ const UpdatePurchaseOrderInfo = ({
                           marginBottom: "5px",
                           textAlign: "center",
                         }}
-                        onChange={(e)=>handleKeyUp(e,index,detail)}
-                       
+                        onChange={(e) => handleKeyUp(e, index, detail)}
                       />
                       <br />
-                     
                     </td>
 
                     <td className="text-center  align-items-center">
                       <Field
-                        type="text"
+                        type="number"
                         name={`detailsData.${index}.unitPrice`}
                         placeholder="Unit Price"
-                        value={!detail?.unitPrice ? 0 :detail?.unitPrice }
+                        step="0.01"
+                        value={!detail?.unitPrice ? 0 : detail?.unitPrice}
                         style={{
                           border: "1px solid #2DDC1B",
                           padding: "5px",
@@ -273,30 +272,36 @@ const UpdatePurchaseOrderInfo = ({
                           textAlign: "center",
                         }}
                         onChange={(e) => {
-                            const inputValue = e.target.value;
-                            const parsedValue = parseInt(inputValue, 10); 
-                          const calculateTotalAmount =
-                            e.target.value * detail.quantity;
-                            setPurchaseOrderAllInformation((prev) => {
-                                const temp_details = [...prev.detailsData];
-                                const newDetail = { ...temp_details[index] };
-                                newDetail["unitPrice"] = parsedValue;
-                                newDetail["totalAmount"] = calculateTotalAmount;
-                                temp_details[index] = newDetail;
-                                const totalGrandTotalAmounts = temp_details.reduce((total, item) => total + item.totalAmount, 0);
-                                return {
-                                  ...prev,
-                                  detailsData: [...temp_details],
-                                  updateBy: makebyUser,
-                                  updateDate: new Date(),
-                                  grandTotalAmount: totalGrandTotalAmounts,
-                                };
-                              });
-                       
+                          const inputValue = e.target.value;
+                          const parsedValue = parseFloat(inputValue);
+                          const calculateTotalAmount = parseFloat(
+                            (parsedValue * detail.quantity).toFixed(2)
+                          );
+                        
+                          setPurchaseOrderAllInformation((prev) => {
+                            const temp_details = [...prev.detailsData];
+                            const newDetail = { ...temp_details[index] };
+                            newDetail["unitPrice"] = parsedValue;
+                            newDetail["totalAmount"] = calculateTotalAmount;
+                        
+                            temp_details[index] = newDetail;
+                        
+                            const totalGrandTotalAmounts = temp_details.reduce(
+                              (total, item) => total + parseFloat(item.totalAmount),
+                              0
+                            );
+                        
+                            return {
+                              ...prev,
+                              detailsData: temp_details,
+                              updateBy: makebyUser,
+                              updateDate: new Date(),
+                              grandTotalAmount: parseFloat(totalGrandTotalAmounts.toFixed(2))
+                            };
+                          });
                         }}
                       />
                       <br />
-                    
                     </td>
                     <td className="text-center  align-items-center">
                       <Field
@@ -320,22 +325,29 @@ const UpdatePurchaseOrderInfo = ({
                         type="button"
                         className=" border-0 rounded  bg-transparent"
                         onClick={() => {
-                            setPurchaseOrderAllInformation((prev) => {
-                                const temp__details = [...prev.detailsData];
-                                if (temp__details.length > 1)
-                                  temp__details.splice(index, 1);
-                                const totalGrandQuantitys = temp__details.reduce((total, item) => total + parseFloat(item.quantity), 0);
-                                const totalGrandTotalAmounts = temp__details.reduce((total, item) => total + item.totalAmount, 0);
-                                return {
-                                  ...prev,
-                                  detailsData: [...temp__details],
-                                  updateBy: makebyUser,
-                                  updateDate: new Date(),
-                                  grandTotalQuantity: totalGrandQuantitys,
-                                  grandTotalAmount: totalGrandTotalAmounts,
-                                };
-                              })}
-                            }
+                          setPurchaseOrderAllInformation((prev) => {
+                            const temp__details = [...prev.detailsData];
+                            if (temp__details.length > 1)
+                              temp__details.splice(index, 1);
+                            const totalGrandQuantitys = temp__details.reduce(
+                              (total, item) =>
+                                total + parseFloat(item.quantity),
+                              0
+                            );
+                            const totalGrandTotalAmounts = temp__details.reduce(
+                              (total, item) => total + item.totalAmount,
+                              0
+                            );
+                            return {
+                              ...prev,
+                              detailsData: [...temp__details],
+                              updateBy: makebyUser,
+                              updateDate: new Date(),
+                              grandTotalQuantity: totalGrandQuantitys,
+                              grandTotalAmount: totalGrandTotalAmounts,
+                            };
+                          });
+                        }}
                       >
                         <FontAwesomeIcon
                           icon={faXmarkCircle}

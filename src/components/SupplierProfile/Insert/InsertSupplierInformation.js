@@ -99,14 +99,14 @@ const InsertSupplierInformation = () => {
 
   return (
     <div
-      className=" row px-4 mx-4"
-      style={{
-        overflowY: "scroll",
-        height: "500px",
-      }}
+      className=" row px-lg-4 mx-lg-4"
+      // style={{
+      //   overflowY: "scroll",
+      //   height: "calc(80vh - 120px)",
+      // }}
     >
-      <div class="overflow-hidden">
-        <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
+      <div class="">
+        <div className="">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
               <FontAwesomeIcon
@@ -152,7 +152,7 @@ const InsertSupplierInformation = () => {
             </div>
           </div>
           <div>
-            <div className="text-right"></div>
+            <div></div>
           </div>
 
           <div className="mt-3">
@@ -206,7 +206,7 @@ const InsertSupplierInformation = () => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
                       return (
-                        <div className="row shadow-lg pt-5 pb-3 w-75 d-flex justify-content-center mx-auto">
+                        <div className="row shadow-lg pt-lg-5 pb-3 w-lg-75 d-flex justify-content-center mx-auto rounded-4">
                           <div className="col-md-12">
                             {details && details.length > 0
                               ? details.map((detail, index) => {
@@ -214,7 +214,7 @@ const InsertSupplierInformation = () => {
                                   return (
                                     <div key={index}>
                                       <div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-12 col-lg-6 col-xl-6">
                                           <div className="mb-2">
                                             <label htmlFor="supplierName">
                                               Supplier Name
@@ -487,7 +487,7 @@ const InsertSupplierInformation = () => {
                                           </div>
                                         </div>
 
-                                        <div className="col-md-6">
+                                        <div className="col-md-12 col-lg-6 col-xl-6">
                                           <div className="mb-2">
                                             <label htmlFor="conatctPerson">
                                               Bin Number
@@ -722,7 +722,7 @@ const InsertSupplierInformation = () => {
                                               padding: "5px 10px",
                                               fontSize: "14px",
                                               borderRadius: "5px",
-                                              width: "20%",
+                                              width: "25%",
                                             }}
                                             disabled={
                                               id ? false : !(isValid && dirty)

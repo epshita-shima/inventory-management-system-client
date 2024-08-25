@@ -1,0 +1,33 @@
+.insertbankinfo-responsive-custom {
+    overflow-y: auto;
+  }
+  
+  @media (min-width: 333px) and (max-width: 577px) {
+    .insertbankinfo-responsive-custom {
+      height: calc(30vh - 120px); /* Smaller height for small screens */
+    }
+  }
+  
+  @media (min-width: 577px) and (max-width: 768px) {
+    .insertbankinfo-responsive-custom {
+      height: calc(40vh - 120px)!important; /* Medium height for medium screens */
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1023px) {
+    .insertbankinfo-responsive-custom {
+      height: calc(50vh - 120px) !important; /* Default height for large screens */
+    }
+  }
+  
+  @media (min-width: 1024px) and (max-width: 1366px){
+    .insertbankinfo-responsive-custom {
+      height: calc(70vh - 120px) !important; 
+    }
+  }
+  
+  @media (min-width: 1367px) {
+    .insertbankinfo-responsive-custom {
+      height: calc(60vh - 120px) !important; /* Default height for large screens */
+    }
+  }

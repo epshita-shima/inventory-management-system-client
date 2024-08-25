@@ -23,7 +23,7 @@ import handleDownload from "../../../../ReportProperties/HandelExcelDownload";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
-
+import "./RMItemInfoList.css"
 const RMItemInfoList = ({ permission }) => {
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
@@ -447,11 +447,11 @@ const RMItemInfoList = ({ permission }) => {
         setInActiveDataModal={setInActiveRawMeterialItemModal}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4"
-        style={{
-          overflow: "scroll",
-          height: "420px",
-        }}
+        className="col userlist-table mt-4 rawdata-main-view "
+        // style={{
+        //   overflow: "scroll",
+        //   height: "420px",
+        // }}
       >
         <div className="shadow-lg ">
           <DataTable

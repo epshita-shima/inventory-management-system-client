@@ -6,21 +6,19 @@ const Footer = () => {
     backgroundColor: "rgba(21, 253, 4, 0.3)",
     position: "absolute",
     bottom: "0",
-    left: "0", // Added to ensure full width
-    width: "100%", // Added to ensure full width
+    // left: "0", // Added to ensure full width
+    width: "100%",
     color: "#23302C",
     fontWeight: "bold",
     letterSpacing: "0.5px",
     height: "50px",
+    // zIndex:'-1'
   };
 
   return (
-    <footer className="footer text-center py-4" style={footerStyle}>
-      <div className="container-fluid">
-        {" "}
-        {/* Use container-fluid to ensure full width */}
-        <div className="row">
-          <div className="col">
+    <footer className="footer text-center mt-auto py-4" style={footerStyle}>
+      <div className="container">
+          <div >
             Copyright&copy; 2024{" "}
             <span style={{ 
               textTransform: "capitalize",
@@ -30,7 +28,7 @@ const Footer = () => {
               Maliha Eco bricks
             </span>
           </div>
-        </div>
+       
       </div>
     </footer>
   );
