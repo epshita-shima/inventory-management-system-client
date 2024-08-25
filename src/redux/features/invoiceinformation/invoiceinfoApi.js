@@ -1,0 +1,72 @@
+import { api } from "../../api/apiSlice";
+
+const invoiceinfoApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    getAllInvoiceInformation: builder.query({
+      query: () => "/invoiceinfo",
+      providesTags: [
+        "insertinvoiceinfo",
+        "updateinvoiceinfo",
+        "deleteinvoiceinfo",
+      ],
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    }),
+
+    insertInvoiceInformation: builder.mutation({
+      query: (payload) => ({
+        url: "/invoiceinfo",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["insertinvoiceinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+
+    getSingleInvoice: builder.query({
+      query: (id) => {
+        if (id) {
+          return `/invoiceinfo/${id}`;
+        } else {
+          throw new Error("User id is required");
+        }
+      },
+    }),
+
+    updateInvoiceInfo: builder.mutation({
+      query: (payload) => ({
+        url: `/invoiceinfo/${payload._id}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["updateinvoiceinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+
+    deleteInvoiceInfo: builder.mutation({
+      query: (id) => ({
+        url: `/invoiceinfo/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["deleteinvoiceinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetAllInvoiceInformationQuery,
+  useInsertInvoiceInformationMutation,
+  useGetSingleInvoiceQuery,
+  useUpdateInvoiceInfoMutation,
+  useDeleteInvoiceInfoMutation,
+} = invoiceinfoApi;

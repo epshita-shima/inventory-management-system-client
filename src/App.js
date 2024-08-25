@@ -35,6 +35,8 @@ import ProductionCommonPart from "./components/Production/Common/ProductionCommo
 import ProductionListTable from "./components/Production/Index/ProductionListTable";
 import PaymentModeDataList from "./components/PaymentModeInformation/Index/PaymentModeDataList";
 import InsertPaymentOption from "./components/PaymentModeInformation/Insert/InsertPaymentOption";
+import SalesManagementCommonPart from "./components/SalesManagement/Common/SalesManagementCommonPart";
+import InvoiceInformationList from "./components/SalesManagement/Index/InvoiceInformationListTable/InvoiceInformationList";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -184,19 +186,60 @@ function App() {
                 path="/main-view/create-po"
                 element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}
               ></Route>
-              <Route path="update-purchaseinfo/:id" element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}></Route>
-              <Route path="/main-view/po-approval" element={<PurchaseOrderApproveForm></PurchaseOrderApproveForm>}></Route>
+              <Route
+                path="update-purchaseinfo/:id"
+                element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}
+              ></Route>
+              <Route
+                path="/main-view/po-approval"
+                element={<PurchaseOrderApproveForm></PurchaseOrderApproveForm>}
+              ></Route>
 
-              <Route path="/main-view/grn-list" element={<GRNInfoTable></GRNInfoTable>}></Route>
-              <Route path="/main-view/create-grn" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
-              <Route path="update-grn-info/:id" element={<InsertGRNInfo></InsertGRNInfo>}></Route>
-              
-              <Route path="create-production" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
-              <Route path="production-list" element={<ProductionListTable></ProductionListTable>}></Route>
-              <Route path="update-production-info/:id" element={<ProductionCommonPart></ProductionCommonPart>}></Route>
+              <Route
+                path="/main-view/grn-list"
+                element={<GRNInfoTable></GRNInfoTable>}
+              ></Route>
+              <Route
+                path="/main-view/create-grn"
+                element={<InsertGRNInfo></InsertGRNInfo>}
+              ></Route>
+              <Route
+                path="update-grn-info/:id"
+                element={<InsertGRNInfo></InsertGRNInfo>}
+              ></Route>
 
-              <Route path="create-payment-mode" element={<InsertPaymentOption></InsertPaymentOption>}></Route>
-              <Route path="payment-list" element={<PaymentModeDataList></PaymentModeDataList>}></Route>
+              <Route
+                path="create-production"
+                element={<ProductionCommonPart></ProductionCommonPart>}
+              ></Route>
+              <Route
+                path="production-list"
+                element={<ProductionListTable></ProductionListTable>}
+              ></Route>
+              <Route
+                path="update-production-info/:id"
+                element={<ProductionCommonPart></ProductionCommonPart>}
+              ></Route>
+
+              <Route
+                path="create-payment-mode"
+                element={<InsertPaymentOption></InsertPaymentOption>}
+              ></Route>
+              <Route
+                path="payment-list"
+                element={<PaymentModeDataList></PaymentModeDataList>}
+              ></Route>
+
+              <Route
+                path="create-invoice"
+                element={
+                  <SalesManagementCommonPart></SalesManagementCommonPart>
+                }
+              ></Route>
+              <Route
+                path="invoice-list"
+                element={<InvoiceInformationList></InvoiceInformationList>}
+              ></Route>
 
               {/* <Route
                 path="/main-view/user-list"

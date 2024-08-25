@@ -32,6 +32,7 @@ const InsertClientInformation = () => {
     detailsData: [
       {
         clientName: "",
+        clientShortName:'',
         email: "",
         mobileNo: "",
         contactPerson: "",
@@ -264,6 +265,57 @@ const InsertClientInformation = () => {
                                                 )}
                                           </div>
                                           <div className="mb-2">
+                                            <label htmlFor="text">
+                                              Client Short Name
+                                            </label>
+                                            <Field
+                                              type="text"
+                                              name={`detailsData.${index}.clientShortName`}
+                                              placeholder="Client Short Name"
+                                              value={
+                                                id
+                                                  ? clientData?.clientShortName
+                                                  : detail?.clientShortName
+                                              }
+                                              style={{
+                                                border: "1px solid #2DDC1B",
+                                                padding: "5px",
+                                                width: "100%",
+                                                borderRadius: "5px",
+                                                height: "38px",
+                                              }}
+                                              onChange={(e) => {
+                                                if (id) {
+                                                  setClientData((prevData) => ({
+                                                    ...prevData,
+                                                    clientShortName: e.target.value,
+                                                    updateBy: updatebyUser,
+                                                    updateDate: new Date(),
+                                                  }));
+                                                } else {
+                                                  setFieldValue(
+                                                    `detailsData.${index}.clientName`,
+                                                    e.target.value
+                                                  );
+                                                }
+                                              }}
+                                            />
+                                            <br />
+                                            {id
+                                              ? ""
+                                              : touched.detailsData?.[index]
+                                                  ?.clientShortName &&
+                                                errors.detailsData?.[index]
+                                                  ?.clientShortName && (
+                                                  <div className="text-danger">
+                                                    {
+                                                      errors.detailsData[index]
+                                                        .clientShortName
+                                                    }
+                                                  </div>
+                                                )}
+                                          </div>
+                                          <div className="mb-2">
                                             <label htmlFor="email">Email</label>
                                             <Field
                                               type="email"
@@ -418,7 +470,11 @@ const InsertClientInformation = () => {
                                                   </div>
                                                 )}
                                           </div>
-                                          <div className="mb-2">
+                                          
+                                        </div>
+
+                                        <div className="col-md-12 col-lg-6 col-xl-6">
+                                        <div className="mb-2">
                                             <label htmlFor="conatctPerson">
                                               Bin Number
                                             </label>
@@ -469,9 +525,6 @@ const InsertClientInformation = () => {
                                                   </div>
                                                 )}
                                           </div>
-                                        </div>
-
-                                        <div className="col-md-12 col-lg-6 col-xl-6">
                                           <div className="mb-2 mt-2">
                                             <label htmlFor="tradeLicenceNo">
                                               Trade Licence Number
@@ -578,7 +631,6 @@ const InsertClientInformation = () => {
                                           </div>
 
                                           <div className="mb-2">
-                                            {" "}
                                             <label htmlFor="address">
                                               Address
                                             </label>
@@ -591,7 +643,7 @@ const InsertClientInformation = () => {
                                                   ? clientData?.address
                                                   : detail?.address
                                               }
-                                              rows="3"
+                                              rows="2"
                                               style={{
                                                 border: "1px solid #2DDC1B",
                                                 padding: "5px",
@@ -642,7 +694,7 @@ const InsertClientInformation = () => {
                                                   ? clientData?.remarks
                                                   : detail?.remarks
                                               }
-                                              rows="3"
+                                              rows="2"
                                               style={{
                                                 border: "1px solid #2DDC1B",
                                                 padding: "5px",

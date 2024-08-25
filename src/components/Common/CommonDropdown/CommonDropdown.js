@@ -32,6 +32,16 @@ const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
   });
   return result;
 };
+const finishGoodsDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label: option.itemName ,
+    });
+  });
+  return result;
+};
 const paymentInfoDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -53,6 +63,30 @@ const bankInformationDropdown = (options) => {
   });
   return result;
 };
+const clientInfoDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.clientName,
+      clientShortName:
+        option.clientShortName,
+    });
+  });
+  return result;
+};
+const unitInformationDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.unitInfo
+    });
+  });
+  return result;
+};
 
 export {
   supplierDropdown,
@@ -60,4 +94,7 @@ export {
   paymentInfoDropdown,
   bankInformationDropdown,
   finishGoodsWithSizeItemDropdown,
+  clientInfoDropdown,
+  finishGoodsDropdown,
+  unitInformationDropdown
 };
