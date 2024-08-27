@@ -8,11 +8,13 @@ import {
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InsertSalesManagement from "../Insert/InsertSalesManagement";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import {
   finishGoodsDropdown,
+  finishGoodsWithSizeItemDropdown,
+  paymentInfoDropdown,
   unitInformationDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
@@ -20,8 +22,17 @@ import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
 } from "../../../redux/api/apiSlice";
-import { useInsertInvoiceInformationMutation } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
+import {
+  useGetSingleInvoiceQuery,
+  useInsertInvoiceInformationMutation,
+  useUpdateInvoiceInfoMutation,
+} from "../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import InvoiceCommonModal from "../../Common/CommonModal/InvoiceCommonModal";
+import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
 const SalesManagementCommonPart = () => {
+  const { id } = useParams();
   const ArrayHelperRef = useRef();
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
@@ -33,12 +44,23 @@ const SalesManagementCommonPart = () => {
   const { data: serialNo } = useGetSerialNoQuery(undefined);
   const [insertInvoiceInfo] = useInsertInvoiceInformationMutation();
   const [createSerialNo] = useCreateSerialNoMutation();
+  const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
+  const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
+  const [acivePaymentModal, setAcivePaymentModal] = useState(false);
+  const { data: getSingleInvoiceData } = useGetSingleInvoiceQuery(id);
+  const [updateSingleInvoiceData, setUpdateSingleInvoiceData] = useState([]);
+  const [updateInvoiceInfo]=useUpdateInvoiceInfoMutation();
+
   const initialValues = {
-    PIDate: "",
+    piDate: "",
     expireDate: "",
     invoiceNo: "",
     customerID: "",
+    paymentId: "",
     currency: "",
+    approveBy:"",
+    approveDate:"",
+    isApproved:false,
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -47,15 +69,28 @@ const SalesManagementCommonPart = () => {
       {
         itemId: "",
         description: "",
-        unitId: "",
         quantity: "",
         unitPrice: "",
         totalAmount: "",
       },
     ],
   };
-  const finisGoodsOptions = finishGoodsDropdown(finishGoods);
-  const unitInfoOptions = unitInformationDropdown(unitInformation);
+  const paymentTypeOptions = paymentInfoDropdown(paymentTypeInfo);
+  const finisGoodsOptions = finishGoodsWithSizeItemDropdown(
+    finishGoods,
+    sizeInfo
+  );
+
+  const areFieldsEmpty = () => {
+    return updateSingleInvoiceData?.detailsData?.some(
+      (field) =>
+        !field.description ||
+        !field.quantity ||
+        !field.unitPrice 
+    );
+  };
+
+
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo.reduce((max, current) => {
@@ -71,7 +106,10 @@ const SalesManagementCommonPart = () => {
         setSerialValue(maxSerialNoObject);
       }
     }
-  }, [serialNo]);
+    if (id) {
+      setUpdateSingleInvoiceData(getSingleInvoiceData);
+    }
+  }, [serialNo, id, getSingleInvoiceData]);
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
@@ -83,19 +121,35 @@ const SalesManagementCommonPart = () => {
       updateby: "",
     };
     try {
-      const response = await insertInvoiceInfo(values);
-      if (response?.data?.status === 200) {
-        await createSerialNo(serialData);
-        swal("Done", "Data Save Successfully", "success");
-        resetForm();
-      } else if (response?.error?.status === 400) {
-        swal("Not Possible!", response?.error?.data?.message, "error");
+      if (id) {
+        const response = await updateInvoiceInfo(
+         updateSingleInvoiceData
+        );
+        console.log(response);
+        if (response?.data?.status === 200) {
+          navigate("/main-view/invoice-list");
+          swal("Done", "Data Update Successfully", "success");
+          resetForm();
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
+      }else{
+        const response = await insertInvoiceInfo(values);
+        if (response?.data?.status === 200) {
+          await createSerialNo(serialData);
+          swal("Done", "Data Save Successfully", "success");
+          resetForm();
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
       }
+     
     } catch (err) {
       console.error(err);
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
+
   return (
     <div
       className=" row px-4 mx-4"
@@ -110,11 +164,13 @@ const SalesManagementCommonPart = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
+              customerID: Yup.string().required("Required"),
+              paymentId: Yup.string().required("Required"),
+              currency: Yup.string().required("Required"),
               detailsData: Yup.array().of(
                 Yup.object().shape({
                   itemId: Yup.string().required("Required"),
                   description: Yup.string().required("Required"),
-                  unitId: Yup.string().required("Required"),
                   quantity: Yup.string().required("Required"),
                   unitPrice: Yup.string().required("Required"),
                 })
@@ -146,6 +202,7 @@ const SalesManagementCommonPart = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
+                    console.log(values);
                     return (
                       <div className="shadow-lg py-2 px-5">
                         <div class="container-fluid">
@@ -182,10 +239,20 @@ const SalesManagementCommonPart = () => {
                               </div>
                               {
                                 <InvoiceSingleEntry
+                                id={id}
+                                makebyUser={makebyUser}
                                   values={values}
                                   setFieldValue={setFieldValue}
                                   touched={touched}
                                   errors={errors}
+                                  paymentTypeOptions={paymentTypeOptions}
+                                  setAcivePaymentModal={setAcivePaymentModal}
+                                  updateSingleInvoiceData={
+                                    updateSingleInvoiceData
+                                  }
+                                  setUpdateSingleInvoiceData={
+                                    setUpdateSingleInvoiceData
+                                  }
                                 ></InvoiceSingleEntry>
                               }
                               <div>
@@ -204,7 +271,10 @@ const SalesManagementCommonPart = () => {
                                       form="pocreation-form"
                                       className="border-0 "
                                       style={{
-                                        backgroundColor:
+                                        backgroundColor:  id
+                                        ? areFieldsEmpty()
+                                          ? "gray"
+                                          : "#2DDC1B" :
                                           isValid && dirty ? "#2DDC1B" : "gray",
                                         color: "white",
                                         padding: "5px 10px",
@@ -213,9 +283,13 @@ const SalesManagementCommonPart = () => {
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
-                                      disabled={!(isValid && dirty)}
+                                      disabled={id
+                                        ? areFieldsEmpty()
+                                          ? true
+                                          : false
+                                        :!(isValid && dirty)}
                                     >
-                                      Save
+                                      {id ? "Update" : "Save"}
                                     </button>
                                     <div
                                       className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"
@@ -230,16 +304,31 @@ const SalesManagementCommonPart = () => {
                                         width: "110px",
                                       }}
                                       onClick={() => {
+                                      if(id){
+                                        setUpdateSingleInvoiceData((prev) => {
+                                          const temp__details = [
+                                            ...prev.detailsData,
+                                          ];
+                                          temp__details.push({
+                                            itemId: "",
+                                            itemDescription: "",
+                                            quantity: "",
+                                            unitPrice: "",
+                                            totalAmount: "",
+                                          });
+                                          return {
+                                            ...prev,
+                                            detailsData: [...temp__details],
+                                          };
+                                        });
+                                      }
+
                                         ArrayHelperRef.current.push({
                                           itemId: "",
-                                          receipe: "",
-                                          materialUsed: "",
-                                          asPerRatio: "",
-                                          excess: "",
-                                          less: "",
-                                          consumptionStatus: "",
-                                          receipeLabelData: "",
-                                          singleValueCFTPerKg: "",
+                                          description: "",
+                                          quantity: "",
+                                          unitPrice: "",
+                                          totalAmount: "",
                                         });
                                       }}
                                     >
@@ -252,7 +341,20 @@ const SalesManagementCommonPart = () => {
                                   </div>
                                 </div>
                               </div>
-                              {
+                              {id ? (
+                                <UpdateInvoiceDetails
+                                  finisGoodsOptions={finisGoodsOptions}
+                                  touched={touched}
+                                  errors={errors}
+                                  makebyUser={makebyUser}
+                                  updateSingleInvoiceData={
+                                    updateSingleInvoiceData
+                                  }
+                                  setUpdateSingleInvoiceData={
+                                    setUpdateSingleInvoiceData
+                                  }
+                                ></UpdateInvoiceDetails>
+                              ): (
                                 <InsertSalesManagement
                                   details={details}
                                   touched={touched}
@@ -260,10 +362,9 @@ const SalesManagementCommonPart = () => {
                                   arrayHelpers={arrayHelpers}
                                   finisGoodsOptions={finisGoodsOptions}
                                   setFieldValue={setFieldValue}
-                                  unitInfoOptions={unitInfoOptions}
                                   serialValue={serialValue}
                                 ></InsertSalesManagement>
-                              }
+                              ) }
                             </div>
                           </div>
                         </div>
@@ -276,6 +377,10 @@ const SalesManagementCommonPart = () => {
           </Formik>
         </div>
       </div>
+      <InvoiceCommonModal
+        acivePaymentModal={acivePaymentModal}
+        setAcivePaymentModal={setAcivePaymentModal}
+      ></InvoiceCommonModal>
     </div>
   );
 };

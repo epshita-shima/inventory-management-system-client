@@ -2,17 +2,19 @@
 import React, { useMemo } from 'react'
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
-import { useGetAllInvoiceInformationQuery } from '../../../../redux/features/invoiceinformation/invoiceinfoApi';
+import { useDeleteInvoiceInfoMutation, useGetAllInvoiceInformationQuery } from '../../../../redux/features/invoiceinformation/invoiceinfoApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import FilterComponent from '../../../Common/ListDataSearchBoxDesign/FilterComponent';
+import { useGetAllClientInformationQuery } from '../../../../redux/features/clientinformation/clientInfoApi';
 const InvoiceInformationDataList = ({permission}) => {
     const [filterText, setFilterText] = React.useState("");
     const [resetPaginationToggle, setResetPaginationToggle] =
       React.useState(false);
     const { data: invoiceData, refetch } =
       useGetAllInvoiceInformationQuery(undefined);
-    // const [deletePaymentMode] = useDeletePaymentInformationMutation();
+      const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+    const [deleteInvoice] = useDeleteInvoiceInfoMutation();
   
     const columns = [
       {
@@ -23,7 +25,7 @@ const InvoiceInformationDataList = ({permission}) => {
       },
       {
         name: "Pi Date",
-        selector: (invoiceData) => invoiceData?.PIDate,
+        selector: (invoiceData) =>new Date(invoiceData?.piDate).toLocaleDateString("en-CA") ,
         sortable: true,
         center: true,
         filterable: true,
@@ -37,21 +39,40 @@ const InvoiceInformationDataList = ({permission}) => {
       },
       {
         name: "Client Name",
-        selector: (invoiceData) => invoiceData?.invoiceNo,
+        selector: (invoiceData) => {
+          const customerName = customerInfo?.find(
+            (x) => x._id === invoiceData?.customerID
+          );
+          return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+        },
         sortable: true,
         center: true,
         filterable: true,
       },
       {
         name: "Total Quantity",
-        selector: (invoiceData) => invoiceData?.invoiceNo,
+        selector: (invoiceData) => {
+          const totalQuantity = invoiceData.detailsData
+            .reduce(
+              (acc, cur) => acc + parseInt(cur.quantity, 10),
+              0
+            );
+          return totalQuantity;
+        },
         sortable: true,
         center: true,
         filterable: true,
       },
       {
         name: "Total Amount",
-        selector: (invoiceData) => invoiceData?.invoiceNo,
+        selector: (invoiceData) =>  {
+          const totalAmount = invoiceData.detailsData
+            .reduce(
+              (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+              0
+            );
+          return totalAmount;
+        },
         sortable: true,
         center: true,
         filterable: true,
@@ -79,7 +100,7 @@ const InvoiceInformationDataList = ({permission}) => {
                   marginLeft: "10px",
                 }}
                 onClick={() => {
-                  window.open(`update-menu/${invoiceData?.value}`);
+                  window.open(`update-invoice/${invoiceData?._id}`);
                 }}
               >
                 <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -112,7 +133,7 @@ const InvoiceInformationDataList = ({permission}) => {
                     dangerMode: true,
                   }).then((willDelete) => {
                     if (willDelete) {
-                    //   deletePaymentMode(invoiceData?._id);
+                      deleteInvoice(invoiceData?._id);
                       swal("Poof! Your data has been deleted!", {
                         icon: "success",
                       });

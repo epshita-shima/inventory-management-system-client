@@ -240,6 +240,10 @@ function App() {
                 path="invoice-list"
                 element={<InvoiceInformationList></InvoiceInformationList>}
               ></Route>
+              <Route
+                path="update-invoice/:id"
+                element={<SalesManagementCommonPart></SalesManagementCommonPart>}
+              ></Route>
 
               {/* <Route
                 path="/main-view/user-list"

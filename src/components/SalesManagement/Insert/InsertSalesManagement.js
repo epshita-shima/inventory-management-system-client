@@ -16,19 +16,13 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
 
                 <th
                   className="bg-white text-center align-items-center"
-                  style={{ width: "20%" }}
+                  style={{ width: "30%" }}
                 >
                   Item Name
                   <span className="text-danger fw-bold fs-2">*</span>
                 </th>
-                <th
-                  className="bg-white text-center align-items-center "
-                  style={{ width: "20%" }}
-                >
-                  Unit Info
-                  <span className="text-danger fw-bold fs-2">*</span>
-                </th>
-                <th className="bg-white text-center align-items-center ">
+              
+                <th className="bg-white text-center align-items-center "  style={{ width: "25%" }}>
                   Description
                 </th>
                 <th className="bg-white text-center align-items-center ">
@@ -52,8 +46,8 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                 ? details.map((detail, index) => {
                     return (
                       <tr key={index}>
-                        <td className="text-center ">{index + 1}</td>
-                        <td className="">
+                        <td className="text-center align-middle">{index + 1}</td>
+                        <td className="d-flex">
                           <div className="w-100 d-flex justify-content-between ">
                             <div className="w-100">
                               <Select
@@ -80,7 +74,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                                   }),
                                   menu: (provided) => ({
                                     ...provided,
-                                    zIndex: 9999,
+                                    // zIndex: 9999,
                                     // height: "200px",
                                     // overflowY: "scroll",
                                   }),
@@ -119,80 +113,12 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               </div>
                             )}
                         </td>
-                        <td className=" ">
-                          <div className="w-100 d-flex justify-content-between ">
-                            <div className="w-100">
-                              <Select
-                                class="form-select"
-                                className="w-100 mb-3"
-                                aria-label="Default select example"
-                                name="itemName"
-                                options={unitInfoOptions}
-                                defaultValue={{
-                                  label: "Select Unit",
-                                  value: 0,
-                                }}
-                                value={unitInfoOptions.filter(function (option) {
-                                  return option.value === detail.unitId;
-                                })}
-                                styles={{
-                                  control: (baseStyles, state) => ({
-                                    ...baseStyles,
-                                    width: "100%",
-                                    borderColor: state.isFocused
-                                      ? "#fff"
-                                      : "#fff",
-                                    border: "1px solid #2DDC1B",
-                                  }),
-                                  menu: (provided) => ({
-                                    ...provided,
-                                    zIndex: 9999,
-                                    // height: "200px",
-                                    // overflowY: "scroll",
-                                  }),
-                                }}
-                                theme={(theme) => ({
-                                  ...theme,
-                                  colors: {
-                                    ...theme.colors,
-                                    primary25: "#B8FEB3",
-                                    primary: "#2DDC1B",
-                                  },
-                                })}
-                                onChange={(e) => {
-                                  setFieldValue(`detailsData.${index}.unitId`,e.value)
-                                }}
-                              ></Select>
-                            </div>
-                            <div className="ms-2 mt-2">
-                              <FontAwesomeIcon
-                                className="border  align-items-center text-center p-2 fs-3 rounded-5 text-light "
-                                style={{
-                                  background: "#2DDC1B",
-                                }}
-                                icon={faPlus}
-                                data-toggle="modal"
-                                data-target="#commonInsertModalCenter"
-                                onClick={() => {
-                                  setFieldValue()
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <br />
-                          {touched.detailsData?.[index]?.itemId &&
-                            errors.detailsData?.[index]?.itemId && (
-                              <div className="text-danger">
-                                {errors.detailsData[index].itemId}
-                              </div>
-                            )}
-                        </td>
-
-                        <td className="text-center  align-items-center">
-                          <Field
-                            type="text"
+                    
+                        <td className="text-center   align-middle">
+                          <textarea
+                            type="textarea"
                             name={`detailsData.${index}.description`}
-                            placeholder="description"
+                            placeholder="Description"
                             value={detail?.description}
                             style={{
                               border: "1px solid #2DDC1B",
@@ -213,7 +139,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                           <Field
                             type="number"
                             name={`detailsData.${index}.quantity`}
-                            placeholder="quantity"
+                            placeholder="Quantity"
                             value={detail?.quantity}
                             style={{
                               border: "1px solid #2DDC1B",
@@ -231,7 +157,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                             }}
                           />
                         </td>
-                        <td className="text-center  align-items-center">
+                        <td className="text-center  align-items-center ">
                           <Field
                             type="number"
                             name={`detailsData.${index}.unitPrice`}
@@ -251,7 +177,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                             }}
                           />
                         </td>
-                        <td className="text-center  align-items-center">
+                        <td className="text-center  align-items-center ">
                           <Field
                             type="text"
                             name={`detailsData.${index}.totalAmount`}
@@ -264,12 +190,12 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               width: "100%",
                               borderRadius: "5px",
                               height: "38px",
-                              textAlign: "center",
+                              textAlign: "right",
                             }}
                           />
                         </td>
 
-                        <td className="text-center ">
+                        <td className="text-center align-middle">
                           <button
                             type="button"
                             className="border-0 rounded  bg-transparent"

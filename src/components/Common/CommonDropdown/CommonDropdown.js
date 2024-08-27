@@ -49,8 +49,11 @@ const paymentInfoDropdown = (options) => {
       value: option._id,
       label: option.paymentMode,
     });
+   
   });
+  console.log(result)
   return result;
+
 };
 const bankInformationDropdown = (options) => {
   let result = [];

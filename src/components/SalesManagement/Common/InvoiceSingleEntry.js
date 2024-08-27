@@ -3,16 +3,31 @@ import React, { useState } from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import swal from "sweetalert";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import "./InvoiceSingleEntry.css";
 
-const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue }) => {
+const InvoiceSingleEntry = ({
+  id,
+  makebyUser,
+  values,
+  setFieldValue,
+  touched,
+  errors,
+  serialValue,
+  paymentTypeOptions,
+  setAcivePaymentModal,
+  updateSingleInvoiceData,
+  setUpdateSingleInvoiceData,
+}) => {
   const [piDate, setPiDate] = useState(new Date());
   const [expireDate, setExpireDate] = useState(new Date());
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
 
-  console.log(values)
-  const customerOptions=clientInfoDropdown(customerInfo)
+  const customerOptions = clientInfoDropdown(customerInfo);
   const currencyOptions = [
     {
       value: "BDT",
@@ -23,48 +38,93 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
       label: "USD",
     },
   ];
+console.log(updateSingleInvoiceData)
   return (
     <div class="row row-cols-1 row-cols-lg-3">
-      <div class="col-sm-12 col-md-6 col-lg-3">
+      <div class="col-sm-12 col-md-6 col-lg-2">
         <label htmlFor="piDate">PI Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker-production"
-              value={piDate}
+            value={id?new Date(updateSingleInvoiceData?.piDate).toLocaleDateString("en-CA"):piDate}
             calendarClassName="custom-calendar"
             selected={piDate}
             required
             onChange={(piDate) => {
-              setPiDate(piDate.toLocaleDateString("en-CA"))
-              setFieldValue("PIDate", piDate.toLocaleDateString("en-CA"));
+              if (piDate > new Date()) {
+                swal({
+                  title: "Select Valid Date",
+                  text: "Date should be equal or earlier than today",
+                  icon: "warning",
+                  button: "OK",
+                });
+              } else {
+                if(id){
+                  setUpdateSingleInvoiceData((prevData) => ({
+                    ...prevData,
+                    piDate:new Date(piDate).toLocaleDateString("en-CA") ,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }))
+                }
+                else{
+                  setPiDate(piDate.toLocaleDateString("en-CA"));
+                  setFieldValue("piDate", piDate.toLocaleDateString("en-CA"));
+                }
+              
+              }
             }}
           />
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3">
-        <label htmlFor="piDate">Expire Date</label>
+      <div class="col-sm-12 col-md-6 col-lg-2">
+        <label htmlFor="piDate"> PI Expire Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker-production"
-            value={expireDate}
+            value={id ? new Date(updateSingleInvoiceData?.expireDate).toLocaleDateString("en-CA"):expireDate}
             calendarClassName="custom-calendar"
             selected={expireDate}
             required
             onChange={(expireDate) => {
-              setExpireDate(expireDate.toLocaleDateString("en-CA"));
-              setFieldValue(
-                "expireDate",
-                expireDate.toLocaleDateString("en-CA")
-              );
+              const selectedDate = new Date(expireDate);
+              const today = new Date();
+              selectedDate.setHours(0, 0, 0, 0);
+              today.setHours(0, 0, 0, 0);
+              if (selectedDate < today) {
+                swal({
+                  title: "Select Valid Date",
+                  text: "Date should be equal or latter than today",
+                  icon: "warning",
+                  button: "OK",
+                });
+              } else {
+                if(id){
+                  setUpdateSingleInvoiceData((prevData) => ({
+                    ...prevData,
+                    expireDate:new Date(expireDate).toLocaleDateString("en-CA") ,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }))
+                }
+                else{
+                  setExpireDate(expireDate.toLocaleDateString("en-CA"));
+                  setFieldValue(
+                    "expireDate",
+                    expireDate.toLocaleDateString("en-CA")
+                  );
+                }
+               
+              }
             }}
           />
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3  d-none">
-        <label htmlFor="paymentId">Invoice No</label>
+      <div class="col-sm-12 col-md-6 col-lg-2  d-none">
+        <label htmlFor="invoiceNo">Invoice No</label>
         <br />
         <Field
           type="text"
@@ -83,7 +143,7 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
         />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3">
+      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="customerName">Customer Name</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -97,10 +157,13 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
                 label: "Select Customer Name",
                 value: 0,
               }}
-              value={customerOptions.filter(function (option) {
-                      return option.value === values.customerID;
-                    })
-              }
+              value={
+                id? customerOptions.filter(function (option) {
+                  return option.value === updateSingleInvoiceData?.customerID;
+                }) :
+                customerOptions.filter(function (option) {
+                return option.value === values.customerID;
+              })}
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -124,28 +187,130 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
                 },
               })}
               onChange={(e) => {
-                const removeDashFromDate = new Date(piDate).toLocaleDateString("en-CA");
-                const removeDash = removeDashFromDate.replace(/-/g, "");
-                const shortName=e.clientShortName;
-                const makeBatchNo = `MEB-${shortName}-${removeDash}-${
-                  serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
-                }`;
-              
-                setFieldValue("invoiceNo", makeBatchNo);
-                setFieldValue('customerID',e.value)
-
+                if(id){
+                  setUpdateSingleInvoiceData((prevData) => ({
+                    ...prevData,
+                    customerID:e.value ,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }))
+                }
+                else{
+                  const removeDashFromDate = new Date(piDate).toLocaleDateString(
+                    "en-CA"
+                  );
+                  const removeDash = removeDashFromDate.replace(/-/g, "");
+                  const shortName = e.clientShortName;
+                  const makeBatchNo = `MEB-${shortName}-${removeDash}-${
+                    serialValue?.serialNo === undefined
+                      ? "1"
+                      : serialValue?.serialNo
+                  }`;
+  
+                  setFieldValue("invoiceNo", makeBatchNo);
+                  setFieldValue("customerID", e.value);
+                }
+                
               }}
             ></Select>
 
-            {/* {touched.productionItemName &&
-              errors.productionItemName && (
-                <div className="text-danger">{errors.productionItemName}</div>
-              )} */}
+            {id ? "" :touched.customerID && errors.customerID && (
+              <div className="text-danger">{errors.customerID}</div>
+            )}
+          </div>
+          <div className="ms-2 mt-2">
+            <FontAwesomeIcon
+              className="border  align-items-center text-center p-2 fs-3 rounded-5 text-light "
+              style={{
+                background: "#2DDC1B",
+              }}
+              icon={faPlus}
+              data-toggle="modal"
+              data-target="#commonInsertModalCenter"
+              onClick={() => {}}
+            />
           </div>
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3">
+      <div class="col-6 col-lg-3">
+        <label htmlFor="paymentId">Payment Mode</label>
+        <div className="w-lg-75  w-md-100 w-sm-100 d-flex justify-content-between mt-2">
+          <div className="w-100">
+            <Select
+              class="form-select"
+              className="w-100 mb-3"
+              aria-label="Default select example"
+              name="sizeinfo"
+              options={paymentTypeOptions}
+              defaultValue={{
+                label: "Select Size",
+                value: 0,
+              }}
+              value={id ? paymentTypeOptions?.filter(function (option) {
+                return option.value === updateSingleInvoiceData?.paymentId;
+              }) : paymentTypeOptions?.filter(function (option) {
+                return option.value === values?.paymentId;
+              })}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  width: "100%",
+                  borderColor: state.isFocused ? "#fff" : "#fff",
+                  border: "1px solid #2DDC1B",
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 9999,
+                  height: "auto",
+                  // overflowY: "scroll",
+                }),
+              }}
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  primary25: "#B8FEB3",
+                  primary: "#2DDC1B",
+                },
+              })}
+              onChange={(e) => {
+                if(id){
+                  setUpdateSingleInvoiceData((prevData) => ({
+                    ...prevData,
+                    paymentId:e.value ,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }))
+                }
+                else{
+                  setAcivePaymentModal(true);
+                  setFieldValue("paymentId", e.value);
+                }
+             
+              }}
+            ></Select>
+
+            {id ? "" :touched.paymentId && errors.paymentId && (
+              <div className="text-danger">{errors.paymentId}</div>
+            )}
+          </div>
+          <div className="ms-2 mt-2">
+            <FontAwesomeIcon
+              className="border align-items-center text-center p-2 fs-3 rounded-5 text-light "
+              style={{
+                background: "#2DDC1B",
+              }}
+              icon={faPlus}
+              data-toggle="modal"
+              data-target="#commonInsertInvoiceModalCenter"
+              onClick={() => {}}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-2 mt-2">
         <label htmlFor="receipeQtyRatio">Currency</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -159,10 +324,11 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
                 label: "Select currency",
                 value: 0,
               }}
-              value={ currencyOptions.filter(function (option) {
-                      return option.value === values.currency;
-                    })
-              }
+              value={id ?currencyOptions.filter(function (option) {
+                return option.value === updateSingleInvoiceData?.currency;
+              }) : currencyOptions.filter(function (option) {
+                return option.value === values.currency;
+              })}
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -186,7 +352,17 @@ const InvoiceSingleEntry = ({ values, setFieldValue, touched, errors,serialValue
                 },
               })}
               onChange={(e) => {
-                setFieldValue('currency',e.value)
+                if(id){
+                  setUpdateSingleInvoiceData((prevData) => ({
+                    ...prevData,
+                    currency:e.value ,
+                    updateBy: makebyUser,
+                    updateDate: new Date(),
+                  }))
+                }
+                else{
+                  setFieldValue("currency", e.value);
+                }
               }}
             ></Select>
           </div>
