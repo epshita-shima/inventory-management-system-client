@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
 import { useDeleteInvoiceInfoMutation, useGetAllInvoiceInformationQuery } from '../../../../redux/features/invoiceinformation/invoiceinfoApi';
@@ -7,7 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import FilterComponent from '../../../Common/ListDataSearchBoxDesign/FilterComponent';
 import { useGetAllClientInformationQuery } from '../../../../redux/features/clientinformation/clientInfoApi';
+import InvoiceListHeading from '../../../Common/ListHeading/InvoiceListHeading';
 const InvoiceInformationDataList = ({permission}) => {
+
     const [filterText, setFilterText] = React.useState("");
     const [resetPaginationToggle, setResetPaginationToggle] =
       React.useState(false);
@@ -15,6 +17,46 @@ const InvoiceInformationDataList = ({permission}) => {
       useGetAllInvoiceInformationQuery(undefined);
       const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
     const [deleteInvoice] = useDeleteInvoiceInfoMutation();
+    const [totalApprovedPi, setTotalApprovePi] = useState([]);
+    const [totalUnApprovePi, setTotalUnApprovePi] = useState([]);
+    const [totalApprovePiAmount, setTotalApprovePiAmount] = useState(0);
+    const [totalUnApprovePiAmount, setTotalUnApprovePiAmount] = useState(0);
+
+    useEffect(() => {
+      const filterApprovePi = invoiceData?.filter((x) => x.isApproved === true);
+      const filterUnApprovePi = invoiceData?.filter(
+        (x) => x.isApproved === false
+      );
+      console.log(filterUnApprovePi);
+      const totalApprovedAmount = invoiceData
+        ?.filter((invoice) => invoice?.isApproved === true)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+  
+      const totalUnapprovedAmount = invoiceData
+        ?.filter((invoice) => invoice?.isApproved === false)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+  
+      setTotalApprovePi(filterApprovePi);
+      setTotalUnApprovePi(filterUnApprovePi);
+      setTotalApprovePiAmount(totalApprovedAmount);
+      setTotalUnApprovePiAmount(totalUnapprovedAmount);
+    }, [invoiceData]);
   
     const columns = [
       {
@@ -212,11 +254,18 @@ const InvoiceInformationDataList = ({permission}) => {
     }, [filterText, resetPaginationToggle, refetch]);
   
     return (
-      <div className="row p-5 mx-4">
-        <div
-          className="col userlist-table"
-          style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
-        >
+      <div className="row px-5 mx-4"
+      style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
+        <InvoiceListHeading 
+       totalApprovedPi={totalApprovedPi?.length}
+       totalUnApprovePi={totalUnApprovePi?.length}
+       totalApprovePiAmount={totalApprovePiAmount}
+       totalUnApprovePiAmount={totalUnApprovePiAmount}
+       permission={permission}
+       ></InvoiceListHeading> 
+       <div
+         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
+       >
           <div className="shadow-lg">
             <DataTable
               columns={columns}

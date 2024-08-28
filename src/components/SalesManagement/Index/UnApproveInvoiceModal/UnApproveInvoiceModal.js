@@ -1,99 +1,115 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
-import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { downloadHeadingProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
-import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-const ProductionTotalModal = ({ totalProduction,permission}) => {
+import { useGetAllInvoiceInformationQuery, useUpdateInvoiceStatusMutation } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckToSlot,
+  faDownload,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import swal from "sweetalert";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
+import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
+
+const UnApproveInvoiceModal = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
-  const reportTitle = "PRODUCTION REPORT";
-  const {data:finishGoods}=useGetAllItemInformationQuery(undefined)
-  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
+  const reportTitle = "INVOICE REPORT";
+  const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
+  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+  const [filterUnapporovePiData,setfilterUnapporovePiData]=useState([])
+  const getUser = localStorage.getItem("user");
+  const getUserParse = JSON.parse(getUser);
+  const makebyUser = getUserParse[0].username;
+  const [piApproveDate,setPiApproveDate]=useState(new Date())
+  const [updatePIStatus]=useUpdateInvoiceStatusMutation()
+
+  useEffect(()=>{
+    const filteredUnApproveData=invoiceData?.filter((x)=>x.isApproved==false)
+    setfilterUnapporovePiData(filteredUnApproveData)
+  },[invoiceData])
+
+  console.log(filterUnapporovePiData)
   const columns = [
     {
       name: "Sl.",
-      selector: (totalProduction, index) => index + 1,
+      selector: (filterUnapporovePiData, index) => index + 1,
       center: true,
-      width: "50px",
+      width: "60px",
     },
     {
-      name: "Production Date",
-      selector: (totalProduction) => totalProduction?.productionDate,
+      name: "Pi Date",
+      selector: (filterUnapporovePiData) =>
+        new Date(filterUnapporovePiData?.piDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Batch No",
-      selector: (totalProduction) => totalProduction?.batchNo,
+      name: "Invoice No",
+      selector: (filterUnapporovePiData) => filterUnapporovePiData?.invoiceNo,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Total Batch",
-      selector: (totalProduction) => totalProduction?.totalBatch,
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "150px",
-    },
-    {
-      name: "Total Production Qty",
-      selector: (totalProduction) => totalProduction?.productionQty,
+      name: "Client Name",
+      selector: (filterUnapporovePiData) => {
+        const customerName = customerInfo?.find(
+          (x) => x._id === filterUnapporovePiData?.customerID
+        );
+        return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+      },
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Action",
+      name: "Total Quantity",
+      selector: (filterUnapporovePiData) => {
+        const totalQuantity = filterUnapporovePiData.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.quantity, 10),
+          0
+        );
+        return totalQuantity;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Total Amount",
+      selector: (filterUnapporovePiData) => {
+        const totalAmount = filterUnapporovePiData.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+          0
+        );
+        return totalAmount;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "Status",
       button: true,
-      width: "120px",
+      width: "100px",
       grow: 2,
-      cell: (filteredData) => (
-        <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Update item"
-              style={{
-                color: `${
-                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
-                } `,
-                border: `${
-                  filteredData?.detailsData?.length == 0
-                    ? "2px solid gray"
-                    : "2px solid orange"
-                }`,
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                downloadProductionPDFPERBatch(
-                  filteredData,
-                  finishGoods,
-                  rawItemInfo,
-                  { companyinfo },
-                  reportTitle
-                );
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-      
+      cell: (filterUnapporovePiData) => (
+        <div className="d-flex justify-content-between align-items-center">
+          <input
+            type="checkbox"
+            aria-label={`Checkbox for data item`}
+            checked={filterUnapporovePiData?.isApproved} // Assuming status is a boolean field
+            onChange={(e) => {
+                 handleApproveStatus(e,filterUnapporovePiData)
+            }}
+          />
         </div>
       ),
     },
@@ -121,7 +137,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
     },
   };
 
-  const filteredItems = totalProduction?.filter(
+  const filteredItems = filterUnapporovePiData?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
@@ -156,7 +172,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
+                        //   downloadHeadingProductionPDF(invoieData,{ companyinfo }, reportTitle);
                       }
                     }}
                   >
@@ -168,12 +184,12 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                     handleProductionExcel(
-                        totalProduction,
-                        finishGoods,
-                        companyinfo,
-                        reportTitle
-                      );
+                      //    handleProductionExcel(
+                      //       invoieData,
+                      //       finishGoods,
+                      //       companyinfo,
+                      //       reportTitle
+                      //     );
                     }}
                   >
                     Excel
@@ -193,19 +209,35 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
         </div>
       </div>
     );
-  }, [
-    finishGoods,
-    filterText,
-    totalProduction,
-    resetPaginationToggle,
-    companyinfo,
-    reportTitle,
-  ]);
+  }, [filterText, resetPaginationToggle, companyinfo]);
+
+  const handleApproveStatus=async(e,invoiceData)=>{
+    const updatedObject = {
+        ...invoiceData,
+        isApproved: true,
+        approveBy:makebyUser,
+        approveDate:piApproveDate
+      };
+      console.log(updatedObject)
+      const response = await updatePIStatus(updatedObject);
+      console.log(response.data.status);
+      if (response.data.status === 200) {
+        swal("Done", "Data Update status Successfully", "success");
+     
+      } else {
+        swal(
+          "Not Possible!",
+          "An problem occurred while updating the data",
+          "error"
+        );
+      }
+  }
+
   return (
     <>
       <div
         class="modal fade"
-        id="productionModal"
+        id="unapproveInvoiceModal"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
@@ -250,4 +282,4 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
   );
 };
 
-export default ProductionTotalModal;
+export default UnApproveInvoiceModal;

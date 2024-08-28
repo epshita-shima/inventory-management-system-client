@@ -401,7 +401,7 @@ const ProductionInfoList = ({ permission }) => {
   return (
     <div className="row px-5 mx-4 ">
       <ProductionListHeading
-      permission={permission}
+        permission={permission}
         totalProduction={productionInitialData}
         lastOneMonthProduction={lastOneMonthProduction}
         lastOneWeekData={lastOneWeekData}

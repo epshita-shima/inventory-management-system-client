@@ -7,6 +7,7 @@ const invoiceinfoApi = api.injectEndpoints({
       providesTags: [
         "insertinvoiceinfo",
         "updateinvoiceinfo",
+        "changeinvoicestatus",
         "deleteinvoiceinfo",
       ],
       refetchOnReconnect: true,
@@ -48,7 +49,18 @@ const invoiceinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
-
+    updateInvoiceStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/invoiceinfo",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changeinvoicestatus"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
     deleteInvoiceInfo: builder.mutation({
       query: (id) => ({
         url: `/invoiceinfo/${id}`,
@@ -68,5 +80,6 @@ export const {
   useInsertInvoiceInformationMutation,
   useGetSingleInvoiceQuery,
   useUpdateInvoiceInfoMutation,
+  useUpdateInvoiceStatusMutation,
   useDeleteInvoiceInfoMutation,
 } = invoiceinfoApi;

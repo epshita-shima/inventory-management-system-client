@@ -1,23 +1,8 @@
 import React, { useState } from "react";
-import ProductionTotalModal from "../../Production/Index/ProductionModal/ProductionTotalModal";
+import UnApproveInvoiceModal from "../../SalesManagement/Index/UnApproveInvoiceModal/UnApproveInvoiceModal";
 
-const ProductionListHeading = ({
-  totalProduction,
-  lastOneMonthProduction,
-  lastOneWeekData,
-  yesterdayData,
-  permission
-}) => {
-  console.log(JSON.stringify(totalProduction))
-  const [lastMonthModal, setLastMonthModal] = useState(false);
-  const [totalProductionModal, setTotalProductionModal] = useState(false);
-  const [lastOneWeekProdactionModal,setLastOneWeekProductionModal]=useState(false)
-  const [yesterdayProductionModal,setYesterdayProductionModal]=useState(false)
-  const totalProductionQty = totalProduction?.reduce((total, report) => total + report.productionQty, 0);
-  const totalLastOneMonthProduction = lastOneMonthProduction?.reduce((total, report) => total + report.productionQty, 0);
-  const totalLastlastOneWeekData = lastOneWeekData?.reduce((total, report) => total + report.productionQty, 0);
-  const totalYesterdayData = yesterdayData?.reduce((total, report) => total + report.productionQty, 0);
-  
+const InvoiceListHeading = ({totalApprovedPi,totalUnApprovePi,totalApprovePiAmount,totalUnApprovePiAmount,permission}) => {
+const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
   return (
     <div>
       <div class="row">
@@ -36,10 +21,10 @@ const ProductionListHeading = ({
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-                setLastMonthModal(false);
-                setTotalProductionModal(true);
-                setLastOneWeekProductionModal(false)
-                setYesterdayProductionModal(false)
+                // setLastMonthModal(false);
+                // setTotalProductionModal(true);
+                // setLastOneWeekProductionModal(false)
+                // setYesterdayProductionModal(false)
               }}
             >
               <p
@@ -50,13 +35,13 @@ const ProductionListHeading = ({
                   fontWeight: "600",
                 }}
               >
-                Total Production
+                Total PI
               </p>
               <h5
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalProductionQty}
+                {totalApprovedPi}
               </h5>
             </div>
           </div>
@@ -76,16 +61,10 @@ const ProductionListHeading = ({
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-                // const searchItem = mainData?.filter((x) => x.url === pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setActiveDataModal(true);
-                // }
-                setLastMonthModal(true);
-                setTotalProductionModal(false);
-                setLastOneWeekProductionModal(false)
-                setYesterdayProductionModal(false)
+                // setLastMonthModal(true);
+                // setTotalProductionModal(false);
+                // setLastOneWeekProductionModal(false)
+                // setYesterdayProductionModal(false)
               }}
             >
               <p
@@ -96,13 +75,13 @@ const ProductionListHeading = ({
                   fontWeight: "600",
                 }}
               >
-                Last One Month Production
+                Total Approve PI Amount
               </p>
               <h5
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalLastOneMonthProduction}
+                {totalApprovePiAmount}
               </h5>
             </div>
           </div>
@@ -120,18 +99,9 @@ const ProductionListHeading = ({
             <div
               class="card-body"
               data-toggle="modal"
-              data-target="#productionModal"
+              data-target="#unapproveInvoiceModal"
               onClick={() => {
-                setLastMonthModal(false);
-                setTotalProductionModal(false);
-                setLastOneWeekProductionModal(true)
-                setYesterdayProductionModal(false)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+                setShowUnApprovePIModal(true)
               }}
             >
               <p
@@ -142,13 +112,13 @@ const ProductionListHeading = ({
                   fontWeight: "600",
                 }}
               >
-                Last One Week Production
+                Total Unpprove PI
               </p>
               <h5
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalLastlastOneWeekData}
+                {totalUnApprovePi}
               </h5>
             </div>
           </div>
@@ -168,16 +138,7 @@ const ProductionListHeading = ({
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-                setLastMonthModal(false);
-                setTotalProductionModal(false);
-                setLastOneWeekProductionModal(false)
-                setYesterdayProductionModal(true)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+             setShowUnApprovePIModal(true)
               }}
             >
               <p
@@ -188,33 +149,25 @@ const ProductionListHeading = ({
                   fontWeight: "600",
                 }}
               >
-                Yeasterday Production
+                Total Unapprove PI Amount
               </p>
               <h5
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalYesterdayData}
+                {totalUnApprovePiAmount}
               </h5>
             </div>
           </div>
         </div>
       </div>
 
-      {totalProductionModal && (
-        <ProductionTotalModal totalProduction={totalProduction} permission={permission}/>
-      )}
-      {lastMonthModal && (
-        <ProductionTotalModal totalProduction={lastOneMonthProduction} permission={permission}/>
-      )}
-      {lastOneWeekProdactionModal && (
-        <ProductionTotalModal totalProduction={lastOneWeekData} permission={permission} />
-      )}
-      {yesterdayProductionModal && (
-        <ProductionTotalModal totalProduction={yesterdayData} permission={permission} />
-      )}
+       {showUnApprovePIModal && (
+            <UnApproveInvoiceModal  permission={permission}/>
+          )}
+        
     </div>
   );
 };
 
-export default ProductionListHeading;
+export default InvoiceListHeading;
