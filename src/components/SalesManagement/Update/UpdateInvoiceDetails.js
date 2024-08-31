@@ -140,7 +140,18 @@ const UpdateInvoiceDetails = ({finisGoodsOptions,  touched, errors,makebyUser, u
                                   textAlign: "center",
                                 }}
                                 onChange={(e)=>{
-                                
+                                  setUpdateSingleInvoiceData((prev) => {
+                                    const temp_details = [...prev.detailsData];
+                                    const newDetail = { ...temp_details[index] };
+                                    newDetail["description"] = e.target.value;
+                                    temp_details[index] = newDetail;
+                                    return {
+                                      ...prev,
+                                      detailsData: [...temp_details],
+                                      updateBy: makebyUser,
+                                      updateDate: new Date(),
+                                    };
+                                  });
                                 }}
                               />
                             </td>

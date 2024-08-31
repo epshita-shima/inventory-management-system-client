@@ -26,7 +26,7 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
     { value: "lcatsight", label: "LC At Sight" },
     { value: "test", label: "test" },
   ];
-  console.log("paymentTypeOptions", paymentTypeOptions);
+ 
   const initialValues = {
     detailsData: [
       {

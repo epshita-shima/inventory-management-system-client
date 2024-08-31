@@ -38,7 +38,7 @@ const InvoiceSingleEntry = ({
       label: "USD",
     },
   ];
-console.log(updateSingleInvoiceData)
+
   return (
     <div class="row row-cols-1 row-cols-lg-3">
       <div class="col-sm-12 col-md-6 col-lg-2">
@@ -214,7 +214,7 @@ console.log(updateSingleInvoiceData)
               }}
             ></Select>
 
-            {id ? "" :touched.customerID && errors.customerID && (
+            {id ? "" : touched.customerID && errors.customerID && (
               <div className="text-danger">{errors.customerID}</div>
             )}
           </div>
@@ -226,7 +226,7 @@ console.log(updateSingleInvoiceData)
               }}
               icon={faPlus}
               data-toggle="modal"
-              data-target="#commonInsertModalCenter"
+              data-target="#clientInsertInvoiceModalCenter"
               onClick={() => {}}
             />
           </div>
@@ -287,7 +287,6 @@ console.log(updateSingleInvoiceData)
                   setAcivePaymentModal(true);
                   setFieldValue("paymentId", e.value);
                 }
-             
               }}
             ></Select>
 

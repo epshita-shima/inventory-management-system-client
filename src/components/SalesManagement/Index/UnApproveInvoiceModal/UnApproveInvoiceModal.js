@@ -33,7 +33,7 @@ const UnApproveInvoiceModal = ({ permission }) => {
     setfilterUnapporovePiData(filteredUnApproveData)
   },[invoiceData])
 
-  console.log(filterUnapporovePiData)
+
   const columns = [
     {
       name: "Sl.",

@@ -1,7 +1,6 @@
 import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
-import { useEffect } from "react";
 import Select from "react-select";
 import swal from "sweetalert";
 const InsertProduction = ({
@@ -137,7 +136,6 @@ const InsertProduction = ({
                                     e.value
                                   );
                                   if(findCFTPerKG){
-                                    console.log(findCFTPerKG)
                                     const calculateAsPerRatio =
                                       (labelData / findCFTPerKG) *
                                       values.totalBatch;

@@ -31,6 +31,8 @@ import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymne
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import InvoiceCommonModal from "../../Common/CommonModal/InvoiceCommonModal";
 import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
+import InvoiceClientEntryModal from "../../Common/CommonModal/InvoiceClientEntryModal";
+import InvoiceFinishGoodsItemsEntryModal from "../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
@@ -311,7 +313,7 @@ const SalesManagementCommonPart = () => {
                                           ];
                                           temp__details.push({
                                             itemId: "",
-                                            itemDescription: "",
+                                            description: "",
                                             quantity: "",
                                             unitPrice: "",
                                             totalAmount: "",
@@ -381,6 +383,8 @@ const SalesManagementCommonPart = () => {
         acivePaymentModal={acivePaymentModal}
         setAcivePaymentModal={setAcivePaymentModal}
       ></InvoiceCommonModal>
+      <InvoiceClientEntryModal/>
+      <InvoiceFinishGoodsItemsEntryModal/>
     </div>
   );
 };

@@ -79,7 +79,7 @@ const InsertGRNDetailsInfo = ({
                 );
 
                 const itemIdToCalculate = matchingItem._id;
-                const totalQuantity = grnInfoData.reduce((acc, cur) => {
+                const totalQuantity = grnInfoData?.reduce((acc, cur) => {
                   const itemQuantity = cur.detailsData
                     .filter(
                       (item) =>

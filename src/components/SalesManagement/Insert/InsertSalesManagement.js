@@ -100,7 +100,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                                 }}
                                 icon={faPlus}
                                 data-toggle="modal"
-                                data-target="#commonInsertModalCenter"
+                                data-target="#finishGoodsInsertInvoiceModalCenter"
                                 onClick={() => {}}
                               />
                             </div>
