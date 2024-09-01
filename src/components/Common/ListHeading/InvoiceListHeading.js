@@ -1,8 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UnApproveInvoiceModal from "../../SalesManagement/Index/UnApproveInvoiceModal/UnApproveInvoiceModal";
+import ApproveInvoiceModal from "../../SalesManagement/Index/ApproveInvoiceModal/ApproveInvoiceModal";
 
-const InvoiceListHeading = ({totalApprovedPi,totalUnApprovePi,totalApprovePiAmount,totalUnApprovePiAmount,permission}) => {
-const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
+const InvoiceListHeading = ({
+  totalApprovedPi,
+  totalUnApprovePi,
+  totalApprovePiAmount,
+  totalUnApprovePiAmount,
+  permission,
+  userRoleId,
+  userRoles,
+  finishGoodsData,unitInfo,
+  sizeInfo,
+  paymentInfo,
+  base64Logo,
+  signature,
+}) => {
+  const [showUnApprovePIModal, setShowUnApprovePIModal] = useState(false);
+  const [showApprovePIModal, setShowApprovePIModal] = useState(false);
+  const [matchUserData, setMatchUserData] = useState([]);
+
+  useEffect(() => {
+    const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
+    setMatchUserData(matchUserRole);
+  }, [userRoleId, userRoles]);
+
   return (
     <div>
       <div class="row">
@@ -19,12 +41,10 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
             <div
               class="card-body"
               data-toggle="modal"
-              data-target="#productionModal"
+              data-target="#approveInvoiceModal"
               onClick={() => {
-                // setLastMonthModal(false);
-                // setTotalProductionModal(true);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(false)
+                setShowApprovePIModal(true);
+                setShowUnApprovePIModal(false);
               }}
             >
               <p
@@ -35,7 +55,7 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
                   fontWeight: "600",
                 }}
               >
-                Total PI
+                Total Approve PI
               </p>
               <h5
                 class="card-text"
@@ -81,7 +101,7 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalApprovePiAmount}
+                {totalApprovePiAmount?.toLocaleString()}
               </h5>
             </div>
           </div>
@@ -101,7 +121,8 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
               data-toggle="modal"
               data-target="#unapproveInvoiceModal"
               onClick={() => {
-                setShowUnApprovePIModal(true)
+                setShowUnApprovePIModal(true);
+                setShowApprovePIModal(false);
               }}
             >
               <p
@@ -138,7 +159,7 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-             setShowUnApprovePIModal(true)
+                setShowUnApprovePIModal(true);
               }}
             >
               <p
@@ -155,17 +176,26 @@ const [showUnApprovePIModal,setShowUnApprovePIModal]=useState(false)
                 class="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
-                {totalUnApprovePiAmount}
+                {totalUnApprovePiAmount?.toLocaleString()}
               </h5>
             </div>
           </div>
         </div>
       </div>
 
-       {showUnApprovePIModal && (
-            <UnApproveInvoiceModal  permission={permission}/>
-          )}
-        
+      {showUnApprovePIModal && (
+        <UnApproveInvoiceModal permission={permission} 
+        userRoleId={userRoleId}
+        userRoles={userRoles}
+        finishGoodsData={finishGoodsData}
+        unitInfo={unitInfo}
+  sizeInfo={sizeInfo}
+  paymentInfo={paymentInfo}
+  base64Logo={base64Logo}
+  signature={ signature}
+         />
+      )}
+      {showApprovePIModal && <ApproveInvoiceModal permission={permission} />}
     </div>
   );
 };

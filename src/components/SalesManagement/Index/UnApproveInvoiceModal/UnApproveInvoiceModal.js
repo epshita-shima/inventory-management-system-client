@@ -2,37 +2,68 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import { useGetAllInvoiceInformationQuery, useUpdateInvoiceStatusMutation } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import {
+  useGetAllInvoiceInformationQuery,
+  useUpdateInvoiceStatusMutation,
+} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckToSlot,
   faDownload,
+  faEye,
+  faFilePdf,
   faPenToSquare,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
+import handleInvoiceExcel from "../../../ReportProperties/handleInvoiceExcel";
+import { downloadInvoiceSingleDataPDF } from "../../../ReportProperties/HeaderFooter";
+import './UnApproveInvoiceModal.css'
+import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownload";
 
-const UnApproveInvoiceModal = ({ permission }) => {
+const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsData,unitInfo,
+  sizeInfo,
+  paymentInfo,
+  base64Logo,
+  signature,}) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
   const reportTitle = "INVOICE REPORT";
   const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-  const [filterUnapporovePiData,setfilterUnapporovePiData]=useState([])
+  const [filterUnapporovePiData, setfilterUnapporovePiData] = useState([]);
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
-  const [piApproveDate,setPiApproveDate]=useState(new Date())
-  const [updatePIStatus]=useUpdateInvoiceStatusMutation()
+  const [piApproveDate, setPiApproveDate] = useState(new Date());
+  const [updatePIStatus] = useUpdateInvoiceStatusMutation();
+  const [approveStatus, setApproveStatus] = useState([]);
 
-  useEffect(()=>{
-    const filteredUnApproveData=invoiceData?.filter((x)=>x.isApproved==false)
-    setfilterUnapporovePiData(filteredUnApproveData)
-  },[invoiceData])
+  console.log(makebyUser)
+  useEffect(() => {
+    const invoiceDatas = invoiceData?.filter(
+      (data) => data.makeBy === makebyUser
+    );
+    const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
+    const filteredUnApproveData = invoiceDatas?.filter(
+      (x) => x.isApproved == false
+    );
+    const filteredUnApproveDataProtected = invoiceData?.filter(
+      (x) => x.isApproved == false
+    );
+    if (
+      matchUserRole?._id === "65d48768a106fcb4f5c28071" ||
+      matchUserRole?._id === "65d486123346cddf01c3773a"
+    ) {
+      setfilterUnapporovePiData(filteredUnApproveDataProtected);
+    } else {
+      setfilterUnapporovePiData(filteredUnApproveData);
+    }
 
+    setApproveStatus(matchUserRole);
+  }, [invoiceData, userRoleId, userRoles, makebyUser]);
 
   const columns = [
     {
@@ -55,6 +86,7 @@ const UnApproveInvoiceModal = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
     {
       name: "Client Name",
@@ -67,6 +99,7 @@ const UnApproveInvoiceModal = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
     {
       name: "Total Quantity",
@@ -80,6 +113,7 @@ const UnApproveInvoiceModal = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
     {
       name: "Total Amount",
@@ -93,26 +127,92 @@ const UnApproveInvoiceModal = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
 
-    {
-      name: "Status",
-      button: true,
-      width: "100px",
-      grow: 2,
-      cell: (filterUnapporovePiData) => (
-        <div className="d-flex justify-content-between align-items-center">
-          <input
-            type="checkbox"
-            aria-label={`Checkbox for data item`}
-            checked={filterUnapporovePiData?.isApproved} // Assuming status is a boolean field
-            onChange={(e) => {
-                 handleApproveStatus(e,filterUnapporovePiData)
-            }}
-          />
-        </div>
-      ),
-    },
+    ...(approveStatus?._id === "65d48768a106fcb4f5c28071" ||
+    approveStatus?._id === "65d486123346cddf01c3773a"
+      ? [
+          {
+            name: "Status",
+            button: true,
+            width: "100px",
+            grow: 2,
+            cell: (filterUnapporovePiData) => (
+              <div className="d-flex justify-content-between align-items-center">
+                {/* <input
+                  type="checkbox"
+                  aria-label={`Checkbox for data item`}
+                  checked={filterUnapporovePiData?.isApproved}
+                  onChange={(e) => {
+                    handleApproveStatus(e, filterUnapporovePiData);
+                  }}
+                /> */}
+                <a
+                  target="_blank"
+                  className="action-icon"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="approve item"
+                  style={{
+                    textDecoration: "none",
+                    color: "red",
+                    // fontSize: "22px",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    border: `${
+                      filterUnapporovePiData?.items?.length == 0
+                        ? "2px solid gray"
+                        : "2px solid red"
+                    }`,
+                    padding: "3px",
+                    borderRadius: "5px",
+                  }}
+                  onClick={(e) => {
+                    handleApproveStatus(e,filterUnapporovePiData);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
+                </a>
+                {permission?.isPDF ? (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Update item"
+              style={{
+                color: "orange",
+                border: "2px solid orange",
+                padding: "3px",
+                borderRadius: "5px",
+                marginLeft:"10px"
+              }}
+              onClick={() => {
+                downloadInvoicePDF(
+                  filterUnapporovePiData,
+                  finishGoodsData,
+                  customerInfo,
+                  unitInfo,
+                  sizeInfo,
+                  paymentInfo,
+                  base64Logo,
+                  signature,
+                  { companyinfo },
+                  reportTitle
+                );
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+            </a>
+          ) : (
+            ""
+          )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const customStyles = {
@@ -172,7 +272,12 @@ const UnApproveInvoiceModal = ({ permission }) => {
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        //   downloadHeadingProductionPDF(invoieData,{ companyinfo }, reportTitle);
+                        downloadInvoiceSingleDataPDF(
+                          invoiceData,
+                          customerInfo,
+                          { companyinfo },
+                          reportTitle
+                        );
                       }
                     }}
                   >
@@ -184,12 +289,12 @@ const UnApproveInvoiceModal = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      //    handleProductionExcel(
-                      //       invoieData,
-                      //       finishGoods,
-                      //       companyinfo,
-                      //       reportTitle
-                      //     );
+                      handleInvoiceExcel(
+                        invoiceData,
+                        customerInfo,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -209,75 +314,80 @@ const UnApproveInvoiceModal = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, companyinfo]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    companyinfo,
+    invoiceData,
+    customerInfo,
+  ]);
 
-  const handleApproveStatus=async(e,invoiceData)=>{
+  const handleApproveStatus = async (e, invoiceData) => {
     const updatedObject = {
-        ...invoiceData,
-        isApproved: true,
-        approveBy:makebyUser,
-        approveDate:piApproveDate
-      };
-      console.log(updatedObject)
-      const response = await updatePIStatus(updatedObject);
-      console.log(response.data.status);
-      if (response.data.status === 200) {
-        swal("Done", "Data Update status Successfully", "success");
-     
-      } else {
-        swal(
-          "Not Possible!",
-          "An problem occurred while updating the data",
-          "error"
-        );
-      }
-  }
+      ...invoiceData,
+      isApproved: true,
+      approveBy: makebyUser,
+      approveDate: new Date(),
+    };
+    console.log(updatedObject)
+    const response = await updatePIStatus(updatedObject);
+    if (response.data.status === 200) {
+      swal("Done", "Data Update status Successfully", "success");
+    } else {
+      swal(
+        "Not Possible!",
+        "An problem occurred while updating the data",
+        "error"
+      );
+    }
+  };
 
   return (
     <>
       <div
-        class="modal fade"
-        id="unapproveInvoiceModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                All User List
-              </h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div
-                className=" "
-                style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-              >
-                <DataTable
-                  columns={columns}
-                  data={filteredItems}
-                  defaultSortField="name"
-                  customStyles={customStyles}
-                  striped
-                  pagination
-                  subHeader
-                  subHeaderComponent={subHeaderComponent}
-                />
-              </div>
-            </div>
-          </div>
+  class="modal fade"
+  id="unapproveInvoiceModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog fullscreen-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Unapprove PI List
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div
+          className=""
+          style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
+        >
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            defaultSortField="name"
+            customStyles={customStyles}
+            striped
+            pagination
+            subHeader
+            subHeaderComponent={subHeaderComponent}
+          />
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
     </>
   );
 };

@@ -26,7 +26,7 @@ const InvoiceSingleEntry = ({
   const [piDate, setPiDate] = useState(new Date());
   const [expireDate, setExpireDate] = useState(new Date());
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-
+console.log(serialValue)
   const customerOptions = clientInfoDropdown(customerInfo);
   const currencyOptions = [
     {
@@ -206,7 +206,7 @@ const InvoiceSingleEntry = ({
                       ? "1"
                       : serialValue?.serialNo
                   }`;
-  
+  console.log(serialValue?.serialNo,makeBatchNo)
                   setFieldValue("invoiceNo", makeBatchNo);
                   setFieldValue("customerID", e.value);
                 }

@@ -83,10 +83,74 @@ const downloadHeadingProductionPDF = (data,companyinfo, reportTitle) => {
     head: [
       [
         "Sl.",
-        "PRoduction Date",
+        "Production Date",
         "Batch No",
         "Total Batch",
         "Production Qty",
+      ],
+    ],
+    body:finalRows,
+    startY:  55,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128], // Change the color here, e.g., red
+      textColor: [255, 255, 255], // Header text color
+    },
+    theme: "grid",
+    tableLineWidth: 0.5, // Border width for the whole table
+    styles: {
+      lineColor: [0, 0, 0], // Color for all borders
+      textColor: [0, 0, 0],
+      font: "times", // All text color
+      fontSize: 10,
+      // overflow: 'linebreak',
+      // cellWidth: 'wrap',
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" }, // Example for the first column
+      1: { cellWidth: "auto" }, // Example for the second column
+      // You can specify auto or a specific width for each column
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center"; // Align all cell content to center
+    },
+  });
+
+  // Add footer text to each page
+  addFooter(doc1, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc1.save(`${fileName}.pdf`);
+};
+
+const downloadInvoiceSingleDataPDF = (data,customerInfo,companyinfo, reportTitle) => {
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
+  const doc1 = new jsPDF();
+  const finalRows = data?.map((row, index) => [
+    index + 1,
+   new Date(row.piDate).toLocaleDateString("en-CA"),
+    row.invoiceNo,
+    customerInfo
+    ?.filter((rawItem) => rawItem._id === row.customerID)
+    .map((filteredItem) => filteredItem.clientName)
+    .join(", "),
+    row.detailsData.reduce((subTotal, item) => {
+      return subTotal + item.quantity;
+    }, 0),
+    row.detailsData.reduce((subTotal, item) => {
+      return subTotal + item.totalAmount;
+    }, 0)
+
+  ]);
+  doc1.autoTable({
+    head: [
+      [
+        "Sl.",
+        "PI Date",
+        "Invoice No",
+        "Client Name",
+        "Total Quantity",
+        "Total Amount",
       ],
     ],
     body:finalRows,
@@ -649,7 +713,7 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
 
     doc.setFontSize(14);
     doc.setFont("times", "bold");
-    doc.text(`${reportTitle}`, doc.internal.pageSize.width / 2, headerY + 30, {
+    doc.text(`${reportTitle}`, doc.internal.pageSize.width / 2, headerY + 32, {
       align: "center",
       width: companyDetailsWidth,
     });
@@ -717,6 +781,7 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
     );
   }
 };
+
 const addFooter1 = (doc, companyinfo, reportTitle) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
   const logoWidthPercentage = 0.15; // 15% of page width for the logo
@@ -864,5 +929,6 @@ export {
   downloadAllImage,
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
-  downloadHeadingProductionPDF
+  downloadHeadingProductionPDF,
+  downloadInvoiceSingleDataPDF
 };

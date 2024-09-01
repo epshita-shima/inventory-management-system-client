@@ -8,6 +8,7 @@ import {
 } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faDownload,
   faFilePdf,
   faPenToSquare,
   faRefresh,
@@ -23,92 +24,154 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import reportImage from "../../../../assets/images/reportlogo.png";
-import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png"
+import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png";
+import { downloadInvoiceSingleDataPDF } from "../../../ReportProperties/HeaderFooter";
+import handleInvoiceExcel from "../../../ReportProperties/handleInvoiceExcel";
+import { useGetUserQuery } from "../../../../redux/api/apiSlice";
+import { useGetUserRoleQuery } from "../../../../redux/features/userrole/userroleApi";
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const { data: invoiceData, refetch } =
+  const { data: invoiceDatas, refetch } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-  const {data:finishGoodsData}=useGetAllItemInformationQuery(undefined);
-  const{data:unitInfo}=useGetAllItemUnitQuery(undefined)
-  const {data:sizeInfo}=useGetAllItemSizeQuery(undefined)
-  const {data:companyinfo}=useGetCompanyInfoQuery(undefined)
-  const {data:paymentInfo}=useGetAllPaymentInformationQuery(undefined);
+  const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
+  const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
+  const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const [deleteInvoice] = useDeleteInvoiceInfoMutation();
   const [totalApprovedPi, setTotalApprovePi] = useState([]);
   const [totalUnApprovePi, setTotalUnApprovePi] = useState([]);
   const [totalApprovePiAmount, setTotalApprovePiAmount] = useState(0);
   const [totalUnApprovePiAmount, setTotalUnApprovePiAmount] = useState(0);
-  const [customerInformation,setCustomerInformation]=useState([])
-  const reportTitle="PRO FORMA INVOICE"
-  const base64Logo =reportImage;
-  const signature=authorizesSingatureImage
-  console.log(customerInformation)
+  const [userWaysListData, setUserWaysListData] = useState([]);
+  const reportTitle = "PRO FORMA INVOICE";
+  const base64Logo = reportImage;
+  const signature = authorizesSingatureImage;
+
+  const { data: userRoles } = useGetUserRoleQuery(undefined);
+  const getUser = localStorage.getItem("user");
+  const getUserParse = JSON.parse(getUser);
+  const userRoleId = getUserParse[0].roleId;
+  const makebyUser = getUserParse[0].username;
+
   useEffect(() => {
-    const filterApprovePi = invoiceData?.filter((x) => x.isApproved === true);
-    const filterUnApprovePi = invoiceData?.filter(
-      (x) => x.isApproved === false
+    const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
+    const invoiceData = invoiceDatas?.filter(
+      (data) => data.makeBy === makebyUser
     );
-    console.log(filterUnApprovePi);
-    const totalApprovedAmount = invoiceData
-      ?.filter((invoice) => invoice?.isApproved === true)
-      .reduce((total, invoice) => {
-        return (
-          total +
-          invoice.detailsData.reduce(
-            (subTotal, item) => subTotal + item.totalAmount,
-            0
-          )
-        );
-      }, 0);
 
-    const totalUnapprovedAmount = invoiceData
-      ?.filter((invoice) => invoice?.isApproved === false)
-      .reduce((total, invoice) => {
-        return (
-          total +
-          invoice.detailsData.reduce(
-            (subTotal, item) => subTotal + item.totalAmount,
-            0
-          )
-        );
-      }, 0);
+    if(
+      matchUserRole?._id === "65d48768a106fcb4f5c28071" ||
+      matchUserRole?._id === "65d486123346cddf01c3773a"
+    ){
+      const filterApprovePi = invoiceDatas?.filter((x) => x.isApproved === true);
+      const filterUnApprovePi = invoiceDatas?.filter(
+        (x) => x.isApproved === false
+      );
+  
+      const totalApprovedAmount = invoiceDatas
+        ?.filter((invoice) => invoice?.isApproved === true)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+  
+      const totalUnapprovedAmount = invoiceDatas
+        ?.filter((invoice) => invoice?.isApproved === false)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+        setTotalApprovePi(filterApprovePi);
+        setTotalUnApprovePi(filterUnApprovePi);
+        setTotalApprovePiAmount(totalApprovedAmount);
+        setTotalUnApprovePiAmount(totalUnapprovedAmount);
+    }
+    else{
+      const filterApprovePi = invoiceData?.filter((x) => x.isApproved === true);
+      const filterUnApprovePi = invoiceData?.filter(
+        (x) => x.isApproved === false
+      );
+  
+      const totalApprovedAmount = invoiceData
+        ?.filter((invoice) => invoice?.isApproved === true)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+  
+      const totalUnapprovedAmount = invoiceData
+        ?.filter((invoice) => invoice?.isApproved === false)
+        .reduce((total, invoice) => {
+          return (
+            total +
+            invoice.detailsData.reduce(
+              (subTotal, item) => subTotal + item.totalAmount,
+              0
+            )
+          );
+        }, 0);
+        setTotalApprovePi(filterApprovePi);
+        setTotalUnApprovePi(filterUnApprovePi);
+        setTotalApprovePiAmount(totalApprovedAmount);
+        setTotalUnApprovePiAmount(totalUnapprovedAmount);
+    }
 
-    setTotalApprovePi(filterApprovePi);
-    setTotalUnApprovePi(filterUnApprovePi);
-    setTotalApprovePiAmount(totalApprovedAmount);
-    setTotalUnApprovePiAmount(totalUnapprovedAmount);
-  }, [invoiceData,customerInfo]);
+    if (
+      matchUserRole?._id === "65d48768a106fcb4f5c28071" ||
+      matchUserRole?._id === "65d486123346cddf01c3773a"
+    ) {
+      setUserWaysListData(invoiceDatas);
+    } else {
+      setUserWaysListData(invoiceData);
+    }
+  }, [invoiceDatas, customerInfo, makebyUser, userRoleId, userRoles]);
 
   const columns = [
     {
       name: "Sl.",
-      selector: (invoiceData, index) => index + 1,
+      selector: (userWaysListData, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
       name: "Pi Date",
-      selector: (invoiceData) =>
-        new Date(invoiceData?.piDate).toLocaleDateString("en-CA"),
+      selector: (userWaysListData) =>
+        new Date(userWaysListData?.piDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Invoice No",
-      selector: (invoiceData) => invoiceData?.invoiceNo,
+      selector: (userWaysListData) => userWaysListData?.invoiceNo,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Client Name",
-      selector: (invoiceData) => {
+      selector: (userWaysListData) => {
         const customerName = customerInfo?.find(
-          (x) => x._id === invoiceData?.customerID
+          (x) => x._id === userWaysListData?.customerID
         );
         return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
@@ -118,8 +181,8 @@ const InvoiceInformationDataList = ({ permission }) => {
     },
     {
       name: "Total Quantity",
-      selector: (invoiceData) => {
-        const totalQuantity = invoiceData.detailsData.reduce(
+      selector: (userWaysListData) => {
+        const totalQuantity = userWaysListData.detailsData.reduce(
           (acc, cur) => acc + parseInt(cur.quantity, 10),
           0
         );
@@ -131,8 +194,8 @@ const InvoiceInformationDataList = ({ permission }) => {
     },
     {
       name: "Total Amount",
-      selector: (invoiceData) => {
-        const totalAmount = invoiceData.detailsData.reduce(
+      selector: (userWaysListData) => {
+        const totalAmount = userWaysListData.detailsData.reduce(
           (acc, cur) => acc + parseInt(cur.totalAmount, 10),
           0
         );
@@ -148,7 +211,7 @@ const InvoiceInformationDataList = ({ permission }) => {
       button: true,
       width: "150px",
       grow: 2,
-      cell: (invoiceData) => (
+      cell: (userWaysListData) => (
         <div className="d-flex justify-content-between align-content-center">
           {permission?.isPDF ? (
             <a
@@ -165,7 +228,7 @@ const InvoiceInformationDataList = ({ permission }) => {
               }}
               onClick={() => {
                 downloadInvoicePDF(
-                  invoiceData,
+                  userWaysListData,
                   finishGoodsData,
                   customerInfo,
                   unitInfo,
@@ -198,7 +261,7 @@ const InvoiceInformationDataList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-invoice/${invoiceData?._id}`);
+                window.open(`update-invoice/${userWaysListData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -222,7 +285,7 @@ const InvoiceInformationDataList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(invoiceData?.value);
+                console.log(userWaysListData?.value);
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",
@@ -231,7 +294,7 @@ const InvoiceInformationDataList = ({ permission }) => {
                   dangerMode: true,
                 }).then((willDelete) => {
                   if (willDelete) {
-                    deleteInvoice(invoiceData?._id);
+                    deleteInvoice(userWaysListData?._id);
                     swal("Poof! Your data has been deleted!", {
                       icon: "success",
                     });
@@ -273,7 +336,7 @@ const InvoiceInformationDataList = ({ permission }) => {
     },
   };
 
-  const filteredItems = invoiceData?.filter(
+  const filteredItems = userWaysListData?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
@@ -289,13 +352,60 @@ const InvoiceInformationDataList = ({ permission }) => {
     return (
       <div className="d-flex justify-content-end align-items-center w-100">
         <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex ">
+          <div className="table-head-icon d-flex align-items-center me-2">
             <div>
               <FontAwesomeIcon
                 icon={faRefresh}
                 onClick={() => refetch()}
-              ></FontAwesomeIcon>{" "}
+              ></FontAwesomeIcon>
               &nbsp;
+            </div>
+            <div class="dropdown">
+              <button
+                class="btn btn-download dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      if (companyinfo?.length !== 0 || undefined) {
+                        downloadInvoiceSingleDataPDF(
+                          userWaysListData,
+                          customerInfo,
+                          { companyinfo },
+                          reportTitle
+                        );
+                      }
+                    }}
+                  >
+                    PDF
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      handleInvoiceExcel(
+                        userWaysListData,
+                        customerInfo,
+                        companyinfo,
+                        reportTitle
+                      );
+                    }}
+                  >
+                    Excel
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -307,7 +417,14 @@ const InvoiceInformationDataList = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    refetch,
+    companyinfo,
+    userWaysListData,
+    customerInfo,
+  ]);
 
   return (
     <div
@@ -320,6 +437,14 @@ const InvoiceInformationDataList = ({ permission }) => {
         totalApprovePiAmount={totalApprovePiAmount}
         totalUnApprovePiAmount={totalUnApprovePiAmount}
         permission={permission}
+        userRoleId={userRoleId}
+        userRoles={userRoles}
+        finishGoodsData={finishGoodsData}
+        unitInfo={unitInfo}
+  sizeInfo={sizeInfo}
+  paymentInfo={paymentInfo}
+  base64Logo={base64Logo}
+  signature={ signature}
       ></InvoiceListHeading>
       <div className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view">
         <div className="shadow-lg">

@@ -1,49 +1,41 @@
-import React from 'react'
-import InsertFgItemInfo from './../../FGItemProfile/ItemProfileInformation/Insert/InsertFgItemInfo';
-
+import React from "react";
+import InsertFgItemInfo from "./../../FGItemProfile/ItemProfileInformation/Insert/InsertFgItemInfo";
+import "./InvoiceFinishGoodsItemsEntryModal.css";
 const InvoiceFinishGoodsItemsEntryModal = () => {
-    return (
-        <div
-          class="modal fade"
-          id="finishGoodsInsertInvoiceModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="commonInsertModalCenterTitle"
-          aria-hidden="true"
-          style={{ overflow: "hidden" }}
-        >
-          <div
-            class="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
-            role="document"
-          >
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 className="modal-title" id="commonInsertModalCenterLongTitle">
-                  Insert Client Information
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => {}}
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div
-                className="modal-body"
-                style={{
-                  overflowY: "scroll",
-                  height: "calc(80vh - 120px)",
-                }}
+  return (
+    <>
+      <div
+        class="modal fade"
+        id="finishGoodsInsertInvoiceModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="commonInsertModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog fullscreen-modal-insertItem" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="commonInsertModalCenterLongTitle">
+                Insert Finish Goods Item
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
               >
-                {<InsertFgItemInfo></InsertFgItemInfo>}
-              </div>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div className="">{<InsertFgItemInfo></InsertFgItemInfo>}</div>
             </div>
           </div>
         </div>
-      );
-}
+      </div>
+    </>
+  );
 
-export default InvoiceFinishGoodsItemsEntryModal
+};
+
+export default InvoiceFinishGoodsItemsEntryModal;

@@ -12,10 +12,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import InsertSalesManagement from "../Insert/InsertSalesManagement";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import {
-  finishGoodsDropdown,
   finishGoodsWithSizeItemDropdown,
   paymentInfoDropdown,
-  unitInformationDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import {
@@ -33,6 +31,7 @@ import InvoiceCommonModal from "../../Common/CommonModal/InvoiceCommonModal";
 import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
 import InvoiceClientEntryModal from "../../Common/CommonModal/InvoiceClientEntryModal";
 import InvoiceFinishGoodsItemsEntryModal from "../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
+
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
@@ -98,12 +97,14 @@ const SalesManagementCommonPart = () => {
       const maxSerialNoObject = serialNo.reduce((max, current) => {
         if (current.type === "invoice") {
           // If max is undefined or current serialNo is greater, return current
+       
           return max && current.serialNo > max.serialNo
             ? current
             : max || current;
         }
         return max;
       }, undefined);
+      console.log(maxSerialNoObject)
       if (maxSerialNoObject) {
         setSerialValue(maxSerialNoObject);
       }
@@ -113,6 +114,7 @@ const SalesManagementCommonPart = () => {
     }
   }, [serialNo, id, getSingleInvoiceData]);
 
+  console.log(serialValue)
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     const serialData = {
@@ -255,6 +257,7 @@ const SalesManagementCommonPart = () => {
                                   setUpdateSingleInvoiceData={
                                     setUpdateSingleInvoiceData
                                   }
+                                  serialValue={serialValue}
                                 ></InvoiceSingleEntry>
                               }
                               <div>

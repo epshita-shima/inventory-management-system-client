@@ -88,7 +88,7 @@ const InvoiceInformationList = () => {
             >
               <div className="">
                 <a
-                  href="/main-view/create-production"
+                  href="/main-view/create-invoice"
                   target="_blank"
                   className="text-white text-center d-flex justify-content-center align-items-center"
                   style={{

@@ -1,0 +1,21 @@
+.fullscreen-modal-client-insert {
+    width: 95%;
+    max-width: 95%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .fullscreen-modal-client-insert .modal-content {
+    height: 95vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .fullscreen-modal-client-insert .modal-body {
+    flex-grow: 1;
+    overflow-y: auto;
+  }

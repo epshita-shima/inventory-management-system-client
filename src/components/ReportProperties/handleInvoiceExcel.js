@@ -1,9 +1,9 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleProductionExcel = (
+const handleInvoiceExcel = (
   data,
-  finishGoods,
+  customerInfo,
   companyinfo,
   reportTitle
 ) => {
@@ -12,34 +12,20 @@ const handleProductionExcel = (
   const worksheet = workbook.addWorksheet("GRNlist Report");
 
   const columnsToInclude = [
-    "productionDate",
-    "batchNo",
-    "totalBatch",
-    "receipeQtyRatio",
-    "productionItemName",
-    "productionQty",
-    "productionStart",
-    "productionEnd",
-    "totalHour",
-    "wastageQty",
-    "expectedProductionQtyPerBatch",
-    "expectedProductionQty",
+    "piDate",
+    "invoiceNo",
+    "customerID",
+    "quantity",
+    "totalAmount",
   ];
 
 
   let dynamicColumns = [
-    { header: "Production Date", key: "productionDate", width: 15 },
-    { header: "Batch No", key: "batchNo", width: 15 },
-    { header: "Total Batch", key: "totalBatch", width: 20 },
-    { header: 'Receipe Qty Ratio', key: 'receipeQtyRatio', width: 20 },
-    { header: 'Production ItemName', key: 'productionItemName', width: 20 },
-    { header: 'Production Qty', key: 'productionQty', width: 20 },
-    { header: 'Production Start', key: 'productionStart', width: 20 },
-    { header: 'Production End', key: 'productionEnd', width: 20 },
-    { header: 'Total Hour', key: 'totalHour', width: 20 },
-    { header: 'Wastage Qty', key: 'wastageQty', width: 20 },
-    { header: 'Expected Production Qty(PerBatch)', key: 'expectedProductionQtyPerBatch', width: 20 },
-    { header: 'Expected Production Qty', key: 'expectedProductionQty', width: 20 },
+    { header: "PI Date", key: "piDate", width: 15 },
+    { header: "Invoice No", key: "invoiceNo", width: 15 },
+    { header: "Customer Name", key: "customerID", width: 20 },
+    { header: 'Total Quantity', key: 'quantity', width: 20 },
+    { header: 'Total Amount', key: 'totalAmount', width: 20 },
   ];
   
   columnsToInclude.forEach((item, index) => {
@@ -127,29 +113,25 @@ const handleProductionExcel = (
 
 
   data.forEach((item) => {
-    const itemName = finishGoods
-      ?.filter((items) => item?.productionItemName === items._id)
-      .map((filteredItem) => filteredItem.itemName)
+    const customerName = customerInfo
+      ?.filter((items) => item?.customerID === items._id)
+      .map((filteredItem) => filteredItem.clientName)
       .join(", ");
       
-      console.log(itemName)
-    const unitPrice = item.detailsData
-      .map((detail) => detail.unitPrice)
-      .join(", ");
+ 
+    const totalQuantity = item.detailsData.reduce((subTotal, item) => {
+        return subTotal + item.quantity;
+      }, 0)
+    const totalAmount = item.detailsData.reduce((subTotal, item) => {
+        return subTotal + item.totalAmount;
+      }, 0)
 
     const values = {
-      productionDate:item.productionDate,
-      batchNo:item.batchNo,
-      totalBatch:item.totalBatch,
-      receipeQtyRatio:item.receipeQtyRatio,
-      productionItemName:itemName,
-      productionQty:item.productionQty,
-      productionStart:item.productionStart,
-      productionEnd:item.productionEnd,
-      totalHour:item.totalHour,
-      wastageQty:item.wastageQty,
-      expectedProductionQtyPerBatch:item.expectedProductionQtyPerBatch,
-      expectedProductionQty:item.expectedProductionQty,
+      piDate:new Date(item.piDate).toLocaleDateString("en-CA"),
+      invoiceNo:item.invoiceNo,
+      customerID:customerName,
+      quantity:totalQuantity,
+      totalAmount:totalAmount,
     };
  
   const singleRow = worksheet.addRow(dynamicColumns.map((col) =>
@@ -171,18 +153,11 @@ const handleProductionExcel = (
   });
 
   const datas = {
-    productionDate:"",
-    batchNo:"",
-    totalBatch:"",
-    receipeQtyRatio:"",
-    productionItemName:"",
-    productionQty:"",
-    productionStart:"",
-    productionEnd:"",
-    totalHour:"",
-    wastageQty:"",
-    expectedProductionQtyPerBatch:"",
-    expectedProductionQty:"",
+    piDate:"",
+    invoiceNo:"",
+    customerID:"",
+    quantity:"",
+    totalAmount:"",
   };
   const footerRow = worksheet.addRow(columnsToInclude.map((col) =>
     datas[col]
@@ -203,4 +178,4 @@ const handleProductionExcel = (
   });
 };
 
-export default handleProductionExcel;
+export default handleInvoiceExcel;
