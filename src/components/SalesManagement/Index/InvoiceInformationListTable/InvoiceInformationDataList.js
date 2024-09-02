@@ -57,6 +57,7 @@ const InvoiceInformationDataList = ({ permission }) => {
   const userRoleId = getUserParse[0].roleId;
   const makebyUser = getUserParse[0].username;
 
+  console.log(JSON.stringify(userWaysListData))
   useEffect(() => {
     const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
     const invoiceData = invoiceDatas?.filter(

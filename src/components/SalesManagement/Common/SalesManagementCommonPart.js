@@ -62,6 +62,7 @@ const SalesManagementCommonPart = () => {
     approveBy:"",
     approveDate:"",
     isApproved:false,
+    specialApproveForDelivary:false,
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -76,6 +77,7 @@ const SalesManagementCommonPart = () => {
       },
     ],
   };
+  
   const paymentTypeOptions = paymentInfoDropdown(paymentTypeInfo);
   const finisGoodsOptions = finishGoodsWithSizeItemDropdown(
     finishGoods,

@@ -37,6 +37,21 @@ const invoiceinfoApi = api.injectEndpoints({
       },
     }),
 
+    getFilteredInvoiceInfo: builder.query({
+      query: (queryParams) => (
+       
+        {
+        url: "invoiceinfo/filtered",
+        params: queryParams,
+        providesTags: [
+          "insertinvoiceinfo",
+          "updateinvoiceinfo","changeinvoicestatus","deleteinvoiceinfo"
+        ],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }
+    ),
+    }),
     updateInvoiceInfo: builder.mutation({
       query: (payload) => ({
         url: `/invoiceinfo/${payload._id}`,
@@ -82,4 +97,5 @@ export const {
   useUpdateInvoiceInfoMutation,
   useUpdateInvoiceStatusMutation,
   useDeleteInvoiceInfoMutation,
+  useLazyGetFilteredInvoiceInfoQuery
 } = invoiceinfoApi;
