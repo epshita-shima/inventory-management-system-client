@@ -39,10 +39,12 @@ const SalesManagementCommonPart = () => {
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
   const navigate = useNavigate();
+  const [piDate, setPiDate] = useState(new Date());
+  const [expireDate, setExpireDate] = useState(new Date());
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: unitInformation } = useGetAllItemUnitQuery(undefined);
   const [serialValue, setSerialValue] = useState([]);
-  const { data: serialNo } = useGetSerialNoQuery(undefined);
+  const { data: serialNo,refetch:serialRefetch } = useGetSerialNoQuery(undefined);
   const [insertInvoiceInfo] = useInsertInvoiceInformationMutation();
   const [createSerialNo] = useCreateSerialNoMutation();
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
@@ -50,19 +52,22 @@ const SalesManagementCommonPart = () => {
   const [acivePaymentModal, setAcivePaymentModal] = useState(false);
   const { data: getSingleInvoiceData } = useGetSingleInvoiceQuery(id);
   const [updateSingleInvoiceData, setUpdateSingleInvoiceData] = useState([]);
-  const [updateInvoiceInfo]=useUpdateInvoiceInfoMutation();
+  const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
+
 
   const initialValues = {
-    piDate: "",
-    expireDate: "",
+    piDate: piDate,
+    expireDate: expireDate,
     invoiceNo: "",
     customerID: "",
     paymentId: "",
     currency: "",
-    approveBy:"",
-    approveDate:"",
-    isApproved:false,
-    specialApproveForDelivary:false,
+    approveBy: "",
+    approveDate: "",
+    isApproved: false,
+    specialApproveForDelivary: false,
+    specialApproveBy: "",
+    specialApproveDate: "",
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -77,7 +82,7 @@ const SalesManagementCommonPart = () => {
       },
     ],
   };
-  
+
   const paymentTypeOptions = paymentInfoDropdown(paymentTypeInfo);
   const finisGoodsOptions = finishGoodsWithSizeItemDropdown(
     finishGoods,
@@ -86,27 +91,24 @@ const SalesManagementCommonPart = () => {
 
   const areFieldsEmpty = () => {
     return updateSingleInvoiceData?.detailsData?.some(
-      (field) =>
-        !field.description ||
-        !field.quantity ||
-        !field.unitPrice 
+      (field) => !field.description || !field.quantity || !field.unitPrice
     );
   };
 
-
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
+      serialRefetch()
       const maxSerialNoObject = serialNo.reduce((max, current) => {
         if (current.type === "invoice") {
           // If max is undefined or current serialNo is greater, return current
-       
+
           return max && current.serialNo > max.serialNo
             ? current
             : max || current;
         }
         return max;
       }, undefined);
-      console.log(maxSerialNoObject)
+      console.log(maxSerialNoObject);
       if (maxSerialNoObject) {
         setSerialValue(maxSerialNoObject);
       }
@@ -116,7 +118,7 @@ const SalesManagementCommonPart = () => {
     }
   }, [serialNo, id, getSingleInvoiceData]);
 
-  console.log(serialValue)
+  console.log(serialValue);
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     const serialData = {
@@ -128,9 +130,7 @@ const SalesManagementCommonPart = () => {
     };
     try {
       if (id) {
-        const response = await updateInvoiceInfo(
-         updateSingleInvoiceData
-        );
+        const response = await updateInvoiceInfo(updateSingleInvoiceData);
         console.log(response);
         if (response?.data?.status === 200) {
           navigate("/main-view/invoice-list");
@@ -139,17 +139,17 @@ const SalesManagementCommonPart = () => {
         } else if (response?.error?.status === 400) {
           swal("Not Possible!", response?.error?.data?.message, "error");
         }
-      }else{
+      } else {
         const response = await insertInvoiceInfo(values);
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);
+          serialRefetch()
           swal("Done", "Data Save Successfully", "success");
           resetForm();
         } else if (response?.error?.status === 400) {
           swal("Not Possible!", response?.error?.data?.message, "error");
         }
       }
-     
     } catch (err) {
       console.error(err);
       swal("Error", "An error occurred while creating the data", "error");
@@ -245,8 +245,8 @@ const SalesManagementCommonPart = () => {
                               </div>
                               {
                                 <InvoiceSingleEntry
-                                id={id}
-                                makebyUser={makebyUser}
+                                  id={id}
+                                  makebyUser={makebyUser}
                                   values={values}
                                   setFieldValue={setFieldValue}
                                   touched={touched}
@@ -260,6 +260,11 @@ const SalesManagementCommonPart = () => {
                                     setUpdateSingleInvoiceData
                                   }
                                   serialValue={serialValue}
+                                  piDate={piDate} 
+                                  setPiDate={setPiDate}
+                                  expireDate={expireDate}
+                                  setExpireDate={setExpireDate}
+
                                 ></InvoiceSingleEntry>
                               }
                               <div>
@@ -278,11 +283,13 @@ const SalesManagementCommonPart = () => {
                                       form="pocreation-form"
                                       className="border-0 "
                                       style={{
-                                        backgroundColor:  id
-                                        ? areFieldsEmpty()
-                                          ? "gray"
-                                          : "#2DDC1B" :
-                                          isValid && dirty ? "#2DDC1B" : "gray",
+                                        backgroundColor: id
+                                          ? areFieldsEmpty()
+                                            ? "gray"
+                                            : "#2DDC1B"
+                                          : isValid && dirty
+                                          ? "#2DDC1B"
+                                          : "gray",
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
@@ -290,11 +297,13 @@ const SalesManagementCommonPart = () => {
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
-                                      disabled={id
-                                        ? areFieldsEmpty()
-                                          ? true
-                                          : false
-                                        :!(isValid && dirty)}
+                                      disabled={
+                                        id
+                                          ? areFieldsEmpty()
+                                            ? true
+                                            : false
+                                          : !(isValid && dirty)
+                                      }
                                     >
                                       {id ? "Update" : "Save"}
                                     </button>
@@ -311,24 +320,24 @@ const SalesManagementCommonPart = () => {
                                         width: "110px",
                                       }}
                                       onClick={() => {
-                                      if(id){
-                                        setUpdateSingleInvoiceData((prev) => {
-                                          const temp__details = [
-                                            ...prev.detailsData,
-                                          ];
-                                          temp__details.push({
-                                            itemId: "",
-                                            description: "",
-                                            quantity: "",
-                                            unitPrice: "",
-                                            totalAmount: "",
+                                        if (id) {
+                                          setUpdateSingleInvoiceData((prev) => {
+                                            const temp__details = [
+                                              ...prev.detailsData,
+                                            ];
+                                            temp__details.push({
+                                              itemId: "",
+                                              description: "",
+                                              quantity: "",
+                                              unitPrice: "",
+                                              totalAmount: "",
+                                            });
+                                            return {
+                                              ...prev,
+                                              detailsData: [...temp__details],
+                                            };
                                           });
-                                          return {
-                                            ...prev,
-                                            detailsData: [...temp__details],
-                                          };
-                                        });
-                                      }
+                                        }
 
                                         ArrayHelperRef.current.push({
                                           itemId: "",
@@ -361,7 +370,7 @@ const SalesManagementCommonPart = () => {
                                     setUpdateSingleInvoiceData
                                   }
                                 ></UpdateInvoiceDetails>
-                              ): (
+                              ) : (
                                 <InsertSalesManagement
                                   details={details}
                                   touched={touched}
@@ -371,7 +380,7 @@ const SalesManagementCommonPart = () => {
                                   setFieldValue={setFieldValue}
                                   serialValue={serialValue}
                                 ></InsertSalesManagement>
-                              ) }
+                              )}
                             </div>
                           </div>
                         </div>
@@ -388,8 +397,8 @@ const SalesManagementCommonPart = () => {
         acivePaymentModal={acivePaymentModal}
         setAcivePaymentModal={setAcivePaymentModal}
       ></InvoiceCommonModal>
-      <InvoiceClientEntryModal/>
-      <InvoiceFinishGoodsItemsEntryModal/>
+      <InvoiceClientEntryModal />
+      <InvoiceFinishGoodsItemsEntryModal />
     </div>
   );
 };

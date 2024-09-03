@@ -18,13 +18,15 @@ const InvoiceSingleEntry = ({
   touched,
   errors,
   serialValue,
+  piDate, setPiDate,
+  expireDate,
+  setExpireDate,
   paymentTypeOptions,
   setAcivePaymentModal,
   updateSingleInvoiceData,
   setUpdateSingleInvoiceData,
 }) => {
-  const [piDate, setPiDate] = useState(new Date());
-  const [expireDate, setExpireDate] = useState(new Date());
+
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
 console.log(serialValue)
   const customerOptions = clientInfoDropdown(customerInfo);

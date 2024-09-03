@@ -312,6 +312,9 @@ const downloadInvoicePDF = async (
     });
 
   }
+  const pdfDataUrl = doc.output('datauristring');
+  const pdfWindow = window.open();
+  pdfWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUrl}'></iframe>`);
   doc.save(`${data.invoiceNo}.pdf`);
 };
 

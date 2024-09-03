@@ -38,6 +38,7 @@ import InsertPaymentOption from "./components/PaymentModeInformation/Insert/Inse
 import SalesManagementCommonPart from "./components/SalesManagement/Common/SalesManagementCommonPart";
 import InvoiceInformationList from "./components/SalesManagement/Index/InvoiceInformationListTable/InvoiceInformationList";
 import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
+import InsertPaymentMethodInformation from "./components/PaymentMethodInformation/Insert/InsertPaymentMethodInformation";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -248,6 +249,10 @@ function App() {
               <Route
                 path="special-delivery-approve"
                 element={<SpecialDeliveryTableList></SpecialDeliveryTableList>}
+              ></Route>
+              <Route
+                path="create-payment-received"
+                element={<InsertPaymentMethodInformation></InsertPaymentMethodInformation>}
               ></Route>
 
               {/* <Route

@@ -4,7 +4,15 @@ import { Field } from "formik";
 import React from "react";
 import Select from "react-select";
 
-const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setFieldValue, arrayHelpers ,unitInfoOptions}) => {
+const InsertSalesManagement = ({
+  finisGoodsOptions,
+  details,
+  touched,
+  errors,
+  setFieldValue,
+  arrayHelpers,
+  unitInfoOptions,
+}) => {
   return (
     <div class="row">
       <div class="col-12 col-md-12 col-lg-12 fixed-column">
@@ -21,8 +29,11 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                   Item Name
                   <span className="text-danger fw-bold fs-2">*</span>
                 </th>
-              
-                <th className="bg-white text-center align-items-center "  style={{ width: "25%" }}>
+
+                <th
+                  className="bg-white text-center align-items-center "
+                  style={{ width: "25%" }}
+                >
                   Description
                 </th>
                 <th className="bg-white text-center align-items-center ">
@@ -46,7 +57,9 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                 ? details.map((detail, index) => {
                     return (
                       <tr key={index}>
-                        <td className="text-center align-middle">{index + 1}</td>
+                        <td className="text-center align-middle">
+                          {index + 1}
+                        </td>
                         <td className="d-flex">
                           <div className="w-100 d-flex justify-content-between ">
                             <div className="w-100">
@@ -60,7 +73,9 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                                   label: "Select Item Name",
                                   value: 0,
                                 }}
-                                value={finisGoodsOptions.filter(function (option) {
+                                value={finisGoodsOptions.filter(function (
+                                  option
+                                ) {
                                   return option.value === detail.itemId;
                                 })}
                                 styles={{
@@ -74,9 +89,13 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                                   }),
                                   menu: (provided) => ({
                                     ...provided,
-                                    // zIndex: 9999,
-                                    // height: "200px",
-                                    // overflowY: "scroll",
+                                    zIndex: 9999,
+                                    height: "200px",
+                                    overflowY: "scroll",
+                                  }),
+                                  menuPortal: (base) => ({
+                                    ...base,
+                                    zIndex: 9999,
                                   }),
                                 }}
                                 theme={(theme) => ({
@@ -87,8 +106,13 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                                     primary: "#2DDC1B",
                                   },
                                 })}
+                                menuPosition="fixed"
+                                menuPortalTarget={document.body}
                                 onChange={(e) => {
-                                  setFieldValue(`detailsData.${index}.itemId`,e.value)
+                                  setFieldValue(
+                                    `detailsData.${index}.itemId`,
+                                    e.value
+                                  );
                                 }}
                               ></Select>
                             </div>
@@ -113,7 +137,7 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               </div>
                             )}
                         </td>
-                    
+
                         <td className="text-center   align-middle">
                           <textarea
                             type="textarea"
@@ -127,10 +151,13 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               borderRadius: "5px",
                               height: "38px",
                               marginBottom: "5px",
-                              textAlign: "center",
+                              textAlign: "left",
                             }}
-                            onChange={(e)=>{
-                              setFieldValue(`detailsData.${index}.description`,e.target.value)
+                            onChange={(e) => {
+                              setFieldValue(
+                                `detailsData.${index}.description`,
+                                e.target.value
+                              );
                             }}
                           />
                         </td>
@@ -150,10 +177,17 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               marginBottom: "5px",
                               textAlign: "center",
                             }}
-                            onChange={(e)=>{
-                              const calculateTotalAmount=e.target.value * detail.unitPrice
-                              setFieldValue(`detailsData.${index}.quantity`,e.target.value)
-                              setFieldValue(`detailsData.${index}.totalAmount`,calculateTotalAmount)
+                            onChange={(e) => {
+                              const calculateTotalAmount =
+                                e.target.value * detail.unitPrice;
+                              setFieldValue(
+                                `detailsData.${index}.quantity`,
+                                e.target.value
+                              );
+                              setFieldValue(
+                                `detailsData.${index}.totalAmount`,
+                                calculateTotalAmount
+                              );
                             }}
                           />
                         </td>
@@ -170,10 +204,17 @@ const InsertSalesManagement = ({finisGoodsOptions, details, touched, errors,setF
                               height: "38px",
                               textAlign: "center",
                             }}
-                            onChange={(e)=>{
-                              const calculateTotalAmount=e.target.value * detail.quantity
-                              setFieldValue(`detailsData.${index}.unitPrice`,e.target.value)
-                              setFieldValue(`detailsData.${index}.totalAmount`,calculateTotalAmount)
+                            onChange={(e) => {
+                              const calculateTotalAmount =
+                                e.target.value * detail.quantity;
+                              setFieldValue(
+                                `detailsData.${index}.unitPrice`,
+                                e.target.value
+                              );
+                              setFieldValue(
+                                `detailsData.${index}.totalAmount`,
+                                calculateTotalAmount
+                              );
                             }}
                           />
                         </td>

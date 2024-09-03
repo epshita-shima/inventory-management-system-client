@@ -45,7 +45,7 @@ const invoiceinfoApi = api.injectEndpoints({
         params: queryParams,
         providesTags: [
           "insertinvoiceinfo",
-          "updateinvoiceinfo","changeinvoicestatus","deleteinvoiceinfo"
+          "updateinvoiceinfo","changeinvoicestatus","changeinvoicespecialapprove","deleteinvoiceinfo"
         ],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -59,6 +59,18 @@ const invoiceinfoApi = api.injectEndpoints({
         body: payload,
       }),
       invalidatesTags: ["updateinvoiceinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+    updateInvoiceSpecialPIApproveStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/invoiceinfo/special-approve",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changeinvoicespecialapprove"],
       transformResponse: (response, meta) => ({
         data: response,
         status: meta.response.status,
@@ -96,6 +108,7 @@ export const {
   useGetSingleInvoiceQuery,
   useUpdateInvoiceInfoMutation,
   useUpdateInvoiceStatusMutation,
+  useUpdateInvoiceSpecialPIApproveStatusMutation,
   useDeleteInvoiceInfoMutation,
   useLazyGetFilteredInvoiceInfoQuery
 } = invoiceinfoApi;
