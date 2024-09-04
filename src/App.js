@@ -39,6 +39,7 @@ import SalesManagementCommonPart from "./components/SalesManagement/Common/Sales
 import InvoiceInformationList from "./components/SalesManagement/Index/InvoiceInformationListTable/InvoiceInformationList";
 import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
 import InsertPaymentMethodInformation from "./components/PaymentMethodInformation/Insert/InsertPaymentMethodInformation";
+import PaymentMethodSingleEntry from "./components/PaymentMethodInformation/Common/PaymentMethodSingleEntry";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -252,7 +253,7 @@ function App() {
               ></Route>
               <Route
                 path="create-payment-received"
-                element={<InsertPaymentMethodInformation></InsertPaymentMethodInformation>}
+                element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
               ></Route>
 
               {/* <Route

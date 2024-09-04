@@ -79,6 +79,17 @@ const clientInfoDropdown = (options) => {
   });
   return result;
 };
+const invoiceListDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.invoiceNo,
+    });
+  });
+  return result;
+};
 const unitInformationDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -98,6 +109,7 @@ export {
   bankInformationDropdown,
   finishGoodsWithSizeItemDropdown,
   clientInfoDropdown,
+  invoiceListDropdown,
   finishGoodsDropdown,
   unitInformationDropdown
 };
