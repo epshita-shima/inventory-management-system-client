@@ -40,6 +40,8 @@ import InvoiceInformationList from "./components/SalesManagement/Index/InvoiceIn
 import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
 import InsertPaymentMethodInformation from "./components/PaymentMethodInformation/Insert/InsertPaymentMethodInformation";
 import PaymentMethodSingleEntry from "./components/PaymentMethodInformation/Common/PaymentMethodSingleEntry";
+import PaymentReceiveDataTableList from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable/PaymentReceiveDataTableList";
+import PaymentReceiveDataTable from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -254,6 +256,10 @@ function App() {
               <Route
                 path="create-payment-received"
                 element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
+              ></Route>
+              <Route
+                path="payment-received-list"
+                element={<PaymentReceiveDataTable></PaymentReceiveDataTable>}
               ></Route>
 
               {/* <Route
