@@ -35,7 +35,7 @@ const PaymentReceiveDataTable = () => {
                 menu?.items?.forEach((subMenu) => {
                   if (subMenu?.label === subMenu?.label) {
                     const userListSubMenu = subMenu?.items?.find(
-                      (subItem) => subItem?.label === "payment-received-list"
+                      (subItem) => subItem?.label === "Payment Received List"
                     );
                     console.log(userListSubMenu);
                     if (userListSubMenu) {

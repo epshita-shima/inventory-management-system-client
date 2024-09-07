@@ -12,6 +12,8 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
+import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 
 const PaymentReceiveDataTableList = ({permission}) => {
     const [filterText, setFilterText] = React.useState("");
@@ -19,7 +21,13 @@ const PaymentReceiveDataTableList = ({permission}) => {
       React.useState(false);
     const { data: paymentReceivedData, refetch } =
       useGetAllPaymentReceiveInformationQuery(undefined);
-  
+  const {data:customerInfo}=useGetAllClientInformationQuery(undefined)
+  const {data:invoiceData}=useGetAllInvoiceInformationQuery(undefined)
+
+  const piFilteredData = invoiceData?.find((pi) =>
+    paymentReceivedData.some((item) => item.piNumber === pi._id)
+  );
+  console.log(piFilteredData)
     const columns = [
       {
         name: "Sl.",
@@ -28,23 +36,62 @@ const PaymentReceiveDataTableList = ({permission}) => {
         width: "60px",
       },
       {
-        name: "Pi Date",
-        selector: (paymentReceivedData) =>
-          new Date(paymentReceivedData?.piDate).toLocaleDateString("en-CA"),
-        sortable: true,
-        center: true,
-        filterable: true,
-      },
-      {
-        name: "Invoice No",
-        selector: (paymentReceivedData) => paymentReceivedData?.invoiceNo,
-        sortable: true,
-        center: true,
-        filterable: true,
-      },
-      {
         name: "Client Name",
-        selector: (paymentReceivedData) =>paymentReceivedData.clientId,
+        selector: (paymentReceivedData) =>{
+          const customerName = customerInfo?.find(
+            (x) => x._id === paymentReceivedData?.clientId
+          );
+          return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+        },
+        sortable: true,
+        center: true,
+        filterable: true,
+      },
+      {
+        name: "Pi Date",
+        selector: (paymentReceivedData) =>{
+          const piDate = invoiceData?.find(
+            (x) => x._id === paymentReceivedData?.piNumber
+          );
+          return piDate ? new Date(piDate.piDate).toLocaleDateString("en-CA") : "N/A";
+        },
+        sortable: true,
+        center: true,
+        filterable: true,
+      },
+      {
+        name: "PI Number",
+        selector: (paymentReceivedData) =>{
+          const piNumber = invoiceData?.find(
+            (x) => x._id === paymentReceivedData?.piNumber
+          );
+          return piNumber ?piNumber.invoiceNo: "N/A";
+        },
+        sortable: true,
+        center: true,
+        filterable: true,
+      },
+      {
+        name: "Item Code",
+        selector: (paymentReceivedData) =>{
+          const piNumber = invoiceData?.find(
+            (x) => x._id === paymentReceivedData?.piNumber
+          );
+          return piNumber ?piNumber.item: "N/A";
+        },
+        sortable: true,
+        center: true,
+        filterable: true,
+      },
+     
+      {
+        name: "Currency",
+        selector: (paymentReceivedData) => {
+          const currency = invoiceData?.find(
+            (x) => x._id === paymentReceivedData?.piNumber
+          );
+          return currency ?currency.currency: "N/A";
+        },
         sortable: true,
         center: true,
         filterable: true,
@@ -66,7 +113,7 @@ const PaymentReceiveDataTableList = ({permission}) => {
         name: "Total Amount",
         selector: (paymentReceivedData) => {
           const totalAmount = paymentReceivedData.detailsData.reduce(
-            (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+            (acc, cur) => acc + parseInt(cur.amount, 10),
             0
           );
           return totalAmount;

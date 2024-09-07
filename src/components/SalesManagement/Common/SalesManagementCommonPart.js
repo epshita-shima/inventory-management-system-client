@@ -14,6 +14,7 @@ import { useGetAllItemInformationQuery } from "../../../redux/features/iteminfor
 import {
   finishGoodsWithSizeItemDropdown,
   paymentInfoDropdown,
+  userInfoDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import {
@@ -31,6 +32,7 @@ import InvoiceCommonModal from "../../Common/CommonModal/InvoiceCommonModal";
 import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
 import InvoiceClientEntryModal from "../../Common/CommonModal/InvoiceClientEntryModal";
 import InvoiceFinishGoodsItemsEntryModal from "../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
+import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
@@ -38,6 +40,7 @@ const SalesManagementCommonPart = () => {
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
+  const superAdminId=getUserParse[0].roleId
   const navigate = useNavigate();
   const [piDate, setPiDate] = useState(new Date());
   const [expireDate, setExpireDate] = useState(new Date());
@@ -53,8 +56,8 @@ const SalesManagementCommonPart = () => {
   const { data: getSingleInvoiceData } = useGetSingleInvoiceQuery(id);
   const [updateSingleInvoiceData, setUpdateSingleInvoiceData] = useState([]);
   const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
-
-
+const {data:userList}=useGetAllUserQuery(undefined)
+const [marketingPerSon ,setMarketingPerson]=useState('')
   const initialValues = {
     piDate: piDate,
     expireDate: expireDate,
@@ -68,6 +71,7 @@ const SalesManagementCommonPart = () => {
     specialApproveForDelivary: false,
     specialApproveBy: "",
     specialApproveDate: "",
+    mktPerson: superAdminId === "65d48768a106fcb4f5c28071" || superAdminId === "65d486123346cddf01c3773a" ? marketingPerSon : makebyUser, 
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -88,7 +92,8 @@ const SalesManagementCommonPart = () => {
     finishGoods,
     sizeInfo
   );
-
+const userInfoOptions=userInfoDropdown(userList)
+console.log(userInfoOptions)
   const areFieldsEmpty = () => {
     return updateSingleInvoiceData?.detailsData?.some(
       (field) => !field.description || !field.quantity || !field.unitPrice
@@ -116,7 +121,7 @@ const SalesManagementCommonPart = () => {
     if (id) {
       setUpdateSingleInvoiceData(getSingleInvoiceData);
     }
-  }, [serialNo, id, getSingleInvoiceData]);
+  }, [serialNo, id, getSingleInvoiceData,serialRefetch]);
 
   console.log(serialValue);
   const handleSubmit = async (e, values, resetForm) => {
@@ -158,7 +163,7 @@ const SalesManagementCommonPart = () => {
 
   return (
     <div
-      className=" row px-4 mx-4"
+      className=" row px-2 mx-1"
       style={{
         overflow: "scroll",
         height: "calc(98vh - 120px)",
@@ -264,7 +269,10 @@ const SalesManagementCommonPart = () => {
                                   setPiDate={setPiDate}
                                   expireDate={expireDate}
                                   setExpireDate={setExpireDate}
-
+                                  userInfoOptions={userInfoOptions}
+                                  userList={userList}
+                                  superAdminId={superAdminId}
+                                  setMarketingPerson={setMarketingPerson}
                                 ></InvoiceSingleEntry>
                               }
                               <div>
@@ -379,6 +387,7 @@ const SalesManagementCommonPart = () => {
                                   finisGoodsOptions={finisGoodsOptions}
                                   setFieldValue={setFieldValue}
                                   serialValue={serialValue}
+                                  
                                 ></InsertSalesManagement>
                               )}
                             </div>

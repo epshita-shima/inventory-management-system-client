@@ -31,6 +31,7 @@ const PaymentMethodSingleEntry = () => {
     useGetAllInvoiceInformationQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const [paymentReceiveDate, setPaymentReceiveDate] = useState(new Date());
+  const [isDisplay, setIsDisplay] = useState(false);
   const [bankChequeDate, setBankChequeDate] = useState(new Date());
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
@@ -75,20 +76,40 @@ const PaymentMethodSingleEntry = () => {
     { value: "cash", label: "Cash" },
     { value: "adjustment", label: "Adjustment" },
   ];
+  const areFieldsEmpty = () => {
+    return formValues?.detailsData?.some(
+      (field) => !field.paymentMethod || !field.paymentStatus || !field.bankId || !field.depositeSlipNo
+    );
+  };
+
+  useEffect(() => {
+    if (clientName !== "" && piNumber !== "") {
+      setIsDisplay(true);
+    } else {
+      setIsDisplay(false);
+    }
+  }, [piNumber, clientName]);
 
   useEffect(() => {
     if (invoiveByInvoiceNumber?.detailsData?.length > 0) {
+      const accumulatedItemNameData = [];
+      const accumulatedItemSizeData = [];
+      invoiveByInvoiceNumber.detailsData.forEach((detail) => {
+        const matchedItem = finishGoods.filter(
+          (item) => item._id === detail.itemId
+        );
+        accumulatedItemNameData.push(...matchedItem);
+        const filteredSize = matchedItem.map((item) =>
+          sizeInfo?.find((x) => x?._id === item.sizeId)
+        );
+        accumulatedItemSizeData.push(...filteredSize);
+
+      });
+      setItemNameData(accumulatedItemNameData);
+      setItemSize(accumulatedItemSizeData);
       setFormValues((prevValues) => ({
         ...prevValues,
         detailsData: invoiveByInvoiceNumber.detailsData.map((detail) => {
-          const matchedItem = finishGoods.find(
-            (item) => item._id === detail.itemId
-          );
-          const filteredSize = sizeInfo?.find(
-            (x) => x?._id == matchedItem.sizeId
-          );
-          setItemSize(filteredSize);
-          setItemNameData(matchedItem);
           return {
             paymentReceiveDate: paymentReceiveDate || "",
             paymentMethod: "",
@@ -107,6 +128,8 @@ const PaymentMethodSingleEntry = () => {
       }));
     }
   }, [invoiveByInvoiceNumber, paymentReceiveDate, finishGoods, sizeInfo]);
+
+  console.log((formValues));
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     const modelData = {
@@ -136,7 +159,7 @@ const PaymentMethodSingleEntry = () => {
     });
     try {
       const response = await insertPaymentReceive(modelData);
-      console.log(JSON.stringify(modelData))
+      console.log(JSON.stringify(modelData));
       if (response?.data?.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();
@@ -148,7 +171,7 @@ const PaymentMethodSingleEntry = () => {
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
-  console.log(clientName, piNumber);
+
   return (
     <div
       className=" row mx-4"
@@ -195,13 +218,12 @@ const PaymentMethodSingleEntry = () => {
                   name="detailsData"
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
-                    const details = values.detailsData;
-                    console.log(JSON.stringify(values));
-                    const totalAmount = values.detailsData.reduce(
+                    const details = values?.detailsData;
+                    const totalAmount = values?.detailsData?.reduce(
                       (sum, item) => sum + item.amount,
                       0
                     );
-                    const totalQuantity = values.detailsData.reduce(
+                    const totalQuantity = values?.detailsData?.reduce(
                       (sum, item) => sum + item.quantity,
                       0
                     );
@@ -275,7 +297,6 @@ const PaymentMethodSingleEntry = () => {
                                         ...provided,
                                         zIndex: 9999,
                                         height: "auto",
-                                        // overflowY: "scroll",
                                       }),
                                     }}
                                     theme={(theme) => ({
@@ -295,16 +316,26 @@ const PaymentMethodSingleEntry = () => {
                                       if (matchedInvoice?.length > 0) {
                                         setInvoiceList(matchedInvoice);
                                       } else {
+                                        setIsDisplay(false);
                                         swal({
                                           title: "Sorry!",
                                           text: "This Client has no PI.",
                                           icon: "warning",
                                           button: "OK",
                                         });
+                                        setPINumber('')
                                         setInvoiceList([]);
                                       }
                                       setClientName(e.value);
                                       setFieldValue("clientId", e.value);
+                                      setFormValues((prevData) => ({
+                                        ...prevData,
+                                        clientId:e.value,
+                                        detailsData: prevData?.detailsData?.map((item, idx) => {
+                                          
+                                          return item;
+                                        }),
+                                      }))
                                       // handleSelectSupplier(e, setFieldValue);
                                     }}
                                   ></Select>
@@ -370,6 +401,12 @@ const PaymentMethodSingleEntry = () => {
                                       setInvoiveByInvoiceNumber(
                                         invoiceListMatchingData
                                       );
+                                      setFormValues((prevData) => {
+                                        console.log(prevData)
+                                        return{
+                                        ...prevData,
+                                        piNumber:e.value
+                                      }})
                                     }}
                                   ></Select>
                                 </div>
@@ -377,7 +414,7 @@ const PaymentMethodSingleEntry = () => {
                             </div>
                           </div>
                         </div>
-                        {details?.length === 0 || (
+                        {isDisplay && (
                           <>
                             <div>
                               <h2
@@ -395,14 +432,18 @@ const PaymentMethodSingleEntry = () => {
                                     form="poupdate-form"
                                     className="border-0"
                                     style={{
-                                      backgroundColor: "#2DDC1B",
+                                      backgroundColor: areFieldsEmpty()
+                                      ? "gray"
+                                      : "#2DDC1B",
                                       color: "white",
                                       padding: "5px 10px",
                                       fontSize: "14px",
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    // disabled={!(isValid && dirty)}
+                                    disabled={ areFieldsEmpty()
+                                      ? true
+                                      : false}
                                   >
                                     Save
                                   </button>
@@ -506,6 +547,7 @@ const PaymentMethodSingleEntry = () => {
                                 setBankChequeDate={setBankChequeDate}
                                 itemNameData={itemNameData}
                                 itemSize={itemSize}
+                                setFormValues={setFormValues}
                               ></InsertPaymentMethodInformation>
                             }
                           </>

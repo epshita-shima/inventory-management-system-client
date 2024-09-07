@@ -9,6 +9,7 @@ import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import "./InvoiceSingleEntry.css";
+import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 
 const InvoiceSingleEntry = ({
   id,
@@ -18,17 +19,21 @@ const InvoiceSingleEntry = ({
   touched,
   errors,
   serialValue,
-  piDate, setPiDate,
+  piDate,
+  setPiDate,
   expireDate,
   setExpireDate,
   paymentTypeOptions,
   setAcivePaymentModal,
   updateSingleInvoiceData,
   setUpdateSingleInvoiceData,
+  userInfoOptions,
+  userList,
+  superAdminId,
+  setMarketingPerson,
 }) => {
-
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-console.log(serialValue)
+  const { data: getRuserRole } = useGetUserRoleQuery(undefined);
   const customerOptions = clientInfoDropdown(customerInfo);
   const currencyOptions = [
     {
@@ -40,16 +45,25 @@ console.log(serialValue)
       label: "USD",
     },
   ];
+  const role = getRuserRole?.find((role) => role._id === userList?.roleId);
+  const user = role ? userList?.find((user) => user.roleId === role._id) : null;
+  const username = user ? user.username : "";
 
   return (
-    <div class="row row-cols-1 row-cols-lg-3">
+    <div class="row row-cols-1 ">
       <div class="col-sm-12 col-md-6 col-lg-2">
         <label htmlFor="piDate">PI Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker-production"
-            value={id?new Date(updateSingleInvoiceData?.piDate).toLocaleDateString("en-CA"):piDate}
+            value={
+              id
+                ? new Date(updateSingleInvoiceData?.piDate).toLocaleDateString(
+                    "en-CA"
+                  )
+                : piDate
+            }
             calendarClassName="custom-calendar"
             selected={piDate}
             required
@@ -62,19 +76,17 @@ console.log(serialValue)
                   button: "OK",
                 });
               } else {
-                if(id){
+                if (id) {
                   setUpdateSingleInvoiceData((prevData) => ({
                     ...prevData,
-                    piDate:new Date(piDate).toLocaleDateString("en-CA") ,
+                    piDate: new Date(piDate).toLocaleDateString("en-CA"),
                     updateBy: makebyUser,
                     updateDate: new Date(),
-                  }))
-                }
-                else{
+                  }));
+                } else {
                   setPiDate(piDate.toLocaleDateString("en-CA"));
                   setFieldValue("piDate", piDate.toLocaleDateString("en-CA"));
                 }
-              
               }
             }}
           />
@@ -86,7 +98,13 @@ console.log(serialValue)
           <DatePicker
             dateFormat="y-MM-dd"
             className="text-center custom-datepicker-production"
-            value={id ? new Date(updateSingleInvoiceData?.expireDate).toLocaleDateString("en-CA"):expireDate}
+            value={
+              id
+                ? new Date(
+                    updateSingleInvoiceData?.expireDate
+                  ).toLocaleDateString("en-CA")
+                : expireDate
+            }
             calendarClassName="custom-calendar"
             selected={expireDate}
             required
@@ -103,22 +121,22 @@ console.log(serialValue)
                   button: "OK",
                 });
               } else {
-                if(id){
+                if (id) {
                   setUpdateSingleInvoiceData((prevData) => ({
                     ...prevData,
-                    expireDate:new Date(expireDate).toLocaleDateString("en-CA") ,
+                    expireDate: new Date(expireDate).toLocaleDateString(
+                      "en-CA"
+                    ),
                     updateBy: makebyUser,
                     updateDate: new Date(),
-                  }))
-                }
-                else{
+                  }));
+                } else {
                   setExpireDate(expireDate.toLocaleDateString("en-CA"));
                   setFieldValue(
                     "expireDate",
                     expireDate.toLocaleDateString("en-CA")
                   );
                 }
-               
               }
             }}
           />
@@ -145,9 +163,9 @@ console.log(serialValue)
         />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div class="col-sm-12 col-md-6 col-lg-2 mt-2">
         <label htmlFor="customerName">Customer Name</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+        <div className=" w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
             <Select
               class="form-select"
@@ -160,12 +178,16 @@ console.log(serialValue)
                 value: 0,
               }}
               value={
-                id? customerOptions.filter(function (option) {
-                  return option.value === updateSingleInvoiceData?.customerID;
-                }) :
-                customerOptions.filter(function (option) {
-                return option.value === values.customerID;
-              })}
+                id
+                  ? customerOptions.filter(function (option) {
+                      return (
+                        option.value === updateSingleInvoiceData?.customerID
+                      );
+                    })
+                  : customerOptions.filter(function (option) {
+                      return option.value === values.customerID;
+                    })
+              }
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -189,18 +211,17 @@ console.log(serialValue)
                 },
               })}
               onChange={(e) => {
-                if(id){
+                if (id) {
                   setUpdateSingleInvoiceData((prevData) => ({
                     ...prevData,
-                    customerID:e.value ,
+                    customerID: e.value,
                     updateBy: makebyUser,
                     updateDate: new Date(),
-                  }))
-                }
-                else{
-                  const removeDashFromDate = new Date(piDate).toLocaleDateString(
-                    "en-CA"
-                  );
+                  }));
+                } else {
+                  const removeDashFromDate = new Date(
+                    piDate
+                  ).toLocaleDateString("en-CA");
                   const removeDash = removeDashFromDate.replace(/-/g, "");
                   const shortName = e.clientShortName;
                   const makeBatchNo = `MEB-${shortName}-${removeDash}-${
@@ -208,17 +229,19 @@ console.log(serialValue)
                       ? "1"
                       : serialValue?.serialNo
                   }`;
-  console.log(serialValue?.serialNo,makeBatchNo)
+                  console.log(serialValue?.serialNo, makeBatchNo);
                   setFieldValue("invoiceNo", makeBatchNo);
                   setFieldValue("customerID", e.value);
                 }
-                
               }}
             ></Select>
 
-            {id ? "" : touched.customerID && errors.customerID && (
-              <div className="text-danger">{errors.customerID}</div>
-            )}
+            {id
+              ? ""
+              : touched.customerID &&
+                errors.customerID && (
+                  <div className="text-danger">{errors.customerID}</div>
+                )}
           </div>
           <div className="ms-2 mt-2">
             <FontAwesomeIcon
@@ -235,13 +258,13 @@ console.log(serialValue)
         </div>
       </div>
 
-      <div class="col-6 col-lg-3">
+      <div class="col-6 col-lg-2">
         <label htmlFor="paymentId">Payment Mode</label>
-        <div className="w-lg-75  w-md-100 w-sm-100 d-flex justify-content-between mt-2">
+        <div className="w-lg-100  w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <div className="w-100">
             <Select
               class="form-select"
-              className="w-100 mb-3"
+              className="w-100"
               aria-label="Default select example"
               name="sizeinfo"
               options={paymentTypeOptions}
@@ -249,11 +272,17 @@ console.log(serialValue)
                 label: "Select Size",
                 value: 0,
               }}
-              value={id ? paymentTypeOptions?.filter(function (option) {
-                return option.value === updateSingleInvoiceData?.paymentId;
-              }) : paymentTypeOptions?.filter(function (option) {
-                return option.value === values?.paymentId;
-              })}
+              value={
+                id
+                  ? paymentTypeOptions?.filter(function (option) {
+                      return (
+                        option.value === updateSingleInvoiceData?.paymentId
+                      );
+                    })
+                  : paymentTypeOptions?.filter(function (option) {
+                      return option.value === values?.paymentId;
+                    })
+              }
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -277,24 +306,26 @@ console.log(serialValue)
                 },
               })}
               onChange={(e) => {
-                if(id){
+                if (id) {
                   setUpdateSingleInvoiceData((prevData) => ({
                     ...prevData,
-                    paymentId:e.value ,
+                    paymentId: e.value,
                     updateBy: makebyUser,
                     updateDate: new Date(),
-                  }))
-                }
-                else{
+                  }));
+                } else {
                   setAcivePaymentModal(true);
                   setFieldValue("paymentId", e.value);
                 }
               }}
             ></Select>
 
-            {id ? "" :touched.paymentId && errors.paymentId && (
-              <div className="text-danger">{errors.paymentId}</div>
-            )}
+            {id
+              ? ""
+              : touched.paymentId &&
+                errors.paymentId && (
+                  <div className="text-danger">{errors.paymentId}</div>
+                )}
           </div>
           <div className="ms-2 mt-2">
             <FontAwesomeIcon
@@ -313,11 +344,11 @@ console.log(serialValue)
 
       <div class="col-sm-12 col-md-6 col-lg-2 mt-2">
         <label htmlFor="receipeQtyRatio">Currency</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+        <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
             <Select
               class="form-select"
-              className="w-100 mb-3"
+              className="w-100"
               aria-label="Default select example"
               name="receipeinfo"
               options={currencyOptions}
@@ -325,11 +356,15 @@ console.log(serialValue)
                 label: "Select currency",
                 value: 0,
               }}
-              value={id ?currencyOptions.filter(function (option) {
-                return option.value === updateSingleInvoiceData?.currency;
-              }) : currencyOptions.filter(function (option) {
-                return option.value === values.currency;
-              })}
+              value={
+                id
+                  ? currencyOptions.filter(function (option) {
+                      return option.value === updateSingleInvoiceData?.currency;
+                    })
+                  : currencyOptions.filter(function (option) {
+                      return option.value === values.currency;
+                    })
+              }
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -353,20 +388,102 @@ console.log(serialValue)
                 },
               })}
               onChange={(e) => {
-                if(id){
+                if (id) {
                   setUpdateSingleInvoiceData((prevData) => ({
                     ...prevData,
-                    currency:e.value ,
+                    currency: e.value,
                     updateBy: makebyUser,
                     updateDate: new Date(),
-                  }))
-                }
-                else{
+                  }));
+                } else {
                   setFieldValue("currency", e.value);
                 }
               }}
             ></Select>
           </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-2 mt-2">
+        <label htmlFor="receipeQtyRatio">Marketing Person</label>
+        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+          {superAdminId === "65d48768a106fcb4f5c28071" ||
+          superAdminId === "65d486123346cddf01c3773a" ? (
+            <div className="w-100">
+              <Select
+                class="form-select"
+                className="w-100 "
+                aria-label="Default select example"
+                name="receipeinfo"
+                options={userInfoOptions}
+                defaultValue={{
+                  label: "Select marketing person",
+                  value: 0,
+                }}
+                value={
+                  id
+                    ? userInfoOptions?.filter(function (option) {
+                        return (
+                          option.value === updateSingleInvoiceData?.mktPerson
+                        );
+                      })
+                    : userInfoOptions?.filter(function (option) {
+                        return option.value === values?.mktPerson;
+                      })
+                }
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                    borderColor: state.isFocused ? "#fff" : "#fff",
+                    border: "1px solid #2DDC1B",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                    height: "auto",
+                    // overflowY: "scroll",
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#B8FEB3",
+                    primary: "#2DDC1B",
+                  },
+                })}
+                onChange={(e) => {
+                  if (id) {
+                    setUpdateSingleInvoiceData((prevData) => ({
+                      ...prevData,
+                      mktPerson: e.value,
+                      updateBy: makebyUser,
+                      updateDate: new Date(),
+                    }));
+                  } else {
+                    setMarketingPerson(e.value);
+                    setFieldValue("mktPerson", e.value);
+                  }
+                }}
+              ></Select>
+            </div>
+          ) : (
+            <Field
+              type="text"
+              name={`mktPerson`}
+              placeholder="MKT Person"
+              disabled
+              value={username}
+              style={{
+                border: "1px solid #2DDC1B",
+                padding: "5px",
+                width: "100%",
+                borderRadius: "5px",
+                textAlign: "center",
+                height: "38px",
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

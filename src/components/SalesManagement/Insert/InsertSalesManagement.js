@@ -24,7 +24,7 @@ const InsertSalesManagement = ({
 
                 <th
                   className="bg-white text-center align-items-center"
-                  style={{ width: "30%" }}
+                  style={{ width: "25%" }}
                 >
                   Item Name
                   <span className="text-danger fw-bold fs-2">*</span>
@@ -32,7 +32,7 @@ const InsertSalesManagement = ({
 
                 <th
                   className="bg-white text-center align-items-center "
-                  style={{ width: "25%" }}
+                  style={{ width: "20%" }}
                 >
                   Description
                 </th>

@@ -22,6 +22,7 @@ const InsertPaymentMethodInformation = ({
   setBankChequeDate,
   itemNameData,
   itemSize,
+  setFormValues
 }) => {
   const [show, setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
@@ -58,7 +59,7 @@ const InsertPaymentMethodInformation = ({
     newOpenModals[index] = false; // Close the modal for the specific row
     setOpenModals(newOpenModals);
   };
-
+console.log(itemNameData)
   return (
     <div
       className="shadow-lg p-4 grninsertdata-main-view"
@@ -173,6 +174,17 @@ const InsertPaymentMethodInformation = ({
                                       `detailsData.${index}.paymentMethod`,
                                       e.value
                                     );
+                                    setFormValues((prev) => {
+                                      const temp_details = [...prev.detailsData];
+                                      const newDetail = { ...temp_details[index] };
+                                      newDetail["paymentMethod"] = e.value;
+                                      temp_details[index] = newDetail;
+                                      return {
+                                        ...prev,
+                                        detailsData: [...temp_details],
+                                        
+                                      };
+                                    });
                                     if (detail.paymentMethod) {
                                     }
                                   }}
@@ -190,6 +202,7 @@ const InsertPaymentMethodInformation = ({
                                 bankChequeDate={bankChequeDate}
                                 setBankChequeDate={setBankChequeDate}
                                 bankInCheque={bankInCheque}
+                                setFormValues={setFormValues}
                               />
                             )}
                             <td className="text-center  align-items-center">
@@ -251,6 +264,17 @@ const InsertPaymentMethodInformation = ({
                                       `detailsData.${index}.paymentStatus`,
                                       e.value
                                     );
+                                    setFormValues((prev) => {
+                                      const temp_details = [...prev.detailsData];
+                                      const newDetail = { ...temp_details[index] };
+                                      newDetail["paymentStatus"] = e.value;
+              
+                                      temp_details[index] = newDetail;
+                                      return {
+                                        ...prev,
+                                        detailsData: [...temp_details],
+                                      };
+                                    });
                                   }}
                                 ></Select>
 
@@ -267,7 +291,7 @@ const InsertPaymentMethodInformation = ({
                                 type="text"
                                 name={`detailsData.${index}.itemId`}
                                 placeholder="Item Name"
-                                value={`${itemNameData.itemName} (${itemSize.sizeInfo})`}
+                                value={`${itemNameData[index]?.itemName || ''} (${itemSize[index]?.sizeInfo || 'N/A'})`}
                                 disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
@@ -278,12 +302,7 @@ const InsertPaymentMethodInformation = ({
                                   marginBottom: "5px",
                                   textAlign: "center",
                                 }}
-                                // onKeyUp={(e) => {
-                                //   setFieldValue(
-                                //     `detailsData.${index}.itemId`,
-                                //     e.target.value
-                                //   );
-                                // }}
+                               
                               />
                             </td>
                             <td className="text-center  align-items-center">

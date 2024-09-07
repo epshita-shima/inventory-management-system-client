@@ -79,6 +79,17 @@ const clientInfoDropdown = (options) => {
   });
   return result;
 };
+const userInfoDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.username,
+    });
+  });
+  return result;
+};
 const invoiceListDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -111,5 +122,6 @@ export {
   clientInfoDropdown,
   invoiceListDropdown,
   finishGoodsDropdown,
-  unitInformationDropdown
+  unitInformationDropdown,
+  userInfoDropdown
 };

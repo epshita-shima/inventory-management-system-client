@@ -14,7 +14,8 @@ const PaymentOptionInBankModal = ({
   setFieldValue,
   bankChequeDate,
   setBankChequeDate,
-  bankInCheque
+  bankInCheque,
+  setFormValues,
 }) => {
   return (
     <Modal
@@ -37,24 +38,23 @@ const PaymentOptionInBankModal = ({
                 >
                   Bank Name
                 </th>
-                {
-                  bankInCheque &&  <th
-                  className="bg-white text-center  align-items-center"
-                  style={{ width: "25%" }}
-                >
-                  Check No
-                </th>
-                }
-                {
-                  bankInCheque && <th
-                  className="bg-white text-center  align-items-center"
-                  style={{ width: "25%" }}
-                >
-                  Check Date
-                </th>
-                }
-               
-                
+                {bankInCheque && (
+                  <th
+                    className="bg-white text-center  align-items-center"
+                    style={{ width: "25%" }}
+                  >
+                    Check No
+                  </th>
+                )}
+                {bankInCheque && (
+                  <th
+                    className="bg-white text-center  align-items-center"
+                    style={{ width: "25%" }}
+                  >
+                    Check Date
+                  </th>
+                )}
+
                 <th
                   className="bg-white text-center  align-items-center "
                   style={{ width: "25%" }}
@@ -116,59 +116,90 @@ const PaymentOptionInBankModal = ({
                       // });
 
                       setFieldValue(`detailsData.${index}.bankId`, e.value);
+                      setFormValues((prev) => {
+                        const temp_details = [...prev.detailsData];
+                        const newDetail = { ...temp_details[index] };
+                        newDetail["bankId"] = e.value;
+                        temp_details[index] = newDetail;
+                        return {
+                          ...prev,
+                          detailsData: [...temp_details],
+                        };
+                      });
                     }}
                   ></Select>
                   <br />
-             
                 </td>
-                {
-                  bankInCheque &&  <td className="text-center  align-items-center">
-                  <Field
-                    type="text"
-                    name={`detailsData.${index}.chequeNo`}
-                    placeholder="Check Number"
-                    value={detail.chequeNo}
-                    style={{
-                      border: "1px solid #2DDC1B",
-                      padding: "5px",
-                      width: "100%",
-                      borderRadius: "5px",
-                      height: "38px",
-                      marginBottom: "5px",
-                      textAlign: "center",
-                    }}
-                    onChange={(e) => {
-                      setFieldValue(
-                        `detailsData.${index}.chequeNo`,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </td>
-                }
-               
-             {
-              bankInCheque &&    <td className="text-center  align-items-center">
-              <DatePicker
-                dateFormat="y-MM-dd"
-                className="text-center custom-datepicker "
-                value={detail.chequeDate? detail.chequeDate : bankChequeDate }
-                calendarClassName="custom-calendar"
-                selected={bankChequeDate}
-                required
-                onChange={(bankChequeDate) => {
-                  setBankChequeDate(
-                    bankChequeDate.toLocaleDateString("en-CA")
-                  );
-                  setFieldValue(
-                    `detailsData.${index}.chequeDate`,
-                    bankChequeDate.toLocaleDateString("en-CA")
-                  );
-                }}
-              />
-             
-            </td>
-             }
+                {bankInCheque && (
+                  <td className="text-center  align-items-center">
+                    <Field
+                      type="text"
+                      name={`detailsData.${index}.chequeNo`}
+                      placeholder="Check Number"
+                      value={detail.chequeNo}
+                      style={{
+                        border: "1px solid #2DDC1B",
+                        padding: "5px",
+                        width: "100%",
+                        borderRadius: "5px",
+                        height: "38px",
+                        marginBottom: "5px",
+                        textAlign: "center",
+                      }}
+                      onChange={(e) => {
+                        setFieldValue(
+                          `detailsData.${index}.chequeNo`,
+                          e.target.value
+                        );
+                        setFormValues((prev) => {
+                          const temp_details = [...prev.detailsData];
+                          const newDetail = { ...temp_details[index] };
+                          newDetail["chequeNo"] = e.target.value;
+                          temp_details[index] = newDetail;
+                          return {
+                            ...prev,
+                            detailsData: [...temp_details],
+                          };
+                        });
+                      }}
+                    />
+                  </td>
+                )}
+
+                {bankInCheque && (
+                  <td className="text-center  align-items-center">
+                    <DatePicker
+                      dateFormat="y-MM-dd"
+                      className="text-center custom-datepicker "
+                      value={
+                        detail.chequeDate ? detail.chequeDate : bankChequeDate
+                      }
+                      calendarClassName="custom-calendar"
+                      selected={bankChequeDate}
+                      required
+                      onChange={(bankChequeDate) => {
+                        setBankChequeDate(
+                          bankChequeDate.toLocaleDateString("en-CA")
+                        );
+                        setFieldValue(
+                          `detailsData.${index}.chequeDate`,
+                          bankChequeDate.toLocaleDateString("en-CA")
+                        );
+                        setFormValues((prev) => {
+                          const temp_details = [...prev.detailsData];
+                          const newDetail = { ...temp_details[index] };
+                          newDetail["chequeDate"] =
+                            bankChequeDate.toLocaleDateString("en-CA");
+                          temp_details[index] = newDetail;
+                          return {
+                            ...prev,
+                            detailsData: [...temp_details],
+                          };
+                        });
+                      }}
+                    />
+                  </td>
+                )}
                 <td className="text-center  align-items-center">
                   <Field
                     type="text"
@@ -189,9 +220,19 @@ const PaymentOptionInBankModal = ({
                         `detailsData.${index}.depositeSlipNo`,
                         e.target.value
                       );
+                      setFormValues((prev) => {
+                        const temp_details = [...prev.detailsData];
+                        const newDetail = { ...temp_details[index] };
+                        newDetail["depositeSlipNo"] = e.target.value;
+
+                        temp_details[index] = newDetail;
+                        return {
+                          ...prev,
+                          detailsData: [...temp_details],
+                        };
+                      });
                     }}
                   />
-               
                 </td>
               </tr>
             </tbody>
