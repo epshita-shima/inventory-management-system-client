@@ -88,7 +88,7 @@ const PaymentReceiveDataTable = () => {
             >
               <div className="">
                 <a
-                  href="/main-view/create-invoice"
+                  href="/main-view/create-payment-received"
                   target="_blank"
                   className="text-white text-center d-flex justify-content-center align-items-center"
                   style={{

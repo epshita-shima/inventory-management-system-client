@@ -22,7 +22,9 @@ const InsertPaymentMethodInformation = ({
   setBankChequeDate,
   itemNameData,
   itemSize,
-  setFormValues
+  setFormValues,
+  itemNameOptions,
+  invoiveByInvoiceNumber,
 }) => {
   const [show, setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
@@ -51,15 +53,12 @@ const InsertPaymentMethodInformation = ({
   };
   const [openModals, setOpenModals] = useState([]); // Track open modals for each detail
 
-  // Function to handle modal open/close
-  const handleOpenModal = (index) => {};
-
   const handleCloseModal = (index) => {
     const newOpenModals = [...openModals];
     newOpenModals[index] = false; // Close the modal for the specific row
     setOpenModals(newOpenModals);
   };
-console.log(itemNameData)
+
   return (
     <div
       className="shadow-lg p-4 grninsertdata-main-view"
@@ -94,10 +93,13 @@ console.log(itemNameData)
                       Item Name
                     </th>
                     <th className="bg-white text-center  align-items-center ">
-                      Quantity
+                      Amount
                     </th>
                     <th className="bg-white text-center  align-items-center ">
-                      Amount
+                      Unit Price
+                    </th>
+                    <th className="bg-white text-center  align-items-center ">
+                      Quantity
                     </th>
                     <th className="bg-white text-center  align-items-center ">
                       Action
@@ -175,14 +177,17 @@ console.log(itemNameData)
                                       e.value
                                     );
                                     setFormValues((prev) => {
-                                      const temp_details = [...prev.detailsData];
-                                      const newDetail = { ...temp_details[index] };
+                                      const temp_details = [
+                                        ...prev.detailsData,
+                                      ];
+                                      const newDetail = {
+                                        ...temp_details[index],
+                                      };
                                       newDetail["paymentMethod"] = e.value;
                                       temp_details[index] = newDetail;
                                       return {
                                         ...prev,
                                         detailsData: [...temp_details],
-                                        
                                       };
                                     });
                                     if (detail.paymentMethod) {
@@ -265,10 +270,14 @@ console.log(itemNameData)
                                       e.value
                                     );
                                     setFormValues((prev) => {
-                                      const temp_details = [...prev.detailsData];
-                                      const newDetail = { ...temp_details[index] };
+                                      const temp_details = [
+                                        ...prev.detailsData,
+                                      ];
+                                      const newDetail = {
+                                        ...temp_details[index],
+                                      };
                                       newDetail["paymentStatus"] = e.value;
-              
+
                                       temp_details[index] = newDetail;
                                       return {
                                         ...prev,
@@ -287,7 +296,7 @@ console.log(itemNameData)
                               </div>
                             </td>
                             <td className="text-center  align-items-center">
-                              <Field
+                              {/* <Field
                                 type="text"
                                 name={`detailsData.${index}.itemId`}
                                 placeholder="Item Name"
@@ -302,48 +311,90 @@ console.log(itemNameData)
                                   marginBottom: "5px",
                                   textAlign: "center",
                                 }}
-                               
-                              />
-                            </td>
-                            <td className="text-center  align-items-center">
-                              <Field
-                                type="number"
-                                name={`detailsData.${index}.quantity`}
-                                placeholder="Quantity"
-                                value={detail.quantity}
-                                style={{
-                                  border: "1px solid #2DDC1B",
-                                  padding: "5px",
-                                  width: "100%",
-                                  borderRadius: "5px",
-                                  height: "38px",
-                                  marginBottom: "5px",
-                                  textAlign: "center",
-                                }}
-                                onKeyUp={(e) => {
-                                  const calCulateTotalAmount =
-                                    parseFloat(e.target.value) *
-                                    detail.unitPrice;
-                                  console.log(calCulateTotalAmount);
-                                  setFieldValue(
-                                    `detailsData.${index}.amount`,
-                                    calCulateTotalAmount
-                                  );
-                                  setFieldValue(
-                                    `detailsData.${index}.quantity`,
-                                    parseFloat(e.target.value)
-                                  );
-                                }}
-                              />
-                              <br />
-                              {touched.detailsData?.[index]?.quantity &&
-                                errors.detailsData?.[index]?.quantity && (
-                                  <div className="text-danger">
-                                    {errors.detailsData[index].quantity}
-                                  </div>
-                                )}
-                            </td>
+                              /> */}
+                              <div className="w-100">
+                                <Select
+                                  className="w-100"
+                                  aria-label="Default select example"
+                                  name="sizeinfo"
+                                  options={itemNameOptions}
+                                  defaultValue={{
+                                    label: "Select Payment Method",
+                                    value: 0,
+                                  }}
+                                  value={itemNameOptions?.filter(function (
+                                    option
+                                  ) {
+                                    return option.value === detail.itemId;
+                                  })}
+                                  styles={{
+                                    control: (baseStyles, state) => ({
+                                      ...baseStyles,
+                                      width: "100%",
+                                      borderColor: state.isFocused
+                                        ? "#fff"
+                                        : "#fff",
+                                      border: "1px solid #2DDC1B",
+                                    }),
+                                    menu: (provided) => ({
+                                      ...provided,
+                                      zIndex: 9999,
+                                      height: "auto",
+                                      // overflowY: "scroll",
+                                    }),
+                                    menuPortal: (base) => ({
+                                      ...base,
+                                      zIndex: 9999,
+                                    }),
+                                  }}
+                                  menuPosition="fixed"
+                                  menuPortalTarget={document.body}
+                                  theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                      ...theme.colors,
+                                      primary25: "#B8FEB3",
+                                      primary: "#2DDC1B",
+                                    },
+                                  })}
+                                  onChange={(e) => {
+                                    console.log(invoiveByInvoiceNumber);
+                                    console.log(e);
+                                    const filterInvoice =
+                                      invoiveByInvoiceNumber?.detailsData?.find(
+                                        (item) => item.itemId === e.value
+                                      );
+                                    console.log(filterInvoice);
+                                    setFieldValue(
+                                      `detailsData.${index}.itemId`,
+                                      e.value
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.unitPrice`,
+                                      filterInvoice?.unitPrice
+                                    );
+                                    console.log(itemNameData);
 
+                                    setFormValues((prev) => {
+                                      const temp_details = [
+                                        ...prev.detailsData,
+                                      ];
+                                      const newDetail = {
+                                        ...temp_details[index],
+                                      };
+                                      newDetail["itemId"] = e.value;
+                                      newDetail["unitPrice"] =
+                                        filterInvoice?.unitPrice;
+                                      temp_details[index] = newDetail;
+                                      return {
+                                        ...prev,
+                                        detailsData: [...temp_details],
+                                      };
+                                    });
+                                  }}
+                                ></Select>
+                              </div>
+                            </td>
                             <td className="text-center  align-items-center">
                               <Field
                                 type="number"
@@ -364,6 +415,35 @@ console.log(itemNameData)
                                     `detailsData.${index}.amount`,
                                     parseFloat(e.target.value)
                                   );
+                                  const calCulateTotalAmount =
+                                    parseFloat(e.target.value) /
+                                    detail.unitPrice;
+                                  console.log(calCulateTotalAmount);
+                                  setFieldValue(
+                                    `detailsData.${index}.quantity`,
+                                    calCulateTotalAmount
+                                  );
+
+                                  setFormValues((prev) => {
+                                    const temp_details = [...prev.detailsData];
+                                    const newDetail = {
+                                      ...temp_details[index],
+                                    };
+                                    newDetail["amount"] = parseFloat(
+                                      e.target.value
+                                    );
+                                    newDetail["quantity"] =
+                                      calCulateTotalAmount;
+                                    temp_details[index] = newDetail;
+                                    return {
+                                      ...prev,
+                                      detailsData: [...temp_details],
+                                    };
+                                  });
+                                  // setFieldValue(
+                                  //   `detailsData.${index}.quantity`,
+                                  //   parseFloat(e.target.value)
+                                  // );
                                 }}
                               />
                               <br />
@@ -374,6 +454,43 @@ console.log(itemNameData)
                                   </div>
                                 )}
                             </td>
+                            <td className="text-center  align-items-center">
+                              <Field
+                                type="number"
+                                name={`detailsData.${index}.unitPrice`}
+                                placeholder="Unit price"
+                                value={detail.unitPrice}
+                                disabled
+                                style={{
+                                  border: "1px solid #2DDC1B",
+                                  padding: "5px",
+                                  width: "100%",
+                                  borderRadius: "5px",
+                                  height: "38px",
+                                  marginBottom: "5px",
+                                  textAlign: "center",
+                                }}
+                              />
+                            </td>
+                            <td className="text-center  align-items-center">
+                              <Field
+                                type="number"
+                                name={`detailsData.${index}.quantity`}
+                                placeholder="Quantity"
+                                value={detail.quantity}
+                                style={{
+                                  border: "1px solid #2DDC1B",
+                                  padding: "5px",
+                                  width: "100%",
+                                  borderRadius: "5px",
+                                  height: "38px",
+                                  marginBottom: "5px",
+                                  textAlign: "center",
+                                }}
+                              />
+                              <br />
+                            </td>
+
                             <td className="text-center  align-items-center">
                               <textarea
                                 type="text"
@@ -392,8 +509,20 @@ console.log(itemNameData)
                                 onChange={(e) => {
                                   setFieldValue(
                                     `detailsData.${index}.remarks`,
-                                   e.target.value
+                                    e.target.value
                                   );
+                                  setFormValues((prev) => {
+                                    const temp_details = [...prev.detailsData];
+                                    const newDetail = {
+                                      ...temp_details[index],
+                                    };
+                                    newDetail["remarks"] = e.target.value;
+                                    temp_details[index] = newDetail;
+                                    return {
+                                      ...prev,
+                                      detailsData: [...temp_details],
+                                    };
+                                  });
                                 }}
                               />
                             </td>

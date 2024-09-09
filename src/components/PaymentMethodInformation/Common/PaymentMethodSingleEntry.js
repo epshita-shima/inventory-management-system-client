@@ -11,6 +11,7 @@ import Select from "react-select";
 import swal from "sweetalert";
 import {
   clientInfoDropdown,
+  finishGoodsWithSizeItemDropdown,
   invoiceListDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
@@ -18,7 +19,11 @@ import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoic
 import InsertPaymentMethodInformation from "../Insert/InsertPaymentMethodInformation";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useInsertPaymentReceiveInformationMutation } from "../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import {
+  useGetAllPaymentReceiveInformationQuery,
+  useInsertPaymentReceiveInformationMutation,
+} from "../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymentDetailsModal";
 
 const PaymentMethodSingleEntry = () => {
   const ArrayHelperRef = useRef();
@@ -34,6 +39,7 @@ const PaymentMethodSingleEntry = () => {
   const [isDisplay, setIsDisplay] = useState(false);
   const [bankChequeDate, setBankChequeDate] = useState(new Date());
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
+  const [previousPaymentData, setPreviousPaymentData] = useState([]);
   const [invoiceList, setInvoiceList] = useState([]);
   const clientDataOptions = clientInfoDropdown(clientInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
@@ -42,7 +48,13 @@ const PaymentMethodSingleEntry = () => {
   const [clientName, setClientName] = useState("");
   const [piNumber, setPINumber] = useState("");
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
+  const { data: paymnetReceiveData } =
+    useGetAllPaymentReceiveInformationQuery(undefined);
   const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
+  const [show, setShow] = useState(false);
+
+  const handleCloseModal = () => setShow(false);
+  const handleShow = () => setShow(true);
   const [formValues, setFormValues] = useState({
     clientId: clientName,
     piNumber: piNumber,
@@ -52,7 +64,7 @@ const PaymentMethodSingleEntry = () => {
     updateDate: null,
     detailsData: [
       {
-        paymentReceiveDate: "",
+        paymentReceiveDate: paymentReceiveDate,
         paymentMethod: "",
         paymentStatus: "",
         itemId: "",
@@ -76,19 +88,27 @@ const PaymentMethodSingleEntry = () => {
     { value: "cash", label: "Cash" },
     { value: "adjustment", label: "Adjustment" },
   ];
+
   const areFieldsEmpty = () => {
     return formValues?.detailsData?.some(
-      (field) => !field.paymentMethod || !field.paymentStatus || !field.bankId || !field.depositeSlipNo
+      (field) =>
+        !field.paymentMethod ||
+        !field.paymentStatus ||
+        !field.bankId ||
+        !field.depositeSlipNo ||
+        !field.itemId ||
+        !field.amount
     );
   };
+  console.log(previousPaymentData);
 
   useEffect(() => {
-    if (clientName !== "" && piNumber !== "") {
+    if (clientName !== "" && piNumber !== "" && previousPaymentData == "") {
       setIsDisplay(true);
     } else {
       setIsDisplay(false);
     }
-  }, [piNumber, clientName]);
+  }, [piNumber, clientName, previousPaymentData]);
 
   useEffect(() => {
     if (invoiveByInvoiceNumber?.detailsData?.length > 0) {
@@ -103,34 +123,34 @@ const PaymentMethodSingleEntry = () => {
           sizeInfo?.find((x) => x?._id === item.sizeId)
         );
         accumulatedItemSizeData.push(...filteredSize);
-
       });
       setItemNameData(accumulatedItemNameData);
       setItemSize(accumulatedItemSizeData);
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        detailsData: invoiveByInvoiceNumber.detailsData.map((detail) => {
-          return {
-            paymentReceiveDate: paymentReceiveDate || "",
-            paymentMethod: "",
-            paymentStatus: "",
-            itemId: detail.itemId || "",
-            amount: detail.totalAmount,
-            quantity: detail.quantity,
-            unitPrice: detail.unitPrice,
-            bankId: "",
-            chequeNo: "",
-            chequeDate: "",
-            depositeSlipNo: "",
-            remarks: "",
-          };
-        }),
-      }));
+      // setFormValues((prevValues) => ({
+      //   ...prevValues,
+      //   detailsData: invoiveByInvoiceNumber.detailsData.map((detail) => {
+      //     return {
+      //       paymentReceiveDate: paymentReceiveDate || "",
+      //       paymentMethod: "",
+      //       paymentStatus: "",
+      //       itemId: "",
+      //       amount: detail.totalAmount,
+      //       quantity: detail.quantity,
+      //       unitPrice: detail.unitPrice,
+      //       bankId: "",
+      //       chequeNo: "",
+      //       chequeDate: "",
+      //       depositeSlipNo: "",
+      //       remarks: "",
+      //     };
+      //   }),
+      // }));
     }
   }, [invoiveByInvoiceNumber, paymentReceiveDate, finishGoods, sizeInfo]);
 
-  console.log((formValues));
+  console.log(itemNameData);
   const handleSubmit = async (e, values, resetForm) => {
+    console.log(values);
     e.preventDefault();
     const modelData = {
       clientId: clientName,
@@ -143,7 +163,9 @@ const PaymentMethodSingleEntry = () => {
     };
     values.detailsData.map((item) => {
       modelData.detailsData.push({
-        paymentReceiveDate: item.paymentReceiveDate,
+        paymentReceiveDate: item.paymentReceiveDate
+          ? item.paymentReceiveDate
+          : paymentReceiveDate,
         paymentMethod: item.paymentMethod,
         paymentStatus: item.paymentStatus,
         itemId: item.itemId,
@@ -159,7 +181,7 @@ const PaymentMethodSingleEntry = () => {
     });
     try {
       const response = await insertPaymentReceive(modelData);
-      console.log(JSON.stringify(modelData));
+      console.log(modelData);
       if (response?.data?.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();
@@ -171,6 +193,13 @@ const PaymentMethodSingleEntry = () => {
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
+  const itemNameOptions = finishGoodsWithSizeItemDropdown(
+    itemNameData,
+    sizeInfo
+  );
+  console.log(itemNameData);
+  console.log(itemNameOptions);
+  console.log(formValues);
 
   return (
     <div
@@ -227,6 +256,7 @@ const PaymentMethodSingleEntry = () => {
                       (sum, item) => sum + item.quantity,
                       0
                     );
+
                     console.log(values);
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
@@ -323,19 +353,20 @@ const PaymentMethodSingleEntry = () => {
                                           icon: "warning",
                                           button: "OK",
                                         });
-                                        setPINumber('')
+                                        setPINumber("");
                                         setInvoiceList([]);
                                       }
                                       setClientName(e.value);
                                       setFieldValue("clientId", e.value);
                                       setFormValues((prevData) => ({
                                         ...prevData,
-                                        clientId:e.value,
-                                        detailsData: prevData?.detailsData?.map((item, idx) => {
-                                          
-                                          return item;
-                                        }),
-                                      }))
+                                        clientId: e.value,
+                                        detailsData: prevData?.detailsData?.map(
+                                          (item, idx) => {
+                                            return item;
+                                          }
+                                        ),
+                                      }));
                                       // handleSelectSupplier(e, setFieldValue);
                                     }}
                                   ></Select>
@@ -394,6 +425,20 @@ const PaymentMethodSingleEntry = () => {
                                     onChange={(e) => {
                                       setPINumber(e.value);
                                       setFieldValue("piNumber", e.value);
+                                      const filterPaymentData =
+                                        paymnetReceiveData.find(
+                                          (data) => data.piNumber == e.label
+                                        );
+                                      console.log(filterPaymentData);
+                                      if (filterPaymentData !== undefined) {
+                                        setPreviousPaymentData(
+                                          filterPaymentData
+                                        );
+                                        setShow(true);
+                                      } else {
+                                        setPreviousPaymentData([]);
+                                        setShow(false);
+                                      }
                                       const invoiceListMatchingData =
                                         invoiceList.find(
                                           (data) => data._id == e.value
@@ -402,11 +447,12 @@ const PaymentMethodSingleEntry = () => {
                                         invoiceListMatchingData
                                       );
                                       setFormValues((prevData) => {
-                                        console.log(prevData)
-                                        return{
-                                        ...prevData,
-                                        piNumber:e.value
-                                      }})
+                                        console.log(prevData);
+                                        return {
+                                          ...prevData,
+                                          piNumber: e.value,
+                                        };
+                                      });
                                     }}
                                   ></Select>
                                 </div>
@@ -433,17 +479,15 @@ const PaymentMethodSingleEntry = () => {
                                     className="border-0"
                                     style={{
                                       backgroundColor: areFieldsEmpty()
-                                      ? "gray"
-                                      : "#2DDC1B",
+                                        ? "gray"
+                                        : "#2DDC1B",
                                       color: "white",
                                       padding: "5px 10px",
                                       fontSize: "14px",
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    disabled={ areFieldsEmpty()
-                                      ? true
-                                      : false}
+                                    disabled={areFieldsEmpty() ? true : false}
                                   >
                                     Save
                                   </button>
@@ -466,7 +510,8 @@ const PaymentMethodSingleEntry = () => {
                                         itemId: "",
                                         amount: "",
                                         quantity: "",
-                                        bankName: "",
+                                        unitPrice: "",
+                                        bankId: "",
                                         chequeNo: "",
                                         chequeDate: "",
                                         depositeSlipNo: "",
@@ -548,8 +593,12 @@ const PaymentMethodSingleEntry = () => {
                                 itemNameData={itemNameData}
                                 itemSize={itemSize}
                                 setFormValues={setFormValues}
+                                itemNameOptions={itemNameOptions}
+                                invoiceInformation={invoiceInformation}
+                                invoiveByInvoiceNumber={invoiveByInvoiceNumber}
                               ></InsertPaymentMethodInformation>
                             }
+                             
                           </>
                         )}
                       </div>
@@ -558,9 +607,21 @@ const PaymentMethodSingleEntry = () => {
                 />
               </Form>
             )}
+            
           </Formik>
         </div>
+      
       </div>
+      {previousPaymentData && (
+        <PreviousPaymentDetailsModal
+          detail={previousPaymentData}
+          finishGoods={finishGoods}
+          sizeInfo={sizeInfo}
+          show={show} // Pass row-specific modal visibility
+          handleClosePreviousPayment={() => handleCloseModal()} // Close modal for this specific row
+          bankChequeDate={bankChequeDate}
+        />
+      )}
     </div>
   );
 };
