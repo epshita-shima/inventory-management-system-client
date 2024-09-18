@@ -261,6 +261,12 @@ function App() {
                 path="payment-received-list"
                 element={<PaymentReceiveDataTable></PaymentReceiveDataTable>}
               ></Route>
+              
+              <Route
+                path="update-payment-received/:id"
+                element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
+              ></Route>
+
 
               {/* <Route
                 path="/main-view/user-list"

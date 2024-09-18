@@ -57,22 +57,24 @@ const InvoiceInformationDataList = ({ permission }) => {
   const userRoleId = getUserParse[0].roleId;
   const makebyUser = getUserParse[0].username;
 
-  console.log(JSON.stringify(userWaysListData))
+  console.log(JSON.stringify(userWaysListData));
   useEffect(() => {
     const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
     const invoiceData = invoiceDatas?.filter(
       (data) => data.makeBy === makebyUser
     );
 
-    if(
+    if (
       matchUserRole?._id === "65d48768a106fcb4f5c28071" ||
       matchUserRole?._id === "65d486123346cddf01c3773a"
-    ){
-      const filterApprovePi = invoiceDatas?.filter((x) => x.isApproved === true);
+    ) {
+      const filterApprovePi = invoiceDatas?.filter(
+        (x) => x.isApproved === true
+      );
       const filterUnApprovePi = invoiceDatas?.filter(
         (x) => x.isApproved === false
       );
-  
+
       const totalApprovedAmount = invoiceDatas
         ?.filter((invoice) => invoice?.isApproved === true)
         .reduce((total, invoice) => {
@@ -84,7 +86,7 @@ const InvoiceInformationDataList = ({ permission }) => {
             )
           );
         }, 0);
-  
+
       const totalUnapprovedAmount = invoiceDatas
         ?.filter((invoice) => invoice?.isApproved === false)
         .reduce((total, invoice) => {
@@ -96,17 +98,16 @@ const InvoiceInformationDataList = ({ permission }) => {
             )
           );
         }, 0);
-        setTotalApprovePi(filterApprovePi);
-        setTotalUnApprovePi(filterUnApprovePi);
-        setTotalApprovePiAmount(totalApprovedAmount);
-        setTotalUnApprovePiAmount(totalUnapprovedAmount);
-    }
-    else{
+      setTotalApprovePi(filterApprovePi);
+      setTotalUnApprovePi(filterUnApprovePi);
+      setTotalApprovePiAmount(totalApprovedAmount);
+      setTotalUnApprovePiAmount(totalUnapprovedAmount);
+    } else {
       const filterApprovePi = invoiceData?.filter((x) => x.isApproved === true);
       const filterUnApprovePi = invoiceData?.filter(
         (x) => x.isApproved === false
       );
-  
+
       const totalApprovedAmount = invoiceData
         ?.filter((invoice) => invoice?.isApproved === true)
         .reduce((total, invoice) => {
@@ -118,7 +119,7 @@ const InvoiceInformationDataList = ({ permission }) => {
             )
           );
         }, 0);
-  
+
       const totalUnapprovedAmount = invoiceData
         ?.filter((invoice) => invoice?.isApproved === false)
         .reduce((total, invoice) => {
@@ -130,10 +131,10 @@ const InvoiceInformationDataList = ({ permission }) => {
             )
           );
         }, 0);
-        setTotalApprovePi(filterApprovePi);
-        setTotalUnApprovePi(filterUnApprovePi);
-        setTotalApprovePiAmount(totalApprovedAmount);
-        setTotalUnApprovePiAmount(totalUnapprovedAmount);
+      setTotalApprovePi(filterApprovePi);
+      setTotalUnApprovePi(filterUnApprovePi);
+      setTotalApprovePiAmount(totalApprovedAmount);
+      setTotalUnApprovePiAmount(totalUnapprovedAmount);
     }
 
     if (
@@ -167,6 +168,7 @@ const InvoiceInformationDataList = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
     {
       name: "Client Name",
@@ -201,6 +203,15 @@ const InvoiceInformationDataList = ({ permission }) => {
           0
         );
         return totalAmount;
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Approve Status",
+      selector: (userWaysListData) => {
+        return userWaysListData.isApproved ? <p className="text-success">Approved</p> : <p className="text-danger">Unapprove</p>;
       },
       sortable: true,
       center: true,
@@ -442,12 +453,12 @@ const InvoiceInformationDataList = ({ permission }) => {
         userRoles={userRoles}
         finishGoodsData={finishGoodsData}
         unitInfo={unitInfo}
-  sizeInfo={sizeInfo}
-  paymentInfo={paymentInfo}
-  base64Logo={base64Logo}
-  signature={ signature}
+        sizeInfo={sizeInfo}
+        paymentInfo={paymentInfo}
+        base64Logo={base64Logo}
+        signature={signature}
       ></InvoiceListHeading>
-      <div className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view">
+      <div className="col  mt-sm-4 mt-md-4 mt-lg-0">
         <div className="shadow-lg">
           <DataTable
             columns={columns}

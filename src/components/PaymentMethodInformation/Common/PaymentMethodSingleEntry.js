@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import Select from "react-select";
 import swal from "sweetalert";
@@ -21,11 +21,15 @@ import { useGetAllItemInformationQuery } from "../../../redux/features/iteminfor
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import {
   useGetAllPaymentReceiveInformationQuery,
+  useGetSinglePaymentReceiveQuery,
   useInsertPaymentReceiveInformationMutation,
+  useUpdatePaymentReceiveInfoMutation,
 } from "../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymentDetailsModal";
+import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
 
 const PaymentMethodSingleEntry = () => {
+  const { id } = useParams();
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const getUser = localStorage.getItem("user");
@@ -51,7 +55,12 @@ const PaymentMethodSingleEntry = () => {
   const { data: paymnetReceiveData } =
     useGetAllPaymentReceiveInformationQuery(undefined);
   const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
+  const [updatePaymentReceivedInfo] = useUpdatePaymentReceiveInfoMutation();
   const [show, setShow] = useState(false);
+  const { data: getSinglePaymentReceiveInfo } =
+    useGetSinglePaymentReceiveQuery(id);
+  const [updatePaymentReceiveInformation, setUpdatePaymentReceiveInformation] =
+    useState([]);
 
   const handleCloseModal = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -79,8 +88,8 @@ const PaymentMethodSingleEntry = () => {
       },
     ],
   });
+  console.log(previousPaymentData);
   const paymentMethodOptions = [
-    { value: "cash", label: "Cash" },
     { value: "bank-cash", label: "Bank-Cash" },
     { value: "bank-cheque", label: "Bank-Cheque" },
   ];
@@ -100,22 +109,27 @@ const PaymentMethodSingleEntry = () => {
         !field.amount
     );
   };
-  console.log(previousPaymentData);
+
+  console.log(getSinglePaymentReceiveInfo);
 
   useEffect(() => {
-    if (clientName !== "" && piNumber !== "" && previousPaymentData == "") {
+    if (id) {
       setIsDisplay(true);
     } else {
-      setIsDisplay(false);
+      if (clientName !== "" && piNumber !== "" && previousPaymentData == "") {
+        setIsDisplay(true);
+      } else {
+        setIsDisplay(false);
+      }
     }
-  }, [piNumber, clientName, previousPaymentData]);
+  }, [piNumber, clientName, previousPaymentData, id]);
 
   useEffect(() => {
     if (invoiveByInvoiceNumber?.detailsData?.length > 0) {
       const accumulatedItemNameData = [];
       const accumulatedItemSizeData = [];
       invoiveByInvoiceNumber.detailsData.forEach((detail) => {
-        const matchedItem = finishGoods.filter(
+        const matchedItem = finishGoods?.filter(
           (item) => item._id === detail.itemId
         );
         accumulatedItemNameData.push(...matchedItem);
@@ -148,58 +162,87 @@ const PaymentMethodSingleEntry = () => {
     }
   }, [invoiveByInvoiceNumber, paymentReceiveDate, finishGoods, sizeInfo]);
 
-  console.log(itemNameData);
-  const handleSubmit = async (e, values, resetForm) => {
-    console.log(values);
-    e.preventDefault();
-    const modelData = {
-      clientId: clientName,
-      piNumber: piNumber,
-      makeBy: makebyUser,
-      updateBy: null,
-      makeDate: new Date(),
-      updateDate: null,
-      detailsData: [],
-    };
-    values.detailsData.map((item) => {
-      modelData.detailsData.push({
-        paymentReceiveDate: item.paymentReceiveDate
-          ? item.paymentReceiveDate
-          : paymentReceiveDate,
-        paymentMethod: item.paymentMethod,
-        paymentStatus: item.paymentStatus,
-        itemId: item.itemId,
-        amount: item.amount,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        bankId: item.bankId,
-        chequeNo: item.chequeNo,
-        chequeDate: item.chequeDate,
-        depositeSlipNo: item.depositeSlipNo,
-        remarks: item.remarks,
-      });
-    });
-    try {
-      const response = await insertPaymentReceive(modelData);
-      console.log(modelData);
-      if (response?.data?.status === 200) {
-        swal("Done", "Data Save Successfully", "success");
-        resetForm();
-      } else if (response?.error?.status === 400) {
-        swal("Not Possible!", response?.error?.data?.message, "error");
-      }
-    } catch (err) {
-      console.error(err);
-      swal("Error", "An error occurred while creating the data", "error");
+  useEffect(() => {
+    if (id) {
+      const matchedInvoice = invoiceInformation?.filter(
+        (invoice) =>
+          invoice.customerID === getSinglePaymentReceiveInfo?.clientId
+      );
+      console.log(matchedInvoice);
+      setInvoiceList(matchedInvoice);
+      const invoiceListMatchingData = matchedInvoice?.find(
+        (data) => data.invoiceNo === getSinglePaymentReceiveInfo?.piNumber
+      );
+      setInvoiveByInvoiceNumber(invoiceListMatchingData);
     }
+    setUpdatePaymentReceiveInformation(getSinglePaymentReceiveInfo);
+  }, [getSinglePaymentReceiveInfo, id, invoiceInformation]);
+
+
+  const handleSubmit = async (e, values, resetForm) => {
+    e.preventDefault();
+    if(id){
+      try {
+        const response = await updatePaymentReceivedInfo(updatePaymentReceiveInformation);
+        if (response?.data?.status === 200) {
+          swal("Done", "Data Update Successfully", "success");
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
+      } catch (err) { 
+        swal("Error", "An error occurred while creating the data", "error");
+      }
+    }
+    else{
+      const modelData = {
+        clientId: clientName,
+        piNumber: piNumber,
+        makeBy: makebyUser,
+        updateBy: null,
+        makeDate: new Date(),
+        updateDate: null,
+        detailsData: [],
+      };
+      values.detailsData.map((item) => {
+        modelData.detailsData.push({
+          paymentReceiveDate: item.paymentReceiveDate
+            ? item.paymentReceiveDate
+            : paymentReceiveDate,
+          paymentMethod: item.paymentMethod,
+          paymentStatus: item.paymentStatus,
+          itemId: item.itemId,
+          amount: item.amount,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          bankId: item.bankId,
+          chequeNo: item.chequeNo ? item.chequeNo : "N/A",
+          chequeDate: item.chequeDate ? item.chequeDate : "N/A",
+          depositeSlipNo: item.depositeSlipNo,
+          remarks: item.remarks,
+        });
+      });
+      try {
+        const response = await insertPaymentReceive(modelData);
+        console.log(modelData);
+        if (response?.data?.status === 200) {
+          swal("Done", "Data Save Successfully", "success");
+          navigate('/main-view/payment-received-list')
+          resetForm();
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
+      } catch (err) {
+        console.error(err);
+        swal("Error", "An error occurred while creating the data", "error");
+      }
+    }
+  
   };
+
   const itemNameOptions = finishGoodsWithSizeItemDropdown(
     itemNameData,
     sizeInfo
   );
-  console.log(itemNameData);
-  console.log(itemNameOptions);
-  console.log(formValues);
 
   return (
     <div
@@ -248,16 +291,26 @@ const PaymentMethodSingleEntry = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values?.detailsData;
-                    const totalAmount = values?.detailsData?.reduce(
-                      (sum, item) => sum + item.amount,
-                      0
-                    );
-                    const totalQuantity = values?.detailsData?.reduce(
-                      (sum, item) => sum + item.quantity,
-                      0
-                    );
 
-                    console.log(values);
+                    const totalAmount = id
+                      ? updatePaymentReceiveInformation?.detailsData?.reduce(
+                          (sum, item) => sum + item.amount,
+                          0
+                        )
+                      : values?.detailsData?.reduce(
+                          (sum, item) => sum + item.amount,
+                          0
+                        );
+                    const totalQuantity = id
+                      ? updatePaymentReceiveInformation?.detailsData?.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0
+                        )
+                      : values?.detailsData?.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0
+                        );
+console.log(totalQuantity)
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
                         <div>
@@ -305,15 +358,27 @@ const PaymentMethodSingleEntry = () => {
                                     aria-label="Default select example"
                                     name="sizeinfo"
                                     options={clientDataOptions}
+                                    isDisabled={id? true : false}
                                     defaultValue={{
                                       label: "Select Client Name",
                                       value: 0,
                                     }}
-                                    value={clientDataOptions?.filter(function (
-                                      option
-                                    ) {
-                                      return option.value === clientName;
-                                    })}
+                                    value={
+                                      id
+                                        ? clientDataOptions?.filter(function (
+                                            option
+                                          ) {
+                                            return (
+                                              option.value ===
+                                              updatePaymentReceiveInformation?.clientId
+                                            );
+                                          })
+                                        : clientDataOptions?.filter(function (
+                                            option
+                                          ) {
+                                            return option.value === clientName;
+                                          })
+                                    }
                                     styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -338,35 +403,49 @@ const PaymentMethodSingleEntry = () => {
                                       },
                                     })}
                                     onChange={(e) => {
-                                      const matchedInvoice =
-                                        invoiceInformation?.filter(
-                                          (invoice) =>
-                                            invoice.customerID == e.value
+                                      if (id) {
+                                        setUpdatePaymentReceiveInformation(
+                                          (prevData) => ({
+                                            ...prevData,
+                                            clientId: e.value,
+                                            updateBy: makebyUser,
+                                            updateDate: new Date(),
+                                          })
                                         );
-                                      if (matchedInvoice?.length > 0) {
-                                        setInvoiceList(matchedInvoice);
                                       } else {
-                                        setIsDisplay(false);
-                                        swal({
-                                          title: "Sorry!",
-                                          text: "This Client has no PI.",
-                                          icon: "warning",
-                                          button: "OK",
-                                        });
-                                        setPINumber("");
-                                        setInvoiceList([]);
+                                        const matchedInvoice =
+                                          invoiceInformation?.filter(
+                                            (invoice) =>
+                                              invoice.customerID === e.value && invoice.isApproved ===true
+                                          );
+                                          console.log(matchedInvoice)
+                                        if (matchedInvoice?.length > 0) {
+                                          setInvoiceList(matchedInvoice);
+                                        } else {
+                                          setIsDisplay(false);
+                                          swal({
+                                            title: "Sorry!",
+                                            text: "This Client has no PI.",
+                                            icon: "warning",
+                                            button: "OK",
+                                          });
+                                          setPINumber("");
+                                          setInvoiceList([]);
+                                        }
+                                        setClientName(e.value);
+                                        setFieldValue("clientId", e.value);
+                                        setFormValues((prevData) => ({
+                                          ...prevData,
+                                          clientId: e.value,
+                                          detailsData:
+                                            prevData?.detailsData?.map(
+                                              (item, idx) => {
+                                                return item;
+                                              }
+                                            ),
+                                        }));
                                       }
-                                      setClientName(e.value);
-                                      setFieldValue("clientId", e.value);
-                                      setFormValues((prevData) => ({
-                                        ...prevData,
-                                        clientId: e.value,
-                                        detailsData: prevData?.detailsData?.map(
-                                          (item, idx) => {
-                                            return item;
-                                          }
-                                        ),
-                                      }));
+
                                       // handleSelectSupplier(e, setFieldValue);
                                     }}
                                   ></Select>
@@ -389,15 +468,27 @@ const PaymentMethodSingleEntry = () => {
                                     aria-label="Default select example"
                                     name="supplierpono"
                                     options={invoiceListOption}
+                                    isDisabled={id? true : false}
                                     defaultValue={{
                                       label: "Select PI Number",
                                       value: 0,
                                     }}
-                                    value={invoiceListOption?.filter(function (
-                                      option
-                                    ) {
-                                      return option?.value === piNumber;
-                                    })}
+                                    value={
+                                      id
+                                        ? invoiceListOption?.filter(function (
+                                            option
+                                          ) {
+                                            return (
+                                              option?.label ===
+                                              updatePaymentReceiveInformation?.piNumber
+                                            );
+                                          })
+                                        : invoiceListOption?.filter(function (
+                                            option
+                                          ) {
+                                            return option?.label === piNumber;
+                                          })
+                                    }
                                     styles={{
                                       control: (baseStyles, state) => ({
                                         ...baseStyles,
@@ -423,36 +514,69 @@ const PaymentMethodSingleEntry = () => {
                                       },
                                     })}
                                     onChange={(e) => {
-                                      setPINumber(e.value);
-                                      setFieldValue("piNumber", e.value);
-                                      const filterPaymentData =
-                                        paymnetReceiveData.find(
-                                          (data) => data.piNumber == e.label
+                                      if (id) {
+                                        setPINumber(e.label);
+                                        setFieldValue("piNumber", e.label);
+                                        const filterPaymentData =
+                                          paymnetReceiveData?.find(
+                                            (data) => data.piNumber === e.label
+                                          );
+                                        console.log(filterPaymentData);
+                                        if (filterPaymentData !== undefined) {
+                                          setPreviousPaymentData(
+                                            filterPaymentData
+                                          );
+                                          setShow(true);
+                                        } else {
+                                          setPreviousPaymentData([]);
+                                          setShow(false);
+                                        }
+                                        const invoiceListMatchingData =
+                                          invoiceList.find(
+                                            (data) => data._id === e.value
+                                          );
+                                        setInvoiveByInvoiceNumber(
+                                          invoiceListMatchingData
                                         );
-                                      console.log(filterPaymentData);
-                                      if (filterPaymentData !== undefined) {
-                                        setPreviousPaymentData(
-                                          filterPaymentData
-                                        );
-                                        setShow(true);
+                                        setUpdatePaymentReceiveInformation((prevData) => {
+                                          console.log(prevData);
+                                          return {
+                                            ...prevData,
+                                            piNumber: e.value,
+                                          };
+                                        });
                                       } else {
-                                        setPreviousPaymentData([]);
-                                        setShow(false);
-                                      }
-                                      const invoiceListMatchingData =
-                                        invoiceList.find(
-                                          (data) => data._id == e.value
+                                        setPINumber(e.label);
+                                        setFieldValue("piNumber", e.label);
+                                        const filterPaymentData =
+                                          paymnetReceiveData?.find(
+                                            (data) => data.piNumber === e.label
+                                          );
+                                        console.log(filterPaymentData);
+                                        if (filterPaymentData !== undefined) {
+                                          setPreviousPaymentData(
+                                            filterPaymentData
+                                          );
+                                          setShow(true);
+                                        } else {
+                                          setPreviousPaymentData([]);
+                                          setShow(false);
+                                        }
+                                        const invoiceListMatchingData =
+                                          invoiceList.find(
+                                            (data) => data._id === e.value
+                                          );
+                                        setInvoiveByInvoiceNumber(
+                                          invoiceListMatchingData
                                         );
-                                      setInvoiveByInvoiceNumber(
-                                        invoiceListMatchingData
-                                      );
-                                      setFormValues((prevData) => {
-                                        console.log(prevData);
-                                        return {
-                                          ...prevData,
-                                          piNumber: e.value,
-                                        };
-                                      });
+                                        setFormValues((prevData) => {
+                                          console.log(prevData);
+                                          return {
+                                            ...prevData,
+                                            piNumber: e.value,
+                                          };
+                                        });
+                                      }
                                     }}
                                   ></Select>
                                 </div>
@@ -478,7 +602,7 @@ const PaymentMethodSingleEntry = () => {
                                     form="poupdate-form"
                                     className="border-0"
                                     style={{
-                                      backgroundColor: areFieldsEmpty()
+                                      backgroundColor: id? "#2DDC1B" : areFieldsEmpty()
                                         ? "gray"
                                         : "#2DDC1B",
                                       color: "white",
@@ -487,9 +611,9 @@ const PaymentMethodSingleEntry = () => {
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    disabled={areFieldsEmpty() ? true : false}
+                                    disabled={id? false : areFieldsEmpty() ? true : false}
                                   >
-                                    Save
+                                   { id? "Update" : "Save"}
                                   </button>
                                   <div
                                     className="border-0 "
@@ -539,7 +663,7 @@ const PaymentMethodSingleEntry = () => {
                                       name={`totalQuantity`}
                                       placeholder="Total Quantity"
                                       disabled
-                                      value={totalQuantity}
+                                      value={ Math.round(totalQuantity * 100) / 100}
                                       style={{
                                         border: "1px solid #2DDC1B",
                                         padding: "5px",
@@ -563,7 +687,7 @@ const PaymentMethodSingleEntry = () => {
                                       name={`grandTotalAmount`}
                                       placeholder="Total Amount"
                                       disabled
-                                      value={totalAmount}
+                                      value={ Math.round(totalAmount * 100) / 100}
                                       style={{
                                         border: "1px solid #2DDC1B",
                                         padding: "5px",
@@ -579,7 +703,24 @@ const PaymentMethodSingleEntry = () => {
                               </div>
                             </div>
 
-                            {
+                            {id ? (
+                              <UpdatePaymentMethodInformation
+                                id={id}
+                                updatePaymentReceiveInformation={
+                                  updatePaymentReceiveInformation
+                                }
+                                setUpdatePaymentReceiveInformation={
+                                  setUpdatePaymentReceiveInformation
+                                }
+                                paymentMethodOptions={paymentMethodOptions}
+                                paymentStatusOptions={paymentStatusOptions}
+                                itemNameOptions={itemNameOptions}
+                                makebyUser={makebyUser}
+                                invoiveByInvoiceNumber={invoiveByInvoiceNumber}
+                                bankChequeDate={bankChequeDate}
+                                setBankChequeDate={setBankChequeDate}
+                              ></UpdatePaymentMethodInformation>
+                            ) : (
                               <InsertPaymentMethodInformation
                                 details={details}
                                 setFieldValue={setFieldValue}
@@ -597,8 +738,7 @@ const PaymentMethodSingleEntry = () => {
                                 invoiceInformation={invoiceInformation}
                                 invoiveByInvoiceNumber={invoiveByInvoiceNumber}
                               ></InsertPaymentMethodInformation>
-                            }
-                             
+                            )}
                           </>
                         )}
                       </div>
@@ -607,19 +747,20 @@ const PaymentMethodSingleEntry = () => {
                 />
               </Form>
             )}
-            
           </Formik>
         </div>
-      
       </div>
       {previousPaymentData && (
         <PreviousPaymentDetailsModal
+          makebyUser={makebyUser}
           detail={previousPaymentData}
+          setPreviousPaymentData={setPreviousPaymentData}
           finishGoods={finishGoods}
           sizeInfo={sizeInfo}
           show={show} // Pass row-specific modal visibility
           handleClosePreviousPayment={() => handleCloseModal()} // Close modal for this specific row
           bankChequeDate={bankChequeDate}
+          setBankChequeDate={setBankChequeDate}
         />
       )}
     </div>

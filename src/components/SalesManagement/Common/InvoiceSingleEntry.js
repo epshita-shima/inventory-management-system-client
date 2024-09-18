@@ -92,6 +92,7 @@ const InvoiceSingleEntry = ({
           />
         </div>
       </div>
+      
       <div class="col-sm-12 col-md-6 col-lg-2">
         <label htmlFor="piDate"> PI Expire Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
@@ -403,6 +404,7 @@ const InvoiceSingleEntry = ({
           </div>
         </div>
       </div>
+
       <div class="col-sm-12 col-md-6 col-lg-2 mt-2">
         <label htmlFor="receipeQtyRatio">Marketing Person</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
@@ -486,6 +488,7 @@ const InvoiceSingleEntry = ({
           )}
         </div>
       </div>
+
     </div>
   );
 };

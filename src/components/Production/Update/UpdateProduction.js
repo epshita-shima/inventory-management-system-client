@@ -118,7 +118,7 @@ const UpdateProduction = ({
                                 updateProductionData?.receipeQtyRatio == 1000
                               ) {
                                 const receipeData = receipeOptions.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label
@@ -149,7 +149,7 @@ const UpdateProduction = ({
                                 updateProductionData?.receipeQtyRatio == 1000
                               ) {
                                 const receipeData = receipeOptionsLessQty.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label

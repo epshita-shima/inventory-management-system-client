@@ -190,8 +190,7 @@ const InsertPaymentMethodInformation = ({
                                         detailsData: [...temp_details],
                                       };
                                     });
-                                    if (detail.paymentMethod) {
-                                    }
+                                    
                                   }}
                                 ></Select>
                               </div>
@@ -365,6 +364,7 @@ const InsertPaymentMethodInformation = ({
                                         (item) => item.itemId === e.value
                                       );
                                     console.log(filterInvoice);
+                                    const calculateQuantity=detail.amount /filterInvoice?.unitPrice
                                     setFieldValue(
                                       `detailsData.${index}.itemId`,
                                       e.value
@@ -373,7 +373,11 @@ const InsertPaymentMethodInformation = ({
                                       `detailsData.${index}.unitPrice`,
                                       filterInvoice?.unitPrice
                                     );
-                                    console.log(itemNameData);
+                                    setFieldValue(
+                                      `detailsData.${index}.unitPrice`,
+                                      Math.round(calculateQuantity * 100) / 100
+                                    );
+                                 
 
                                     setFormValues((prev) => {
                                       const temp_details = [
@@ -385,6 +389,8 @@ const InsertPaymentMethodInformation = ({
                                       newDetail["itemId"] = e.value;
                                       newDetail["unitPrice"] =
                                         filterInvoice?.unitPrice;
+                                      newDetail["quantity"] =
+                                      Math.round(calculateQuantity * 100) / 100;
                                       temp_details[index] = newDetail;
                                       return {
                                         ...prev,
@@ -418,10 +424,10 @@ const InsertPaymentMethodInformation = ({
                                   const calCulateTotalAmount =
                                     parseFloat(e.target.value) /
                                     detail.unitPrice;
-                                  console.log(calCulateTotalAmount);
+                                  console.log(parseFloat(calCulateTotalAmount.toFixed(2)))
                                   setFieldValue(
                                     `detailsData.${index}.quantity`,
-                                    calCulateTotalAmount
+                                   parseFloat(calCulateTotalAmount.toFixed(2))
                                   );
 
                                   setFormValues((prev) => {
@@ -433,7 +439,7 @@ const InsertPaymentMethodInformation = ({
                                       e.target.value
                                     );
                                     newDetail["quantity"] =
-                                      calCulateTotalAmount;
+                                    parseFloat(calCulateTotalAmount.toFixed(2));
                                     temp_details[index] = newDetail;
                                     return {
                                       ...prev,
@@ -532,6 +538,16 @@ const InsertPaymentMethodInformation = ({
                                 className=" border-0 rounded  bg-transparent"
                                 onClick={() => {
                                   arrayHelpers.remove(index, 1);
+                                  setFormValues((prev) => {
+                                    const temp__details = [...prev.detailsData];
+                                    if (temp__details.length > 1)
+                                      temp__details.splice(index, 1);
+        
+                                    return {
+                                      ...prev,
+                                      detailsData: [...temp__details],
+                                    };
+                                  });
                                 }}
                               >
                                 <FontAwesomeIcon

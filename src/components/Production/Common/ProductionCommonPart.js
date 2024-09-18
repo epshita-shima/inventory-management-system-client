@@ -26,7 +26,6 @@ import UpdateProduction from "../Update/UpdateProduction";
 
 const ProductionCommonPart = () => {
   const { id } = useParams();
-  console.log(id);
   const navigate=useNavigate();
   const { data: getSingleProductionData } =
     useGetSingleProductionInformationQuery(id);
