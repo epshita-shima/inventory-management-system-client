@@ -13,7 +13,18 @@ const paymentreceiveApi = api.injectEndpoints({
       refetchOnReconnect: true,
       refetchOnFocus: true,
     }),
-
+    getFilteredPaymentReceiveInfo: builder.query({
+      query: (queryParams) => ({
+        url: "payment-receive/filtered",
+        params: queryParams,
+        providesTags: [
+          "insertpaymentreceiveinfo",
+          "updatepaymentreceiveinfo,deletepaymentreceiveinfo",
+        ],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
     insertPaymentReceiveInformation: builder.mutation({
       query: (payload) => ({
         url: "/payment-receive",
@@ -36,19 +47,20 @@ const paymentreceiveApi = api.injectEndpoints({
         }
       },
     }),
-    getFilteredPaymentReceiveInfo: builder.query({
-      query: (queryParams) => ({
-        url: "payment-receive/filtered",
-        params: queryParams,
-        providesTags: [
-          "insertpaymentreceiveinfo",
-          "updatepaymentreceiveinfo,deletepaymentreceiveinfo",
-        ],
-        refetchOnReconnect: true,
-        refetchOnFocus: true,
+
+    updatePaymentReceiveInfo: builder.mutation({
+      query: (payload) => ({
+        url: `/payment-receive/${payload._id}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: ["updatepaymentreceiveinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
       }),
     }),
-    updatePaymentReceiveInfo: builder.mutation({
+    updatePreviousPaymentReceiveInfo: builder.mutation({
       query: (payload) => ({
         url: `/payment-receive`,
         method: "PUT",
@@ -60,7 +72,6 @@ const paymentreceiveApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
-
 
     deletepaymentreceiveInfo: builder.mutation({
       query: (id) => ({
@@ -77,9 +88,10 @@ const paymentreceiveApi = api.injectEndpoints({
 });
 export const {
   useGetAllPaymentReceiveInformationQuery,
+  useLazyGetFilteredPaymentReceiveInfoQuery,
   useInsertPaymentReceiveInformationMutation,
   useGetSinglePaymentReceiveQuery,
-  useLazyGetFilteredPaymentReceiveInfoQuery,
   useUpdatePaymentReceiveInfoMutation,
+  useUpdatePreviousPaymentReceiveInfoMutation,
   useDeletepaymentreceiveInfoMutation,
 } = paymentreceiveApi;

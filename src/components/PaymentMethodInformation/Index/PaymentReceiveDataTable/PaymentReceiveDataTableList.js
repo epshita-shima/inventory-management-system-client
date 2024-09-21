@@ -12,100 +12,117 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
-import { useGetAllPaymentReceiveInformationQuery, useLazyGetFilteredPaymentReceiveInfoQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import {
+  useGetAllPaymentReceiveInformationQuery,
+  useLazyGetFilteredPaymentReceiveInfoQuery,
+} from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { clientInfoDropdown, invoiceListDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
+import {
+  clientInfoDropdown,
+  invoiceListDropdown,
+} from "../../../Common/CommonDropdown/CommonDropdown";
 
 const PaymentReceiveDataTableList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const { data: paymentReceivedData, refetch } =
-    useGetAllPaymentReceiveInformationQuery(undefined);
+
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
-  const [clientId,setClientId]=useState('')
-  const[piNumber,setPiNumber]=useState('')
-const[filteredData,setFilteredData]=useState([])
-const [executeQuery, setExecuteQuery] = useState(false);
-const [isTableDispaly, setIsTableDisplay] = useState(false);
-const [filters, setFilters] = useState({
-  clientId: clientId,
-  piNumber: piNumber,
-});
-const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
-const {data:clientInformation}=useGetAllClientInformationQuery(undefined)
-const piFilteredData = invoiceData?.filter((pi) =>pi.paymentId=="667d2b983e37e91c4e1f3a1f")
-const piInfoOptions=invoiceListDropdown(piFilteredData)
-const clientInfoOptions=clientInfoDropdown(clientInformation)
-const [trigger, { data: filteredDatas, error, isFetching }] =
-useLazyGetFilteredPaymentReceiveInfoQuery();
-
-console.log(filteredDatas)
-useEffect(() => {
-if (executeQuery) {
-  setIsTableDisplay(true);
-  trigger(filters);
-  setExecuteQuery(false);
-}
-}, [executeQuery, trigger, filters]);
-
-useEffect(() => {
-if (filteredDatas && filteredDatas.length === 0) {
-  setIsTableDisplay(false);
-  swal({
-    title: "Sorry!",
-    text: "No data found for the selected filters",
-    icon: "warning",
-    button: "OK",
+  const [clientId, setClientId] = useState("");
+  const [piNumber, setPiNumber] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [executeQuery, setExecuteQuery] = useState(false);
+  const [isTableDispaly, setIsTableDisplay] = useState(false);
+  const [filters, setFilters] = useState({
+    clientId: clientId,
+    piNumber: piNumber,
   });
-} else {
-  const today = new Date();
-  const lastMonthDate = new Date();
-  const lastWeekDate = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-  lastMonthDate.setMonth(today.getMonth() - 1);
-  lastWeekDate.setDate(today.getDate() - 7);
-  setFilteredData(filteredDatas || []);
-}
-}, [filteredDatas]);
+  const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
+  const [filterInvoiceList, setFilterInvoiceList] = useState([]);
+  const { data: clientInformation } =
+    useGetAllClientInformationQuery(undefined);
 
-useEffect(() => {
-if (isFetchAfterDeleteData) {
-  handleApplyFilters();
-  setIsFetchAfterDeleteData(false);
-}
-}, [isFetchAfterDeleteData]);
+  const piInfoOptions = invoiceListDropdown(filterInvoiceList);
+  const clientInfoOptions = clientInfoDropdown(clientInformation);
+  const [trigger, { data: filteredDatas, error, isFetching }] =
+    useLazyGetFilteredPaymentReceiveInfoQuery();
 
-const handleApplyFilters = async () => {
-setExecuteQuery(true);
-};
+    console.log(filteredDatas)
+  useEffect(() => {
+    if (executeQuery) {
+      setIsTableDisplay(true);
+      trigger(filters);
+      setExecuteQuery(false);
+    }
+  }, [executeQuery, trigger, filters]);
+
+  useEffect(() => {
+    const piFilteredData = invoiceData?.filter(
+      (pi) => pi.paymentId === "667d2b983e37e91c4e1f3a1f"
+    );
+    setFilterInvoiceList(piFilteredData);
+  }, [invoiceData]);
+
+  useEffect(() => {
+    if (filteredDatas && filteredDatas.length === 0) {
+      setIsTableDisplay(false);
+      swal({
+        title: "Sorry!",
+        text: "No data found for the selected filters",
+        icon: "warning",
+        button: "OK",
+      });
+    } else {
+      setFilteredData(filteredDatas || []);
+    }
+  }, [filteredDatas]);
+
+  useEffect(() => {
+    if (isFetchAfterDeleteData) {
+      handleApplyFilters();
+      setIsFetchAfterDeleteData(false);
+    }
+  }, [isFetchAfterDeleteData]);
+
+  const handleApplyFilters = async () => {
+    setExecuteQuery(true);
+  };
 
   const groupByClient = (data) => {
-    const groupedData = [];
-
+    const groupedDataMap = new Map();
+  
     data?.forEach((payment) => {
-      // Insert a "group header"
-      // groupedData.push({
-      //   isGroup: true,
-      // });
-
-      // Insert the actual data rows
       payment.detailsData.forEach((detail) => {
-        groupedData.push({
-          ...payment,
-          detail, // attach details
-          isGroup: false,
-        });
+        // Create a unique key based on clientId, piNumber, and itemId
+        const key = `${payment.clientId}_${payment.piNumber}_${detail.itemId}`;
+  
+        if (groupedDataMap.has(key)) {
+          // If the key exists, update the existing entry by adding the amount and quantity
+          const existingEntry = groupedDataMap.get(key);
+          existingEntry.amount += detail.amount;
+          existingEntry.quantity += detail.quantity;
+        } else {
+          // If the key doesn't exist, create a new entry
+          groupedDataMap.set(key, {
+            ...payment,
+            detail: {
+              ...detail,
+            },
+            isGroup: false,
+          });
+        }
       });
     });
-    console.log(groupedData);
+  
+    // Convert the map back to an array
+    const groupedData = Array.from(groupedDataMap.values());
+  console.log(groupedData)
     return groupedData;
   };
 
@@ -115,16 +132,6 @@ setExecuteQuery(true);
       selector: (row, index) => (row.isGroup ? null : index + 1),
       center: true,
       width: "60px",
-    },
-    {
-      name: "Payment Receive Date",
-      selector: (row) =>
-        row.isGroup
-          ? null
-          : new Date(row.detail.paymentReceiveDate).toLocaleDateString("en-CA"),
-      sortable: true,
-      center: true,
-      width: "200px",
     },
     {
       name: "Client Name",
@@ -173,18 +180,249 @@ setExecuteQuery(true);
       width: "180px",
     },
     {
-      name: "Quantity",
-      selector: (row) => (row.isGroup ? null : row.detail?.quantity),
-      sortable: true,
+      name: "PI Quantity",
+      selector: (row) => {
+        if (row.isGroup) {
+          return null;
+        }
+        const filterPIData = invoiceData?.find(
+          (x) => x.invoiceNo === row?.piNumber
+        );
+        const findPiQuantityPerItem = filterPIData?.detailsData.find(
+          (item) => item.itemId === row.detail.itemId
+        );
+        return findPiQuantityPerItem ? findPiQuantityPerItem.quantity : "N/A";
+      },
       center: true,
-      width: "120px",
+      width: "180px",
     },
     {
-      name: "Amount",
-      selector: (row) => (row.isGroup ? null : row.detail?.amount),
-      sortable: true,
+      name: "PI Quantity",
+      selector: (row) => {
+        if (row.isGroup) {
+          return null;
+        }
+        const filterPIData = invoiceData?.find(
+          (x) => x.invoiceNo === row?.piNumber
+        );
+        const findPiAmountPerItem = filterPIData?.detailsData.find(
+          (item) => item.itemId === row.detail.itemId
+        );
+        return findPiAmountPerItem ? findPiAmountPerItem.totalAmount : "N/A";
+      },
       center: true,
-      width: "120px",
+      width: "180px",
+    },
+    {
+      name: "Paid Amount",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+        
+          const cashItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "cash")
+          );
+
+          console.log(cashItems);
+          // Calculate total amount for cash and adjustment
+          
+          const totalCash = cashItems
+            .flat()
+            .reduce((acc, item) => acc + item.quantity, 0);
+       
+          return totalCash;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
+    },
+ 
+    {
+      name: "Paid Amount",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+        
+          const adjustmentItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "cash")
+          );
+
+          console.log(adjustmentItems);
+          // Calculate total amount for cash and adjustment
+          
+          const totalCash = adjustmentItems
+            .flat()
+            .reduce((acc, item) => acc + item.amount, 0);
+       
+          return totalCash;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
+    },
+    {
+      name: "Adjust Quantity",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+        
+          const adjustmentItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "adjustment")
+          );
+
+          console.log(adjustmentItems);
+          // Calculate total amount for cash and adjustment
+          
+          const totalAdjustment = adjustmentItems
+            .flat()
+            .reduce((acc, item) => acc + item.quantity, 0);
+       
+          return totalAdjustment;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
+    },
+    {
+      name: "Adjust Amount",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+        
+          const adjustmentItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "adjustment")
+          );
+
+          console.log(adjustmentItems);
+          // Calculate total amount for cash and adjustment
+          
+          const totalAdjustment = adjustmentItems
+            .flat()
+            .reduce((acc, item) => acc + item.amount, 0);
+       
+          return totalAdjustment;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
+    },
+    {
+      name: "Net Quantity",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+          const cashItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "cash")
+          );
+
+          const adjustmentItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "adjustment")
+          );
+
+          const totalCash = cashItems
+            .flat()
+            .reduce((acc, item) => acc + item.quantity, 0);
+          const totalAdjustment = adjustmentItems
+            .flat()
+            .reduce((acc, item) => acc + item.quantity, 0);
+          console.log(totalCash, totalAdjustment);
+          const netAmount = totalCash - totalAdjustment;
+          console.log(netAmount)
+          return Math.round(netAmount*100) /100;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
+    },
+    {
+      name: "Net Amount",
+      selector: (row) => {
+        // Find all items that match the row's itemId
+        const filterMatchedItem = filteredDatas?.map((data) => {
+          const filteredData = data?.detailsData.filter(
+            (item) => item.itemId === row.detail.itemId
+          );
+          return filteredData;
+        });
+
+        if (filterMatchedItem && filterMatchedItem.length > 0) {
+          // Filter the "cash" items
+          const cashItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "cash")
+          );
+
+          const adjustmentItems = filterMatchedItem.filter((item) =>
+            item.some((data) => data.paymentStatus === "adjustment")
+          );
+
+          console.log(adjustmentItems);
+          // Calculate total amount for cash and adjustment
+          const totalCash = cashItems
+            .flat()
+            .reduce((acc, item) => acc + item.amount, 0);
+          const totalAdjustment = adjustmentItems
+            .flat()
+            .reduce((acc, item) => acc + item.amount, 0);
+          console.log(totalCash, totalAdjustment);
+          const netAmount = totalCash - totalAdjustment;
+          console.log(netAmount)
+          return netAmount;
+        }
+
+        return "N/A"; // Default value if no match is found
+      },
+      center: true,
+      width: "180px",
     },
     {
       name: "Action",
@@ -333,13 +571,13 @@ setExecuteQuery(true);
       <div className="d-flex justify-content-end align-items-center w-100">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex align-items-center me-2">
-            <div>
+            {/* <div>
               <FontAwesomeIcon
                 icon={faRefresh}
                 onClick={() => refetch()}
               ></FontAwesomeIcon>
               &nbsp;
-            </div>
+            </div> */}
             <div class="dropdown">
               <button
                 class="btn btn-download dropdown-toggle"
@@ -397,7 +635,7 @@ setExecuteQuery(true);
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch]);
+  }, [filterText, resetPaginationToggle]);
 
   return (
     <div
@@ -407,148 +645,164 @@ setExecuteQuery(true);
       <div>
         <h3 className="fw-bold mt-1">Payment Receive List</h3>
         <hr />
-        <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-50">
-          <div className="w-100">
-            <label htmlFor="">Client Name</label>
-            <br />
+        <div className="d-flex">
+          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-50">
             <div className="w-100">
-              <Select
-                class="form-select"
-                className="w-100"
-                aria-label="Default select example"
-                name="poinfo"
-                options={clientInfoOptions}
-                defaultValue={{
-                  label: "Select Client Name",
-                  value: 0,
-                }}
-                value={clientInfoOptions.filter(function (option) {
-                  return option.value === clientId;
-                })}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    width: "100%",
-                    borderColor: state.isFocused ? "#fff" : "#fff",
-                    border: "1px solid #2DDC1B",
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
-                  }),
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "#B8FEB3",
-                    primary: "#2DDC1B",
-                  },
-                })}
-                onChange={(e) => {
-                  setClientId(e.value)
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    clientId:e.value,
-                  }));
-                }}
-              ></Select>
+              <label htmlFor="">Client Name</label>
+              <br />
+              <div className="w-100">
+                <Select
+                  class="form-select"
+                  className="w-100"
+                  aria-label="Default select example"
+                  name="poinfo"
+                  options={clientInfoOptions}
+                  defaultValue={{
+                    label: "Select Client Name",
+                    value: 0,
+                  }}
+                  value={clientInfoOptions.filter(function (option) {
+                    return option.value === clientId;
+                  })}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      width: "100%",
+                      borderColor: state.isFocused ? "#fff" : "#fff",
+                      border: "1px solid #2DDC1B",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      zIndex: 9999,
+                      height: "auto",
+                      // overflowY: "scroll",
+                    }),
+                  }}
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#B8FEB3",
+                      primary: "#2DDC1B",
+                    },
+                  })}
+                  onChange={(e) => {
+                    const matchedInvoice = invoiceData?.filter(
+                      (invoice) =>
+                        invoice.customerID === e.value &&
+                        invoice.isApproved === true
+                    );
+                    if (matchedInvoice?.length > 0) {
+                      setFilterInvoiceList(matchedInvoice);
+                    } else {
+                      setFilterInvoiceList([]);
+                    }
+                    setClientId(e.value);
+                    setFilters((prevFilters) => ({
+                      ...prevFilters,
+                      clientId: e.value,
+                    }));
+                  }}
+                ></Select>
+              </div>
+            </div>
+
+            <div className="w-100 ms-2">
+              <label htmlFor="">PI Number</label>
+              <br />
+              <div className="w-100">
+                <Select
+                  class="form-select"
+                  className="w-100"
+                  aria-label="Default select example"
+                  name="poinfo"
+                  options={piInfoOptions}
+                  defaultValue={{
+                    label: "Select PI Number",
+                    value: 0,
+                  }}
+                  value={piInfoOptions.filter(function (option) {
+                    return option.label === piNumber;
+                  })}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      width: "100%",
+                      borderColor: state.isFocused ? "#fff" : "#fff",
+                      border: "1px solid #2DDC1B",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      zIndex: 9999,
+                      height: "auto",
+                      // overflowY: "scroll",
+                    }),
+                  }}
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#B8FEB3",
+                      primary: "#2DDC1B",
+                    },
+                  })}
+                  onChange={(e) => {
+                    console.log(e);
+                    setPiNumber(e.label);
+                    setFilters((prevFilters) => ({
+                      ...prevFilters,
+                      piNumber: e.label,
+                    }));
+                  }}
+                ></Select>
+              </div>
             </div>
           </div>
+          <div className="ms-4">
+            <button
+              className="border-0 "
+              style={{
+                backgroundColor: "#2DDC1B",
+                color: "white",
+                padding: "5px 10px",
+                fontSize: "14px",
+                borderRadius: "5px",
+                width: "100px",
+                height: "38px",
+                marginTop: "25px",
+              }}
+              onClick={handleApplyFilters}
+            >
+              Show
+            </button>
 
-          <div className="w-100 ms-2">
-            <label htmlFor="">PI Number</label>
-            <br />
-            <div className="w-100">
-              <Select
-                class="form-select"
-                className="w-100"
-                aria-label="Default select example"
-                name="poinfo"
-                options={piInfoOptions}
-                defaultValue={{
-                  label: "Select PI Number",
-                  value: 0,
-                }}
-                value={piInfoOptions.filter(function (option) {
-                  return option.label === piNumber;
-                })}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    width: "100%",
-                    borderColor: state.isFocused ? "#fff" : "#fff",
-                    border: "1px solid #2DDC1B",
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
-                  }),
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "#B8FEB3",
-                    primary: "#2DDC1B",
-                  },
-                })}
-                onChange={(e) => {
-                  console.log(e)
-                  setPiNumber(e.label)
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    piNumber:e.label,
-                  }));
-                }}
-              ></Select>
-            </div>
+            <button
+              className="border-0 "
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                padding: "5px 10px",
+                fontSize: "14px",
+                borderRadius: "5px",
+                width: "100px",
+                height: "38px",
+                marginLeft: "10px",
+                marginTop: "25px",
+              }}
+              onClick={() => {
+                setIsTableDisplay(false);
+                setClientId("");
+                setPiNumber("");
+              }}
+            >
+              Clear
+            </button>
           </div>
-        </div>
-        <div>
-          <button
-            className="border-0 "
-            style={{
-              backgroundColor: "#2DDC1B",
-              color: "white",
-              padding: "5px 10px",
-              fontSize: "14px",
-              borderRadius: "5px",
-              width: "100px",
-              height: "38px",
-              marginTop: "25px",
-            }}
-            onClick={handleApplyFilters}
-          >
-            Show
-          </button>
-
-          <button
-            className="border-0 "
-            style={{
-              backgroundColor: "red",
-              color: "white",
-              padding: "5px 10px",
-              fontSize: "14px",
-              borderRadius: "5px",
-              width: "100px",
-              height: "38px",
-              marginLeft: "10px",
-              marginTop: "25px",
-            }}
-            onClick={() => {}}
-          >
-            Clear
-          </button>
         </div>
       </div>
 
-      {
-        isTableDispaly ? (<div className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0">
+      {isTableDispaly ? (
+        <div className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0">
           <div className="shadow-lg">
             <DataTable
               columns={columns}
@@ -561,9 +815,10 @@ setExecuteQuery(true);
               subHeaderComponent={subHeaderComponent}
             />
           </div>
-        </div>) : ''
-      }
-      
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

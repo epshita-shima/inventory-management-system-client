@@ -44,6 +44,7 @@ const PaymentMethodSingleEntry = () => {
   const [bankChequeDate, setBankChequeDate] = useState(new Date());
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
   const [previousPaymentData, setPreviousPaymentData] = useState([]);
+  const [showPreviousPaymentDetailsButton,setshowPreviousPaymentDetailsButton]=useState(false)
   const [invoiceList, setInvoiceList] = useState([]);
   const clientDataOptions = clientInfoDropdown(clientInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
@@ -52,7 +53,7 @@ const PaymentMethodSingleEntry = () => {
   const [clientName, setClientName] = useState("");
   const [piNumber, setPINumber] = useState("");
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
-  const { data: paymnetReceiveData } =
+  const { data: paymnetReceiveData,refetch } =
     useGetAllPaymentReceiveInformationQuery(undefined);
   const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
   const [updatePaymentReceivedInfo] = useUpdatePaymentReceiveInfoMutation();
@@ -89,6 +90,7 @@ const PaymentMethodSingleEntry = () => {
     ],
   });
   console.log(previousPaymentData);
+  
   const paymentMethodOptions = [
     { value: "bank-cash", label: "Bank-Cash" },
     { value: "bank-cheque", label: "Bank-Cheque" },
@@ -97,6 +99,8 @@ const PaymentMethodSingleEntry = () => {
     { value: "cash", label: "Cash" },
     { value: "adjustment", label: "Adjustment" },
   ];
+
+  console.log(paymnetReceiveData)
 
   const areFieldsEmpty = () => {
     return formValues?.detailsData?.some(
@@ -116,7 +120,7 @@ const PaymentMethodSingleEntry = () => {
     if (id) {
       setIsDisplay(true);
     } else {
-      if (clientName !== "" && piNumber !== "" && previousPaymentData == "") {
+      if (clientName !== "" && piNumber !== "") {
         setIsDisplay(true);
       } else {
         setIsDisplay(false);
@@ -140,25 +144,7 @@ const PaymentMethodSingleEntry = () => {
       });
       setItemNameData(accumulatedItemNameData);
       setItemSize(accumulatedItemSizeData);
-      // setFormValues((prevValues) => ({
-      //   ...prevValues,
-      //   detailsData: invoiveByInvoiceNumber.detailsData.map((detail) => {
-      //     return {
-      //       paymentReceiveDate: paymentReceiveDate || "",
-      //       paymentMethod: "",
-      //       paymentStatus: "",
-      //       itemId: "",
-      //       amount: detail.totalAmount,
-      //       quantity: detail.quantity,
-      //       unitPrice: detail.unitPrice,
-      //       bankId: "",
-      //       chequeNo: "",
-      //       chequeDate: "",
-      //       depositeSlipNo: "",
-      //       remarks: "",
-      //     };
-      //   }),
-      // }));
+ 
     }
   }, [invoiveByInvoiceNumber, paymentReceiveDate, finishGoods, sizeInfo]);
 
@@ -181,19 +167,20 @@ const PaymentMethodSingleEntry = () => {
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    if(id){
+    if (id) {
       try {
-        const response = await updatePaymentReceivedInfo(updatePaymentReceiveInformation);
+        const response = await updatePaymentReceivedInfo(
+          updatePaymentReceiveInformation
+        );
         if (response?.data?.status === 200) {
           swal("Done", "Data Update Successfully", "success");
         } else if (response?.error?.status === 400) {
           swal("Not Possible!", response?.error?.data?.message, "error");
         }
-      } catch (err) { 
+      } catch (err) {
         swal("Error", "An error occurred while creating the data", "error");
       }
-    }
-    else{
+    } else {
       const modelData = {
         clientId: clientName,
         piNumber: piNumber,
@@ -226,7 +213,7 @@ const PaymentMethodSingleEntry = () => {
         console.log(modelData);
         if (response?.data?.status === 200) {
           swal("Done", "Data Save Successfully", "success");
-          navigate('/main-view/payment-received-list')
+          navigate("/main-view/payment-received-list");
           resetForm();
         } else if (response?.error?.status === 400) {
           swal("Not Possible!", response?.error?.data?.message, "error");
@@ -236,7 +223,6 @@ const PaymentMethodSingleEntry = () => {
         swal("Error", "An error occurred while creating the data", "error");
       }
     }
-  
   };
 
   const itemNameOptions = finishGoodsWithSizeItemDropdown(
@@ -281,7 +267,7 @@ const PaymentMethodSingleEntry = () => {
               dirty,
             }) => (
               <Form
-                id="poupdate-form"
+                id="insertpaymentreceive-form"
                 onSubmit={(e) => {
                   handleSubmit(e, values, resetForm);
                 }}
@@ -310,7 +296,7 @@ const PaymentMethodSingleEntry = () => {
                           (sum, item) => sum + item.quantity,
                           0
                         );
-console.log(totalQuantity)
+
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
                         <div>
@@ -319,7 +305,7 @@ console.log(totalQuantity)
                               className="fs-sm fw-bold"
                               style={{ fontSize: "24px", fontWeight: "bold" }}
                             >
-                              Payment Method Information
+                              Insert Payment Method Information
                             </h2>
                             <div>
                               <button
@@ -358,7 +344,7 @@ console.log(totalQuantity)
                                     aria-label="Default select example"
                                     name="sizeinfo"
                                     options={clientDataOptions}
-                                    isDisabled={id? true : false}
+                                    isDisabled={id ? true : false}
                                     defaultValue={{
                                       label: "Select Client Name",
                                       value: 0,
@@ -416,9 +402,10 @@ console.log(totalQuantity)
                                         const matchedInvoice =
                                           invoiceInformation?.filter(
                                             (invoice) =>
-                                              invoice.customerID === e.value && invoice.isApproved ===true
+                                              invoice.customerID === e.value &&
+                                              invoice.isApproved === true
                                           );
-                                          console.log(matchedInvoice)
+                                        console.log(matchedInvoice);
                                         if (matchedInvoice?.length > 0) {
                                           setInvoiceList(matchedInvoice);
                                         } else {
@@ -468,7 +455,7 @@ console.log(totalQuantity)
                                     aria-label="Default select example"
                                     name="supplierpono"
                                     options={invoiceListOption}
-                                    isDisabled={id? true : false}
+                                    isDisabled={id ? true : false}
                                     defaultValue={{
                                       label: "Select PI Number",
                                       value: 0,
@@ -526,10 +513,12 @@ console.log(totalQuantity)
                                           setPreviousPaymentData(
                                             filterPaymentData
                                           );
-                                          setShow(true);
+                                          setshowPreviousPaymentDetailsButton(true)
+                                          // setShow(true);
                                         } else {
                                           setPreviousPaymentData([]);
-                                          setShow(false);
+                                          // setShow(false);
+                                          setshowPreviousPaymentDetailsButton(false)
                                         }
                                         const invoiceListMatchingData =
                                           invoiceList.find(
@@ -538,29 +527,33 @@ console.log(totalQuantity)
                                         setInvoiveByInvoiceNumber(
                                           invoiceListMatchingData
                                         );
-                                        setUpdatePaymentReceiveInformation((prevData) => {
-                                          console.log(prevData);
-                                          return {
-                                            ...prevData,
-                                            piNumber: e.value,
-                                          };
-                                        });
+                                        setUpdatePaymentReceiveInformation(
+                                          (prevData) => {
+                                            console.log(prevData);
+                                            return {
+                                              ...prevData,
+                                              piNumber: e.value,
+                                            };
+                                          }
+                                        );
                                       } else {
                                         setPINumber(e.label);
                                         setFieldValue("piNumber", e.label);
                                         const filterPaymentData =
-                                          paymnetReceiveData?.find(
-                                            (data) => data.piNumber === e.label
+                                          paymnetReceiveData?.filter(
+                                            (data) => data.piNumber === e.label && data.clientId ===clientName
                                           );
                                         console.log(filterPaymentData);
                                         if (filterPaymentData !== undefined) {
                                           setPreviousPaymentData(
                                             filterPaymentData
                                           );
-                                          setShow(true);
+                                          // setShow(true);
+                                          setshowPreviousPaymentDetailsButton(true)
                                         } else {
                                           setPreviousPaymentData([]);
-                                          setShow(false);
+                                          // setShow(false);
+                                          setshowPreviousPaymentDetailsButton(false)
                                         }
                                         const invoiceListMatchingData =
                                           invoiceList.find(
@@ -582,6 +575,28 @@ console.log(totalQuantity)
                                 </div>
                               </div>
                             </div>
+                            {
+                              showPreviousPaymentDetailsButton ? <div className="col col-md-6 col-lg-2 mt-2">
+                              <button
+                               type="button"
+                                className="border-0 "
+                                style={{
+                                  backgroundColor: "#2DDC1B",
+                                  color: "white",
+                                  padding: "5px 10px",
+                                  fontSize: "14px",
+                                  borderRadius: "5px",
+                                  width: "100%",
+                                  height: "38px",
+                                  marginTop: "25px",
+                                }}
+                                onClick={()=>setShow(true)}
+                              >
+                                Previous Payment Details
+                              </button>
+                            </div> : ''
+                            }
+                            
                           </div>
                         </div>
                         {isDisplay && (
@@ -599,10 +614,12 @@ console.log(totalQuantity)
                                 <div className="d-flex justify-content-between">
                                   <button
                                     type="submit"
-                                    form="poupdate-form"
+                                    form="insertpaymentreceive-form"
                                     className="border-0"
                                     style={{
-                                      backgroundColor: id? "#2DDC1B" : areFieldsEmpty()
+                                      backgroundColor: id
+                                        ? "#2DDC1B"
+                                        : areFieldsEmpty()
                                         ? "gray"
                                         : "#2DDC1B",
                                       color: "white",
@@ -611,9 +628,15 @@ console.log(totalQuantity)
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    disabled={id? false : areFieldsEmpty() ? true : false}
+                                    disabled={
+                                      id
+                                        ? false
+                                        : areFieldsEmpty()
+                                        ? true
+                                        : false
+                                    }
                                   >
-                                   { id? "Update" : "Save"}
+                                    {id ? "Update" : "Save"}
                                   </button>
                                   <div
                                     className="border-0 "
@@ -663,7 +686,9 @@ console.log(totalQuantity)
                                       name={`totalQuantity`}
                                       placeholder="Total Quantity"
                                       disabled
-                                      value={ Math.round(totalQuantity * 100) / 100}
+                                      value={
+                                        Math.round(totalQuantity * 100) / 100
+                                      }
                                       style={{
                                         border: "1px solid #2DDC1B",
                                         padding: "5px",
@@ -687,7 +712,9 @@ console.log(totalQuantity)
                                       name={`grandTotalAmount`}
                                       placeholder="Total Amount"
                                       disabled
-                                      value={ Math.round(totalAmount * 100) / 100}
+                                      value={
+                                        Math.round(totalAmount * 100) / 100
+                                      }
                                       style={{
                                         border: "1px solid #2DDC1B",
                                         padding: "5px",
@@ -752,6 +779,7 @@ console.log(totalQuantity)
       </div>
       {previousPaymentData && (
         <PreviousPaymentDetailsModal
+        paymentStatusOptions={paymentStatusOptions}
           makebyUser={makebyUser}
           detail={previousPaymentData}
           setPreviousPaymentData={setPreviousPaymentData}
@@ -761,6 +789,7 @@ console.log(totalQuantity)
           handleClosePreviousPayment={() => handleCloseModal()} // Close modal for this specific row
           bankChequeDate={bankChequeDate}
           setBankChequeDate={setBankChequeDate}
+          refetch={refetch}
         />
       )}
     </div>
