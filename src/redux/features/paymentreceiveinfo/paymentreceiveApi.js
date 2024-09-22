@@ -21,6 +21,8 @@ const paymentreceiveApi = api.injectEndpoints({
           "insertpaymentreceiveinfo",
           "updatepaymentreceiveinfo,deletepaymentreceiveinfo",
         ],
+
+        keepUnusedDataFor: 600,
         refetchOnReconnect: true,
         refetchOnFocus: true,
       }),
@@ -74,9 +76,10 @@ const paymentreceiveApi = api.injectEndpoints({
     }),
 
     deletepaymentreceiveInfo: builder.mutation({
-      query: (id) => ({
-        url: `/payment-receive/${id}`,
+      query: (payload) => ({
+        url: `/payment-receive`,
         method: "DELETE",
+        body:payload
       }),
       invalidatesTags: ["deletepaymentreceiveinfo"],
       transformResponse: (response, meta) => ({

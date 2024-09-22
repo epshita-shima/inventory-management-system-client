@@ -44,7 +44,10 @@ const PaymentMethodSingleEntry = () => {
   const [bankChequeDate, setBankChequeDate] = useState(new Date());
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
   const [previousPaymentData, setPreviousPaymentData] = useState([]);
-  const [showPreviousPaymentDetailsButton,setshowPreviousPaymentDetailsButton]=useState(false)
+  const [
+    showPreviousPaymentDetailsButton,
+    setshowPreviousPaymentDetailsButton,
+  ] = useState(false);
   const [invoiceList, setInvoiceList] = useState([]);
   const clientDataOptions = clientInfoDropdown(clientInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
@@ -53,7 +56,7 @@ const PaymentMethodSingleEntry = () => {
   const [clientName, setClientName] = useState("");
   const [piNumber, setPINumber] = useState("");
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
-  const { data: paymnetReceiveData,refetch } =
+  const { data: paymnetReceiveData, refetch } =
     useGetAllPaymentReceiveInformationQuery(undefined);
   const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
   const [updatePaymentReceivedInfo] = useUpdatePaymentReceiveInfoMutation();
@@ -90,7 +93,7 @@ const PaymentMethodSingleEntry = () => {
     ],
   });
   console.log(previousPaymentData);
-  
+
   const paymentMethodOptions = [
     { value: "bank-cash", label: "Bank-Cash" },
     { value: "bank-cheque", label: "Bank-Cheque" },
@@ -100,7 +103,7 @@ const PaymentMethodSingleEntry = () => {
     { value: "adjustment", label: "Adjustment" },
   ];
 
-  console.log(paymnetReceiveData)
+  console.log(paymnetReceiveData);
 
   const areFieldsEmpty = () => {
     return formValues?.detailsData?.some(
@@ -144,7 +147,6 @@ const PaymentMethodSingleEntry = () => {
       });
       setItemNameData(accumulatedItemNameData);
       setItemSize(accumulatedItemSizeData);
- 
     }
   }, [invoiveByInvoiceNumber, paymentReceiveDate, finishGoods, sizeInfo]);
 
@@ -163,7 +165,6 @@ const PaymentMethodSingleEntry = () => {
     }
     setUpdatePaymentReceiveInformation(getSinglePaymentReceiveInfo);
   }, [getSinglePaymentReceiveInfo, id, invoiceInformation]);
-
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
@@ -208,15 +209,81 @@ const PaymentMethodSingleEntry = () => {
           remarks: item.remarks,
         });
       });
+      const filterPiData = invoiceInformation?.find(
+        (item) => item.invoiceNo === modelData.piNumber
+      );
+      const totalPiAmount = filterPiData?.detailsData.reduce(
+        (acc, item) => acc + item.totalAmount,
+        0
+      );
+      const adjustQuantityItems = modelData.detailsData.filter(
+        (item) => item.paymentStatus === "adjustment"
+      );
+
+      const totalAdjustmentAmount = adjustQuantityItems.reduce(
+        (acc, item) => acc + item.amount,
+        0
+      );
+      console.log(totalPiAmount, totalAdjustmentAmount);
+
+      const previousAdjustPayment = previousPaymentData
+        .map((items) => {
+          const filterAdjustPayment = items.detailsData.filter(
+            (item) => item.paymentStatus === "adjustment"
+          );
+          const calculateAdjustAmount = filterAdjustPayment.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          return calculateAdjustAmount;
+        })
+        .reduce((acc, amount) => acc + amount, 0);
+      const totalPreviousAdjustPayment =
+        previousAdjustPayment + totalAdjustmentAmount;
       try {
-        const response = await insertPaymentReceive(modelData);
-        console.log(modelData);
-        if (response?.data?.status === 200) {
-          swal("Done", "Data Save Successfully", "success");
-          navigate("/main-view/payment-received-list");
-          resetForm();
-        } else if (response?.error?.status === 400) {
-          swal("Not Possible!", response?.error?.data?.message, "error");
+        if (totalPreviousAdjustPayment < totalPiAmount) {
+          const response = await insertPaymentReceive(modelData);
+          console.log(modelData);
+          if (response?.data?.status === 200) {
+            swal("Done", "Data Save Successfully", "success");
+            // navigate("/main-view/payment-received-list");
+            setFormValues((prev) => ({
+              ...prev, // Spread the previous state to keep existing values
+              clientId: "",
+              piNumber: "",
+              makeBy: "",
+              updateBy: null,
+              makeDate: "",
+              updateDate: null,
+              detailsData: [
+                {
+                  paymentReceiveDate: "",
+                  paymentMethod: "",
+                  paymentStatus: "",
+                  itemId: "",
+                  amount: "",
+                  quantity: "",
+                  unitPrice: "",
+                  bankId: "",
+                  chequeNo: "",
+                  chequeDate: "",
+                  depositeSlipNo: "",
+                  remarks: "",
+                },
+              ],
+            }));
+            setClientName("");
+            setPINumber("");
+            setshowPreviousPaymentDetailsButton(false);
+          } else if (response?.error?.status === 400) {
+            swal("Not Possible!", response?.error?.data?.message, "error");
+          }
+        } else {
+          swal(
+            "Not Possible!",
+            "Adjust amount is more than Paid amount",
+            "warning"
+          );
         }
       } catch (err) {
         console.error(err);
@@ -513,12 +580,16 @@ const PaymentMethodSingleEntry = () => {
                                           setPreviousPaymentData(
                                             filterPaymentData
                                           );
-                                          setshowPreviousPaymentDetailsButton(true)
+                                          setshowPreviousPaymentDetailsButton(
+                                            true
+                                          );
                                           // setShow(true);
                                         } else {
                                           setPreviousPaymentData([]);
                                           // setShow(false);
-                                          setshowPreviousPaymentDetailsButton(false)
+                                          setshowPreviousPaymentDetailsButton(
+                                            false
+                                          );
                                         }
                                         const invoiceListMatchingData =
                                           invoiceList.find(
@@ -541,7 +612,9 @@ const PaymentMethodSingleEntry = () => {
                                         setFieldValue("piNumber", e.label);
                                         const filterPaymentData =
                                           paymnetReceiveData?.filter(
-                                            (data) => data.piNumber === e.label && data.clientId ===clientName
+                                            (data) =>
+                                              data.piNumber === e.label &&
+                                              data.clientId === clientName
                                           );
                                         console.log(filterPaymentData);
                                         if (filterPaymentData !== undefined) {
@@ -549,11 +622,15 @@ const PaymentMethodSingleEntry = () => {
                                             filterPaymentData
                                           );
                                           // setShow(true);
-                                          setshowPreviousPaymentDetailsButton(true)
+                                          setshowPreviousPaymentDetailsButton(
+                                            true
+                                          );
                                         } else {
                                           setPreviousPaymentData([]);
                                           // setShow(false);
-                                          setshowPreviousPaymentDetailsButton(false)
+                                          setshowPreviousPaymentDetailsButton(
+                                            false
+                                          );
                                         }
                                         const invoiceListMatchingData =
                                           invoiceList.find(
@@ -575,28 +652,30 @@ const PaymentMethodSingleEntry = () => {
                                 </div>
                               </div>
                             </div>
-                            {
-                              showPreviousPaymentDetailsButton ? <div className="col col-md-6 col-lg-2 mt-2">
-                              <button
-                               type="button"
-                                className="border-0 "
-                                style={{
-                                  backgroundColor: "#2DDC1B",
-                                  color: "white",
-                                  padding: "5px 10px",
-                                  fontSize: "14px",
-                                  borderRadius: "5px",
-                                  width: "100%",
-                                  height: "38px",
-                                  marginTop: "25px",
-                                }}
-                                onClick={()=>setShow(true)}
-                              >
-                                Previous Payment Details
-                              </button>
-                            </div> : ''
-                            }
-                            
+                            {showPreviousPaymentDetailsButton &&
+                            previousPaymentData.length > 0 ? (
+                              <div className="col col-md-6 col-lg-2 mt-2">
+                                <button
+                                  type="button"
+                                  className="border-0 "
+                                  style={{
+                                    backgroundColor: "#2DDC1B",
+                                    color: "white",
+                                    padding: "5px 10px",
+                                    fontSize: "14px",
+                                    borderRadius: "5px",
+                                    width: "100%",
+                                    height: "38px",
+                                    marginTop: "25px",
+                                  }}
+                                  onClick={() => setShow(true)}
+                                >
+                                  Previous Payment Details
+                                </button>
+                              </div>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </div>
                         {isDisplay && (
@@ -779,7 +858,8 @@ const PaymentMethodSingleEntry = () => {
       </div>
       {previousPaymentData && (
         <PreviousPaymentDetailsModal
-        paymentStatusOptions={paymentStatusOptions}
+          invoiceInformation={invoiceInformation}
+          paymentStatusOptions={paymentStatusOptions}
           makebyUser={makebyUser}
           detail={previousPaymentData}
           setPreviousPaymentData={setPreviousPaymentData}

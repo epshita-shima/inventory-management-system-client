@@ -53,7 +53,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredPaymentReceiveInfoQuery();
 
-    console.log(filteredDatas)
+  console.log(filteredDatas);
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -96,12 +96,12 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
   const groupByClient = (data) => {
     const groupedDataMap = new Map();
-  
+
     data?.forEach((payment) => {
       payment.detailsData.forEach((detail) => {
         // Create a unique key based on clientId, piNumber, and itemId
         const key = `${payment.clientId}_${payment.piNumber}_${detail.itemId}`;
-  
+
         if (groupedDataMap.has(key)) {
           // If the key exists, update the existing entry by adding the amount and quantity
           const existingEntry = groupedDataMap.get(key);
@@ -119,10 +119,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         }
       });
     });
-  
+
     // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
-  console.log(groupedData)
+    console.log(groupedData);
     return groupedData;
   };
 
@@ -197,7 +197,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       width: "180px",
     },
     {
-      name: "PI Quantity",
+      name: "PI Amount",
       selector: (row) => {
         if (row.isGroup) {
           return null;
@@ -214,7 +214,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       width: "180px",
     },
     {
-      name: "Paid Amount",
+      name: "Paid Quantity",
       selector: (row) => {
         // Find all items that match the row's itemId
         const filterMatchedItem = filteredDatas?.map((data) => {
@@ -226,19 +226,19 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
+          const paidQuantityItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "cash");
         
-          const cashItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "cash")
-          );
 
-          console.log(cashItems);
+          console.log(paidQuantityItems);
           // Calculate total amount for cash and adjustment
-          
-          const totalCash = cashItems
+
+          const totalQuantity = paidQuantityItems
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
-       
-          return totalCash;
+
+          return totalQuantity;
         }
 
         return "N/A"; // Default value if no match is found
@@ -246,7 +246,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       center: true,
       width: "180px",
     },
- 
+
     {
       name: "Paid Amount",
       selector: (row) => {
@@ -260,18 +260,16 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
-        
-          const adjustmentItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "cash")
-          );
+   
+          const adjustmentItems = filterMatchedItem
+            .flat()
+            .filter((item) => item.paymentStatus === "cash");
 
-          console.log(adjustmentItems);
-          // Calculate total amount for cash and adjustment
-          
+
           const totalCash = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
-       
+
           return totalCash;
         }
 
@@ -293,18 +291,17 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
+          const adjustmentItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "adjustment");
         
-          const adjustmentItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "adjustment")
-          );
-
           console.log(adjustmentItems);
           // Calculate total amount for cash and adjustment
-          
+
           const totalAdjustment = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
-       
+
           return totalAdjustment;
         }
 
@@ -326,18 +323,17 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
-        
-          const adjustmentItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "adjustment")
-          );
 
-          console.log(adjustmentItems);
-          // Calculate total amount for cash and adjustment
           
+          const adjustmentItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "adjustment");
+      
+
           const totalAdjustment = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
-       
+
           return totalAdjustment;
         }
 
@@ -359,13 +355,18 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
-          const cashItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "cash")
-          );
-
-          const adjustmentItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "adjustment")
-          );
+          // const cashItems = filterMatchedItem.filter((item) =>
+          //   item.some((data) => data.paymentStatus === "cash")
+          // );
+          const adjustmentItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "adjustment");
+          const cashItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "cash");
+          // const adjustmentItems = filterMatchedItem.filter((item) =>
+          //   item.some((data) => data.paymentStatus === "adjustment")
+          // );
 
           const totalCash = cashItems
             .flat()
@@ -375,8 +376,8 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .reduce((acc, item) => acc + item.quantity, 0);
           console.log(totalCash, totalAdjustment);
           const netAmount = totalCash - totalAdjustment;
-          console.log(netAmount)
-          return Math.round(netAmount*100) /100;
+          console.log(netAmount);
+          return Math.round(netAmount * 100) / 100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -397,14 +398,19 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
-          const cashItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "cash")
-          );
+          // const cashItems = filterMatchedItem.filter((item) =>
+          //   item.some((data) => data.paymentStatus === "cash")
+          // );
 
-          const adjustmentItems = filterMatchedItem.filter((item) =>
-            item.some((data) => data.paymentStatus === "adjustment")
-          );
-
+          // const adjustmentItems = filterMatchedItem.filter((item) =>
+          //   item.some((data) => data.paymentStatus === "adjustment")
+          // );
+          const adjustmentItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "adjustment");
+          const cashItems = filterMatchedItem
+          .flat() 
+          .filter((item) => item.paymentStatus === "cash");
           console.log(adjustmentItems);
           // Calculate total amount for cash and adjustment
           const totalCash = cashItems
@@ -415,10 +421,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .reduce((acc, item) => acc + item.amount, 0);
           console.log(totalCash, totalAdjustment);
           const netAmount = totalCash - totalAdjustment;
-          console.log(netAmount)
+          console.log(netAmount);
           return netAmount;
         }
-
         return "N/A"; // Default value if no match is found
       },
       center: true,
@@ -483,46 +488,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-
-          {permission?.isRemoved ? (
-            <a
-              target="_blank"
-              className="action-icon "
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Delete user"
-              style={{
-                color: "red",
-                border: "2px solid red",
-                padding: "3px",
-                borderRadius: "5px",
-                marginLeft: "10px",
-              }}
-              onClick={() => {
-                console.log(row?.value);
-                swal({
-                  title: "Are you sure?",
-                  text: "Once deleted, you will not be able to recover this data!",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-                }).then((willDelete) => {
-                  if (willDelete) {
-                    //   deleteInvoice(paymentReceivedData?._id);
-                    swal("Poof! Your data has been deleted!", {
-                      icon: "success",
-                    });
-                  } else {
-                    swal("Your data is safe!");
-                  }
-                });
-              }}
-            >
-              <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
             </a>
           ) : (
             ""
