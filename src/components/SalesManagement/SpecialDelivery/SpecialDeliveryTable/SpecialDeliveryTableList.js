@@ -135,12 +135,15 @@ const SpecialDeliveryTableList = ({ permission }) => {
     console.log(selectedData);
     const response = await approveStatus(selectedData);
 
-    if (response?.data?.status === 200) {
-      navigate("/main-view/invoice-list");
-      swal("Done", "PI Approve Successfully", "success");
-    } else if (response?.error?.status === 400) {
-      swal("Not Possible!", response?.error?.data?.message, "error");
-    }
+    // if (response?.data?.status === 200) {
+    //   const response = await insertPaymentReceive(modelData);
+    //   if (response?.data?.status === 200) {
+    //     navigate("/main-view/invoice-list");
+    //     swal("Done", "PI Approve Successfully", "success");
+    //   } else if (response?.error?.status === 400) {
+    //     swal("Not Possible!", response?.error?.data?.message, "error");
+    //   }
+    // }
   };
 
   const clientInfoOptions = clientInfoDropdown(clientInformation);
@@ -175,6 +178,13 @@ const SpecialDeliveryTableList = ({ permission }) => {
         );
         return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Payment Status",
+      selector: (userWaysListData) => userWaysListData?.paymentId,
       sortable: true,
       center: true,
       filterable: true,

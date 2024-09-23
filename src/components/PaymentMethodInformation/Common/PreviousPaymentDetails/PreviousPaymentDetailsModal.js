@@ -8,7 +8,6 @@ import { useGetAllBankInformationQuery } from "../../../../redux/features/bankin
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import {
-  useDeletepaymentreceiveInfoMutation,
   useUpdatePreviousPaymentReceiveInfoMutation,
 } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import swal from "sweetalert";
@@ -27,7 +26,8 @@ const PreviousPaymentDetailsModal = ({
   makebyUser,
   paymentStatusOptions,
   refetch,
-  invoiceInformation
+  invoiceInformation,
+  setshowPreviousPaymentDetailsButton
 }) => {
   const [itemSize, setItemSize] = useState([]);
   const [itemNameData, setItemNameData] = useState([]);
@@ -43,16 +43,20 @@ const PreviousPaymentDetailsModal = ({
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const [updatePreviousPaymentReceiveData] =
     useUpdatePreviousPaymentReceiveInfoMutation();
-  const [deletePaymentReceive] = useDeletepaymentreceiveInfoMutation();
-  const [selectedDeletedData,setSelectedDeletedData]=useState([])
   const [isDeletePreviousPaymentData, setIsDeletePreviousPaymentData] =
     useState({});
+
+  let serialNo = 1;
   const initialValues = {
     detailsData: detail?.detailsData || [], // Initialize based on your details data
   };
+  const customerName = customerInfo?.find(
+    (x) => x._id === detail?.[0]?.clientId
+  );
+  const clientNameValue = customerName ? customerName.clientName : "N/A";
 
-console.log(selectedDeletedData)
-
+  console.log(updatePreviousPaymentReceiveDataPaymentDetails);
+ 
   useEffect(() => {
     const accumulatedItemNameData = [];
     const accumulatedItemSizeData = [];
@@ -98,55 +102,54 @@ console.log(selectedDeletedData)
 
   const handleSubmit = async (e, values) => {
     e.preventDefault();
-    
+
     const filterPiData = invoiceInformation?.find(
-      (item) => item.invoiceNo === paymentReceivePreviousData[0].piNumber
+      (item) => item.invoiceNo === paymentReceivePreviousData[0]?.piNumber
     );
     const totalPiAmount = filterPiData?.detailsData.reduce(
       (acc, item) => acc + item.totalAmount,
       0
     );
-    
-    const adjustQuantityItems = paymentReceivePreviousData.map((payment) =>
-      payment.detailsData.filter((detailItem) => detailItem.paymentStatus==='adjustment'))
-    const flattenedAdjustQuantityItems = adjustQuantityItems.flat().filter(Boolean);
 
-    const totalAdjustmentAmount = flattenedAdjustQuantityItems.reduce(
+    const adjustQuantityItems = paymentReceivePreviousData?.map((payment) =>
+      payment.detailsData.filter(
+        (detailItem) => detailItem.paymentStatus === "adjustment"
+      )
+    );
+    const flattenedAdjustQuantityItems = adjustQuantityItems
+      ?.flat()
+      .filter(Boolean);
+
+    const totalAdjustmentAmount = flattenedAdjustQuantityItems?.reduce(
       (acc, item) => acc + (Number(item.amount) || 0),
       0
     );
 
     try {
-      if(totalPiAmount <totalAdjustmentAmount){
+      if (totalPiAmount < totalAdjustmentAmount) {
         swal(
           "Not Possible!",
           "Adjust amount is more than Paid amount",
           "warning"
         );
-      }
-      else{
+      } else {
         const response = await updatePreviousPaymentReceiveData(
           updatePreviousPaymentReceiveDataPaymentDetails
         );
-        await deletePaymentReceive(selectedDeletedData)
+
         if (response?.data?.status === 200) {
           swal("Done", "Data Update Successfully", "success");
-          handleClosePreviousPayment(paymentReceivePreviousData);
+          handleClosePreviousPayment();
+          refetch();
         } else if (response?.error?.status === 400) {
           swal("Not Possible!", response?.error?.data?.message, "error");
         }
       }
-  
     } catch (err) {
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
 
-  const customerName = customerInfo?.find(
-    (x) => x._id === detail?.[0]?.clientId
-  );
-  const clientNameValue = customerName ? customerName.clientName : "N/A";
-  let serialNo = 1;
   return (
     <Formik
       initialValues={initialValues}
@@ -223,7 +226,9 @@ console.log(selectedDeletedData)
                         const indexXlaculate = paymentIndex - index;
                         return (
                           <tr key={`${paymentIndex}-${index}`}>
-                            <td className="text-center align-middle">{serialNo++}</td>
+                            <td className="text-center align-middle">
+                              {serialNo++}
+                            </td>
                             <td className="text-center align-middle">
                               <Field
                                 name={`detailsData.${index}.itemName`}
@@ -664,67 +669,19 @@ console.log(selectedDeletedData)
                                   id=""
                                   data-toggle="tooltip"
                                   title="Delete item"
-                                  checked={isDeletePreviousPaymentData[indexXlaculate]}
-                                  // className={`${
-                                  //   isDeletePreviousPaymentData[indexXlaculate]
-                                  //     ? "d-none"
-                                  //     : "d-block"
-                                  // }`}
-                                  onChange={() =>
-                                    {handleCheckboxChange(indexXlaculate)
-                                      if (payment?.detailsData.length > 1) {
-
-                                        // deletePaymentReceive(
-                                        //   detailItem?._id
-                                        // );
-                                        // setSelectedDeletedData(detailItem)
-                                        setSelectedDeletedData((prevSelectedData) => {
-                                          if (prevSelectedData?.includes(detailItem)) {
-                                            // Deselect the data item if it's already selected
-                                            return prevSelectedData.filter((item) => item._id !== detailItem._id);
-                                          } else {
-                                            // Select the data item if it's not already selected
-                                            return [...prevSelectedData, detailItem];
-                                          }
-                                        })
-                                        refetch()
-                                        // setPaymentReceivePreviousData((prevData) =>
-                                        //   prevData.map((item) =>
-                                        //     item._id === payment._id
-                                        //       ? {
-                                        //           ...item,
-                                        //           detailsData: item.detailsData.filter(
-                                        //             (detail) => detail._id !== detailItem._id
-                                        //           ),
-                                        //         }
-                                        //       : item
-                                        //   )
-                                        // );
-                                        // setIsDeletePreviousPaymentData(false)
-                                      } else {
-                                        // setSelectedDeletedData(payment)
-                                        setSelectedDeletedData((prevSelectedData) => {
-                                          if (prevSelectedData?.includes(payment)) {
-                                            // Deselect the data item if it's already selected
-                                            return prevSelectedData.filter((item) => item._id !== payment._id);
-                                          } else {
-                                            // Select the data item if it's not already selected
-                                            return [...prevSelectedData, payment];
-                                          }
-                                        })
-                                        // deletePaymentReceive(payment?._id);
-                                        // setPaymentReceivePreviousData((prevData) =>
-                                        //   prevData.filter((item) => item._id !== payment._id)
-                                        // );
-                                        // setIsDeletePreviousPaymentData(false)
-                                        refetch()
-                                      }
-
-                                    }
-                                    
+                                  checked={
+                                    isDeletePreviousPaymentData[indexXlaculate]
                                   }
+                                  className={`${
+                                    isDeletePreviousPaymentData[indexXlaculate]
+                                      ? "d-none"
+                                      : "d-block"
+                                  }`}
+                                  onChange={() => {
+                                    handleCheckboxChange(indexXlaculate);
+                                  }}
                                 />
-                                {/* {isDeletePreviousPaymentData[
+                                {isDeletePreviousPaymentData[
                                   indexXlaculate
                                 ] && (
                                   <FontAwesomeIcon
@@ -738,36 +695,106 @@ console.log(selectedDeletedData)
                                       }).then((willDelete) => {
                                         if (willDelete) {
                                           if (payment?.detailsData.length > 1) {
-                                            deletePaymentReceive(
-                                              detailItem?._id
+                                            setPaymentReceivePreviousData(
+                                              (prevData) =>
+                                                prevData.map((item) =>
+                                                  item._id === payment._id
+                                                    ? {
+                                                        ...item,
+                                                        detailsData:
+                                                          item.detailsData.filter(
+                                                            (detail) =>
+                                                              detail._id !==
+                                                              detailItem._id
+                                                          ),
+                                                      }
+                                                    : item
+                                                )
                                             );
-                                            refetch()
-                                            setPaymentReceivePreviousData((prevData) =>
-                                              prevData.map((item) =>
-                                                item._id === payment._id
-                                                  ? {
-                                                      ...item,
-                                                      detailsData: item.detailsData.filter(
-                                                        (detail) => detail._id !== detailItem._id
-                                                      ),
-                                                    }
-                                                  : item
-                                              )
-                                            );
-                                            setIsDeletePreviousPaymentData(false)
-                                          } else {
-                                            deletePaymentReceive(payment?._id);
-                                            setPaymentReceivePreviousData((prevData) =>
-                                              prevData.filter((item) => item._id !== payment._id)
-                                            );
-                                            setIsDeletePreviousPaymentData(false)
-                                            refetch()
-                                          }
+                                            setUpdatePreviousPaymentReceiveDataPaymentDetails(
+                                              (prevData) => {
+                                                const existingIndex =
+                                                  prevData.findIndex(
+                                                    (item) =>
+                                                      item._id ===
+                                                      detailItem._id
+                                                  );
 
-                                          swal("Your data has been deleted!", {
-                                            icon: "success",
-                                          });
+                                                if (existingIndex > -1) {
+                                                  const updatedData = [
+                                                    ...prevData,
+                                                  ];
+                                                  updatedData[existingIndex] = {
+                                                    ...detailItem,
+                                                    isRemoveStatus: true,
+                                                    isParent: false,
+                                                  };
+                                                  return updatedData;
+                                                } else {
+                                                  return [
+                                                    ...prevData,
+                                                    {
+                                                      ...detailItem,
+                                                      isRemoveStatus: true,
+                                                      isParent: false,
+                                                    },
+                                                  ];
+                                                }
+                                              }
+                                            );
+                                            setIsDeletePreviousPaymentData(
+                                              false
+                                            );
+                                          } else {
+                                            setPaymentReceivePreviousData(
+                                              (prevData) =>
+                                                prevData.filter(
+                                                  (item) =>
+                                                    item._id !== payment._id
+                                                )
+                                            );
+                                            setUpdatePreviousPaymentReceiveDataPaymentDetails(
+                                              (prevData) => {
+                                                const existingIndex =
+                                                  prevData.findIndex(
+                                                    (item) =>
+                                                      item._id ===
+                                                      detailItem._id
+                                                  );
+                                                console.log(existingIndex);
+                                                if (existingIndex > -1) {
+                                                  const updatedData = [
+                                                    ...prevData,
+                                                  ];
+                                                  updatedData[existingIndex] = {
+                                                    ...detailItem,
+                                                    isRemoveStatus: true,
+                                                    isParent: true,
+                                                    parentId: payment._id,
+                                                  };
+                                                  console.log(updatedData);
+                                                  return updatedData;
+                                                } else {
+                                                  return [
+                                                    ...prevData,
+                                                    {
+                                                      ...detailItem,
+                                                      isRemoveStatus: true,
+                                                      isParent: true,
+                                                      parentId: payment._id,
+                                                    },
+                                                  ];
+                                                }
+                                              }
+                                            );
+                                            setIsDeletePreviousPaymentData(
+                                              false
+                                            );
+                                            setshowPreviousPaymentDetailsButton(false)
+                                          }
                                         } else {
+                                          setIsDeletePreviousPaymentData(false);
+                                          setshowPreviousPaymentDetailsButton(true)
                                           swal("Your data is safe!");
                                         }
                                       });
@@ -775,7 +802,7 @@ console.log(selectedDeletedData)
                                     icon={faXmarkCircle}
                                     className="text-danger fs-1"
                                   ></FontAwesomeIcon>
-                                )} */}
+                                )}
                               </button>
                             </td>
                           </tr>
@@ -790,7 +817,11 @@ console.log(selectedDeletedData)
               <Button
                 style={{ backgroundColor: "red", border: "none" }}
                 variant="secondary"
-                onClick={handleClosePreviousPayment}
+                onClick={()=>{
+                  handleClosePreviousPayment()
+                  
+
+                }}
               >
                 Close
               </Button>

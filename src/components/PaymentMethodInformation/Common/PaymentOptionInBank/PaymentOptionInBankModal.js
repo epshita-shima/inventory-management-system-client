@@ -313,7 +313,22 @@ const PaymentOptionInBankModal = ({
         <Button
           style={{ backgroundColor: "red", border: "none" }}
           variant="secondary"
-          onClick={handleClose}
+          onClick={()=>{
+            handleClose()
+            setFormValues((prev) => {
+              const temp_details = [...prev.detailsData];
+              const newDetail = { ...temp_details[index] };
+              newDetail["bankId"] ='';
+              newDetail["chequeNo"] ='';
+              newDetail["chequeDate"] =new Date(bankChequeDate).toLocaleDateString("en-CA");
+              newDetail["depositeSlipNo"] ='';
+              temp_details[index] = newDetail;
+              return {
+                ...prev,
+                detailsData: [...temp_details],
+              };
+            });
+          }}
         >
           Close
         </Button>

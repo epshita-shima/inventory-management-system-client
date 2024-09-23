@@ -238,7 +238,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
 
-          return totalQuantity;
+          return Math.round(totalQuantity *100)/100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -270,7 +270,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
 
-          return totalCash;
+          return Math.round(totalCash *100)/100 ;
         }
 
         return "N/A"; // Default value if no match is found
@@ -302,7 +302,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
 
-          return totalAdjustment;
+          return Math.round(totalAdjustment *100)/100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -334,7 +334,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
 
-          return totalAdjustment;
+          return Math.round(totalAdjustment*100)/100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -364,10 +364,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           const cashItems = filterMatchedItem
           .flat() 
           .filter((item) => item.paymentStatus === "cash");
-          // const adjustmentItems = filterMatchedItem.filter((item) =>
-          //   item.some((data) => data.paymentStatus === "adjustment")
-          // );
-
+         
           const totalCash = cashItems
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
@@ -397,14 +394,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         });
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-          // Filter the "cash" items
-          // const cashItems = filterMatchedItem.filter((item) =>
-          //   item.some((data) => data.paymentStatus === "cash")
-          // );
-
-          // const adjustmentItems = filterMatchedItem.filter((item) =>
-          //   item.some((data) => data.paymentStatus === "adjustment")
-          // );
+       
           const adjustmentItems = filterMatchedItem
           .flat() 
           .filter((item) => item.paymentStatus === "adjustment");
@@ -422,7 +412,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           console.log(totalCash, totalAdjustment);
           const netAmount = totalCash - totalAdjustment;
           console.log(netAmount);
-          return netAmount;
+          return Math.round(netAmount *100)/100;
         }
         return "N/A"; // Default value if no match is found
       },
@@ -534,73 +524,76 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     };
     return (
       <div className="d-flex justify-content-end align-items-center w-100">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex align-items-center me-2">
-            {/* <div>
-              <FontAwesomeIcon
-                icon={faRefresh}
-                onClick={() => refetch()}
-              ></FontAwesomeIcon>
-              &nbsp;
-            </div> */}
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      // if (companyinfo?.length !== 0 || undefined) {
-                      //   downloadInvoiceSingleDataPDF(
-                      //     paymentReceivedData,
-                      //     customerInfo,
-                      //     { companyinfo },
-                      //     reportTitle
-                      //   );
-                      // }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      // handleInvoiceExcel(
-                      //   paymentReceivedData,
-                      //   customerInfo,
-                      //   companyinfo,
-                      //   reportTitle
-                      // );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+        {
+          filteredDatas?.length <0 ? ( <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex align-items-center me-2">
+              {/* <div>
+                <FontAwesomeIcon
+                  icon={faRefresh}
+                  onClick={() => refetch()}
+                ></FontAwesomeIcon>
+                &nbsp;
+              </div> */}
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        // if (companyinfo?.length !== 0 || undefined) {
+                        //   downloadInvoiceSingleDataPDF(
+                        //     paymentReceivedData,
+                        //     customerInfo,
+                        //     { companyinfo },
+                        //     reportTitle
+                        //   );
+                        // }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        // handleInvoiceExcel(
+                        //   paymentReceivedData,
+                        //   customerInfo,
+                        //   companyinfo,
+                        //   reportTitle
+                        // );
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
-        </div>
+  
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>) : ""
+        }
+       
       </div>
     );
-  }, [filterText, resetPaginationToggle]);
+  }, [filterText, resetPaginationToggle,filteredDatas]);
 
   return (
     <div

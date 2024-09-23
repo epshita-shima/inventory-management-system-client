@@ -92,9 +92,9 @@ const PaymentMethodSingleEntry = () => {
       },
     ],
   });
-  console.log(previousPaymentData);
 
   const paymentMethodOptions = [
+    {value: "cash", label: "Cash"},
     { value: "bank-cash", label: "Bank-Cash" },
     { value: "bank-cheque", label: "Bank-Cheque" },
   ];
@@ -103,21 +103,18 @@ const PaymentMethodSingleEntry = () => {
     { value: "adjustment", label: "Adjustment" },
   ];
 
-  console.log(paymnetReceiveData);
-
+  console.log(formValues)
   const areFieldsEmpty = () => {
-    return formValues?.detailsData?.some(
-      (field) =>
-        !field.paymentMethod ||
-        !field.paymentStatus ||
-        !field.bankId ||
-        !field.depositeSlipNo ||
-        !field.itemId ||
-        !field.amount
-    );
-  };
+    return formValues?.detailsData?.some((field) => {
+      const isCommonFieldEmpty = !field.paymentMethod || !field.paymentStatus || !field.itemId || !field.amount;
 
-  console.log(getSinglePaymentReceiveInfo);
+      const isBankCashFieldEmpty = field.paymentMethod === 'bank-cash' && (!field.bankId || !field.depositeSlipNo);
+  
+      const isBankChequeFieldEmpty = field.paymentMethod === 'bank-cheque' && (!field.bankId || !field.chequeNo || !field.chequeDate || !field.depositeSlipNo);
+  
+      return isCommonFieldEmpty || isBankCashFieldEmpty || isBankChequeFieldEmpty;
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -860,6 +857,7 @@ const PaymentMethodSingleEntry = () => {
         <PreviousPaymentDetailsModal
           invoiceInformation={invoiceInformation}
           paymentStatusOptions={paymentStatusOptions}
+          setshowPreviousPaymentDetailsButton={setshowPreviousPaymentDetailsButton}
           makebyUser={makebyUser}
           detail={previousPaymentData}
           setPreviousPaymentData={setPreviousPaymentData}
