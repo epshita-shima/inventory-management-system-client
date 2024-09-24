@@ -38,8 +38,7 @@ const invoiceinfoApi = api.injectEndpoints({
     }),
 
     getFilteredInvoiceInfo: builder.query({
-      query: (queryParams) => (
-       
+      query: (queryParams) => ( 
         {
         url: "invoiceinfo/filtered",
         params: queryParams,

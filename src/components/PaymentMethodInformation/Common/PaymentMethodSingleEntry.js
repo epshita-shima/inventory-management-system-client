@@ -27,6 +27,7 @@ import {
 } from "../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymentDetailsModal";
 import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
+import getInitialFormValues from "../../Common/CommonFromValues/CommonFromValues";
 
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
@@ -68,30 +69,7 @@ const PaymentMethodSingleEntry = () => {
 
   const handleCloseModal = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [formValues, setFormValues] = useState({
-    clientId: clientName,
-    piNumber: piNumber,
-    makeBy: makebyUser,
-    updateBy: null,
-    makeDate: new Date(),
-    updateDate: null,
-    detailsData: [
-      {
-        paymentReceiveDate: paymentReceiveDate,
-        paymentMethod: "",
-        paymentStatus: "",
-        itemId: "",
-        amount: "",
-        quantity: "",
-        unitPrice: "",
-        bankId: "",
-        chequeNo: "",
-        chequeDate: "",
-        depositeSlipNo: "",
-        remarks: "",
-      },
-    ],
-  });
+  const [formValues, setFormValues] = useState((getInitialFormValues(clientName,piNumber,makebyUser,paymentReceiveDate)));
 
   const paymentMethodOptions = [
     {value: "cash", label: "Cash"},
@@ -103,7 +81,6 @@ const PaymentMethodSingleEntry = () => {
     { value: "adjustment", label: "Adjustment" },
   ];
 
-  console.log(formValues)
   const areFieldsEmpty = () => {
     return formValues?.detailsData?.some((field) => {
       const isCommonFieldEmpty = !field.paymentMethod || !field.paymentStatus || !field.itemId || !field.amount;
@@ -117,16 +94,13 @@ const PaymentMethodSingleEntry = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      setIsDisplay(true);
-    } else {
       if (clientName !== "" && piNumber !== "") {
         setIsDisplay(true);
       } else {
         setIsDisplay(false);
       }
-    }
-  }, [piNumber, clientName, previousPaymentData, id]);
+    
+  }, [piNumber, clientName, previousPaymentData]);
 
   useEffect(() => {
     if (invoiveByInvoiceNumber?.detailsData?.length > 0) {
@@ -453,16 +427,7 @@ const PaymentMethodSingleEntry = () => {
                                       },
                                     })}
                                     onChange={(e) => {
-                                      if (id) {
-                                        setUpdatePaymentReceiveInformation(
-                                          (prevData) => ({
-                                            ...prevData,
-                                            clientId: e.value,
-                                            updateBy: makebyUser,
-                                            updateDate: new Date(),
-                                          })
-                                        );
-                                      } else {
+                                     
                                         const matchedInvoice =
                                           invoiceInformation?.filter(
                                             (invoice) =>
@@ -495,7 +460,7 @@ const PaymentMethodSingleEntry = () => {
                                               }
                                             ),
                                         }));
-                                      }
+                                      
 
                                       // handleSelectSupplier(e, setFieldValue);
                                     }}

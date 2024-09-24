@@ -6,31 +6,31 @@ import {
   useUpdateInvoiceSpecialPIApproveStatusMutation,
 } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDownload,
-  faEye,
-  faFilePdf,
-  faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
-import { clientInfoDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
+import {
+  clientInfoDropdown,
+  invoiceListDropdown,
+} from "../../../Common/CommonDropdown/CommonDropdown";
 import swal from "sweetalert";
 import reportImage from "../../../../assets/images/reportlogo.png";
 import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png";
-import { useNavigate } from "react-router-dom";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownload";
+import SpecialDelivaryModal from "../SpecialDelivaryModal";
+import getInitialFormValues from "../../../Common/CommonFromValues/CommonFromValues";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import { useInsertPaymentReceiveInformationMutation } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 
 const SpecialDeliveryTableList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
-  const navigate = useNavigate();
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [executeQuery, setExecuteQuery] = useState(false);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
@@ -40,13 +40,23 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const [approveStatus] = useUpdateInvoiceSpecialPIApproveStatusMutation();
   const [filters, setFilters] = useState({
     customerID: "",
+    piNumber: "",
   });
+  const [customerID, setCustomID] = useState("");
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
+  const { data: invoiceInformation } =
+    useGetAllInvoiceInformationQuery(undefined);
+  const [invoiceList, setInvoiceList] = useState([]);
+  const [piNumber, setPINumber] = useState("");
+  const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
+  const [openModals, setOpenModals] = useState([]);
+  const [show, setShow] = useState(false);
+  const invoiceListOption = invoiceListDropdown(invoiceList);
   const reportTitle = "PRO FORMA INVOICE";
   const base64Logo = reportImage;
   const signature = authorizesSingatureImage;
@@ -56,6 +66,14 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredInvoiceInfoQuery();
   const [userWaysListData, setUserWaysListData] = useState([]);
+  const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
+  const makebyUser = getMakebyUser();
+
+  const [formValues, setFormValues] = useState(
+    getInitialFormValues(customerID, piNumber, makebyUser, new Date())
+  );
+
+  console.log(formValues);
 
   useEffect(() => {
     if (executeQuery) {
@@ -79,26 +97,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const handleApplyFilters = () => {
     setExecuteQuery(true); // Trigger the useEffect to fetch data
   };
-
-  // const handleCheckboxClick = (dataItem, setSelectedData) => {
-  //   setSelectedData((prevSelectedData) => {
-  //     const isSelected = prevSelectedData?.some((item) => item._id === dataItem._id);
-
-  //     const updatedDataItem = {
-  //       ...dataItem,
-  //       specialApproveForDelivary: !isSelected,
-  //       specialApproveBy: !isSelected ? approveBy : null,
-  //       specialApproveDate: !isSelected ? new Date() : null,
-  //     };
-
-  //     if (isSelected) {
-  //       return prevSelectedData.filter((item) => item._id !== dataItem._id);
-  //     } else {
-  //       return [...prevSelectedData, updatedDataItem];
-  //     }
-  //   });
-  // };
-
+  console.log(selectedData);
   const handleCheckboxClick = (dataItem, setSelectedData) => {
     const updatedDataItem = {
       ...dataItem,
@@ -148,80 +147,157 @@ const SpecialDeliveryTableList = ({ permission }) => {
 
   const clientInfoOptions = clientInfoDropdown(clientInformation);
 
+  const groupByClient = (data) => {
+    const groupedDataMap = new Map();
+
+    data?.forEach((payment) => {
+      payment.detailsData.forEach((detail) => {
+        // Create a unique key based on clientId, piNumber, and itemId
+        const key = `${payment.customerID}_${payment.invoiceNo}_${detail.itemId}`;
+        // If the key doesn't exist, create a new entry
+        groupedDataMap.set(key, {
+          ...payment,
+          detailsData: {
+            ...detail,
+          },
+          isGroup: false,
+        });
+      });
+    });
+
+    // Convert the map back to an array
+    const groupedData = Array.from(groupedDataMap.values());
+    console.log(groupedData);
+    return groupedData;
+  };
+
+  const handlePaymentMethodChange = (e, index) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[index] = true; // Set the modal open for the specific row
+    setOpenModals(newOpenModals);
+    setShow(true);
+  };
+
+  const handleCloseModal = (index) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[index] = false; // Close the modal for the specific row
+    setOpenModals(newOpenModals);
+  };
+
   const columns = [
     {
       name: "Sl.",
-      selector: (userWaysListData, index) => index + 1,
+      selector: (row, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
       name: "Pi Date",
-      selector: (userWaysListData) =>
-        new Date(userWaysListData?.piDate).toLocaleDateString("en-CA"),
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Invoice No",
-      selector: (userWaysListData) => userWaysListData?.invoiceNo,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Client Name",
-      selector: (userWaysListData) => {
-        const customerName = clientInformation?.find(
-          (x) => x._id === userWaysListData?.customerID
-        );
-        return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Payment Status",
-      selector: (userWaysListData) => userWaysListData?.paymentId,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Total Quantity",
-      selector: (userWaysListData) => {
-        const totalQuantity = userWaysListData.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.quantity, 10),
-          0
-        );
-        return totalQuantity;
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Total Amount",
-      selector: (userWaysListData) => {
-        const totalAmount = userWaysListData.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
-          0
-        );
-        return totalAmount;
-      },
+      selector: (row) => new Date(row?.piDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
     },
 
     {
+      name: "Client Name",
+      selector: (row) => {
+        const customerName = clientInformation?.find(
+          (x) => x._id === row?.customerID
+        );
+        return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "200px",
+    },
+    {
+      name: "Invoice No",
+      selector: (row) => row?.invoiceNo,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "200px",
+    },
+    {
+      name: "Invoice No",
+      selector: (row) => {
+        const itemName = finishGoodsData.find(
+          (item) => item._id === row.detailsData.itemId
+        );
+        const sizeDetails = sizeInfo.find(
+          (size) => size._id === itemName.sizeId
+        );
+        return itemName
+          ? itemName.itemName + ` (${sizeDetails.sizeInfo})`
+          : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "280px",
+    },
+    {
+      name: "Payment Status",
+      selector: (row) => {
+        const paymentType = paymentInfo?.find((x) => x._id === row?.paymentId);
+        return paymentType ? paymentType.paymentMode : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "180px",
+    },
+    {
+      name: "Quantity",
+      selector: (row) => row.detailsData.quantity,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "180px",
+    },
+    {
+      name: "Amount",
+      selector: (row) => row.detailsData.totalAmount,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "180px",
+    },
+    // {
+    //   name: "Total Quantity",
+    //   selector: (userWaysListData) => {
+    //     const totalQuantity = userWaysListData.detailsData.reduce(
+    //       (acc, cur) => acc + parseInt(cur.quantity, 10),
+    //       0
+    //     );
+    //     return totalQuantity;
+    //   },
+    //   sortable: true,
+    //   center: true,
+    //   filterable: true,
+    // },
+    // {
+    //   name: "Total Amount",
+    //   selector: (userWaysListData) => {
+    //     const totalAmount = userWaysListData.detailsData.reduce(
+    //       (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+    //       0
+    //     );
+    //     return totalAmount;
+    //   },
+    //   sortable: true,
+    //   center: true,
+    //   filterable: true,
+    // },
+
+    {
       name: "Action",
       button: true,
       width: "150px",
       grow: 2,
-      cell: (userWaysListData) => (
+      cell: (row, index) => (
         <div className="d-flex justify-content-between align-content-center">
           <input
             type="checkbox"
@@ -231,13 +307,30 @@ const SpecialDeliveryTableList = ({ permission }) => {
               height: "22px",
               border: "2px solid #fff",
             }}
-            aria-label={`Checkbox for data item ${userWaysListData.id}`}
-            checked={userWaysListData.specialApproveForDelivary} // Assuming status is a boolean field
-            onChange={(e) =>
-              handleCheckboxClick(userWaysListData, setSelectedData)
-            } // Assuming handleCheckboxClick is defined elsewhere
+            aria-label={`Checkbox for data item ${row.id}`}
+            checked={row.specialApproveForDelivary} // Assuming status is a boolean field
+            onChange={(e) => {
+              handlePaymentMethodChange(e, index);
+              handleCheckboxClick(row, setSelectedData);
+            }}
           />
-
+          {openModals[index] && (
+            <SpecialDelivaryModal
+              row={row}
+              filters={filters}
+              makebyUser={makebyUser}
+              formValues={formValues}
+              selectedData={selectedData}
+              setFormValues={setFormValues}
+              finishGoodsData={finishGoodsData}
+              sizeInfo={sizeInfo}
+              show={openModals[index]}
+              handleClose={() => handleCloseModal(index)}
+              index={index}
+              approveStatus={approveStatus}
+              insertPaymentReceive={insertPaymentReceive}
+            />
+          )}
           <a
             target="_blank"
             className={` action-icon `}
@@ -295,12 +388,11 @@ const SpecialDeliveryTableList = ({ permission }) => {
     },
   };
 
-  const filteredItems = userWaysListData?.filter(
+  const filteredItems = groupByClient(filteredDatas)?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
-
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -391,7 +483,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
           <hr />
           <div
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
-            style={{ width: "50%" }}
+            style={{ width: "75%" }}
           >
             <div className="w-50">
               <label htmlFor="">Client Name</label>
@@ -432,6 +524,27 @@ const SpecialDeliveryTableList = ({ permission }) => {
                     },
                   })}
                   onChange={(e) => {
+                    const matchedInvoice = invoiceInformation?.filter(
+                      (invoice) =>
+                        invoice.customerID === e.value &&
+                        invoice.isApproved === true
+                    );
+                    console.log(matchedInvoice);
+                    if (matchedInvoice?.length > 0) {
+                      setInvoiceList(matchedInvoice);
+                    } else {
+                      swal({
+                        title: "Sorry!",
+                        text: "This Client has no PI.",
+                        icon: "warning",
+                        button: "OK",
+                      });
+                      setFilters((prevFilters) => ({
+                        ...prevFilters,
+                        piNumber: "",
+                      }));
+                      setInvoiceList([]);
+                    }
                     setFilters((prevFilters) => ({
                       ...prevFilters,
                       customerID: e.value,
@@ -440,7 +553,59 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div>
+            <div className="w-50 ms-2">
+              <label htmlFor="">PI Number</label>
+              <div>
+                <Select
+                  class="form-select"
+                  className="w-100 mb-3"
+                  aria-label="Default select example"
+                  name="client pino"
+                  options={invoiceListOption}
+                  defaultValue={{
+                    label: "Select PI Number",
+                    value: 0,
+                  }}
+                  value={invoiceListOption?.filter(function (option) {
+                    return option?.label === piNumber;
+                  })}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      width: "100%",
+                      borderColor: state.isFocused ? "#fff" : "#fff",
+                      border: "1px solid #2DDC1B",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      zIndex: 9999,
+                      height: "auto",
+                      // overflowY: "scroll",
+                    }),
+                  }}
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: "#B8FEB3",
+                      primary: "#2DDC1B",
+                    },
+                  })}
+                  onChange={(e) => {
+                    setPINumber(e.label);
+                    const invoiceListMatchingData = invoiceList.find(
+                      (data) => data._id === e.value
+                    );
+                    setInvoiveByInvoiceNumber(invoiceListMatchingData);
+                    setFilters((prevFilters) => ({
+                      ...prevFilters,
+                      piNumber: e.value,
+                    }));
+                  }}
+                ></Select>
+              </div>
+            </div>
+            <div className="ms-2">
               <button
                 className="border-0 "
                 style={{
@@ -458,7 +623,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 Show
               </button>
             </div>
-            <div>
+            <div className="ms-2">
               <button
                 className="border-0 "
                 style={{
@@ -473,8 +638,11 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 }}
                 onClick={() => {
                   setFilters((prevFilters) => ({
+                    ...prevFilters,
                     customerID: "",
+                    piNumber: "",
                   }));
+                  setPINumber("");
                   setUserWaysListData([]);
                   setIsTableDisplay(false);
                 }}
@@ -482,7 +650,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            <div>
+            <div className="ms-2">
               {userWaysListData?.length > 0 ? (
                 <button
                   className="border-0 "

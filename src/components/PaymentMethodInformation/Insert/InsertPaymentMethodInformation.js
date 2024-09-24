@@ -28,6 +28,7 @@ const InsertPaymentMethodInformation = ({
 }) => {
   const [show, setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
+  const [openModals, setOpenModals] = useState([]);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
 
   const bankInfoOptions = bankInformationDropdown(bankInformation);
@@ -51,7 +52,7 @@ const InsertPaymentMethodInformation = ({
       setBankInCheque(false);
     }
   };
-  const [openModals, setOpenModals] = useState([]); // Track open modals for each detail
+ // Track open modals for each detail
 
   const handleCloseModal = (index) => {
     const newOpenModals = [...openModals];
