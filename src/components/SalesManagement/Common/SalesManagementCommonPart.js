@@ -40,14 +40,15 @@ const SalesManagementCommonPart = () => {
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
-  const superAdminId=getUserParse[0].roleId
+  const superAdminId = getUserParse[0].roleId;
   const navigate = useNavigate();
   const [piDate, setPiDate] = useState(new Date());
   const [expireDate, setExpireDate] = useState(new Date());
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: unitInformation } = useGetAllItemUnitQuery(undefined);
   const [serialValue, setSerialValue] = useState([]);
-  const { data: serialNo,refetch:serialRefetch } = useGetSerialNoQuery(undefined);
+  const { data: serialNo, refetch: serialRefetch } =
+    useGetSerialNoQuery(undefined);
   const [insertInvoiceInfo] = useInsertInvoiceInformationMutation();
   const [createSerialNo] = useCreateSerialNoMutation();
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
@@ -56,8 +57,8 @@ const SalesManagementCommonPart = () => {
   const { data: getSingleInvoiceData } = useGetSingleInvoiceQuery(id);
   const [updateSingleInvoiceData, setUpdateSingleInvoiceData] = useState([]);
   const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
-const {data:userList}=useGetAllUserQuery(undefined)
-const [marketingPerSon ,setMarketingPerson]=useState('')
+  const { data: userList } = useGetAllUserQuery(undefined);
+  const [marketingPerSon, setMarketingPerson] = useState("");
   const initialValues = {
     piDate: piDate,
     expireDate: expireDate,
@@ -68,10 +69,12 @@ const [marketingPerSon ,setMarketingPerson]=useState('')
     approveBy: "",
     approveDate: "",
     isApproved: false,
-    specialApproveForDelivary: false,
-    specialApproveBy: "",
-    specialApproveDate: "",
-    mktPerson: superAdminId === "65d48768a106fcb4f5c28071" || superAdminId === "65d486123346cddf01c3773a" ? marketingPerSon : makebyUser, 
+
+    mktPerson:
+      superAdminId === "65d48768a106fcb4f5c28071" ||
+      superAdminId === "65d486123346cddf01c3773a"
+        ? marketingPerSon
+        : makebyUser,
     makeBy: makebyUser,
     updateBy: null,
     makeDate: new Date(),
@@ -83,6 +86,9 @@ const [marketingPerSon ,setMarketingPerson]=useState('')
         quantity: "",
         unitPrice: "",
         totalAmount: "",
+        specialApproveForDelivary: false,
+        specialApproveBy: "",
+        specialApproveDate: "",
       },
     ],
   };
@@ -92,8 +98,8 @@ const [marketingPerSon ,setMarketingPerson]=useState('')
     finishGoods,
     sizeInfo
   );
-const userInfoOptions=userInfoDropdown(userList)
-console.log(userInfoOptions)
+  const userInfoOptions = userInfoDropdown(userList);
+  console.log(userInfoOptions);
   const areFieldsEmpty = () => {
     return updateSingleInvoiceData?.detailsData?.some(
       (field) => !field.description || !field.quantity || !field.unitPrice
@@ -102,7 +108,7 @@ console.log(userInfoOptions)
 
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
-      serialRefetch()
+      serialRefetch();
       const maxSerialNoObject = serialNo.reduce((max, current) => {
         if (current.type === "invoice") {
           // If max is undefined or current serialNo is greater, return current
@@ -121,7 +127,7 @@ console.log(userInfoOptions)
     if (id) {
       setUpdateSingleInvoiceData(getSingleInvoiceData);
     }
-  }, [serialNo, id, getSingleInvoiceData,serialRefetch]);
+  }, [serialNo, id, getSingleInvoiceData, serialRefetch]);
 
   console.log(serialValue);
   const handleSubmit = async (e, values, resetForm) => {
@@ -148,7 +154,7 @@ console.log(userInfoOptions)
         const response = await insertInvoiceInfo(values);
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);
-          serialRefetch()
+          serialRefetch();
           swal("Done", "Data Save Successfully", "success");
           resetForm();
         } else if (response?.error?.status === 400) {
@@ -265,7 +271,7 @@ console.log(userInfoOptions)
                                     setUpdateSingleInvoiceData
                                   }
                                   serialValue={serialValue}
-                                  piDate={piDate} 
+                                  piDate={piDate}
                                   setPiDate={setPiDate}
                                   expireDate={expireDate}
                                   setExpireDate={setExpireDate}
@@ -339,6 +345,9 @@ console.log(userInfoOptions)
                                               quantity: "",
                                               unitPrice: "",
                                               totalAmount: "",
+                                              specialApproveForDelivary: false,
+                                              specialApproveBy: "",
+                                              specialApproveDate: "",
                                             });
                                             return {
                                               ...prev,
@@ -353,6 +362,9 @@ console.log(userInfoOptions)
                                           quantity: "",
                                           unitPrice: "",
                                           totalAmount: "",
+                                          specialApproveForDelivary: false,
+                                          specialApproveBy: "",
+                                          specialApproveDate: "",
                                         });
                                       }}
                                     >
@@ -387,7 +399,6 @@ console.log(userInfoOptions)
                                   finisGoodsOptions={finisGoodsOptions}
                                   setFieldValue={setFieldValue}
                                   serialValue={serialValue}
-                                  
                                 ></InsertSalesManagement>
                               )}
                             </div>

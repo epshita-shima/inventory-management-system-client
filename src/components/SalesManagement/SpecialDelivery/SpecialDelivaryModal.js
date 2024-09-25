@@ -24,20 +24,21 @@ const SpecialDelivaryModal = ({
   );
   const sizeDetails = sizeInfo.find((size) => size._id == itemName.sizeId);
   const initialValues =  formValues ;
+  console.log('formvalues',formValues.detailsData[0].amount)
   const handleSubmit = async (e,values) => {
     e.preventDefault()
     console.log(formValues)
     console.log(selectedData);
     const response = await approveStatus(selectedData);
-    if (response?.data?.status === 200) {
-      const response = await insertPaymentReceive(formValues);
-      if (response?.data?.status === 200) {
-        navigate("/main-view/invoice-list");
-        swal("Done", "PI Approve Successfully", "success");
-      } else if (response?.error?.status === 400) {
-        swal("Not Possible!", response?.error?.data?.message, "error");
-      }
-    }
+    // if (response?.data?.status === 200) {
+    //   const response = await insertPaymentReceive(formValues);
+    //   if (response?.data?.status === 200) {
+    //     navigate("/main-view/invoice-list");
+    //     swal("Done", "PI Approve Successfully", "success");
+    //   } else if (response?.error?.status === 400) {
+    //     swal("Not Possible!", response?.error?.data?.message, "error");
+    //   }
+    // }
   };
 
   return (
@@ -217,17 +218,19 @@ const SpecialDelivaryModal = ({
                 variant="secondary"
                 onClick={() => {
                   handleClose();
+                  
                 }}
               >
                 Close
               </Button>
               <Button
 
-                style={{ backgroundColor: "#2DDC1B", border: "none" }}
+                style={{ backgroundColor: formValues.detailsData[0].amount ?  "#2DDC1B" :'gray' , border: "none" }}
                 variant="primary"
                  form="specialpaymentreceive-form"
                 type="submit"
                 onClick={handleClose}
+                disabled={formValues.detailsData[0].amount ? false: true}
               >
                 Save
               </Button>

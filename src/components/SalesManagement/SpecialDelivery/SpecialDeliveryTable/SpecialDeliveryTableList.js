@@ -27,7 +27,10 @@ import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownl
 import SpecialDelivaryModal from "../SpecialDelivaryModal";
 import getInitialFormValues from "../../../Common/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
-import { useInsertPaymentReceiveInformationMutation } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import {
+  useGetAllPaymentReceiveInformationQuery,
+  useInsertPaymentReceiveInformationMutation,
+} from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 
 const SpecialDeliveryTableList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -51,12 +54,13 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
+  const { data: previousPaymentInformation } =
+    useGetAllPaymentReceiveInformationQuery(undefined);
   const [invoiceList, setInvoiceList] = useState([]);
   const [piNumber, setPINumber] = useState("");
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
   const [openModals, setOpenModals] = useState([]);
   const [show, setShow] = useState(false);
-  const invoiceListOption = invoiceListDropdown(invoiceList);
   const reportTitle = "PRO FORMA INVOICE";
   const base64Logo = reportImage;
   const signature = authorizesSingatureImage;
@@ -66,14 +70,13 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredInvoiceInfoQuery();
   const [userWaysListData, setUserWaysListData] = useState([]);
+  const invoiceListOption = invoiceListDropdown(invoiceList);
   const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
   const makebyUser = getMakebyUser();
-
+  const [paymentStatusMood, setPaymentStatusMood] = useState("");
   const [formValues, setFormValues] = useState(
     getInitialFormValues(customerID, piNumber, makebyUser, new Date())
   );
-
-  console.log(formValues);
 
   useEffect(() => {
     if (executeQuery) {
@@ -92,41 +95,45 @@ const SpecialDeliveryTableList = ({ permission }) => {
         });
     }
     setUserWaysListData(filteredDatas);
-  }, [executeQuery, trigger, filters, filteredDatas]);
+    const paymentType = paymentInfo?.find((x) =>
+      filteredDatas?.some((item) => item.paymentId === x._id)
+    );
+
+    setPaymentStatusMood(paymentType);
+  }, [executeQuery, trigger, filters, filteredDatas, paymentInfo]);
 
   const handleApplyFilters = () => {
     setExecuteQuery(true); // Trigger the useEffect to fetch data
   };
-  console.log(selectedData);
-  const handleCheckboxClick = (dataItem, setSelectedData) => {
+
+  const handleCheckboxClick = (dataItem) => {
     const updatedDataItem = {
       ...dataItem,
-      specialApproveForDelivary: !dataItem.specialApproveForDelivary, // Toggle the value
-      specialApproveBy: !dataItem.specialApproveForDelivary
-        ? approveBy
-        : approveBy, // Set approveBy only if approving
-      specialApproveDate: !dataItem.specialApproveForDelivary
-        ? new Date()
-        : new Date(), // Set approveDate only if approving
+      detailsData: {
+        ...dataItem.detailsData,
+        specialApproveForDelivary: !dataItem.specialApproveForDelivary,
+        specialApproveBy: !dataItem.specialApproveForDelivary
+          ? approveBy
+          : null,
+        specialApproveDate: !dataItem.specialApproveForDelivary
+          ? new Date()
+          : null,
+      },
     };
 
     setSelectedData((prevSelectedData) => {
-      if (prevSelectedData.some((item) => item._id === dataItem._id)) {
-        // Update the item if it's already in the selected data
-        return prevSelectedData.map((item) =>
-          item._id === dataItem._id ? updatedDataItem : item
+      if (
+        prevSelectedData?.some(
+          (item) => item.detailsData._id === dataItem.detailsData._id
+        )
+      ) {
+        return prevSelectedData.filter(
+          (item) =>
+            item.detailsData._id !== dataItem.detailsData._id && dataItem
         );
       } else {
-        // Add the updated item if it's not already selected
         return [...prevSelectedData, updatedDataItem];
       }
-    });
-
-    // Update userWaysListData as well
-    setUserWaysListData((prevData) => {
-      return prevData.map((item) =>
-        item._id === dataItem._id ? updatedDataItem : item
-      );
     });
   };
 
@@ -167,21 +174,48 @@ const SpecialDeliveryTableList = ({ permission }) => {
 
     // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
-    console.log(groupedData);
     return groupedData;
   };
 
   const handlePaymentMethodChange = (e, index) => {
-    const newOpenModals = [...openModals];
-    newOpenModals[index] = true; // Set the modal open for the specific row
-    setOpenModals(newOpenModals);
-    setShow(true);
+    if(e.target.checked){
+      const newOpenModals = [...openModals];
+      newOpenModals[index] = true; // Set the modal open for the specific row
+      setOpenModals(newOpenModals);
+      setShow(true);
+    }
+    else{
+      handleCloseModal()
+    }
   };
 
   const handleCloseModal = (index) => {
     const newOpenModals = [...openModals];
     newOpenModals[index] = false; // Close the modal for the specific row
     setOpenModals(newOpenModals);
+    setFormValues((prev) => {
+      const temp_details = [...prev.detailsData];
+      const newDetail = {
+        ...temp_details[0],
+      };
+      newDetail["itemId"] ='';
+      newDetail["paymentStatus"] = "cash";
+      newDetail["paymentMethod"] = "cash";
+      newDetail["unitPrice"] = '';
+      newDetail["amount"] ='';
+      newDetail["quantity"] = '';
+      newDetail["paymentReceiveDate"] = '';
+     
+      temp_details[0] = newDetail;
+      return {
+        ...prev,
+        clientId: filters.customerID,  // Assuming you are getting clientId from filters
+        piNumber: filters.piNumber, 
+        makeBy:makebyUser,
+        detailsData: [...temp_details],
+      };
+    });
+    setSelectedData([])
   };
 
   const columns = [
@@ -265,33 +299,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
       filterable: true,
       width: "180px",
     },
-    // {
-    //   name: "Total Quantity",
-    //   selector: (userWaysListData) => {
-    //     const totalQuantity = userWaysListData.detailsData.reduce(
-    //       (acc, cur) => acc + parseInt(cur.quantity, 10),
-    //       0
-    //     );
-    //     return totalQuantity;
-    //   },
-    //   sortable: true,
-    //   center: true,
-    //   filterable: true,
-    // },
-    // {
-    //   name: "Total Amount",
-    //   selector: (userWaysListData) => {
-    //     const totalAmount = userWaysListData.detailsData.reduce(
-    //       (acc, cur) => acc + parseInt(cur.totalAmount, 10),
-    //       0
-    //     );
-    //     return totalAmount;
-    //   },
-    //   sortable: true,
-    //   center: true,
-    //   filterable: true,
-    // },
-
     {
       name: "Action",
       button: true,
@@ -299,21 +306,55 @@ const SpecialDeliveryTableList = ({ permission }) => {
       grow: 2,
       cell: (row, index) => (
         <div className="d-flex justify-content-between align-content-center">
-          <input
-            type="checkbox"
-            style={{
-              display: "inline-block",
-              width: "22px",
-              height: "22px",
-              border: "2px solid #fff",
-            }}
-            aria-label={`Checkbox for data item ${row.id}`}
-            checked={row.specialApproveForDelivary} // Assuming status is a boolean field
-            onChange={(e) => {
-              handlePaymentMethodChange(e, index);
-              handleCheckboxClick(row, setSelectedData);
-            }}
-          />
+          {
+            paymentStatusMood?.paymentMode == "Cash" ? 
+              (<input
+              type="checkbox"
+              style={{
+                display: "inline-block",
+                width: "22px",
+                height: "22px",
+                border: "2px solid #fff",
+              }}
+              aria-label={`Checkbox for data item ${row.id}`}
+              checked={ selectedData?.some((item) => item.detailsData._id === row.detailsData._id)} 
+              onChange={(e) => {
+                const paymentType = paymentInfo?.find(
+                  (x) => x._id === row?.paymentId
+                );
+                console.log(paymentType.paymentMode);
+                if (paymentType.paymentMode == "Cash") {
+                  handlePaymentMethodChange(e, index);
+                  handleCheckboxClick(row);
+                } else {
+                  handleCheckboxClick(row);
+                }
+              }}
+            />) : (  <input
+              type="checkbox"
+              style={{
+                display: "inline-block",
+                width: "22px",
+                height: "22px",
+                border: "2px solid #fff",
+              }}
+              aria-label={`Checkbox for data item ${row.id}`}
+              checked={ selectedData?.some((item) => item.detailsData._id === row.detailsData._id)} 
+              onChange={(e) => {
+                const paymentType = paymentInfo?.find(
+                  (x) => x._id === row?.paymentId
+                );
+                console.log(paymentType.paymentMode);
+                if (paymentType.paymentMode == "Cash") {
+                  handlePaymentMethodChange(e, index);
+                  handleCheckboxClick(row);
+                } else {
+                  handleCheckboxClick(row);
+                }
+              }}
+            />)         
+          }
+          
           {openModals[index] && (
             <SpecialDelivaryModal
               row={row}
@@ -527,9 +568,12 @@ const SpecialDeliveryTableList = ({ permission }) => {
                     const matchedInvoice = invoiceInformation?.filter(
                       (invoice) =>
                         invoice.customerID === e.value &&
-                        invoice.isApproved === true
+                        invoice.isApproved === true &&
+                        previousPaymentInformation.every(
+                          (item) => item.piNumber !== invoice.invoiceNo
+                        )
                     );
-                    console.log(matchedInvoice);
+
                     if (matchedInvoice?.length > 0) {
                       setInvoiceList(matchedInvoice);
                     } else {
@@ -651,7 +695,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
               </button>
             </div>
             <div className="ms-2">
-              {userWaysListData?.length > 0 ? (
+              {paymentStatusMood?.paymentMode == "Cash" ? (
+                ""
+              ) : (
                 <button
                   className="border-0 "
                   style={{
@@ -672,8 +718,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 >
                   Approve
                 </button>
-              ) : (
-                ""
               )}
             </div>
           </div>
