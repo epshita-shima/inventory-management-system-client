@@ -31,7 +31,7 @@ const downloadPDF = (companyinfo, reportTitle) => {
   doc.save(`${fileName}.pdf`);
 };
 
-const downloadProductionPDF = (companyinfo, reportTitle,fromDate,toDate) => {
+const downloadProductionPDF = (companyinfo, reportTitle, fromDate, toDate) => {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc1 = new jsPDF();
   doc1.autoTable({
@@ -63,13 +63,13 @@ const downloadProductionPDF = (companyinfo, reportTitle,fromDate,toDate) => {
   });
 
   // Add footer text to each page
-  addFooter(doc1, companyinfo, reportTitle,fromDate,toDate);
+  addFooter(doc1, companyinfo, reportTitle, fromDate, toDate);
 
   // Save the PDF
   doc1.save(`${fileName}.pdf`);
 };
 
-const downloadHeadingProductionPDF = (data,companyinfo, reportTitle) => {
+const downloadHeadingProductionPDF = (data, companyinfo, reportTitle) => {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc1 = new jsPDF();
   const finalRows = data?.map((row, index) => [
@@ -81,16 +81,10 @@ const downloadHeadingProductionPDF = (data,companyinfo, reportTitle) => {
   ]);
   doc1.autoTable({
     head: [
-      [
-        "Sl.",
-        "Production Date",
-        "Batch No",
-        "Total Batch",
-        "Production Qty",
-      ],
+      ["Sl.", "Production Date", "Batch No", "Total Batch", "Production Qty"],
     ],
-    body:finalRows,
-    startY:  55,
+    body: finalRows,
+    startY: 55,
     margin: { top: 50, bottom: 32 },
     headerStyles: {
       fillColor: [128, 128, 128], // Change the color here, e.g., red
@@ -123,24 +117,28 @@ const downloadHeadingProductionPDF = (data,companyinfo, reportTitle) => {
   doc1.save(`${fileName}.pdf`);
 };
 
-const downloadInvoiceSingleDataPDF = (data,customerInfo,companyinfo, reportTitle) => {
+const downloadInvoiceSingleDataPDF = (
+  data,
+  customerInfo,
+  companyinfo,
+  reportTitle
+) => {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc1 = new jsPDF();
   const finalRows = data?.map((row, index) => [
     index + 1,
-   new Date(row.piDate).toLocaleDateString("en-CA"),
+    new Date(row.piDate).toLocaleDateString("en-CA"),
     row.invoiceNo,
     customerInfo
-    ?.filter((rawItem) => rawItem._id === row.customerID)
-    .map((filteredItem) => filteredItem.clientName)
-    .join(", "),
+      ?.filter((rawItem) => rawItem._id === row.customerID)
+      .map((filteredItem) => filteredItem.clientName)
+      .join(", "),
     row.detailsData.reduce((subTotal, item) => {
       return subTotal + item.quantity;
     }, 0),
     row.detailsData.reduce((subTotal, item) => {
       return subTotal + item.totalAmount;
-    }, 0)
-
+    }, 0),
   ]);
   doc1.autoTable({
     head: [
@@ -153,8 +151,8 @@ const downloadInvoiceSingleDataPDF = (data,customerInfo,companyinfo, reportTitle
         "Total Amount",
       ],
     ],
-    body:finalRows,
-    startY:  55,
+    body: finalRows,
+    startY: 55,
     margin: { top: 50, bottom: 32 },
     headerStyles: {
       fillColor: [128, 128, 128], // Change the color here, e.g., red
@@ -187,12 +185,16 @@ const downloadInvoiceSingleDataPDF = (data,customerInfo,companyinfo, reportTitle
   doc1.save(`${fileName}.pdf`);
 };
 
-const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo, reportTitle) => {
-  
-  const itemNames = finishGoods
-  ?.find((item) =>
-     data?.productionItemName === item._id
-  )
+const downloadProductionPDFPERBatch = (
+  data,
+  finishGoods,
+  rawItemInfo,
+  companyinfo,
+  reportTitle
+) => {
+  const itemNames = finishGoods?.find(
+    (item) => data?.productionItemName === item._id
+  );
 
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
@@ -201,30 +203,30 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false, 
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     };
-    return date.toLocaleString('en-US', options);
+    return date.toLocaleString("en-US", options);
   };
   const formatDate1 = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
-  const checkExcessOrLessProductionQty = data?.productionStatus === 'Less';
-  
+  const checkExcessOrLessProductionQty = data?.productionStatus === "Less";
+
   const formattedProductionDate = formatDate1(data.productionDate);
   const formatteProductionStartDate = formatDate(data.productionStart);
   const formattedPRoductionEndDate = formatDate(data.productionEnd);
-  const xCoordinate = 20; 
-  const labelWidth = 40; 
+  const xCoordinate = 20;
+  const labelWidth = 40;
   const labelWidth2 = 80;
-  const extraSpace = 25; 
-  const textY = 60; 
+  const extraSpace = 25;
+  const textY = 60;
 
   // Left side text
   doc.setFontSize(11);
@@ -244,13 +246,21 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
   doc.text("Production Start", xCoordinate, textY + 10);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${formatteProductionStartDate}`, xCoordinate + labelWidth, textY + 10);
+  doc.text(
+    `:${formatteProductionStartDate}`,
+    xCoordinate + labelWidth,
+    textY + 10
+  );
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Production End", xCoordinate, textY + 15);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${formattedPRoductionEndDate}`, xCoordinate + labelWidth, textY + 15);
+  doc.text(
+    `:${formattedPRoductionEndDate}`,
+    xCoordinate + labelWidth,
+    textY + 15
+  );
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Total Hour", xCoordinate, textY + 20);
@@ -271,36 +281,56 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
   doc.text("Production Item Name", rightXCoordinate, textY);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${itemNames?.itemName}`, rightXCoordinate + labelWidth+extraSpace, textY);
+  doc.text(
+    `:${itemNames?.itemName}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY
+  );
 
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Production Qty", rightXCoordinate, textY + 5);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${data.productionQty}`, rightXCoordinate + labelWidth+extraSpace, textY + 5);
+  doc.text(
+    `:${data.productionQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 5
+  );
 
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Wastage Qty", rightXCoordinate, textY + 10);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${data.wastageQty}`, rightXCoordinate + labelWidth+extraSpace, textY + 10);
-  
+  doc.text(
+    `:${data.wastageQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 10
+  );
+
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Expected Production Qty (Per Batch)", rightXCoordinate, textY + 15);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${data.expectedProductionQtyPerBatch}`, rightXCoordinate + labelWidth+extraSpace, textY + 15);
-  
+  doc.text(
+    `:${data.expectedProductionQtyPerBatch}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 15
+  );
+
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Expected Production Qty", rightXCoordinate, textY + 20);
   doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(`:${data.expectedProductionQty}`, rightXCoordinate + labelWidth+extraSpace, textY + 20);
-  
+  doc.text(
+    `:${data.expectedProductionQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 20
+  );
+
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Excess Or Less Production Qty", rightXCoordinate, textY + 25);
@@ -311,7 +341,15 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
   } else {
     doc.setTextColor(0, 0, 0); // Set color to black (RGB: 0, 0, 0)
   }
-  doc.text(`: ${checkExcessOrLessProductionQty ? `(${data.excessOrLessProductionQty})` :  data.excessOrLessProductionQty}`, rightXCoordinate + labelWidth+extraSpace, textY + 25);
+  doc.text(
+    `: ${
+      checkExcessOrLessProductionQty
+        ? `(${data.excessOrLessProductionQty})`
+        : data.excessOrLessProductionQty
+    }`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 25
+  );
 
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 80;
@@ -341,7 +379,7 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
         "Less",
       ],
     ],
-    body:finalRows,
+    body: finalRows,
     startY: finalY + 10, // Start the second table a bit below the first one
     margin: { top: 50, bottom: 32 },
     headerStyles: {
@@ -355,8 +393,8 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
       textColor: [0, 0, 0],
       font: "times", // Font
       fontSize: 10,
-      overflow: 'linebreak',
-      cellWidth: 'wrap',
+      overflow: "linebreak",
+      cellWidth: "wrap",
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
@@ -374,6 +412,296 @@ const downloadProductionPDFPERBatch = (data,finishGoods,rawItemInfo,companyinfo,
   doc.save(`${fileName}.pdf`);
 };
 
+const downloadPaymentReceivedPDF = (
+  data,
+  finishGoods,
+  invoiceData,
+  companyinfo,
+  reportTitle
+) => {
+  const itemNames = finishGoods?.find(
+    (item) => data?.productionItemName === item._id
+  );
+
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  // First table
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleString("en-US", options);
+  };
+  const formatDate1 = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+  const checkExcessOrLessProductionQty = data?.productionStatus === "Less";
+
+  const formattedProductionDate = formatDate1(data.productionDate);
+  const formatteProductionStartDate = formatDate(data.productionStart);
+  const formattedPRoductionEndDate = formatDate(data.productionEnd);
+  const xCoordinate = 20;
+  const labelWidth = 40;
+  const labelWidth2 = 80;
+  const extraSpace = 25;
+  const textY = 60;
+
+  // Left side text
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Batch No", xCoordinate, textY);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(`:${data.batchNo}`, xCoordinate + labelWidth, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Production Date", xCoordinate, textY + 5);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(`:${formattedProductionDate}`, xCoordinate + labelWidth, textY + 5);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Production Start", xCoordinate, textY + 10);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${formatteProductionStartDate}`,
+    xCoordinate + labelWidth,
+    textY + 10
+  );
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Production End", xCoordinate, textY + 15);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${formattedPRoductionEndDate}`,
+    xCoordinate + labelWidth,
+    textY + 15
+  );
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Total Hour", xCoordinate, textY + 20);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(`:${data.totalHour}`, xCoordinate + labelWidth, textY + 20);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Total Batch", xCoordinate, textY + 25);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(`:${data.totalBatch}`, xCoordinate + labelWidth, textY + 25);
+
+  // Right side text
+  const rightXCoordinate = pageWidth - xCoordinate - labelWidth2; // X-coordinate for the right side
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Production Item Name", rightXCoordinate, textY);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${itemNames?.itemName}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY
+  );
+
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Production Qty", rightXCoordinate, textY + 5);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${data.productionQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 5
+  );
+
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Wastage Qty", rightXCoordinate, textY + 10);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${data.wastageQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 10
+  );
+
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Expected Production Qty (Per Batch)", rightXCoordinate, textY + 15);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${data.expectedProductionQtyPerBatch}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 15
+  );
+
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Expected Production Qty", rightXCoordinate, textY + 20);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${data.expectedProductionQty}`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 20
+  );
+
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Excess Or Less Production Qty", rightXCoordinate, textY + 25);
+  doc.setFontSize(10);
+  doc.setFont("times", "normal");
+  if (checkExcessOrLessProductionQty) {
+    doc.setTextColor(255, 0, 0); // Set color to red (RGB: 255, 0, 0)
+  } else {
+    doc.setTextColor(0, 0, 0); // Set color to black (RGB: 0, 0, 0)
+  }
+  doc.text(
+    `: ${
+      checkExcessOrLessProductionQty
+        ? `(${data.excessOrLessProductionQty})`
+        : data.excessOrLessProductionQty
+    }`,
+    rightXCoordinate + labelWidth + extraSpace,
+    textY + 25
+  );
+
+  // Calculate the position for the second table
+  const finalY = doc.previousAutoTable.finalY || 80;
+
+console.log(data)
+  const finalRows = data?.detailsData?.map((row, index) => {
+    const currency =
+      invoiceData?.find((x) => x.invoiceNo === row?.piNumber)?.currency ||
+      "N/A";
+    const filterPIData = invoiceData?.find(
+      (x) => x.invoiceNo === row?.piNumber
+    );
+    const findPiQuantityPerItem = filterPIData?.detailsData.find(
+      (item) => item.itemId === row.detail.itemId
+    );
+    console.log(row)
+    // const filterMatchedItem = data?.map((data) => {
+    //   const filteredData = data?.detailsData.filter(
+    //     (item) => item.itemId === row.detail.itemId
+    //   );
+    //   return filteredData;
+    // });
+
+    // if (filterMatchedItem && filterMatchedItem.length > 0) {
+    //   // Filter the "cash" items
+    //   const paidQuantityItems = filterMatchedItem
+    //     .flat()
+    //     .filter((item) => item.paymentStatus === "cash");
+
+    //   const totalQuantity = paidQuantityItems
+    //     .flat()
+    //     .reduce((acc, item) => acc + item.quantity, 0);
+
+    //   const totalCash = paidQuantityItems
+    //     .flat()
+    //     .reduce((acc, item) => acc + item.amount, 0);
+
+    //   const adjustmentItems = filterMatchedItem
+    //     .flat()
+    //     .filter((item) => item.paymentStatus === "adjustment");
+    //   const totalAdjustmentQuantity = adjustmentItems
+    //     .flat()
+    //     .reduce((acc, item) => acc + item.quantity, 0);
+    //   const totalAdjustmentAmount = adjustmentItems
+    //     .flat()
+    //     .reduce((acc, item) => acc + item.amount, 0);
+
+    //     const netQuantity = totalCash - totalAdjustmentQuantity;
+    //     const netAmount = totalCash - totalAdjustmentAmount;
+    //   return {
+    //     totalQuantity: Math.round(totalQuantity * 100) / 100,
+    //     totalCash: Math.round(totalCash * 100) / 100,
+    //     totalAdjustmentQuantity:
+    //       Math.round(totalAdjustmentQuantity * 100) / 100,
+    //     totalAdjustmentAmount: Math.round(totalAdjustmentAmount * 100) / 100,
+    //     netQuantity:Math.round(netQuantity * 100) / 100,
+    //     netAmount:Math.round(netAmount * 100) / 100,
+    //   };
+    // }
+
+    return [
+      index + 1,
+      finishGoods
+        ?.filter((rawItem) => rawItem._id === row.itemId)
+        .map((filteredItem) => filteredItem.itemName)
+        .join(", "),
+      currency.currency,
+      // findPiQuantityPerItem.quantity,
+      // findPiQuantityPerItem.totalAmount,
+      // filterMatchedItem.totalQuantity,
+      // filterMatchedItem.totalCash,
+      // filterMatchedItem.totalAdjustmentQuantity,
+      // filterMatchedItem.totalAdjustmentAmount,
+      // filterMatchedItem.netQuantity,
+      // filterMatchedItem.netAmount,
+    ];
+  });
+  doc.autoTable({
+    head: [
+      [
+        "Sl.",
+        "Item Name",
+        "Currency",
+        "PI Quantity",
+        "PI Amount",
+        "Paid Quantity",
+        "Paid Amount",
+        "Adjust Quantity",
+        "Adjust Amount",
+        "Net Quantity",
+        "Net Amount",
+      ],
+    ],
+    body: finalRows,
+    startY: finalY + 10, // Start the second table a bit below the first one
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128], // Header background color
+      textColor: [255, 255, 255], // Header text color
+    },
+    theme: "grid",
+    tableLineWidth: 0.5, // Border width for the whole table
+    styles: {
+      lineColor: [0, 0, 0], // Color for all borders
+      textColor: [0, 0, 0],
+      font: "times", // Font
+      fontSize: 10,
+      overflow: "linebreak",
+      cellWidth: "wrap",
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" }, // Example for the first column
+      1: { cellWidth: "auto" }, // Example for the second column
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center"; // Align all cell content to center
+    },
+  });
+
+  // Add footer text to each page
+  addFooterForPaymentReceive(doc, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc.save(`${fileName}.pdf`);
+};
 
 const downloadAllPDF = (companyinfo, reportTitle) => {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
@@ -722,7 +1050,8 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
       doc.setFont("times", "bold");
       doc.text(
         `AS OF DATED ${fromDate} TO ${toDate}`,
-        doc.internal.pageSize.width / 2, headerY + 36,
+        doc.internal.pageSize.width / 2,
+        headerY + 36,
         {
           align: "center",
           maxWidth: companyDetailsWidth,
@@ -863,11 +1192,154 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
 
     doc.setFontSize(14);
     doc.setFont("times", "bold");
-    doc.text(`${reportTitle} - BATCH WAYS`, doc.internal.pageSize.width / 2, headerY + 35, {
+    doc.text(
+      `${reportTitle} - BATCH WAYS`,
+      doc.internal.pageSize.width / 2,
+      headerY + 35,
+      {
+        align: "center",
+        width: companyDetailsWidth,
+      }
+    );
+
+    // Footer content
+    doc.setFontSize(10);
+    doc.setFont("times", "italic");
+    doc.text("Page " + i + " of " + pageCount, pageWidth - 20, footerY, {
+      align: "right",
+    });
+
+    // Software generated report aligned to the center
+    doc.text("Software Generated report", pageWidth / 2, footerY, {
+      align: "center",
+    });
+
+    // Copyright aligned to the left
+    doc.text("Copyright@2024", 20, footerY, { align: "left" });
+
+    doc.setLineWidth(0.5); // Calculate Y position for top line in footer
+    doc.line(10, footerY - 15, doc.internal.pageSize.width - 10, footerY - 15); // Draw line above footer
+    if (companyinfo && companyinfo?.companyinfo[0]) {
+      if (companyinfo?.companyinfo[0]?.footerAddress) {
+        doc.text(
+          companyinfo?.companyinfo[0]?.footerAddress,
+          pageWidth / 2,
+          footerY - 10,
+          {
+            align: "center",
+          }
+        );
+      }
+      if (companyinfo?.companyinfo[0]?.footerContact) {
+        doc.text(
+          companyinfo?.companyinfo[0]?.footerContact,
+          pageWidth / 2,
+          footerY - 5,
+          {
+            align: "center",
+          }
+        );
+      }
+    }
+    const now = new Date();
+    const dateStr = now.toLocaleDateString();
+    const timeStr = now.toLocaleTimeString();
+    doc.text(
+      `Date: ${dateStr}  Time: ${timeStr}`,
+      pageWidth - 20,
+      footerY + 8,
+      {
+        align: "right",
+      }
+    );
+  }
+};
+const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
+  const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
+  const logoWidthPercentage = 0.15; // 15% of page width for the logo
+  const detailsWidthPercentage = 0.8;
+
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i); // Go to page i
+    const headerHeight = 35; // Adjust this value according to your header height
+    // Set space between elements
+    const spaceBetween = 15; // Adjust this value as needed
+
+    // Start Y position for content (table starts below header)
+    const contentStartY = headerHeight + spaceBetween;
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const headerY = 10;
+    const footerY = pageHeight - 10;
+
+    // Header content
+
+    // const logoWidth = pageWidth * logoWidthPercentage;
+    // const logoHeight = logoWidth * (40 / 40);
+    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
+    if (companyinfo && companyinfo?.companyinfo[0]) {
+      if (companyinfo?.companyinfo[0]?.companyName) {
+        var companyNameUpper =
+          companyinfo?.companyinfo[0]?.companyName.toUpperCase();
+      }
+    }
+
+    // const detailsX = logoWidth + 20;
+
+    const companyDetailsWidth = pageWidth * detailsWidthPercentage;
+    doc.setFont("times", "italic");
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    // Set font to helvetica (or any other font you prefer)
+    doc.text(companyNameUpper, doc.internal.pageSize.width / 2, headerY + 7, {
       align: "center",
       width: companyDetailsWidth,
     });
-  
+    doc.setLineWidth(0.5);
+    doc.line(
+      10,
+      contentStartY,
+      doc.internal.pageSize.width - 10,
+      contentStartY
+    ); // Change 10 to your left margin and right margin respectively
+
+    doc.setFont("normal"); // Reset font style
+    doc.setFontSize(10); // Reset font size
+    // doc.setFont("helvetica");
+    if (companyinfo && companyinfo?.companyinfo[0]) {
+      if (companyinfo?.companyinfo[0]?.companyAddress) {
+        doc.text(
+          companyinfo?.companyinfo[0]?.companyAddress,
+          doc.internal.pageSize.width / 2,
+          headerY + 14,
+          { align: "center", width: companyDetailsWidth }
+        );
+      }
+      if (companyinfo?.companyinfo[0].companyContact) {
+        doc.text(
+          companyinfo?.companyinfo[0]?.companyContact,
+          doc.internal.pageSize.width / 2,
+          headerY + 19,
+          { align: "center", width: companyDetailsWidth }
+        );
+      }
+      if (companyinfo?.companyinfo[0].companyEmail) {
+        doc.text(
+          companyinfo?.companyinfo[0]?.companyEmail,
+          doc.internal.pageSize.width / 2,
+          headerY + 24,
+          { align: "center", width: companyDetailsWidth }
+        );
+      }
+    }
+
+    doc.setFontSize(14);
+    doc.setFont("times", "bold");
+    doc.text(`${reportTitle}`, doc.internal.pageSize.width / 2, headerY + 35, {
+      align: "center",
+      width: companyDetailsWidth,
+    });
+
     // Footer content
     doc.setFontSize(10);
     doc.setFont("times", "italic");
@@ -929,6 +1401,7 @@ export {
   downloadAllImage,
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
+  downloadPaymentReceivedPDF,
   downloadHeadingProductionPDF,
-  downloadInvoiceSingleDataPDF
+  downloadInvoiceSingleDataPDF,
 };

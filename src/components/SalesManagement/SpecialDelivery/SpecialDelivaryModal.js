@@ -17,28 +17,39 @@ const SpecialDelivaryModal = ({
   selectedData,
   approveStatus,
   insertPaymentReceive,
-  navigate
+  paymentStatusMood,
+  navigate,
 }) => {
   const itemName = finishGoodsData.find(
     (item) => item._id == row.detailsData.itemId
   );
   const sizeDetails = sizeInfo.find((size) => size._id == itemName.sizeId);
-  const initialValues =  formValues ;
-  console.log('formvalues',formValues.detailsData[0].amount)
-  const handleSubmit = async (e,values) => {
-    e.preventDefault()
-    console.log(formValues)
-    console.log(selectedData);
-    const response = await approveStatus(selectedData);
-    // if (response?.data?.status === 200) {
-    //   const response = await insertPaymentReceive(formValues);
-    //   if (response?.data?.status === 200) {
-    //     navigate("/main-view/invoice-list");
-    //     swal("Done", "PI Approve Successfully", "success");
-    //   } else if (response?.error?.status === 400) {
-    //     swal("Not Possible!", response?.error?.data?.message, "error");
-    //   }
-    // }
+  const initialValues = formValues;
+  console.log("formvalues", formValues.detailsData[0].amount);
+  const handleSubmit = async (e, values) => {
+    e.preventDefault();
+    console.log(formValues);
+    console.log(JSON.stringify(selectedData));
+    if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f") {
+      const response = await approveStatus(selectedData);
+      if (response?.data?.status === 200) {
+        const response = await insertPaymentReceive(formValues);
+        if (response?.data?.status === 200) {
+          // navigate("/main-view/payment-received-list");
+          swal("Done", "PI Payment  Done", "success");
+        } else if (response?.error?.status === 400) {
+          swal("Not Possible!", response?.error?.data?.message, "error");
+        }
+      }
+    } else {
+      const response = await approveStatus(selectedData);
+      console.log(response);
+      if (response?.data?.status === 200) {
+        swal("Done", "PI Payment Successfully", "success");
+      } else if (response?.error?.status === 400) {
+        swal("Not Possible!", response?.error?.data?.message, "error");
+      }
+    }
   };
 
   return (
@@ -124,7 +135,7 @@ const SpecialDelivaryModal = ({
                     onChange={(e) => {
                       const calCulateTotalAmount =
                         parseFloat(e.target.value) / row.detailsData.unitPrice;
-                      
+
                       setFormValues((prev) => {
                         const temp_details = [...prev.detailsData];
                         const newDetail = {
@@ -136,14 +147,15 @@ const SpecialDelivaryModal = ({
                         newDetail["unitPrice"] = row.detailsData.unitPrice;
                         newDetail["amount"] = e.target.value;
                         newDetail["quantity"] = calCulateTotalAmount.toFixed(2);
-                        newDetail["paymentReceiveDate"] = new Date().toLocaleDateString('en-CA');
-                       
+                        newDetail["paymentReceiveDate"] =
+                          new Date().toLocaleDateString("en-CA");
+
                         temp_details[0] = newDetail;
                         return {
                           ...prev,
-                          clientId: filters.customerID,  // Assuming you are getting clientId from filters
-                          piNumber: filters.piNumber, 
-                          makeBy:makebyUser,
+                          clientId: filters.customerID, // Assuming you are getting clientId from filters
+                          piNumber: filters.piNumber,
+                          makeBy: makebyUser,
                           detailsData: [...temp_details],
                         };
                       });
@@ -196,7 +208,11 @@ const SpecialDelivaryModal = ({
                     type="text"
                     name={`detailsData.quantity`}
                     placeholder="Quantity"
-                      value={isNaN(formValues.detailsData[0].quantity) ? 0:formValues.detailsData[0].quantity }
+                    value={
+                      isNaN(formValues.detailsData[0].quantity)
+                        ? 0
+                        : formValues.detailsData[0].quantity
+                    }
                     disabled
                     style={{
                       border: "1px solid #2DDC1B",
@@ -218,19 +234,22 @@ const SpecialDelivaryModal = ({
                 variant="secondary"
                 onClick={() => {
                   handleClose();
-                  
                 }}
               >
                 Close
               </Button>
               <Button
-
-                style={{ backgroundColor: formValues.detailsData[0].amount ?  "#2DDC1B" :'gray' , border: "none" }}
+                style={{
+                  backgroundColor: formValues.detailsData[0].amount
+                    ? "#2DDC1B"
+                    : "gray",
+                  border: "none",
+                }}
                 variant="primary"
-                 form="specialpaymentreceive-form"
+                form="specialpaymentreceive-form"
                 type="submit"
                 onClick={handleClose}
-                disabled={formValues.detailsData[0].amount ? false: true}
+                disabled={formValues.detailsData[0].amount ? false : true}
               >
                 Save
               </Button>

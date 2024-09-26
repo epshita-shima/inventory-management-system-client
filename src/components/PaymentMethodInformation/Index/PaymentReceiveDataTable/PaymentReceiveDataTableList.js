@@ -24,8 +24,11 @@ import {
   clientInfoDropdown,
   invoiceListDropdown,
 } from "../../../Common/CommonDropdown/CommonDropdown";
+import { downloadPaymentReceivedPDF } from "../../../ReportProperties/HeaderFooter";
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 
 const PaymentReceiveDataTableList = ({ permission }) => {
+  const reportTitle = "PAYMENT RECEIVE INFORMATION";
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
@@ -34,6 +37,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [clientId, setClientId] = useState("");
   const [piNumber, setPiNumber] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -122,7 +126,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
     // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
-    console.log(groupedData);
     return groupedData;
   };
 
@@ -227,9 +230,8 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
           const paidQuantityItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "cash");
-        
+            .flat()
+            .filter((item) => item.paymentStatus === "cash");
 
           console.log(paidQuantityItems);
           // Calculate total amount for cash and adjustment
@@ -238,7 +240,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
 
-          return Math.round(totalQuantity *100)/100;
+          return Math.round(totalQuantity * 100) / 100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -260,17 +262,16 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
-   
+
           const adjustmentItems = filterMatchedItem
             .flat()
             .filter((item) => item.paymentStatus === "cash");
-
 
           const totalCash = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
 
-          return Math.round(totalCash *100)/100 ;
+          return Math.round(totalCash * 100) / 100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -292,9 +293,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
           const adjustmentItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "adjustment");
-        
+            .flat()
+            .filter((item) => item.paymentStatus === "adjustment");
+
           console.log(adjustmentItems);
           // Calculate total amount for cash and adjustment
 
@@ -302,7 +303,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
 
-          return Math.round(totalAdjustment *100)/100;
+          return Math.round(totalAdjustment * 100) / 100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -324,17 +325,15 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         if (filterMatchedItem && filterMatchedItem.length > 0) {
           // Filter the "cash" items
 
-          
           const adjustmentItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "adjustment");
-      
+            .flat()
+            .filter((item) => item.paymentStatus === "adjustment");
 
           const totalAdjustment = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
 
-          return Math.round(totalAdjustment*100)/100;
+          return Math.round(totalAdjustment * 100) / 100;
         }
 
         return "N/A"; // Default value if no match is found
@@ -359,19 +358,20 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           //   item.some((data) => data.paymentStatus === "cash")
           // );
           const adjustmentItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "adjustment");
+            .flat()
+            .filter((item) => item.paymentStatus === "adjustment");
           const cashItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "cash");
-         
+            .flat()
+            .filter((item) => item.paymentStatus === "cash");
+
           const totalCash = cashItems
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
+
           const totalAdjustment = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.quantity, 0);
-          console.log(totalCash, totalAdjustment);
+
           const netAmount = totalCash - totalAdjustment;
           console.log(netAmount);
           return Math.round(netAmount * 100) / 100;
@@ -394,15 +394,12 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         });
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-       
           const adjustmentItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "adjustment");
+            .flat()
+            .filter((item) => item.paymentStatus === "adjustment");
           const cashItems = filterMatchedItem
-          .flat() 
-          .filter((item) => item.paymentStatus === "cash");
-          console.log(adjustmentItems);
-          // Calculate total amount for cash and adjustment
+            .flat()
+            .filter((item) => item.paymentStatus === "cash");
           const totalCash = cashItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
@@ -412,9 +409,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           console.log(totalCash, totalAdjustment);
           const netAmount = totalCash - totalAdjustment;
           console.log(netAmount);
-          return Math.round(netAmount *100)/100;
+          return Math.round(netAmount * 100) / 100;
         }
-        return "N/A"; // Default value if no match is found
+        return "N/A";
       },
       center: true,
       width: "180px",
@@ -440,44 +437,16 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 borderRadius: "5px",
               }}
               onClick={() => {
-                //   downloadInvoicePDF(
-                //     paymentReceivedData,
-                //     finishGoodsData,
-                //     customerInfo,
-                //     unitInfo,
-                //     sizeInfo,
-                //     paymentInfo,
-                //     base64Logo,
-                //     signature,
-                //     { companyinfo },
-                //     reportTitle
-                //   );
+                downloadPaymentReceivedPDF(
+                  row,
+                  finishGoods,
+                  invoiceData,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-          {permission?.isUpdated ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Update menu"
-              style={{
-                color: "#2DDC1B",
-                border: "2px solid #2DDC1B",
-                padding: "3px",
-                borderRadius: "5px",
-                marginLeft: "10px",
-              }}
-              onClick={() => {
-                window.open(`update-payment-received/${row?._id}`);
-              }}
-            >
-              <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
             </a>
           ) : (
             ""
@@ -524,8 +493,8 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     };
     return (
       <div className="d-flex justify-content-end align-items-center w-100">
-        {
-          filteredDatas?.length <0 ? ( <div className="d-flex justify-content-end align-items-center">
+        {filteredDatas?.length < 0 ? (
+          <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex align-items-center me-2">
               {/* <div>
                 <FontAwesomeIcon
@@ -582,18 +551,19 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 </ul>
               </div>
             </div>
-  
+
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
               onClear={handleClear}
               filterText={filterText}
             />
-          </div>) : ""
-        }
-       
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     );
-  }, [filterText, resetPaginationToggle,filteredDatas]);
+  }, [filterText, resetPaginationToggle, filteredDatas]);
 
   return (
     <div

@@ -78,12 +78,12 @@ const SpecialDeliveryTableList = ({ permission }) => {
     getInitialFormValues(customerID, piNumber, makebyUser, new Date())
   );
 
+  console.log(paymentStatusMood);
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
-      // Ensure filters are correctly formatted for your API
       trigger(filters)
-        .unwrap() // If you're using Redux Toolkit Query
+        .unwrap()
         .then((response) => {
           console.log("Data fetched:", response);
         })
@@ -91,7 +91,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
           console.error("Error fetching data:", err);
         })
         .finally(() => {
-          setExecuteQuery(false); // Reset the query state
+          setExecuteQuery(false);
         });
     }
     setUserWaysListData(filteredDatas);
@@ -136,20 +136,28 @@ const SpecialDeliveryTableList = ({ permission }) => {
       }
     });
   };
-
+console.log(formValues)
   const handleSpecialApprove = async () => {
-    console.log(selectedData);
-    const response = await approveStatus(selectedData);
+    if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f"){
+      // const response = await approveStatus(selectedData);
+      // if (response?.data?.status === 200) {
+      //   const response = await insertPaymentReceive(formValues);
+      //   if (response?.data?.status === 200) {
+      //     // navigate("/main-view/payment-received-list");
+      //     swal("Done", "PI Payment  Done", "success");
+      //   } else if (response?.error?.status === 400) {
+      //     swal("Not Possible!", response?.error?.data?.message, "error");
+      //   }
+      // }
+    } else {
+      const response = await approveStatus(selectedData);
 
-    // if (response?.data?.status === 200) {
-    //   const response = await insertPaymentReceive(modelData);
-    //   if (response?.data?.status === 200) {
-    //     navigate("/main-view/invoice-list");
-    //     swal("Done", "PI Approve Successfully", "success");
-    //   } else if (response?.error?.status === 400) {
-    //     swal("Not Possible!", response?.error?.data?.message, "error");
-    //   }
-    // }
+      if (response?.data?.status === 200) {
+        swal("Done", "PI Payment  Done", "success");
+      } else if (response?.error?.status === 400) {
+        swal("Not Possible!", response?.error?.data?.message, "error");
+      }
+    }
   };
 
   const clientInfoOptions = clientInfoDropdown(clientInformation);
@@ -178,14 +186,13 @@ const SpecialDeliveryTableList = ({ permission }) => {
   };
 
   const handlePaymentMethodChange = (e, index) => {
-    if(e.target.checked){
+    if (e.target.checked) {
       const newOpenModals = [...openModals];
       newOpenModals[index] = true; // Set the modal open for the specific row
       setOpenModals(newOpenModals);
       setShow(true);
-    }
-    else{
-      handleCloseModal()
+    } else {
+      handleCloseModal();
     }
   };
 
@@ -198,24 +205,24 @@ const SpecialDeliveryTableList = ({ permission }) => {
       const newDetail = {
         ...temp_details[0],
       };
-      newDetail["itemId"] ='';
+      newDetail["itemId"] = "";
       newDetail["paymentStatus"] = "cash";
       newDetail["paymentMethod"] = "cash";
-      newDetail["unitPrice"] = '';
-      newDetail["amount"] ='';
-      newDetail["quantity"] = '';
-      newDetail["paymentReceiveDate"] = '';
-     
+      newDetail["unitPrice"] = "";
+      newDetail["amount"] = "";
+      newDetail["quantity"] = "";
+      newDetail["paymentReceiveDate"] = "";
+
       temp_details[0] = newDetail;
       return {
         ...prev,
-        clientId: filters.customerID,  // Assuming you are getting clientId from filters
-        piNumber: filters.piNumber, 
-        makeBy:makebyUser,
+        clientId: filters.customerID, // Assuming you are getting clientId from filters
+        piNumber: filters.piNumber,
+        makeBy: makebyUser,
         detailsData: [...temp_details],
       };
     });
-    setSelectedData([])
+    setSelectedData([]);
   };
 
   const columns = [
@@ -306,9 +313,8 @@ const SpecialDeliveryTableList = ({ permission }) => {
       grow: 2,
       cell: (row, index) => (
         <div className="d-flex justify-content-between align-content-center">
-          {
-            paymentStatusMood?.paymentMode == "Cash" ? 
-              (<input
+          {paymentStatusMood?.paymentMode == "Cash" ? (
+            <input
               type="checkbox"
               style={{
                 display: "inline-block",
@@ -317,7 +323,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 border: "2px solid #fff",
               }}
               aria-label={`Checkbox for data item ${row.id}`}
-              checked={ selectedData?.some((item) => item.detailsData._id === row.detailsData._id)} 
+              checked={selectedData?.some(
+                (item) => item.detailsData._id === row.detailsData._id
+              )}
               onChange={(e) => {
                 const paymentType = paymentInfo?.find(
                   (x) => x._id === row?.paymentId
@@ -330,7 +338,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
                   handleCheckboxClick(row);
                 }
               }}
-            />) : (  <input
+            />
+          ) : (
+            <input
               type="checkbox"
               style={{
                 display: "inline-block",
@@ -339,7 +349,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 border: "2px solid #fff",
               }}
               aria-label={`Checkbox for data item ${row.id}`}
-              checked={ selectedData?.some((item) => item.detailsData._id === row.detailsData._id)} 
+              checked={selectedData?.some(
+                (item) => item.detailsData._id === row.detailsData._id
+              )}
               onChange={(e) => {
                 const paymentType = paymentInfo?.find(
                   (x) => x._id === row?.paymentId
@@ -352,9 +364,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
                   handleCheckboxClick(row);
                 }
               }}
-            />)         
-          }
-          
+            />
+          )}
+
           {openModals[index] && (
             <SpecialDelivaryModal
               row={row}
@@ -369,6 +381,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
               handleClose={() => handleCloseModal(index)}
               index={index}
               approveStatus={approveStatus}
+              paymentStatusMood={paymentStatusMood}
               insertPaymentReceive={insertPaymentReceive}
             />
           )}
@@ -643,7 +656,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                     setInvoiveByInvoiceNumber(invoiceListMatchingData);
                     setFilters((prevFilters) => ({
                       ...prevFilters,
-                      piNumber: e.value,
+                      piNumber: e.label,
                     }));
                   }}
                 ></Select>

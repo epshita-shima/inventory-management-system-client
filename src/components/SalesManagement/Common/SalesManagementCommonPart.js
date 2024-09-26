@@ -69,7 +69,6 @@ const SalesManagementCommonPart = () => {
     approveBy: "",
     approveDate: "",
     isApproved: false,
-
     mktPerson:
       superAdminId === "65d48768a106fcb4f5c28071" ||
       superAdminId === "65d486123346cddf01c3773a"

@@ -427,12 +427,11 @@ const PaymentMethodSingleEntry = () => {
                                       },
                                     })}
                                     onChange={(e) => {
-                                     
                                         const matchedInvoice =
                                           invoiceInformation?.filter(
                                             (invoice) =>
                                               invoice.customerID === e.value &&
-                                              invoice.isApproved === true
+                                              invoice.isApproved === true && invoice.paymentId === "667d2b983e37e91c4e1f3a1f"
                                           );
                                         console.log(matchedInvoice);
                                         if (matchedInvoice?.length > 0) {

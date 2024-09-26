@@ -29,6 +29,7 @@ import { downloadInvoiceSingleDataPDF } from "../../../ReportProperties/HeaderFo
 import handleInvoiceExcel from "../../../ReportProperties/handleInvoiceExcel";
 import { useGetUserQuery } from "../../../../redux/api/apiSlice";
 import { useGetUserRoleQuery } from "../../../../redux/features/userrole/userroleApi";
+import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
@@ -41,6 +42,8 @@ const InvoiceInformationDataList = ({ permission }) => {
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
+  const { data: payementReceiveData } =
+    useGetAllPaymentReceiveInformationQuery(undefined);
   const [deleteInvoice] = useDeleteInvoiceInfoMutation();
   const [totalApprovedPi, setTotalApprovePi] = useState([]);
   const [totalUnApprovePi, setTotalUnApprovePi] = useState([]);
@@ -57,7 +60,6 @@ const InvoiceInformationDataList = ({ permission }) => {
   const userRoleId = getUserParse[0].roleId;
   const makebyUser = getUserParse[0].username;
 
-  console.log(JSON.stringify(userWaysListData));
   useEffect(() => {
     const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
     const invoiceData = invoiceDatas?.filter(
@@ -211,7 +213,11 @@ const InvoiceInformationDataList = ({ permission }) => {
     {
       name: "Approve Status",
       selector: (userWaysListData) => {
-        return userWaysListData.isApproved ? <p className="text-success">Approved</p> : <p className="text-danger">Unapprove</p>;
+        return userWaysListData.isApproved ? (
+          <p className="text-success">Approved</p>
+        ) : (
+          <p className="text-danger">Unapprove</p>
+        );
       },
       sortable: true,
       center: true,
@@ -297,23 +303,38 @@ const InvoiceInformationDataList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(userWaysListData?.value);
-                swal({
-                  title: "Are you sure?",
-                  text: "Once deleted, you will not be able to recover this data!",
-                  icon: "warning",
-                  buttons: true,
-                  dangerMode: true,
-                }).then((willDelete) => {
-                  if (willDelete) {
-                    deleteInvoice(userWaysListData?._id);
-                    swal("Poof! Your data has been deleted!", {
-                      icon: "success",
-                    });
-                  } else {
-                    swal("Your data is safe!");
-                  }
-                });
+                const isSpecialPaymentExist =
+                  userWaysListData?.detailsData.find(
+                    (item) => item.specialApproveForDelivary === true
+                  );
+                const isPaymentReceiveExist = payementReceiveData.find(
+                  (item) => item.piNumber === userWaysListData.invoiceNo
+                );
+
+                if ((userWaysListData?.paymentId=="667d2b983e37e91c4e1f3a20" && isSpecialPaymentExist) || isPaymentReceiveExist) {
+                  swal({
+                    title: "Not Possible!",
+                    text: "This PI has already prepared for delivery.",
+                    icon: "warning",
+                  });
+                } else {
+                  swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this data!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                  }).then((willDelete) => {
+                    if (willDelete) {
+                      deleteInvoice(userWaysListData?._id);
+                      swal("Your data has been deleted!", {
+                        icon: "success",
+                      });
+                    } else {
+                      swal("Your data is safe!");
+                    }
+                  });
+                }
               }}
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
