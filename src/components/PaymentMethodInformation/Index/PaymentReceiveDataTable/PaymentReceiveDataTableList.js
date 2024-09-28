@@ -100,12 +100,12 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
   const groupByClient = (data) => {
     const groupedDataMap = new Map();
-
+console.log(data)
     data?.forEach((payment) => {
       payment.detailsData.forEach((detail) => {
         // Create a unique key based on clientId, piNumber, and itemId
         const key = `${payment.clientId}_${payment.piNumber}_${detail.itemId}`;
-
+console.log(key)
         if (groupedDataMap.has(key)) {
           // If the key exists, update the existing entry by adding the amount and quantity
           const existingEntry = groupedDataMap.get(key);
@@ -126,6 +126,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
     // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
+    console.log(groupedData)
     return groupedData;
   };
 
@@ -437,10 +438,20 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 borderRadius: "5px",
               }}
               onClick={() => {
+                const filterMatchedItem = filteredDatas?.map((data) => {
+                  const filteredData = data?.detailsData.filter(
+                    (item) => item.itemId === row.detail.itemId
+                  );
+                  return filteredData;
+                });
+                console.log(filterMatchedItem)
                 downloadPaymentReceivedPDF(
                   row,
+                  filterMatchedItem,
+                  customerInfo,
                   finishGoods,
                   invoiceData,
+                  itemsizeinfo,
                   { companyinfo },
                   reportTitle
                 );

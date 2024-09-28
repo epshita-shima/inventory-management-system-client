@@ -182,6 +182,7 @@ console.log(formValues)
 
     // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
+    console.log(groupedData)
     return groupedData;
   };
 

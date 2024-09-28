@@ -212,6 +212,7 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
     });
     return doc.previousAutoTable.finalY;
   }
+  
   addContent(doc, xCoordinate, labelWidth, textY);
 
   function addContent(doc, xCoordinate, labelWidth, textY) {

@@ -413,247 +413,129 @@ const downloadProductionPDFPERBatch = (
 };
 
 const downloadPaymentReceivedPDF = (
+  row,
   data,
+  customerInfo,
   finishGoods,
   invoiceData,
+  itemsizeinfo,
   companyinfo,
   reportTitle
 ) => {
-  const itemNames = finishGoods?.find(
-    (item) => data?.productionItemName === item._id
-  );
+  const customerName = customerInfo?.find((x) => x._id === row?.clientId);
+  const currency = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
 
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
-  const doc = new jsPDF();
+  const doc = new jsPDF({
+    orientation: "landscape",
+  });
   const pageWidth = doc.internal.pageSize.getWidth();
-  // First table
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    };
-    return date.toLocaleString("en-US", options);
-  };
+
   const formatDate1 = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
-  const checkExcessOrLessProductionQty = data?.productionStatus === "Less";
 
   const formattedProductionDate = formatDate1(data.productionDate);
-  const formatteProductionStartDate = formatDate(data.productionStart);
-  const formattedPRoductionEndDate = formatDate(data.productionEnd);
+
   const xCoordinate = 20;
   const labelWidth = 40;
-  const labelWidth2 = 80;
-  const extraSpace = 25;
+
   const textY = 60;
 
   // Left side text
   doc.setFontSize(11);
   doc.setFont("times", "bold");
-  doc.text("Batch No", xCoordinate, textY);
-  doc.setFontSize(10);
+  doc.text("Client Name", xCoordinate, textY);
+  doc.setFontSize(11);
   doc.setFont("times", "normal");
-  doc.text(`:${data.batchNo}`, xCoordinate + labelWidth, textY);
+  doc.text(`:${customerName.clientName}`, xCoordinate + labelWidth, textY);
   doc.setFontSize(11);
   doc.setFont("times", "bold");
-  doc.text("Production Date", xCoordinate, textY + 5);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(`:${formattedProductionDate}`, xCoordinate + labelWidth, textY + 5);
+  doc.text("PI Number", xCoordinate, textY + 7);
   doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Production Start", xCoordinate, textY + 10);
-  doc.setFontSize(10);
   doc.setFont("times", "normal");
-  doc.text(
-    `:${formatteProductionStartDate}`,
-    xCoordinate + labelWidth,
-    textY + 10
-  );
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Production End", xCoordinate, textY + 15);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${formattedPRoductionEndDate}`,
-    xCoordinate + labelWidth,
-    textY + 15
-  );
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Total Hour", xCoordinate, textY + 20);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(`:${data.totalHour}`, xCoordinate + labelWidth, textY + 20);
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Total Batch", xCoordinate, textY + 25);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(`:${data.totalBatch}`, xCoordinate + labelWidth, textY + 25);
-
-  // Right side text
-  const rightXCoordinate = pageWidth - xCoordinate - labelWidth2; // X-coordinate for the right side
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Production Item Name", rightXCoordinate, textY);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${itemNames?.itemName}`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY
-  );
-
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Production Qty", rightXCoordinate, textY + 5);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${data.productionQty}`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY + 5
-  );
-
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Wastage Qty", rightXCoordinate, textY + 10);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${data.wastageQty}`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY + 10
-  );
-
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Expected Production Qty (Per Batch)", rightXCoordinate, textY + 15);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${data.expectedProductionQtyPerBatch}`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY + 15
-  );
-
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Expected Production Qty", rightXCoordinate, textY + 20);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  doc.text(
-    `:${data.expectedProductionQty}`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY + 20
-  );
-
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("Excess Or Less Production Qty", rightXCoordinate, textY + 25);
-  doc.setFontSize(10);
-  doc.setFont("times", "normal");
-  if (checkExcessOrLessProductionQty) {
-    doc.setTextColor(255, 0, 0); // Set color to red (RGB: 255, 0, 0)
-  } else {
-    doc.setTextColor(0, 0, 0); // Set color to black (RGB: 0, 0, 0)
-  }
-  doc.text(
-    `: ${
-      checkExcessOrLessProductionQty
-        ? `(${data.excessOrLessProductionQty})`
-        : data.excessOrLessProductionQty
-    }`,
-    rightXCoordinate + labelWidth + extraSpace,
-    textY + 25
-  );
+  doc.text(`:${row.piNumber}`, xCoordinate + labelWidth, textY + 7);
 
   // Calculate the position for the second table
-  const finalY = doc.previousAutoTable.finalY || 80;
+  const finalY = doc.previousAutoTable.finalY || 65;
+  const flattenedRows = data.flat();
+  const totaladjustmentItemsQuantity = flattenedRows.reduce((accumulator, row) => {
+    return row.paymentStatus === "adjustment" ? accumulator + row.quantity : accumulator;
+  }, 0);
+  // const totalIPQuantity = currency.detailsData.reduce((accumulator, item) => {
+  //   const matchingRow = data.some((row) => row.itemId === item.itemId);
+  //   return matchingRow.reduce((accumulator, row) => {
+  //     return  accumulator + row.quantity;
+  //   }, 0);
+  // }, 0);
+  const findPI = invoiceData?.filter((x) => x.invoiceNo === row?.piNumber);
+  console.log(findPI)
+  const totalIPAmount = currency.detailsData.reduce((accumulator, item) => {
+    const matchingRow = flattenedRows.filter((row) => row.itemId === item.itemId);
+    console.log(matchingRow)
+    return matchingRow ? accumulator + (item.totalAmount || 0) : accumulator;
+  }, 0);
+  console.log(currency)
+  const finalRows = data?.map((rows, index) => {
+    console.log(rows);
+    const itemNames = rows.map((row) => {
+      const matchedItem = finishGoods?.find(
+        (rawItem) => rawItem._id === row.itemId
+      );
+      const filteredItemSize = itemsizeinfo?.find(
+        (x) => x?._id === matchedItem?.sizeId
+      );
+      return matchedItem
+        ? `${matchedItem.itemName} (${filteredItemSize?.sizeInfo || "N/A"})`
+        : "Item Not Found";
+    });
+    const cashItemQuantity = rows.map((row) => {
+      return row.paymentStatus === "cash" ? row.amount : 0;
+    });
+    const cashItemAmount = rows.map((row) => {
+      return row.paymentStatus === "cash" ? row.amount : 0;
+    });
+    const adjustmentItemsAmount = rows.map((row) => {
+      return row.paymentStatus === "adjustment" ? row.amount : 0;
+    });
 
-console.log(data)
-  const finalRows = data?.detailsData?.map((row, index) => {
-    const currency =
-      invoiceData?.find((x) => x.invoiceNo === row?.piNumber)?.currency ||
-      "N/A";
-    const filterPIData = invoiceData?.find(
-      (x) => x.invoiceNo === row?.piNumber
+    const adjustmentItemsQuantity = rows.map((row) => {
+      return row.paymentStatus === "adjustment" ? row.quantity : 0;
+    });
+
+    const netQuantity = cashItemQuantity - adjustmentItemsQuantity;
+    const netAmount = cashItemAmount - adjustmentItemsAmount;
+    const matchPI = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
+
+    const filterIPQuantity = matchPI.detailsData.find((item) =>
+      rows.some((row) => row.itemId === item.itemId)
     );
-    const findPiQuantityPerItem = filterPIData?.detailsData.find(
-      (item) => item.itemId === row.detail.itemId
-    );
-    console.log(row)
-    // const filterMatchedItem = data?.map((data) => {
-    //   const filteredData = data?.detailsData.filter(
-    //     (item) => item.itemId === row.detail.itemId
-    //   );
-    //   return filteredData;
-    // });
-
-    // if (filterMatchedItem && filterMatchedItem.length > 0) {
-    //   // Filter the "cash" items
-    //   const paidQuantityItems = filterMatchedItem
-    //     .flat()
-    //     .filter((item) => item.paymentStatus === "cash");
-
-    //   const totalQuantity = paidQuantityItems
-    //     .flat()
-    //     .reduce((acc, item) => acc + item.quantity, 0);
-
-    //   const totalCash = paidQuantityItems
-    //     .flat()
-    //     .reduce((acc, item) => acc + item.amount, 0);
-
-    //   const adjustmentItems = filterMatchedItem
-    //     .flat()
-    //     .filter((item) => item.paymentStatus === "adjustment");
-    //   const totalAdjustmentQuantity = adjustmentItems
-    //     .flat()
-    //     .reduce((acc, item) => acc + item.quantity, 0);
-    //   const totalAdjustmentAmount = adjustmentItems
-    //     .flat()
-    //     .reduce((acc, item) => acc + item.amount, 0);
-
-    //     const netQuantity = totalCash - totalAdjustmentQuantity;
-    //     const netAmount = totalCash - totalAdjustmentAmount;
-    //   return {
-    //     totalQuantity: Math.round(totalQuantity * 100) / 100,
-    //     totalCash: Math.round(totalCash * 100) / 100,
-    //     totalAdjustmentQuantity:
-    //       Math.round(totalAdjustmentQuantity * 100) / 100,
-    //     totalAdjustmentAmount: Math.round(totalAdjustmentAmount * 100) / 100,
-    //     netQuantity:Math.round(netQuantity * 100) / 100,
-    //     netAmount:Math.round(netAmount * 100) / 100,
-    //   };
-    // }
 
     return [
       index + 1,
-      finishGoods
-        ?.filter((rawItem) => rawItem._id === row.itemId)
-        .map((filteredItem) => filteredItem.itemName)
-        .join(", "),
+      itemNames,
       currency.currency,
-      // findPiQuantityPerItem.quantity,
-      // findPiQuantityPerItem.totalAmount,
-      // filterMatchedItem.totalQuantity,
-      // filterMatchedItem.totalCash,
-      // filterMatchedItem.totalAdjustmentQuantity,
-      // filterMatchedItem.totalAdjustmentAmount,
-      // filterMatchedItem.netQuantity,
-      // filterMatchedItem.netAmount,
+      filterIPQuantity.quantity === 0 ? "-" : filterIPQuantity.quantity,
+      filterIPQuantity.totalAmount === 0 ? "-" : filterIPQuantity.totalAmount,
+      cashItemQuantity == 0 ? "-" : cashItemQuantity,
+      cashItemAmount == 0 ? "-" : cashItemAmount,
+      adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
+      adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
+      netQuantity < 0 ? `(${Math.abs(netQuantity)})` : netQuantity,
+      netAmount,
     ];
   });
+
+  finalRows.push([
+    {
+      content: "Total",
+      colSpan: 3,
+      styles: { halign: "right", fontStyle: "bold" },
+    },
+"","","","",totaladjustmentItemsQuantity
+  ]);
   doc.autoTable({
     head: [
       [
@@ -686,13 +568,14 @@ console.log(data)
       fontSize: 10,
       overflow: "linebreak",
       cellWidth: "wrap",
-    },
+    }, 
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
       1: { cellWidth: "auto" }, // Example for the second column
     },
     didParseCell: function (data) {
-      data.cell.styles.halign = "center"; // Align all cell content to center
+      data.cell.styles.halign = "center";
+       // Align all cell content to center
     },
   });
 

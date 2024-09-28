@@ -45,7 +45,7 @@ const PreviousPaymentDetailsModal = ({
     useUpdatePreviousPaymentReceiveInfoMutation();
   const [isDeletePreviousPaymentData, setIsDeletePreviousPaymentData] =
     useState({});
-
+console.log(detail)
   let serialNo = 1;
   const initialValues = {
     detailsData: detail?.detailsData || [], // Initialize based on your details data
@@ -88,6 +88,7 @@ const PreviousPaymentDetailsModal = ({
 
     // Set the state with the accumulated data
     setBankName(accumulatedBankData);
+    console.log(accumulatedItemNameData)
     setItemNameData(accumulatedItemNameData);
     setItemSize(accumulatedItemSizeData);
     setPaymentReceivePreviousData(detail);
@@ -149,7 +150,7 @@ const PreviousPaymentDetailsModal = ({
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
-
+  let cumulativeIndex = 0
   return (
     <Formik
       initialValues={initialValues}
@@ -222,8 +223,10 @@ const PreviousPaymentDetailsModal = ({
 
                   <tbody>
                     {paymentReceivePreviousData.map((payment, paymentIndex) =>
-                      payment.detailsData.map((detailItem, index) => {
+                      payment?.detailsData.map((detailItem, index) => {
                         const indexXlaculate = paymentIndex - index;
+                        const currentIndex = cumulativeIndex; // Capture the current cumulative index
+                        cumulativeIndex++;
                         return (
                           <tr key={`${paymentIndex}-${index}`}>
                             <td className="text-center align-middle">
@@ -233,8 +236,8 @@ const PreviousPaymentDetailsModal = ({
                               <Field
                                 name={`detailsData.${index}.itemName`}
                                 value={`${
-                                  itemNameData[index]?.itemName || ""
-                                } (${itemSize[index]?.sizeInfo || "N/A"})`}
+                                  itemNameData[currentIndex]?.itemName || ""
+                                } (${itemSize[currentIndex]?.sizeInfo || "N/A"})`}
                                 type="text"
                                 placeholder="Item Name"
                                 disabled
