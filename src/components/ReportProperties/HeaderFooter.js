@@ -419,6 +419,281 @@ const downloadPaymentReceivedPDF = (
   finishGoods,
   invoiceData,
   itemsizeinfo,
+  bankInformation,
+  companyinfo,
+  reportTitle
+) => {
+  console.log(data);
+  const customerName = customerInfo?.find((x) => x._id === row?.clientId);
+  const currency = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
+  const itemNames = finishGoods?.find(
+    (rawItem) => rawItem._id === row.detail.itemId
+  );
+  const filteredItemSize = itemsizeinfo?.find(
+    (x) => x?._id === itemNames?.sizeId
+  );
+
+  const matchPI = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
+
+  // const totalNetQuantity=
+  const filterIPQuantity = matchPI.detailsData.find((item) =>
+    row.detailsData.some((row) => row.itemId === item.itemId)
+  );
+
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
+  const doc = new jsPDF({
+    orientation: "landscape",
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const formatDate1 = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const xCoordinate = 20;
+  const labelWidth = 40;
+
+  const textY = 60;
+
+  // Left side text
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Client Name", xCoordinate, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${customerName.clientName}`, xCoordinate + labelWidth, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("PI Number", xCoordinate, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${row.piNumber}`, xCoordinate + labelWidth, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Item Name", xCoordinate, textY + 12);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${itemNames.itemName} (${filteredItemSize?.sizeInfo || "N/A"})`,
+    xCoordinate + labelWidth,
+    textY + 12
+  );
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Currency", xCoordinate, textY + 18);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${currency.currency}`, xCoordinate + labelWidth, textY + 18);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("PI Quantity", xCoordinate, textY + 24);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${filterIPQuantity.quantity.toLocaleString()}`,
+    xCoordinate + labelWidth,
+    textY + 24
+  );
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("PI Amount", xCoordinate, textY + 30);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${filterIPQuantity.totalAmount.toLocaleString()}`,
+    xCoordinate + labelWidth,
+    textY + 30
+  );
+
+  // Calculate the position for the second table
+  const finalY = doc.previousAutoTable.finalY || 90;
+  const flattenedRows = data.flat();
+  const formatDate = (adjustDate) => {
+    const date = new Date(adjustDate);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+  const totaladjustmentItemsQuantity = flattenedRows.reduce(
+    (accumulator, row) => {
+      return row.paymentStatus === "adjustment"
+        ? accumulator + row.quantity
+        : accumulator;
+    },
+    0
+  );
+  const totaladjustmentItemsAmount = flattenedRows.reduce(
+    (accumulator, row) => {
+      return row.paymentStatus === "adjustment"
+        ? accumulator + row.amount
+        : accumulator;
+    },
+    0
+  );
+  const totalCashItemsQuantity = flattenedRows.reduce((accumulator, row) => {
+    return row.paymentStatus === "cash"
+      ? accumulator + row.quantity
+      : accumulator;
+  }, 0);
+
+  const totalCashItemsAmount = flattenedRows.reduce((accumulator, row) => {
+    return row.paymentStatus === "cash"
+      ? accumulator + row.amount
+      : accumulator;
+  }, 0);
+
+  const totalNetQuantity =
+    totalCashItemsQuantity - totaladjustmentItemsQuantity;
+  const totalNetAmount = totalCashItemsAmount - totaladjustmentItemsAmount;
+
+  const finalRows = data?.map((rows, index) => {
+    console.log(rows);
+    const cashItemQuantity = rows.map((row) => {
+      return row.paymentStatus === "cash" ? row.quantity : 0;
+    });
+    const cashItemAmount = rows.map((row) => {
+      return row.paymentStatus === "cash" ? row.amount : 0;
+    });
+
+    const adjustmentItemsAmount = rows.map((row) => {
+      return row.paymentStatus === "adjustment" ? row.amount : 0;
+    });
+
+    const adjustmentItemsQuantity = rows.map((row) => {
+      return row.paymentStatus === "adjustment" ? row.quantity : 0;
+    });
+    const adjustDates = rows
+      .filter((row) => row.paymentStatus === "adjustment")
+      .map((row) => row.paymentReceiveDate);
+    const formattedDates = adjustDates.map((adjustDate) =>
+      formatDate(adjustDate)
+    );
+    const cashPaymentDates = rows
+      .filter((row) => row.paymentStatus === "cash")
+      .map((row) => row.paymentReceiveDate);
+    const formattedCashPaymentDates = cashPaymentDates.map((adjustDate) =>
+      formatDate(adjustDate) 
+    );
+
+    const paymentStatus = rows.map((row) => {
+      return row.paymentStatus;
+    });
+    const depositeSlipNo = rows.map((row) => {
+      return row.depositeSlipNo ? row.depositeSlipNo : "N/A" ;
+    });
+    const chequeNo = rows.map((row) => {
+      return row.chequeNo ? row.chequeNo : "N/A";
+    });
+
+    const matchedBankNames = rows.map((bankinfo) => {
+      const matchedBank = bankInformation.find(
+        (bank) => bank._id === bankinfo.bankId
+      );
+      return matchedBank ? matchedBank.bankName : "N/A";
+    });
+
+    const netQuantity = cashItemQuantity - adjustmentItemsQuantity;
+    const netAmount = cashItemAmount - adjustmentItemsAmount;
+
+    return [
+      index + 1,
+      matchedBankNames ? matchedBankNames : "Cash",
+      paymentStatus ? paymentStatus : "N/A",
+      chequeNo ? chequeNo : "N/A",
+      depositeSlipNo ? depositeSlipNo : "N/A",
+      formattedCashPaymentDates ? formattedCashPaymentDates : "N/A",
+      cashItemQuantity == 0 ? "-" : cashItemQuantity,
+      cashItemAmount == 0 ? "-" : cashItemAmount,
+      formattedDates ? formattedDates : "N/A",
+      adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
+      adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
+      netQuantity < 0 ? `(${Math.abs(netQuantity)})` : netQuantity,
+      netAmount < 0 ? `(${Math.abs(netAmount)})` : netAmount,
+    ];
+  });
+
+  finalRows.push([
+    {
+      content: "Total",
+      colSpan:6,
+      styles: { halign: "right", fontStyle: "bold" },
+    },
+    totalCashItemsQuantity.toLocaleString(),
+    totalCashItemsAmount.toLocaleString(),
+    "",
+    totaladjustmentItemsQuantity.toLocaleString(),
+    totaladjustmentItemsAmount.toLocaleString(),
+    totalNetQuantity.toLocaleString(),
+    totalNetAmount.toLocaleString(),
+  ]);
+  doc.autoTable({
+    head: [
+      [
+        "Sl.",
+        "Bank Name",
+        "Payment Status",
+        "Cheque No",
+        "Deposite Slip No",
+        "Payment Paid Date",
+        "Paid Quantity",
+        "Paid Amount",
+        "Adjust Payment Date",
+        "Adjust Quantity",
+        "Adjust Amount",
+        "Net Quantity",
+        "Net Amount",
+      ],
+    ],
+
+    body: finalRows,
+    startY: finalY + 10,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128],
+      textColor: [255, 255, 255],
+    },
+    theme: "grid",
+    tableLineWidth: 0.5,
+    styles: {
+      lineColor: [0, 0, 0],
+      textColor: [0, 0, 0],
+      font: "times",
+      fontSize: 8,
+      overflow: "linebreak",
+      cellWidth: "wrap",
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: "auto" },
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center";
+      const lastRowIndex = data.table.body.length - 1;
+  
+      if (data.row.index === lastRowIndex) {
+        // Right-align and make the font bold for the last row
+        // data.cell.styles.halign = "right";
+        data.cell.styles.fontSize = 10;
+        data.cell.styles.fontStyle = "bold";
+      }
+    },
+  });
+
+  // Add footer text to each page
+  addFooterForPaymentReceive(doc, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc.save(`${fileName}.pdf`);
+};
+const downloadPaymentReceivedAllSelectedPIPDF = (
+  row,
+  data,
+  customerInfo,
+  finishGoods,
+  invoiceData,
+  itemsizeinfo,
   companyinfo,
   reportTitle
 ) => {
@@ -461,9 +736,22 @@ const downloadPaymentReceivedPDF = (
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 65;
   const flattenedRows = data.flat();
-  const totaladjustmentItemsQuantity = flattenedRows.reduce((accumulator, row) => {
-    return row.paymentStatus === "adjustment" ? accumulator + row.quantity : accumulator;
-  }, 0);
+  const totaladjustmentItemsQuantity = flattenedRows.reduce(
+    (accumulator, row) => {
+      return row.paymentStatus === "adjustment"
+        ? accumulator + row.quantity
+        : accumulator;
+    },
+    0
+  );
+  const totaladjustmentItemsAmount = flattenedRows.reduce(
+    (accumulator, row) => {
+      return row.paymentStatus === "adjustment"
+        ? accumulator + row.amount
+        : accumulator;
+    },
+    0
+  );
   // const totalIPQuantity = currency.detailsData.reduce((accumulator, item) => {
   //   const matchingRow = data.some((row) => row.itemId === item.itemId);
   //   return matchingRow.reduce((accumulator, row) => {
@@ -471,13 +759,15 @@ const downloadPaymentReceivedPDF = (
   //   }, 0);
   // }, 0);
   const findPI = invoiceData?.filter((x) => x.invoiceNo === row?.piNumber);
-  console.log(findPI)
+  console.log(findPI);
   const totalIPAmount = currency.detailsData.reduce((accumulator, item) => {
-    const matchingRow = flattenedRows.filter((row) => row.itemId === item.itemId);
-    console.log(matchingRow)
+    const matchingRow = flattenedRows.filter(
+      (row) => row.itemId === item.itemId
+    );
+    console.log(matchingRow);
     return matchingRow ? accumulator + (item.totalAmount || 0) : accumulator;
   }, 0);
-  console.log(currency)
+  console.log(currency);
   const finalRows = data?.map((rows, index) => {
     console.log(rows);
     const itemNames = rows.map((row) => {
@@ -508,17 +798,29 @@ const downloadPaymentReceivedPDF = (
     const netQuantity = cashItemQuantity - adjustmentItemsQuantity;
     const netAmount = cashItemAmount - adjustmentItemsAmount;
     const matchPI = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
-
+    console.log(cashItemAmount);
+    // const totalNetQuantity=
     const filterIPQuantity = matchPI.detailsData.find((item) =>
       rows.some((row) => row.itemId === item.itemId)
     );
+    const totalCashItemQuantity = Object.keys(cashItemQuantity).reduce(
+      (sum, key) => {
+        return sum + cashItemQuantity[key][0]; // Summing each value in the array
+      },
+      0
+    );
 
+    console.log(totalCashItemQuantity);
     return [
       index + 1,
       itemNames,
       currency.currency,
-      filterIPQuantity.quantity === 0 ? "-" : filterIPQuantity.quantity,
-      filterIPQuantity.totalAmount === 0 ? "-" : filterIPQuantity.totalAmount,
+      filterIPQuantity?.quantity === 0
+        ? "-"
+        : (filterIPQuantity?.quantity).toLocaleString(),
+      filterIPQuantity?.totalAmount === 0
+        ? "-"
+        : (filterIPQuantity?.totalAmount).toLocaleString(),
       cashItemQuantity == 0 ? "-" : cashItemQuantity,
       cashItemAmount == 0 ? "-" : cashItemAmount,
       adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
@@ -534,25 +836,31 @@ const downloadPaymentReceivedPDF = (
       colSpan: 3,
       styles: { halign: "right", fontStyle: "bold" },
     },
-"","","","",totaladjustmentItemsQuantity
+    "",
+    "",
+    "",
+    "",
+    totaladjustmentItemsQuantity,
+    totaladjustmentItemsAmount,
   ]);
   doc.autoTable({
-    head: [
-      [
-        "Sl.",
-        "Item Name",
-        "Currency",
-        "PI Quantity",
-        "PI Amount",
-        "Paid Quantity",
-        "Paid Amount",
-        "Adjust Quantity",
-        "Adjust Amount",
-        "Net Quantity",
-        "Net Amount",
-      ],
-    ],
-    body: finalRows,
+    // head: [
+    //   [
+    //     "Sl.",
+    //     "Item Name",
+    //     "Currency",
+    //     "PI Quantity",
+    //     "PI Amount",
+    //     "Paid Quantity",
+    //     "Paid Amount",
+    //     "Adjust Quantity",
+    //     "Adjust Amount",
+    //     "Net Quantity",
+    //     "Net Amount",
+    //   ],
+    // ],
+    html: "#my-paymnet-receive-table",
+    // body: finalRows,
     startY: finalY + 10, // Start the second table a bit below the first one
     margin: { top: 50, bottom: 32 },
     headerStyles: {
@@ -568,14 +876,14 @@ const downloadPaymentReceivedPDF = (
       fontSize: 10,
       overflow: "linebreak",
       cellWidth: "wrap",
-    }, 
+    },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
       1: { cellWidth: "auto" }, // Example for the second column
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
-       // Align all cell content to center
+      // Align all cell content to center
     },
   });
 

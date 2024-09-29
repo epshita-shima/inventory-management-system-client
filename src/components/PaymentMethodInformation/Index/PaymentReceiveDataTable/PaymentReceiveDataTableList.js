@@ -4,18 +4,9 @@ import swal from "sweetalert";
 import DataTable from "react-data-table-component";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDownload,
-  faFilePdf,
-  faPenToSquare,
-  faRefresh,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
-import {
-  useGetAllPaymentReceiveInformationQuery,
-  useLazyGetFilteredPaymentReceiveInfoQuery,
-} from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import { useLazyGetFilteredPaymentReceiveInfoQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
@@ -26,6 +17,7 @@ import {
 } from "../../../Common/CommonDropdown/CommonDropdown";
 import { downloadPaymentReceivedPDF } from "../../../ReportProperties/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
+import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
 
 const PaymentReceiveDataTableList = ({ permission }) => {
   const reportTitle = "PAYMENT RECEIVE INFORMATION";
@@ -38,6 +30,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const {data:bankInformation}=useGetAllBankInformationQuery(undefined)
   const [clientId, setClientId] = useState("");
   const [piNumber, setPiNumber] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -54,10 +47,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
   const piInfoOptions = invoiceListDropdown(filterInvoiceList);
   const clientInfoOptions = clientInfoDropdown(clientInformation);
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredPaymentReceiveInfoQuery();
 
-  console.log(filteredDatas);
+
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -66,6 +59,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     }
   }, [executeQuery, trigger, filters]);
 
+  console.log(filters);
   useEffect(() => {
     const piFilteredData = invoiceData?.filter(
       (pi) => pi.paymentId === "667d2b983e37e91c4e1f3a1f"
@@ -100,19 +94,16 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
   const groupByClient = (data) => {
     const groupedDataMap = new Map();
-console.log(data)
+    console.log(data);
     data?.forEach((payment) => {
       payment.detailsData.forEach((detail) => {
-        // Create a unique key based on clientId, piNumber, and itemId
         const key = `${payment.clientId}_${payment.piNumber}_${detail.itemId}`;
-console.log(key)
+
         if (groupedDataMap.has(key)) {
-          // If the key exists, update the existing entry by adding the amount and quantity
           const existingEntry = groupedDataMap.get(key);
           existingEntry.amount += detail.amount;
           existingEntry.quantity += detail.quantity;
         } else {
-          // If the key doesn't exist, create a new entry
           groupedDataMap.set(key, {
             ...payment,
             detail: {
@@ -124,11 +115,23 @@ console.log(key)
       });
     });
 
-    // Convert the map back to an array
     const groupedData = Array.from(groupedDataMap.values());
-    console.log(groupedData)
+    console.log(groupedData);
     return groupedData;
   };
+
+  const groupDataByPINumber = (filteredData) => {
+    return filteredData?.reduce((acc, row) => {
+      const key = `${row.piNumber}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(row);
+      return acc;
+    }, {});
+  };
+
+  const groupedData = groupDataByPINumber(filteredData);
 
   const columns = [
     {
@@ -438,13 +441,17 @@ console.log(key)
                 borderRadius: "5px",
               }}
               onClick={() => {
-                const filterMatchedItem = filteredDatas?.map((data) => {
-                  const filteredData = data?.detailsData.filter(
-                    (item) => item.itemId === row.detail.itemId
-                  );
-                  return filteredData;
-                });
-                console.log(filterMatchedItem)
+                const filterMatchedItem = filteredDatas
+                  ?.map((data) => {
+                    const filteredData = data?.detailsData.filter(
+                      (item) =>
+                        item.itemId === row.detail.itemId &&
+                        data.piNumber === row.piNumber 
+                    );
+                    return filteredData.length > 0 ? filteredData : null;
+                  })
+                  .filter(Boolean);
+             
                 downloadPaymentReceivedPDF(
                   row,
                   filterMatchedItem,
@@ -452,6 +459,7 @@ console.log(key)
                   finishGoods,
                   invoiceData,
                   itemsizeinfo,
+                  bankInformation,
                   { companyinfo },
                   reportTitle
                 );
@@ -504,7 +512,7 @@ console.log(key)
     };
     return (
       <div className="d-flex justify-content-end align-items-center w-100">
-        {filteredDatas?.length < 0 ? (
+        {filteredDatas?.length > 0 ? (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex align-items-center me-2">
               {/* <div>
@@ -730,6 +738,11 @@ console.log(key)
               }}
               onClick={() => {
                 setIsTableDisplay(false);
+                setFilters((prevFilters) => ({
+                  ...prevFilters,
+                  clientId: "",
+                  piNumber: "",
+                }));
                 setClientId("");
                 setPiNumber("");
               }}
@@ -758,6 +771,160 @@ console.log(key)
       ) : (
         ""
       )}
+
+      <table id="my-paymnet-receive-table" className="d-none">
+        <thead>
+          <tr>
+            <th>PI Number</th>
+            <th>Item Name</th>
+            <th>Currency</th>
+            <th>PI Quantity</th>
+            <th>PI Amount</th>
+            <th>Paid Quantity</th>
+            <th>Paid Amount</th>
+            <th>Adjust Quantity</th>
+            <th>Adjust Amount</th>
+            <th>Net Quantity</th>
+            <th>Net Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(groupedData)?.map((key) => {
+            const group = groupedData[key];
+
+            const groupedDataByPINumber = group?.reduce((acc, curr) => {
+              const key = `${curr.clientId}-${curr.piNumber}`;
+              if (!acc[key]) {
+                acc[key] = {
+                  clientId: curr.clientId,
+                  piNumber: curr.piNumber,
+                  makeBy: curr.makeBy,
+                  updateBy: curr.updateBy,
+                  makeDate: curr.makeDate,
+                  updateDate: curr.updateDate,
+                  detailsData: [...curr.detailsData],
+                };
+              } else {
+                acc[key].detailsData = acc[key].detailsData.concat(
+                  curr.detailsData
+                );
+              }
+
+              return acc;
+            }, {});
+
+            const groupedArray = Object.values(groupedDataByPINumber);
+
+            console.log(groupedArray[0]?.detailsData);
+
+            const rowSpan = group.length;
+
+            return (
+              <>
+                {groupedArray[0].detailsData.map((row, rowIndex) => {
+                  const itemNames = finishGoods?.find(
+                    (rawItem) => rawItem._id === row.itemId
+                  );
+                  const filteredItemSize = itemsizeinfo?.find(
+                    (x) => x?._id === itemNames?.sizeId
+                  );
+
+                  return (
+                    <tr key={row._id}>
+                      {rowIndex === 0 && (
+                        <td
+                          rowSpan={rowSpan}
+                          style={{
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          {groupedArray[0]?.piNumber}
+                        </td>
+                      )}
+                      <td>{`${itemNames.itemName} (${filteredItemSize.sizeInfo}) `}</td>
+                      {/* <td>{supplierPONo}</td> */}
+                      {/* <td>{itemNames}</td> */}
+                      <td>{row.grnSerialNo}</td>
+                      <td>{row.challanNo}</td>
+                      {/* <td>{currency}</td> */}
+                      <td>{row.grandTotalReceivedQuantity}</td>
+                      {/* <td>{unitPrices}</td> */}
+                      {/* <td>{amounts}</td> */}
+                    </tr>
+                  );
+                })}
+
+                <tr>
+                  <td
+                    colSpan={7}
+                    style={{
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      padding: "8px",
+                      border: "1px solid black",
+                    }}
+                  >
+                    PI wise Total
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      border: "1px solid black",
+                    }}
+                  >
+                    {/* {totalGroupWaysQuantity.toLocaleString()} */}
+                  </td>
+                  <td></td>
+                  <td
+                    style={{
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      border: "1px solid black",
+                    }}
+                  >
+                    {/* {totalGroupWaysAmount.toLocaleString()} */}
+                  </td>
+                </tr>
+              </>
+            );
+          })}
+
+          <tr>
+            <td
+              colSpan={7}
+              style={{
+                textAlign: "right",
+                fontWeight: "bold",
+                padding: "8px",
+                border: "1px solid black",
+              }}
+            >
+              Grand Total
+            </td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {/* {totalQuantitys?.toLocaleString()} */}
+            </td>
+            <td></td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {/* {totalAmounts?.toLocaleString()} */}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
