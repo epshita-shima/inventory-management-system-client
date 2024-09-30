@@ -18,14 +18,7 @@ const downloadGRNPDF = async (
   let textY = 35;
 
   textY = addTableContent(doc, textY + 10);
-  // Add totals to the rows with colSpan
-
   function addTableContent(doc, startY) {
-    function extractTextFromHtml(htmlString) {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = htmlString;
-      return tempDiv.textContent || tempDiv.innerText || "";
-    }
     doc.autoTable({
       html: "#my-grn-table",
       startY: startY,

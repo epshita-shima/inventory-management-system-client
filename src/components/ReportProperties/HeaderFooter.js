@@ -549,7 +549,6 @@ const downloadPaymentReceivedPDF = (
   const totalNetAmount = totalCashItemsAmount - totaladjustmentItemsAmount;
 
   const finalRows = data?.map((rows, index) => {
-    console.log(rows);
     const cashItemQuantity = rows.map((row) => {
       return row.paymentStatus === "cash" ? row.quantity : 0;
     });
@@ -574,14 +573,14 @@ const downloadPaymentReceivedPDF = (
       .filter((row) => row.paymentStatus === "cash")
       .map((row) => row.paymentReceiveDate);
     const formattedCashPaymentDates = cashPaymentDates.map((adjustDate) =>
-      formatDate(adjustDate) 
+      formatDate(adjustDate)
     );
 
     const paymentStatus = rows.map((row) => {
       return row.paymentStatus;
     });
     const depositeSlipNo = rows.map((row) => {
-      return row.depositeSlipNo ? row.depositeSlipNo : "N/A" ;
+      return row.depositeSlipNo ? row.depositeSlipNo : "N/A";
     });
     const chequeNo = rows.map((row) => {
       return row.chequeNo ? row.chequeNo : "N/A";
@@ -593,9 +592,6 @@ const downloadPaymentReceivedPDF = (
       );
       return matchedBank ? matchedBank.bankName : "N/A";
     });
-
-    const netQuantity = cashItemQuantity - adjustmentItemsQuantity;
-    const netAmount = cashItemAmount - adjustmentItemsAmount;
 
     return [
       index + 1,
@@ -609,15 +605,14 @@ const downloadPaymentReceivedPDF = (
       formattedDates ? formattedDates : "N/A",
       adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
       adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
-      netQuantity < 0 ? `(${Math.abs(netQuantity)})` : netQuantity,
-      netAmount < 0 ? `(${Math.abs(netAmount)})` : netAmount,
+     
     ];
   });
 
   finalRows.push([
     {
       content: "Total",
-      colSpan:6,
+      colSpan: 6,
       styles: { halign: "right", fontStyle: "bold" },
     },
     totalCashItemsQuantity.toLocaleString(),
@@ -625,8 +620,7 @@ const downloadPaymentReceivedPDF = (
     "",
     totaladjustmentItemsQuantity.toLocaleString(),
     totaladjustmentItemsAmount.toLocaleString(),
-    totalNetQuantity.toLocaleString(),
-    totalNetAmount.toLocaleString(),
+
   ]);
   doc.autoTable({
     head: [
@@ -642,8 +636,6 @@ const downloadPaymentReceivedPDF = (
         "Adjust Payment Date",
         "Adjust Quantity",
         "Adjust Amount",
-        "Net Quantity",
-        "Net Amount",
       ],
     ],
 
@@ -660,7 +652,7 @@ const downloadPaymentReceivedPDF = (
       lineColor: [0, 0, 0],
       textColor: [0, 0, 0],
       font: "times",
-      fontSize: 8,
+      fontSize: 9,
       overflow: "linebreak",
       cellWidth: "wrap",
     },
@@ -671,7 +663,7 @@ const downloadPaymentReceivedPDF = (
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
       const lastRowIndex = data.table.body.length - 1;
-  
+
       if (data.row.index === lastRowIndex) {
         // Right-align and make the font bold for the last row
         // data.cell.styles.halign = "right";
@@ -688,180 +680,37 @@ const downloadPaymentReceivedPDF = (
   doc.save(`${fileName}.pdf`);
 };
 const downloadPaymentReceivedAllSelectedPIPDF = (
-  row,
   data,
   customerInfo,
   finishGoods,
   invoiceData,
   itemsizeinfo,
+
+  bankInformation,
   companyinfo,
   reportTitle
 ) => {
-  const customerName = customerInfo?.find((x) => x._id === row?.clientId);
-  const currency = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
-
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF({
     orientation: "landscape",
   });
-  const pageWidth = doc.internal.pageSize.getWidth();
-
-  const formatDate1 = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
-  const formattedProductionDate = formatDate1(data.productionDate);
 
   const xCoordinate = 20;
   const labelWidth = 40;
-
   const textY = 60;
+  const finalY = doc.previousAutoTable.finalY || textY;
 
-  // Left side text
+  const customerName = customerInfo?.find((x) => x._id === data[0]?.clientId);
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Client Name", xCoordinate, textY);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
   doc.text(`:${customerName.clientName}`, xCoordinate + labelWidth, textY);
-  doc.setFontSize(11);
-  doc.setFont("times", "bold");
-  doc.text("PI Number", xCoordinate, textY + 7);
-  doc.setFontSize(11);
-  doc.setFont("times", "normal");
-  doc.text(`:${row.piNumber}`, xCoordinate + labelWidth, textY + 7);
 
-  // Calculate the position for the second table
-  const finalY = doc.previousAutoTable.finalY || 65;
-  const flattenedRows = data.flat();
-  const totaladjustmentItemsQuantity = flattenedRows.reduce(
-    (accumulator, row) => {
-      return row.paymentStatus === "adjustment"
-        ? accumulator + row.quantity
-        : accumulator;
-    },
-    0
-  );
-  const totaladjustmentItemsAmount = flattenedRows.reduce(
-    (accumulator, row) => {
-      return row.paymentStatus === "adjustment"
-        ? accumulator + row.amount
-        : accumulator;
-    },
-    0
-  );
-  // const totalIPQuantity = currency.detailsData.reduce((accumulator, item) => {
-  //   const matchingRow = data.some((row) => row.itemId === item.itemId);
-  //   return matchingRow.reduce((accumulator, row) => {
-  //     return  accumulator + row.quantity;
-  //   }, 0);
-  // }, 0);
-  const findPI = invoiceData?.filter((x) => x.invoiceNo === row?.piNumber);
-  console.log(findPI);
-  const totalIPAmount = currency.detailsData.reduce((accumulator, item) => {
-    const matchingRow = flattenedRows.filter(
-      (row) => row.itemId === item.itemId
-    );
-    console.log(matchingRow);
-    return matchingRow ? accumulator + (item.totalAmount || 0) : accumulator;
-  }, 0);
-  console.log(currency);
-  const finalRows = data?.map((rows, index) => {
-    console.log(rows);
-    const itemNames = rows.map((row) => {
-      const matchedItem = finishGoods?.find(
-        (rawItem) => rawItem._id === row.itemId
-      );
-      const filteredItemSize = itemsizeinfo?.find(
-        (x) => x?._id === matchedItem?.sizeId
-      );
-      return matchedItem
-        ? `${matchedItem.itemName} (${filteredItemSize?.sizeInfo || "N/A"})`
-        : "Item Not Found";
-    });
-    const cashItemQuantity = rows.map((row) => {
-      return row.paymentStatus === "cash" ? row.amount : 0;
-    });
-    const cashItemAmount = rows.map((row) => {
-      return row.paymentStatus === "cash" ? row.amount : 0;
-    });
-    const adjustmentItemsAmount = rows.map((row) => {
-      return row.paymentStatus === "adjustment" ? row.amount : 0;
-    });
-
-    const adjustmentItemsQuantity = rows.map((row) => {
-      return row.paymentStatus === "adjustment" ? row.quantity : 0;
-    });
-
-    const netQuantity = cashItemQuantity - adjustmentItemsQuantity;
-    const netAmount = cashItemAmount - adjustmentItemsAmount;
-    const matchPI = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
-    console.log(cashItemAmount);
-    // const totalNetQuantity=
-    const filterIPQuantity = matchPI.detailsData.find((item) =>
-      rows.some((row) => row.itemId === item.itemId)
-    );
-    const totalCashItemQuantity = Object.keys(cashItemQuantity).reduce(
-      (sum, key) => {
-        return sum + cashItemQuantity[key][0]; // Summing each value in the array
-      },
-      0
-    );
-
-    console.log(totalCashItemQuantity);
-    return [
-      index + 1,
-      itemNames,
-      currency.currency,
-      filterIPQuantity?.quantity === 0
-        ? "-"
-        : (filterIPQuantity?.quantity).toLocaleString(),
-      filterIPQuantity?.totalAmount === 0
-        ? "-"
-        : (filterIPQuantity?.totalAmount).toLocaleString(),
-      cashItemQuantity == 0 ? "-" : cashItemQuantity,
-      cashItemAmount == 0 ? "-" : cashItemAmount,
-      adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
-      adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
-      netQuantity < 0 ? `(${Math.abs(netQuantity)})` : netQuantity,
-      netAmount,
-    ];
-  });
-
-  finalRows.push([
-    {
-      content: "Total",
-      colSpan: 3,
-      styles: { halign: "right", fontStyle: "bold" },
-    },
-    "",
-    "",
-    "",
-    "",
-    totaladjustmentItemsQuantity,
-    totaladjustmentItemsAmount,
-  ]);
   doc.autoTable({
-    // head: [
-    //   [
-    //     "Sl.",
-    //     "Item Name",
-    //     "Currency",
-    //     "PI Quantity",
-    //     "PI Amount",
-    //     "Paid Quantity",
-    //     "Paid Amount",
-    //     "Adjust Quantity",
-    //     "Adjust Amount",
-    //     "Net Quantity",
-    //     "Net Amount",
-    //   ],
-    // ],
     html: "#my-paymnet-receive-table",
-    // body: finalRows,
-    startY: finalY + 10, // Start the second table a bit below the first one
+    startY: finalY + 10,
     margin: { top: 50, bottom: 32 },
     headerStyles: {
       fillColor: [128, 128, 128], // Header background color
@@ -876,18 +725,61 @@ const downloadPaymentReceivedAllSelectedPIPDF = (
       fontSize: 10,
       overflow: "linebreak",
       cellWidth: "wrap",
+      valign: "middle",
+      halign: "center",
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
       1: { cellWidth: "auto" }, // Example for the second column
     },
+
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
-      // Align all cell content to center
+      const rowIndex = data.row.index;
+      const totalRows = data.table.body.length;
+      const cellContent = data.cell.raw;
+      const regex = /\(\s*(-?\d+)\s*\)/;
+      // Extract text content from HTML string
+      const textContent = cellContent?.innerText || cellContent?.textContent;
+      console.log(textContent);
+      if (rowIndex === totalRows - 1) {
+        data.cell.styles.fontStyle = "bold";
+        data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
+        data.cell.styles.textColor = [255, 255, 255];
+      }
+
+      if (textContent?.trim().toLowerCase() === "pi wise total") {
+        Object.values(data.row.cells).forEach((cell) => {
+          cell.styles = cell.styles || {};
+          cell.styles.fontStyle = "bold";
+          cell.styles.fillColor = [138, 138, 138]; // Gray line color
+          cell.styles.textColor = [255, 255, 255];
+        });
+        data.cell.styles.halign = "right";
+      }
+      // if (regex.test(textContent.trim())) {
+      //   Object.values(data.row.cells).forEach((cell) => {
+      //     cell.styles = cell.styles || {};
+      //     cell.styles.fontStyle = "bold";
+      //     cell.styles.textColor = [255, 0, 0]; // Set text color to red
+      //   });
+      // }
+      Object.values(data.row.cells).forEach((cell) => {
+        const textContent = cell.text[0] || "";
+
+        // Check if the text content matches the pattern "(number)"
+        if (textContent?.trim() && regex.test(textContent?.trim())) {
+          cell.styles = cell.styles || {};
+          cell.styles.fontStyle = "bold"; // Make text bold
+          cell.styles.textColor = [255, 0, 0]; // Set text color to red
+        }
+      });
+      if (textContent?.trim().toLowerCase() === "grand total") {
+        data.cell.styles.halign = "right";
+      }
     },
   });
 
-  // Add footer text to each page
   addFooterForPaymentReceive(doc, companyinfo, reportTitle);
 
   // Save the PDF
@@ -1445,6 +1337,7 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
     );
   }
 };
+
 const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
   const logoWidthPercentage = 0.15; // 15% of page width for the logo
@@ -1481,18 +1374,20 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
     doc.setFont("times", "italic");
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
-    // Set font to helvetica (or any other font you prefer)
     doc.text(companyNameUpper, doc.internal.pageSize.width / 2, headerY + 7, {
       align: "center",
       width: companyDetailsWidth,
     });
-    doc.setLineWidth(0.5);
-    doc.line(
-      10,
-      contentStartY,
-      doc.internal.pageSize.width - 10,
-      contentStartY
-    ); // Change 10 to your left margin and right margin respectively
+    if(i===1){
+      doc.setLineWidth(0.5);
+      doc.line(
+        10,
+        contentStartY,
+        doc.internal.pageSize.width - 10,
+        contentStartY
+      );
+    }
+ 
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
@@ -1546,7 +1441,7 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
     // Copyright aligned to the left
     doc.text("Copyright@2024", 20, footerY, { align: "left" });
 
-    doc.setLineWidth(0.5); // Calculate Y position for top line in footer
+    doc.setLineWidth(0.5);
     doc.line(10, footerY - 15, doc.internal.pageSize.width - 10, footerY - 15); // Draw line above footer
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.footerAddress) {
@@ -1593,6 +1488,7 @@ export {
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
   downloadPaymentReceivedPDF,
+  downloadPaymentReceivedAllSelectedPIPDF,
   downloadHeadingProductionPDF,
   downloadInvoiceSingleDataPDF,
 };
