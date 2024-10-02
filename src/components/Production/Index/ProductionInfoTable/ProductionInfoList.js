@@ -409,8 +409,6 @@ const ProductionInfoList = ({ permission }) => {
       ></ProductionListHeading>
       <div className="col userlist-table mt-4">
         <div>
-          {/* <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
-          <hr /> */}
           <div
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
             style={{ width: "55%" }}
