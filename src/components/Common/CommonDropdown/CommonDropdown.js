@@ -112,6 +112,17 @@ const unitInformationDropdown = (options) => {
   });
   return result;
 };
+const paymnetInformationDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.paymentMode
+    });
+  });
+  return result;
+};
 
 export {
   supplierDropdown,
@@ -123,5 +134,6 @@ export {
   invoiceListDropdown,
   finishGoodsDropdown,
   unitInformationDropdown,
-  userInfoDropdown
+  userInfoDropdown,
+  paymnetInformationDropdown
 };

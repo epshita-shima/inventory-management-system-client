@@ -1,5 +1,5 @@
 const getInitialFormValues = (clientName, piNumber, makebyUser, paymentReceiveDate) => ({
-  clientId: clientName || '', // Fallback to empty string if undefined
+  clientId: clientName || '', 
   piNumber: piNumber || '',
   makeBy: makebyUser || '',
   updateBy: null,
@@ -11,6 +11,7 @@ const getInitialFormValues = (clientName, piNumber, makebyUser, paymentReceiveDa
       paymentMethod: "",
       paymentStatus: "",
       itemId: "",
+      piDetailsId:'',
       amount: "",
       quantity: "",
       unitPrice: "",

@@ -10,29 +10,29 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
 import InsertSalesManagement from "../Insert/InsertSalesManagement";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import {
   finishGoodsWithSizeItemDropdown,
   paymentInfoDropdown,
   userInfoDropdown,
-} from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+} from "../../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
-} from "../../../redux/api/apiSlice";
+} from "../../../../redux/api/apiSlice";
 import {
   useGetSingleInvoiceQuery,
   useInsertInvoiceInformationMutation,
   useUpdateInvoiceInfoMutation,
-} from "../../../redux/features/invoiceinformation/invoiceinfoApi";
-import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
-import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import InvoiceCommonModal from "../../Common/CommonModal/InvoiceCommonModal";
+} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import InvoiceCommonModal from "../../../Common/CommonModal/InvoiceCommonModal";
 import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
-import InvoiceClientEntryModal from "../../Common/CommonModal/InvoiceClientEntryModal";
-import InvoiceFinishGoodsItemsEntryModal from "../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
+import InvoiceClientEntryModal from "../../../Common/CommonModal/InvoiceClientEntryModal";
+import InvoiceFinishGoodsItemsEntryModal from "../../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
+import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();

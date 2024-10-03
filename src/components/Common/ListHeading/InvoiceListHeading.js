@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import UnApproveInvoiceModal from "../../SalesManagement/Index/UnApproveInvoiceModal/UnApproveInvoiceModal";
-import ApproveInvoiceModal from "../../SalesManagement/Index/ApproveInvoiceModal/ApproveInvoiceModal";
-
+import ApproveInvoiceModal from "../../SalesManagement/ProformaInvoice/Index/ApproveInvoiceModal/ApproveInvoiceModal";
+import UnApproveInvoiceModal from "../../SalesManagement/ProformaInvoice/Index/UnApproveInvoiceModal/UnApproveInvoiceModal"
 const InvoiceListHeading = ({
   totalApprovedPi,
   totalUnApprovePi,

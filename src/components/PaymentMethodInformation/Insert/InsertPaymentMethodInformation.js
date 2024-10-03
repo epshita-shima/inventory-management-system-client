@@ -296,22 +296,6 @@ const InsertPaymentMethodInformation = ({
                               </div>
                             </td>
                             <td className="text-center  align-items-center">
-                              {/* <Field
-                                type="text"
-                                name={`detailsData.${index}.itemId`}
-                                placeholder="Item Name"
-                                value={`${itemNameData[index]?.itemName || ''} (${itemSize[index]?.sizeInfo || 'N/A'})`}
-                                disabled
-                                style={{
-                                  border: "1px solid #2DDC1B",
-                                  padding: "5px",
-                                  width: "100%",
-                                  borderRadius: "5px",
-                                  height: "38px",
-                                  marginBottom: "5px",
-                                  textAlign: "center",
-                                }}
-                              /> */}
                               <div className="w-100">
                                 <Select
                                   className="w-100"
@@ -364,12 +348,13 @@ const InsertPaymentMethodInformation = ({
                                       invoiveByInvoiceNumber?.detailsData?.find(
                                         (item) => item.itemId === e.value
                                       );
-                                    console.log(filterInvoice);
+                                  console.log(filterInvoice)
                                     const calculateQuantity=detail.amount /filterInvoice?.unitPrice
                                     setFieldValue(
                                       `detailsData.${index}.itemId`,
                                       e.value
                                     );
+                                  setFieldValue(`detailsData.${index}.piDetailsId`,filterInvoice._id)
                                     setFieldValue(
                                       `detailsData.${index}.unitPrice`,
                                       filterInvoice?.unitPrice
@@ -378,8 +363,7 @@ const InsertPaymentMethodInformation = ({
                                       `detailsData.${index}.unitPrice`,
                                       Math.round(calculateQuantity * 100) / 100
                                     );
-                                 
-
+                                
                                     setFormValues((prev) => {
                                       const temp_details = [
                                         ...prev.detailsData,
@@ -388,6 +372,7 @@ const InsertPaymentMethodInformation = ({
                                         ...temp_details[index],
                                       };
                                       newDetail["itemId"] = e.value;
+                                      newDetail["piDetailsId"] = filterInvoice._id;
                                       newDetail["unitPrice"] =
                                         filterInvoice?.unitPrice;
                                       newDetail["quantity"] =

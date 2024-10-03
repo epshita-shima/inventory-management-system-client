@@ -25,7 +25,7 @@ import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/c
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownload";
 import SpecialDelivaryModal from "../SpecialDelivaryModal";
-import getInitialFormValues from "../../../Common/CommonFromValues/CommonFromValues";
+import getInitialFormValues from "../../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import {
   useGetAllPaymentReceiveInformationQuery,

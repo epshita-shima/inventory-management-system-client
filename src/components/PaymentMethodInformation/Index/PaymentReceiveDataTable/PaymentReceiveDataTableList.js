@@ -62,7 +62,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     }
   }, [executeQuery, trigger, filters]);
 
-  console.log(filters);
   useEffect(() => {
     const piFilteredData = invoiceData?.filter(
       (pi) => pi.paymentId === "667d2b983e37e91c4e1f3a1f"
@@ -97,7 +96,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
   const groupByClient = (data) => {
     const groupedDataMap = new Map();
-    console.log(data);
     data?.forEach((payment) => {
       payment.detailsData.forEach((detail) => {
         const key = `${payment.clientId}_${payment.piNumber}_${detail.itemId}`;
@@ -583,6 +581,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       -1
   );
 
+
   //for all items pdf report 
   function groupDataByPiNumberAndItemId(data) {
     const groupedData = {};
@@ -632,11 +631,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   const groupedResult = groupDataByPiNumberAndItemId(filteredDatas);
 
   const result = groupedResult?.reduce((acc, item) => {
-    // Find if the piNumber already exists in the accumulator
     let existingPiNumber = acc.find((p) => p.piNumber === item.piNumber);
 
     if (existingPiNumber) {
-      // If found, push the item into detailsData
       existingPiNumber.detailsData.push({
         itemId: item.itemId,
         paidTotalQuantity: item.paidTotalQuantity,
@@ -647,7 +644,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         totalNetAmount: item.totalNetAmount,
       });
     } else {
-      // If not found, create a new entry for piNumber
       acc.push({
         piNumber: item.piNumber,
         detailsData: [

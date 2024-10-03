@@ -4,12 +4,12 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
-import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
+import { clientInfoDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import "./InvoiceSingleEntry.css";
-import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
+import { useGetUserRoleQuery } from "../../../../redux/features/userrole/userroleApi";
 
 const InvoiceSingleEntry = ({
   id,

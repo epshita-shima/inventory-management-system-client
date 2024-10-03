@@ -1,18 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import { useGetAllInvoiceInformationQuery, useUpdateInvoiceStatusMutation } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
-import swal from "sweetalert";
-import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
-import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import handleInvoiceExcel from "../../../ReportProperties/handleInvoiceExcel";
-import { downloadInvoiceSingleDataPDF } from "../../../ReportProperties/HeaderFooter";
 import "./ApproveInvoiceModal.css";
+import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
+import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
+import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
+import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
 
 const ApproveInvoiceModal = ({permission}) => {
     const [filterText, setFilterText] = useState("");

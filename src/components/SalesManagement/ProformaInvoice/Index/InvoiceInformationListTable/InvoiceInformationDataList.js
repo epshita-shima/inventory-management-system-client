@@ -2,10 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
-import {
-  useDeleteInvoiceInfoMutation,
-  useGetAllInvoiceInformationQuery,
-} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDownload,
@@ -14,29 +11,34 @@ import {
   faRefresh,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
-import InvoiceListHeading from "../../../Common/ListHeading/InvoiceListHeading";
-import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownload";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
-import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
-import reportImage from "../../../../assets/images/reportlogo.png";
-import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png";
-import { downloadInvoiceSingleDataPDF } from "../../../ReportProperties/HeaderFooter";
-import handleInvoiceExcel from "../../../ReportProperties/handleInvoiceExcel";
-import { useGetUserQuery } from "../../../../redux/api/apiSlice";
-import { useGetUserRoleQuery } from "../../../../redux/features/userrole/userroleApi";
-import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+
+
+// import reportImage from "../../../../assets/images/reportlogo.png";
+import reportImage from "../../../../../assets/images/reportlogo.png";
+import authorizesSingatureImage from "../../../../../assets/images/Image_20240831165135.png";
+import { useDeleteInvoiceInfoMutation, useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
+import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
+import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllPaymentReceiveInformationQuery } from "../../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import { useGetUserRoleQuery } from "../../../../../redux/features/userrole/userroleApi";
+import InvoiceListHeading from "../../../../Common/ListHeading/InvoiceListHeading"
+import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
+import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
+import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
+import { downloadInvoicePDF } from "../../../../ReportProperties/InvoiceReportDownload";
+
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
   const { data: invoiceDatas, refetch } =
     useGetAllInvoiceInformationQuery(undefined);
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+  const { data: customerInfo } = useGetAllClientInformationQuery
+(undefined);
   const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);

@@ -35,13 +35,15 @@ import ProductionCommonPart from "./components/Production/Common/ProductionCommo
 import ProductionListTable from "./components/Production/Index/ProductionListTable";
 import PaymentModeDataList from "./components/PaymentModeInformation/Index/PaymentModeDataList";
 import InsertPaymentOption from "./components/PaymentModeInformation/Insert/InsertPaymentOption";
-import SalesManagementCommonPart from "./components/SalesManagement/Common/SalesManagementCommonPart";
-import InvoiceInformationList from "./components/SalesManagement/Index/InvoiceInformationListTable/InvoiceInformationList";
-import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
+
 import InsertPaymentMethodInformation from "./components/PaymentMethodInformation/Insert/InsertPaymentMethodInformation";
 import PaymentMethodSingleEntry from "./components/PaymentMethodInformation/Common/PaymentMethodSingleEntry";
 import PaymentReceiveDataTableList from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable/PaymentReceiveDataTableList";
 import PaymentReceiveDataTable from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable";
+import SalesManagementCommonPart from "./components/SalesManagement/ProformaInvoice/Common/SalesManagementCommonPart";
+import InvoiceInformationList from "./components/SalesManagement/ProformaInvoice/Index/InvoiceInformationListTable/InvoiceInformationList";
+import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
+import DelivaryOrderCommonInsertPart from "./components/SalesManagement/DelivaryOrderInformation/Common/DelivaryOrderCommonInsertPart";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -247,7 +249,9 @@ function App() {
               ></Route>
               <Route
                 path="update-invoice/:id"
-                element={<SalesManagementCommonPart></SalesManagementCommonPart>}
+                element={
+                  <SalesManagementCommonPart></SalesManagementCommonPart>
+                }
               ></Route>
               <Route
                 path="special-delivery-approve"
@@ -261,13 +265,18 @@ function App() {
                 path="payment-received-list"
                 element={<PaymentReceiveDataTable></PaymentReceiveDataTable>}
               ></Route>
-              
+
               <Route
                 path="update-payment-received/:id"
                 element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
               ></Route>
 
-
+              <Route
+                path="create-do"
+                element={
+                  <DelivaryOrderCommonInsertPart></DelivaryOrderCommonInsertPart>
+                }
+              ></Route>
               {/* <Route
                 path="/main-view/user-list"
                 element={

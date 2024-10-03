@@ -27,7 +27,7 @@ import {
 } from "../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymentDetailsModal";
 import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
-import getInitialFormValues from "../../Common/CommonFromValues/CommonFromValues";
+import getInitialFormValues from "../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
@@ -170,6 +170,7 @@ const PaymentMethodSingleEntry = () => {
           paymentMethod: item.paymentMethod,
           paymentStatus: item.paymentStatus,
           itemId: item.itemId,
+          piDetailsId:item.piDetailsId,
           amount: item.amount,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -232,6 +233,7 @@ const PaymentMethodSingleEntry = () => {
                   paymentMethod: "",
                   paymentStatus: "",
                   itemId: "",
+                  piDetailsId:"",
                   amount: "",
                   quantity: "",
                   unitPrice: "",
@@ -695,6 +697,7 @@ const PaymentMethodSingleEntry = () => {
                                         paymentMethod: "",
                                         paymentStatus: "",
                                         itemId: "",
+                                        piDetailsId:'',
                                         amount: "",
                                         quantity: "",
                                         unitPrice: "",

@@ -2,8 +2,8 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import InvoiceInformationDataList from './InvoiceInformationDataList';
-import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 import { useNavigate } from 'react-router-dom';
+import { useGetAllUserQuery } from '../../../../../redux/features/user/userApi';
 
 const InvoiceInformationList = () => {
     const clickhandler = (name) => console.log("delete", name);
