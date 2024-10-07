@@ -2,9 +2,15 @@ import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import React from "react";
-import Select from "react-select";
 
-const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
+const InsertDetailsDOInformation = ({
+  details,
+  arrayHelpers,
+  finishgoods,
+  itemSize,
+  setFieldValue,
+  invoiceInformation,
+}) => {
   return (
     <div
       className="shadow-lg p-4 grninsertdata-main-view"
@@ -28,13 +34,31 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                     </th>
                     <th
                       className="bg-white text-center  align-items-center"
-                      style={{ width: "25%" }}
+                      // style={{ width: "25%" }}
+                    >
+                      PI Quantity
+                    </th>
+                    <th
+                      className="bg-white text-center  align-items-center"
+                      // style={{ width: "25%" }}
+                    >
+                      Paid Quantity
+                    </th>
+                    <th
+                      className="bg-white text-center  align-items-center"
+                      // style={{ width: "25%" }}
+                    >
+                      Adjust Quantity
+                    </th>
+                    <th
+                      className="bg-white text-center  align-items-center"
+                      // style={{ width: "25%" }}
                     >
                       Previous Deliver Quantity
                     </th>
                     <th
                       className="bg-white text-center  align-items-center"
-                      style={{ width: "20%" }}
+                      // style={{ width: "20%" }}
                     >
                       Due Quantity
                     </th>
@@ -51,19 +75,47 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                 <tbody>
                   {details && details.length > 0
                     ? details.map((detail, index) => {
-                        console.log(detail.totalNetQuantity);
+                        console.log(detail);
+                        const matchingItem = finishgoods?.find(
+                          (item) => item._id === detail.itemId
+                        );
+                        console.log(matchingItem);
+                        const itemSizeInfo = itemSize?.find(
+                          (item) => item._id === matchingItem.sizeId
+                        );
+                        console.log(JSON.stringify(invoiceInformation));
+                        invoiceInformation.forEach((item) => {
+                          console.log("item._id:", item._id);
+                          console.log("detail.piDetailsId:", detail.piDetailsId);
+                        }); // Check if this has the expected data
+                        const matchingPI = invoiceInformation?.filter(
+                          (item) => item._id === detail.piDetailsId
+                        );
+                        const filterPIData = invoiceInformation?.find(
+                          (x) => x.invoiceNo === detail?.piNumber
+                        );
+                        console.log(filterPIData,detail?.piNumber)
+                        const findPiQuantityPerItem = filterPIData?.detailsData.find(
+                          (item) => console.log(item.itemId , detail.itemId)
+                        );
+                        console.log(findPiQuantityPerItem);
+
                         return (
                           <tr key={index}>
-                            <td className="text-center  align-middle">
+                            <td className="text-center align-middle">
                               {index + 1}
                             </td>
 
-                            <td className="text-center  align-items-center">
+                            <td className="text-center align-items-center">
                               <Field
                                 type="number"
                                 name={`detailsData.${index}.itemId`}
-                                placeholder="Amount"
-                                value={detail.amount}
+                                placeholder={
+                                  matchingItem.itemName +
+                                  ` (${itemSizeInfo.sizeInfo})`
+                                }
+                                value={matchingItem.itemName}
+                                disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
                                   padding: "5px",
@@ -73,9 +125,25 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                                   marginBottom: "5px",
                                   textAlign: "center",
                                 }}
-                                onKeyUp={(e) => {}}
                               />
-                              <br />
+                            </td>
+                            <td className="text-center  align-items-center">
+                              <Field
+                                type="number"
+                                name={`detailsData.${index}.piQuantity`}
+                                placeholder="PI quantity"
+                                // value={matchingPI.}
+                                disabled
+                                style={{
+                                  border: "1px solid #2DDC1B",
+                                  padding: "5px",
+                                  width: "100%",
+                                  borderRadius: "5px",
+                                  height: "38px",
+                                  marginBottom: "5px",
+                                  textAlign: "center",
+                                }}
+                              />
                             </td>
                             <td className="text-center  align-items-center">
                               <Field
@@ -98,9 +166,9 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                             <td className="text-center  align-items-center">
                               <Field
                                 type="number"
-                                name={`detailsData.${index}.totalNetQuantity`}
+                                name={`detailsData.${index}.totalAdjustQuantity`}
                                 placeholder="Total Net Quantity"
-                                value={detail.totalNetQuantity}
+                                value={detail.adjustTotalQuantity}
                                 disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
@@ -117,9 +185,10 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                             <td className="text-center  align-items-center">
                               <Field
                                 type="number"
-                                name={`detailsData.${index}.deliveryQuantity`}
-                                placeholder="Deliver Quantity"
-                                value={detail.deliveryQuantity}
+                                name={`detailsData.${index}.previousdeliveryquantity`}
+                                placeholder="Previous Deliver Quantity"
+                                value={0}
+                                disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
                                   padding: "5px",
@@ -128,6 +197,51 @@ const InsertDetailsDOInformation = ({ details, arrayHelpers }) => {
                                   height: "38px",
                                   marginBottom: "5px",
                                   textAlign: "center",
+                                }}
+                                onClick={(e) => {
+                                  setFieldValue();
+                                }}
+                              />
+                            </td>
+                            <td className="text-center  align-items-center">
+                              <Field
+                                type="number"
+                                name={`detailsData.${index}.dueQuantity`}
+                                placeholder="Due Quantity"
+                                value={0}
+                                disabled
+                                style={{
+                                  border: "1px solid #2DDC1B",
+                                  padding: "5px",
+                                  width: "100%",
+                                  borderRadius: "5px",
+                                  height: "38px",
+                                  marginBottom: "5px",
+                                  textAlign: "center",
+                                }}
+                                onClick={(e) => {
+                                  setFieldValue();
+                                }}
+                              />
+                              <br />
+                            </td>
+                            <td className="text-center  align-items-center">
+                              <Field
+                                type="number"
+                                name={`detailsData.${index}.deliveryQuantity`}
+                                placeholder="Deliver Quantity"
+                                value={detail.totalNetQuantity}
+                                style={{
+                                  border: "1px solid #2DDC1B",
+                                  padding: "5px",
+                                  width: "100%",
+                                  borderRadius: "5px",
+                                  height: "38px",
+                                  marginBottom: "5px",
+                                  textAlign: "center",
+                                }}
+                                onClick={(e) => {
+                                  setFieldValue();
                                 }}
                               />
                               <br />

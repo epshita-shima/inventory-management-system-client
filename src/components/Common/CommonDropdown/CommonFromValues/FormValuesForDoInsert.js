@@ -6,7 +6,7 @@ const getInitialDOFormValues = (piNumber, makebyUser) => ({
   shipmentNo: "",
   approveStatus: "",
   approveBy: "",
-  approveData: "",
+  approveDate: "",
   makeBy: makebyUser || "",
   updateBy: null,
   makeDate: new Date(),

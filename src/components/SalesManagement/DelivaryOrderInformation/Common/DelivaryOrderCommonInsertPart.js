@@ -19,7 +19,8 @@ import swal from "sweetalert";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import InsertDetailsDOInformation from "../Insert/InsertDetailsDOInformation";
-
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -36,11 +37,14 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
+  const { data: finishgoods } = useGetAllItemInformationQuery(undefined);
+  const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: paymentReceiveInformation } =
     useGetAllPaymentReceiveInformationQuery(undefined);
 
   const piTypeOptions = paymnetInformationDropdown(paymentTypeInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
+
   function groupDataByPiNumberAndItemId(data) {
     const groupedData = {};
     data?.forEach((entry) => {
@@ -71,6 +75,7 @@ const DelivaryOrderCommonInsertPart = () => {
           groupedData[piNumber][itemId].adjustTotalAmount += amount || 0;
         }
         groupedData[piNumber][itemId].itemId = itemId;
+        groupedData[piNumber][itemId].piNumber = piNumber;
         groupedData[piNumber][itemId].piDetailsId = piDetailsId;
         groupedData[piNumber][itemId].totalNetQuantity =
           groupedData[piNumber][itemId].paidTotalQuantity -
@@ -130,7 +135,10 @@ const DelivaryOrderCommonInsertPart = () => {
       setIsDisplay(false);
     }
   }, [piNumber]);
-  const handleSubmit = () => {};
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div
@@ -369,6 +377,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                         invoiceList.find(
                                           (data) => data._id === e.value
                                         );
+                                      console.log(invoiceListMatchingData);
                                       setInvoiveByInvoiceNumber(
                                         invoiceListMatchingData
                                       );
@@ -468,12 +477,15 @@ const DelivaryOrderCommonInsertPart = () => {
                                 </div>
                               </div>
                             </div>
-                            {
-                              isDisplay &&
-                                <InsertDetailsDOInformation 
+                            {isDisplay && (
+                              <InsertDetailsDOInformation
+                                itemSize={itemSize}
+                                finishgoods={finishgoods}
                                 details={result[0]?.detailsData}
-                                ></InsertDetailsDOInformation>
-                            }
+                                setFieldValue={setFieldValue}
+                                invoiceInformation={invoiceInformation}
+                              ></InsertDetailsDOInformation>
+                            )}
                           </>
                         )}
                       </div>
