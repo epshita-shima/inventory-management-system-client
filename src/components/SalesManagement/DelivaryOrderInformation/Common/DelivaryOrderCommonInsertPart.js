@@ -21,6 +21,7 @@ import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/featu
 import InsertDetailsDOInformation from "../Insert/InsertDetailsDOInformation";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/api/apiSlice";
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -34,6 +35,9 @@ const DelivaryOrderCommonInsertPart = () => {
     getInitialDOFormValues(piNumber, makebyUser)
   );
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
+  const [paymentReceiveSelectedItem,setPaymentReceiveSelectedItem]=useState([]);
+  const [checkNetTotalQuantity,setCheckNetTotalQuantity]=useState([])
+  const [serialValue, setSerialValue] = useState([]);
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
@@ -41,92 +45,28 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: paymentReceiveInformation } =
     useGetAllPaymentReceiveInformationQuery(undefined);
-
+    const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
   const piTypeOptions = paymnetInformationDropdown(paymentTypeInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
+const [createSerialNo]=useCreateSerialNoMutation()
 
-  function groupDataByPiNumberAndItemId(data) {
-    const groupedData = {};
-    data?.forEach((entry) => {
-      const { piNumber, detailsData } = entry;
-      detailsData?.forEach((item) => {
-        const { itemId, piDetailsId, amount, quantity, paymentStatus } = item;
-        if (!groupedData[piNumber]) {
-          groupedData[piNumber] = {};
+  useEffect(() => {
+    if (serialNo && serialNo.length > 0) {
+      const maxSerialNoObject = serialNo?.reduce((max, current) => {
+        if (current.type === "do") {
+          return max && current.serialNo > max.serialNo
+            ? current
+            : max || current;
         }
-        if (!groupedData[piNumber][itemId]) {
-          groupedData[piNumber][itemId] = {
-            piNumber,
-            itemId,
-            paidTotalQuantity: 0,
-            paidTotalAmount: 0,
-            adjustTotalAmount: 0,
-            adjustTotalQuantity: 0,
-            totalNetQuantity: 0,
-            totalNetAmount: 0,
-          };
-        }
-
-        if (paymentStatus === "cash") {
-          groupedData[piNumber][itemId].paidTotalQuantity += quantity || 0;
-          groupedData[piNumber][itemId].paidTotalAmount += amount || 0;
-        } else if (paymentStatus === "adjustment") {
-          groupedData[piNumber][itemId].adjustTotalQuantity += quantity || 0;
-          groupedData[piNumber][itemId].adjustTotalAmount += amount || 0;
-        }
-        groupedData[piNumber][itemId].itemId = itemId;
-        groupedData[piNumber][itemId].piNumber = piNumber;
-        groupedData[piNumber][itemId].piDetailsId = piDetailsId;
-        groupedData[piNumber][itemId].totalNetQuantity =
-          groupedData[piNumber][itemId].paidTotalQuantity -
-          groupedData[piNumber][itemId].adjustTotalQuantity;
-        groupedData[piNumber][itemId].totalNetAmount =
-          groupedData[piNumber][itemId].paidTotalAmount -
-          groupedData[piNumber][itemId].adjustTotalAmount;
-      });
-    });
-
-    return Object.values(groupedData)
-      .map((piGroup) => Object.values(piGroup))
-      .flat();
-  }
-
-  const groupedResult = groupDataByPiNumberAndItemId(singlePaymentReceiveInfo);
-
-  const result = groupedResult?.reduce((acc, item) => {
-    let existingPiNumber = acc.find((p) => p.piNumber === item.piNumber);
-
-    if (existingPiNumber) {
-      existingPiNumber.detailsData.push({
-        itemId: item.itemId,
-        piDetailsId: item.piDetailsId,
-        paidTotalQuantity: item.paidTotalQuantity,
-        paidTotalAmount: item.paidTotalAmount,
-        adjustTotalAmount: item.adjustTotalAmount,
-        adjustTotalQuantity: item.adjustTotalQuantity,
-        totalNetQuantity: item.totalNetQuantity,
-        totalNetAmount: item.totalNetAmount,
-      });
-    } else {
-      acc.push({
-        piNumber: item.piNumber,
-        detailsData: [
-          {
-            itemId: item.itemId,
-            piDetailsId: item.piDetailsId,
-            paidTotalQuantity: item.paidTotalQuantity,
-            paidTotalAmount: item.paidTotalAmount,
-            adjustTotalAmount: item.adjustTotalAmount,
-            adjustTotalQuantity: item.adjustTotalQuantity,
-            totalNetQuantity: item.totalNetQuantity,
-            totalNetAmount: item.totalNetAmount,
-          },
-        ],
-      });
+        return max;
+      }, undefined);
+      if (maxSerialNoObject) {
+        setSerialValue(maxSerialNoObject);
+      }
     }
+  }, [serialNo]);
 
-    return acc;
-  }, []);
+
 
   useEffect(() => {
     if (piNumber !== "") {
@@ -134,11 +74,120 @@ const DelivaryOrderCommonInsertPart = () => {
     } else {
       setIsDisplay(false);
     }
-  }, [piNumber]);
+    function groupDataByPiNumberAndItemId(data) {
+      const groupedData = {};
+      data?.forEach((entry) => {
+        const { piNumber, detailsData } = entry;
+        detailsData?.forEach((item) => {
+          const { itemId, piDetailsId, amount, quantity, paymentStatus } = item;
+          if (!groupedData[piNumber]) {
+            groupedData[piNumber] = {};
+          }
+          if (!groupedData[piNumber][itemId]) {
+            groupedData[piNumber][itemId] = {
+              piNumber,
+              itemId,
+              paidTotalQuantity: 0,
+              paidTotalAmount: 0,
+              adjustTotalAmount: 0,
+              adjustTotalQuantity: 0,
+              totalNetQuantity: 0,
+              totalNetAmount: 0,
+            };
+          }
+  
+          if (paymentStatus === "cash") {
+            groupedData[piNumber][itemId].paidTotalQuantity += quantity || 0;
+            groupedData[piNumber][itemId].paidTotalAmount += amount || 0;
+          } else if (paymentStatus === "adjustment") {
+            groupedData[piNumber][itemId].adjustTotalQuantity += quantity || 0;
+            groupedData[piNumber][itemId].adjustTotalAmount += amount || 0;
+          }
+          groupedData[piNumber][itemId].itemId = itemId;
+          groupedData[piNumber][itemId].piNumber = piNumber;
+          groupedData[piNumber][itemId].piDetailsId = piDetailsId;
+          groupedData[piNumber][itemId].totalNetQuantity =
+            groupedData[piNumber][itemId].paidTotalQuantity -
+            groupedData[piNumber][itemId].adjustTotalQuantity;
+          groupedData[piNumber][itemId].totalNetAmount =
+            groupedData[piNumber][itemId].paidTotalAmount -
+            groupedData[piNumber][itemId].adjustTotalAmount;
+        });
+      });
+  
+      return Object.values(groupedData)
+        .map((piGroup) => Object.values(piGroup))
+        .flat();
+    }
+  
+    const groupedResult = groupDataByPiNumberAndItemId(singlePaymentReceiveInfo);
+  
+    const result = groupedResult?.reduce((acc, item) => {
+      let existingPiNumber = acc.find((p) => p.piNumber === item.piNumber);
+  
+      if (existingPiNumber) {
+        existingPiNumber.detailsData.push({
+          itemId: item.itemId,
+          piDetailsId: item.piDetailsId,
+          paidTotalQuantity: item.paidTotalQuantity,
+          paidTotalAmount: item.paidTotalAmount,
+          adjustTotalAmount: item.adjustTotalAmount,
+          adjustTotalQuantity: item.adjustTotalQuantity,
+          totalNetQuantity: item.totalNetQuantity,
+          totalNetAmount: item.totalNetAmount,
+        });
+      } else {
+        acc.push({
+          piNumber: item.piNumber,
+          detailsData: [
+            {
+              itemId: item.itemId,
+              piDetailsId: item.piDetailsId,
+              paidTotalQuantity: item.paidTotalQuantity,
+              paidTotalAmount: item.paidTotalAmount,
+              adjustTotalAmount: item.adjustTotalAmount,
+              adjustTotalQuantity: item.adjustTotalQuantity,
+              totalNetQuantity: item.totalNetQuantity,
+              totalNetAmount: item.totalNetAmount,
+            },
+          ],
+        });
+      }
+  
+      return acc;
+    }, []);
+    if (result) {
+      setPaymentReceiveSelectedItem(result);
+      setCheckNetTotalQuantity(result)
+    }
+  }, [piNumber,singlePaymentReceiveInfo]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault();
+    const serialData = {
+      serialNo: serialNo?.serialNo,
+      type: "do",
+      year: new Date().toLocaleDateString("en-CA"),
+      makeby: makebyUser,
+      updateby: "",
+    };
+    const modelData={
+      piNumber: '',
+      doNo:`DO-${
+        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+      }`,
+      mushokChallanNo: '',
+      deliveryChallanNo: '',
+      shipmentNo: '',
+      approveStatus: '',
+      approveBy: '',
+      approveDate: '',
+    }
+    await createSerialNo(serialData);
   };
+
+  useEffect(() => {
+  }, [paymentReceiveSelectedItem]);
 
   return (
     <div
@@ -177,7 +226,7 @@ const DelivaryOrderCommonInsertPart = () => {
               dirty,
             }) => (
               <Form
-                id="insertpaymentreceive-form"
+                id="do-form"
                 onSubmit={(e) => {
                   handleSubmit(e, values, resetForm);
                 }}
@@ -186,7 +235,7 @@ const DelivaryOrderCommonInsertPart = () => {
                   name="detailsData"
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
-                    const details = result?.detailsData;
+                    // const details = result?.detailsData;
 
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
@@ -434,7 +483,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                 <div className="d-flex justify-content-between">
                                   <button
                                     type="submit"
-                                    form="insertpaymentreceive-form"
+                                    form="do-form"
                                     className="border-0"
                                     style={{
                                       backgroundColor: "#2DDC1B",
@@ -454,26 +503,6 @@ const DelivaryOrderCommonInsertPart = () => {
                                   >
                                     Save
                                   </button>
-                                  <div
-                                    className="border-0 "
-                                    style={{
-                                      // backgroundColor: "#2DDC1B",
-                                      backgroundColor: "#B8FEB3",
-                                      color: "#000",
-                                      padding: "5px 10px",
-                                      fontSize: "14px",
-                                      borderRadius: "5px",
-                                      marginLeft: "5px",
-                                    }}
-                                    onClick={() => {
-                                      ArrayHelperRef.current.push({});
-                                    }}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPlus}
-                                    ></FontAwesomeIcon>{" "}
-                                    Add Row
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -481,9 +510,11 @@ const DelivaryOrderCommonInsertPart = () => {
                               <InsertDetailsDOInformation
                                 itemSize={itemSize}
                                 finishgoods={finishgoods}
-                                details={result[0]?.detailsData}
+                                details={paymentReceiveSelectedItem}
+                                setPaymentReceiveSelectedItem={setPaymentReceiveSelectedItem}
                                 setFieldValue={setFieldValue}
                                 invoiceInformation={invoiceInformation}
+                                checkNetTotalQuantity={checkNetTotalQuantity}
                               ></InsertDetailsDOInformation>
                             )}
                           </>

@@ -2,6 +2,7 @@ import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import React from "react";
+import swal from "sweetalert";
 
 const InsertDetailsDOInformation = ({
   details,
@@ -10,7 +11,10 @@ const InsertDetailsDOInformation = ({
   itemSize,
   setFieldValue,
   invoiceInformation,
+  setPaymentReceiveSelectedItem,
+  checkNetTotalQuantity
 }) => {
+  console.log(details);
   return (
     <div
       className="shadow-lg p-4 grninsertdata-main-view"
@@ -74,31 +78,23 @@ const InsertDetailsDOInformation = ({
 
                 <tbody>
                   {details && details.length > 0
-                    ? details.map((detail, index) => {
-                        console.log(detail);
+                    ? details[0]?.detailsData.map((detail, index) => {
                         const matchingItem = finishgoods?.find(
                           (item) => item._id === detail.itemId
                         );
-                        console.log(matchingItem);
+
                         const itemSizeInfo = itemSize?.find(
                           (item) => item._id === matchingItem.sizeId
                         );
-                        console.log(JSON.stringify(invoiceInformation));
-                        invoiceInformation.forEach((item) => {
-                          console.log("item._id:", item._id);
-                          console.log("detail.piDetailsId:", detail.piDetailsId);
-                        }); // Check if this has the expected data
-                        const matchingPI = invoiceInformation?.filter(
-                          (item) => item._id === detail.piDetailsId
+
+                        const filterPIData = invoiceInformation?.filter(
+                          (x) => x.invoiceNo === details[0]?.piNumber
                         );
-                        const filterPIData = invoiceInformation?.find(
-                          (x) => x.invoiceNo === detail?.piNumber
-                        );
-                        console.log(filterPIData,detail?.piNumber)
-                        const findPiQuantityPerItem = filterPIData?.detailsData.find(
-                          (item) => console.log(item.itemId , detail.itemId)
-                        );
-                        console.log(findPiQuantityPerItem);
+
+                        const findPiQuantityPerItem =
+                          filterPIData[0]?.detailsData?.find(
+                            (item) => item.itemId === detail?.itemId
+                          );
 
                         return (
                           <tr key={index}>
@@ -132,7 +128,7 @@ const InsertDetailsDOInformation = ({
                                 type="number"
                                 name={`detailsData.${index}.piQuantity`}
                                 placeholder="PI quantity"
-                                // value={matchingPI.}
+                                value={findPiQuantityPerItem.quantity}
                                 disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
@@ -240,8 +236,39 @@ const InsertDetailsDOInformation = ({
                                   marginBottom: "5px",
                                   textAlign: "center",
                                 }}
-                                onClick={(e) => {
-                                  setFieldValue();
+                                onChange={(e) => {
+                                  const newValue = Number(e.target.value);
+                                  const totalNetQuantity =
+                                  checkNetTotalQuantity[0].detailsData[index].totalNetQuantity;
+                                
+                                  if (totalNetQuantity < newValue) {
+                                    swal({
+                                      title: "Not Possible",
+                                      text: "You can't deliver more quantity.",
+                                      icon: "warning",
+                                      button: "OK",
+                                    });
+                                    return;
+                                  } else {
+                                    // Update the new quantity in the state
+                                    setPaymentReceiveSelectedItem((prev) => {
+                                      const temp_details = [
+                                        ...prev[0].detailsData,
+                                      ];
+                                      const newDetail = {
+                                        ...temp_details[index],
+                                      }; // Assuming `index` is defined
+                                      newDetail.totalNetQuantity = newValue; // Update to the new value
+                                      temp_details[index] = newDetail; // Replace the old detail with the updated one
+                                      return [
+                                        {
+                                          ...prev[0],
+                                          detailsData: temp_details,
+                                        },
+                                        ...prev.slice(1), // Keep the rest of the array as is
+                                      ];
+                                    });
+                                  }
                                 }}
                               />
                               <br />
@@ -252,17 +279,19 @@ const InsertDetailsDOInformation = ({
                                 type="button"
                                 className=" border-0 rounded  bg-transparent"
                                 onClick={() => {
-                                  arrayHelpers.remove(index, 1);
-                                  //   setFormValues((prev) => {
-                                  //     const temp__details = [...prev.detailsData];
-                                  //     if (temp__details.length > 1)
-                                  //       temp__details.splice(index, 1);
-
-                                  //     return {
-                                  //       ...prev,
-                                  //       detailsData: [...temp__details],
-                                  //     };
-                                  //   });
+                                  setPaymentReceiveSelectedItem((prev) => {
+                                    const temp__details = [...prev[0].detailsData];
+                                    if (temp__details.length)
+                                      temp__details.splice(index, 1);
+                                 
+                                    return [
+                                      {
+                                        ...prev[0],
+                                        detailsData: temp__details,
+                                      },
+                                      ...prev.slice(1), // Keep the rest of the array as is
+                                    ];
+                                  });
                                 }}
                               >
                                 <FontAwesomeIcon
