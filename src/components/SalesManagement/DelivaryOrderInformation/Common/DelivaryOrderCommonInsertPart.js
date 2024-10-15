@@ -6,7 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import {
+  useGetAllInvoiceInformationQuery,
+  useGetSingleInvoiceQuery,
+  useUpdateInvoiceShipmentMutation,
+} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import {
   invoiceListDropdown,
   paymnetInformationDropdown,
@@ -21,7 +25,11 @@ import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/featu
 import InsertDetailsDOInformation from "../Insert/InsertDetailsDOInformation";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/api/apiSlice";
+import {
+  useCreateSerialNoMutation,
+  useGetSerialNoQuery,
+} from "../../../../redux/api/apiSlice";
+
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -35,8 +43,10 @@ const DelivaryOrderCommonInsertPart = () => {
     getInitialDOFormValues(piNumber, makebyUser)
   );
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
-  const [paymentReceiveSelectedItem,setPaymentReceiveSelectedItem]=useState([]);
-  const [checkNetTotalQuantity,setCheckNetTotalQuantity]=useState([])
+  const [paymentReceiveSelectedItem, setPaymentReceiveSelectedItem] = useState(
+    []
+  );
+  const [checkNetTotalQuantity, setCheckNetTotalQuantity] = useState([]);
   const [serialValue, setSerialValue] = useState([]);
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: invoiceInformation } =
@@ -45,10 +55,32 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: paymentReceiveInformation } =
     useGetAllPaymentReceiveInformationQuery(undefined);
-    const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
+  const { data: serialNo, refetch: serialRefresh } =
+    useGetSerialNoQuery(undefined);
   const piTypeOptions = paymnetInformationDropdown(paymentTypeInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
-const [createSerialNo]=useCreateSerialNoMutation()
+  const [createSerialNo] = useCreateSerialNoMutation();
+  const [invoiceId, setInvoiceId] = useState("");
+  const { data: singleInvoiceData } = useGetSingleInvoiceQuery(invoiceId);
+  const [updateInvoiceShipmentNo] = useUpdateInvoiceShipmentMutation();
+
+  console.log(singleInvoiceData?.shipmentNo + 1);
+
+  useEffect(() => {
+    if (serialNo && serialNo.length > 0) {
+      const maxSerialNoObject = serialNo?.reduce((max, current) => {
+        if (current.type === piNumber) {
+          return max && current.serialNo > max.serialNo
+            ? current
+            : max || current;
+        }
+        return max;
+      }, undefined);
+      if (maxSerialNoObject) {
+        setSerialValue(maxSerialNoObject);
+      }
+    }
+  }, [serialNo, piNumber]);
 
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
@@ -65,8 +97,6 @@ const [createSerialNo]=useCreateSerialNoMutation()
       }
     }
   }, [serialNo]);
-
-
 
   useEffect(() => {
     if (piNumber !== "") {
@@ -95,7 +125,7 @@ const [createSerialNo]=useCreateSerialNoMutation()
               totalNetAmount: 0,
             };
           }
-  
+
           if (paymentStatus === "cash") {
             groupedData[piNumber][itemId].paidTotalQuantity += quantity || 0;
             groupedData[piNumber][itemId].paidTotalAmount += amount || 0;
@@ -114,17 +144,19 @@ const [createSerialNo]=useCreateSerialNoMutation()
             groupedData[piNumber][itemId].adjustTotalAmount;
         });
       });
-  
+
       return Object.values(groupedData)
         .map((piGroup) => Object.values(piGroup))
         .flat();
     }
-  
-    const groupedResult = groupDataByPiNumberAndItemId(singlePaymentReceiveInfo);
-  
+
+    const groupedResult = groupDataByPiNumberAndItemId(
+      singlePaymentReceiveInfo
+    );
+
     const result = groupedResult?.reduce((acc, item) => {
       let existingPiNumber = acc.find((p) => p.piNumber === item.piNumber);
-  
+
       if (existingPiNumber) {
         existingPiNumber.detailsData.push({
           itemId: item.itemId,
@@ -153,16 +185,16 @@ const [createSerialNo]=useCreateSerialNoMutation()
           ],
         });
       }
-  
+
       return acc;
     }, []);
     if (result) {
       setPaymentReceiveSelectedItem(result);
-      setCheckNetTotalQuantity(result)
+      setCheckNetTotalQuantity(result);
     }
-  }, [piNumber,singlePaymentReceiveInfo]);
+  }, [piNumber, singlePaymentReceiveInfo]);
 
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const serialData = {
       serialNo: serialNo?.serialNo,
@@ -171,23 +203,26 @@ const [createSerialNo]=useCreateSerialNoMutation()
       makeby: makebyUser,
       updateby: "",
     };
-    const modelData={
-      piNumber: '',
-      doNo:`DO-${
+
+    const modelData = {
+      piNumber: "",
+      doNo: `DO-${
         serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
       }`,
-      mushokChallanNo: '',
-      deliveryChallanNo: '',
-      shipmentNo: '',
-      approveStatus: '',
-      approveBy: '',
-      approveDate: '',
-    }
+      mushokChallanNo: "",
+      deliveryChallanNo: `${
+        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+      }`,
+      shipmentNo: singleInvoiceData?.shipmentNo + 1,
+      approveStatus: false,
+      approveBy: "",
+      approveDate: "",
+    };
+    await updateInvoiceShipmentNo(singleInvoiceData);
     await createSerialNo(serialData);
   };
 
-  useEffect(() => {
-  }, [paymentReceiveSelectedItem]);
+  useEffect(() => {}, [paymentReceiveSelectedItem]);
 
   return (
     <div
@@ -397,6 +432,7 @@ const [createSerialNo]=useCreateSerialNoMutation()
                                       },
                                     })}
                                     onChange={(e) => {
+                                      setInvoiceId(e.value);
                                       setPINumber(e.label);
                                       setFieldValue("piNumber", e.label);
                                       if (
@@ -511,7 +547,9 @@ const [createSerialNo]=useCreateSerialNoMutation()
                                 itemSize={itemSize}
                                 finishgoods={finishgoods}
                                 details={paymentReceiveSelectedItem}
-                                setPaymentReceiveSelectedItem={setPaymentReceiveSelectedItem}
+                                setPaymentReceiveSelectedItem={
+                                  setPaymentReceiveSelectedItem
+                                }
                                 setFieldValue={setFieldValue}
                                 invoiceInformation={invoiceInformation}
                                 checkNetTotalQuantity={checkNetTotalQuantity}

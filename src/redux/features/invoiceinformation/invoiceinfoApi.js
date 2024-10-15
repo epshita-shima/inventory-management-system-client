@@ -8,6 +8,7 @@ const invoiceinfoApi = api.injectEndpoints({
         "insertinvoiceinfo",
         "updateinvoiceinfo",
         "changeinvoicestatus",
+        "changeinvoiceshipment",
         "deleteinvoiceinfo",
       ],
       refetchOnReconnect: true,
@@ -51,6 +52,7 @@ const invoiceinfoApi = api.injectEndpoints({
       }
     ),
     }),
+
     updateInvoiceInfo: builder.mutation({
       query: (payload) => ({
         url: `/invoiceinfo/${payload._id}`,
@@ -63,6 +65,7 @@ const invoiceinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+
     updateInvoiceSpecialPIApproveStatus: builder.mutation({
       query: (dataToUpdate) => ({
         url: "/invoiceinfo/special-approve",
@@ -75,6 +78,7 @@ const invoiceinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+
     updateInvoiceStatus: builder.mutation({
       query: (dataToUpdate) => ({
         url: "/invoiceinfo",
@@ -87,6 +91,20 @@ const invoiceinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+
+    updateInvoiceShipment: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/invoiceinfo/shipment",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changeinvoiceshipment"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+    
     deleteInvoiceInfo: builder.mutation({
       query: (id) => ({
         url: `/invoiceinfo/${id}`,
@@ -108,6 +126,7 @@ export const {
   useUpdateInvoiceInfoMutation,
   useUpdateInvoiceStatusMutation,
   useUpdateInvoiceSpecialPIApproveStatusMutation,
+  useUpdateInvoiceShipmentMutation,
   useDeleteInvoiceInfoMutation,
   useLazyGetFilteredInvoiceInfoQuery
 } = invoiceinfoApi;

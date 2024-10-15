@@ -59,11 +59,13 @@ const SalesManagementCommonPart = () => {
   const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
   const { data: userList } = useGetAllUserQuery(undefined);
   const [marketingPerSon, setMarketingPerson] = useState("");
+  
   const initialValues = {
     piDate: piDate,
     expireDate: expireDate,
     invoiceNo: "",
     customerID: "",
+    shipmentNo:0,
     paymentId: "",
     currency: "",
     approveBy: "",
