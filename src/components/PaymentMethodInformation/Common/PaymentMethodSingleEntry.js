@@ -100,7 +100,7 @@ const PaymentMethodSingleEntry = () => {
         setIsDisplay(false);
       }
     
-  }, [piNumber, clientName, previousPaymentData]);
+  }, [piNumber, clientName]);
 
   useEffect(() => {
     if (invoiveByInvoiceNumber?.detailsData?.length > 0) {

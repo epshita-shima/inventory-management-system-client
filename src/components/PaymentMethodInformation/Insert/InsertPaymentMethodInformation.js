@@ -470,6 +470,7 @@ const InsertPaymentMethodInformation = ({
                                 name={`detailsData.${index}.quantity`}
                                 placeholder="Quantity"
                                 value={detail.quantity}
+                                disabled
                                 style={{
                                   border: "1px solid #2DDC1B",
                                   padding: "5px",

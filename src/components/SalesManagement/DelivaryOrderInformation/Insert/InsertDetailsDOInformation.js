@@ -250,22 +250,22 @@ const InsertDetailsDOInformation = ({
                                     });
                                     return;
                                   } else {
-                                    // Update the new quantity in the state
+                                  
                                     setPaymentReceiveSelectedItem((prev) => {
                                       const temp_details = [
                                         ...prev[0].detailsData,
                                       ];
                                       const newDetail = {
                                         ...temp_details[index],
-                                      }; // Assuming `index` is defined
-                                      newDetail.totalNetQuantity = newValue; // Update to the new value
-                                      temp_details[index] = newDetail; // Replace the old detail with the updated one
+                                      }; 
+                                      newDetail.totalNetQuantity = newValue; 
+                                      temp_details[index] = newDetail; 
                                       return [
                                         {
                                           ...prev[0],
                                           detailsData: temp_details,
                                         },
-                                        ...prev.slice(1), // Keep the rest of the array as is
+                                        ...prev.slice(1),
                                       ];
                                     });
                                   }

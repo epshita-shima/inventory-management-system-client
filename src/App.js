@@ -44,6 +44,7 @@ import SalesManagementCommonPart from "./components/SalesManagement/ProformaInvo
 import InvoiceInformationList from "./components/SalesManagement/ProformaInvoice/Index/InvoiceInformationListTable/InvoiceInformationList";
 import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
 import DelivaryOrderCommonInsertPart from "./components/SalesManagement/DelivaryOrderInformation/Common/DelivaryOrderCommonInsertPart";
+import DeliveryOrderList from "./components/SalesManagement/DelivaryOrderInformation/Index/DeliveryOrderListTable/DeliveryOrderList";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -275,6 +276,13 @@ function App() {
                 path="create-do"
                 element={
                   <DelivaryOrderCommonInsertPart></DelivaryOrderCommonInsertPart>
+                }
+              ></Route>
+
+              <Route
+                path="do-list"
+                element={
+                  <DeliveryOrderList></DeliveryOrderList>
                 }
               ></Route>
               {/* <Route

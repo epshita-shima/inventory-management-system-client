@@ -29,13 +29,14 @@ import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
 } from "../../../../redux/api/apiSlice";
+import { useInsertDeliveryOrderInformationMutation } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
   const makebyUser = getMakebyUser();
   const [isDisplay, setIsDisplay] = useState(false);
-  const [piNumber, setPINumber] = useState();
+  const [piNumber, setPINumber] = useState("");
   const [invoiceList, setInvoiceList] = useState([]);
   const [piType, setPIType] = useState("");
   const [singlePaymentReceiveInfo, setSinglePaymentReceiveInfo] = useState([]);
@@ -55,7 +56,7 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: paymentReceiveInformation } =
     useGetAllPaymentReceiveInformationQuery(undefined);
-  const { data: serialNo, refetch: serialRefresh } =
+  const { data: serialNo, refetch: serialRefetch } =
     useGetSerialNoQuery(undefined);
   const piTypeOptions = paymnetInformationDropdown(paymentTypeInfo);
   const invoiceListOption = invoiceListDropdown(invoiceList);
@@ -64,6 +65,7 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: singleInvoiceData } = useGetSingleInvoiceQuery(invoiceId);
   const [updateInvoiceShipmentNo] = useUpdateInvoiceShipmentMutation();
 
+  const [insertDOInfo] =useInsertDeliveryOrderInformationMutation()
   console.log(singleInvoiceData?.shipmentNo + 1);
 
   useEffect(() => {
@@ -99,11 +101,6 @@ const DelivaryOrderCommonInsertPart = () => {
   }, [serialNo]);
 
   useEffect(() => {
-    if (piNumber !== "") {
-      setIsDisplay(true);
-    } else {
-      setIsDisplay(false);
-    }
     function groupDataByPiNumberAndItemId(data) {
       const groupedData = {};
       data?.forEach((entry) => {
@@ -194,8 +191,13 @@ const DelivaryOrderCommonInsertPart = () => {
     }
   }, [piNumber, singlePaymentReceiveInfo]);
 
+console.log(paymentReceiveSelectedItem)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const removeDashFromDate = new Date().toLocaleDateString("en-CA");
+    const removeDash = removeDashFromDate.replace(/-/g, "");
+ 
     const serialData = {
       serialNo: serialNo?.serialNo,
       type: "do",
@@ -203,10 +205,17 @@ const DelivaryOrderCommonInsertPart = () => {
       makeby: makebyUser,
       updateby: "",
     };
+    const delivaryChallanData = {
+      serialNo: serialNo?.serialNo,
+      type: "deliveryChallan",
+      year: new Date().toLocaleDateString("en-CA"),
+      makeby: makebyUser,
+      updateby: "",
+    };
 
     const modelData = {
-      piNumber: "",
-      doNo: `DO-${
+      piNumber: paymentReceiveSelectedItem[0]?.piNumber,
+      doNo: `DO-${removeDash}-${
         serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
       }`,
       mushokChallanNo: "",
@@ -217,12 +226,50 @@ const DelivaryOrderCommonInsertPart = () => {
       approveStatus: false,
       approveBy: "",
       approveDate: "",
+      deliveryStatus:false,
+      makeBy: makebyUser || "",
+      updateBy: null,
+      makeDate: new Date(),
+      updateDate: null,
+      detailsData:[]
     };
-    await updateInvoiceShipmentNo(singleInvoiceData);
-    await createSerialNo(serialData);
+
+    paymentReceiveSelectedItem[0]?.detailsData.map((item)=>{
+      modelData.detailsData.push({
+        piDetailsId: item.piDetailsId,
+      itemId: item.itemId,
+      previousDelivaryQty: 0,
+      dueQty: 0,
+      deliverQty: item.totalNetQuantity
+      });
+    })
+
+    const response = await insertDOInfo(modelData);
+    if (response?.data?.status === 200) {
+      await Promise.all([
+        createSerialNo(serialData),
+        createSerialNo(delivaryChallanData)
+      ]);
+      serialRefetch();
+      await updateInvoiceShipmentNo(singleInvoiceData);
+      swal("Done", "Data Save Successfully", "success");
+    } else if (response?.error?.status === 400) {
+      swal("Not Possible!", response?.error?.data?.message, "error");
+    }
   };
 
   useEffect(() => {}, [paymentReceiveSelectedItem]);
+
+  console.log(piNumber)
+
+  useEffect(() => {
+    if (piType !== "" && piNumber !== "") {
+      setIsDisplay(true);
+    } else {
+      setIsDisplay(false);
+    }
+  
+}, [piNumber, piType]);
 
   return (
     <div
@@ -280,7 +327,7 @@ const DelivaryOrderCommonInsertPart = () => {
                               className="fs-sm fw-bold"
                               style={{ fontSize: "24px", fontWeight: "bold" }}
                             >
-                              Insert Payment Method Information
+                              Insert DO Information
                             </h2>
                             <div>
                               <button
@@ -542,7 +589,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                 </div>
                               </div>
                             </div>
-                            {isDisplay && (
+                            {
                               <InsertDetailsDOInformation
                                 itemSize={itemSize}
                                 finishgoods={finishgoods}
@@ -554,7 +601,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                 invoiceInformation={invoiceInformation}
                                 checkNetTotalQuantity={checkNetTotalQuantity}
                               ></InsertDetailsDOInformation>
-                            )}
+                            }
                           </>
                         )}
                       </div>
