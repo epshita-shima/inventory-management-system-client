@@ -128,7 +128,7 @@ const InsertDetailsDOInformation = ({
                                 type="number"
                                 name={`detailsData.${index}.piQuantity`}
                                 placeholder="PI quantity"
-                                value={findPiQuantityPerItem.quantity}
+                                value={findPiQuantityPerItem?.quantity}
                                 disabled
                                 style={{
                                   border: "1px solid #2DDC1B",

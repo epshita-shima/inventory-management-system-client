@@ -12,35 +12,73 @@ import {
   faRefresh,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { useGetAllDelieryOrderInformationQuery } from "../../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import {
+  useDeleteDeliveryOrderInformationMutation,
+  useGetAllDelieryOrderInformationQuery,
+} from "../../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
+import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { downloadDeliveryOrderPDF } from "../../../../ReportProperties/HeaderFooter";
+import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 
 const DeliveryOrderListData = ({ permission }) => {
+  const reportTitle = "DELIVERY ORDER INFORMATION";
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
   const { data: deliveryOrderData, refetch } =
     useGetAllDelieryOrderInformationQuery(undefined);
+  const { data: invoiceInformation } =
+    useGetAllInvoiceInformationQuery(undefined);
+  const { data: clientInformation } =
+    useGetAllClientInformationQuery(undefined);
+  const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
+  const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const [deleteDOInfo] = useDeleteDeliveryOrderInformationMutation();
 
-    console.log(deliveryOrderData)
+  const transformedDOData = deliveryOrderData?.flatMap((itemDetails) =>
+    itemDetails.detailsData.map((detail) => ({
+      ...itemDetails,
+      detailsData: detail,
+    }))
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const columns = [
     {
       name: "Sl.",
-      selector: (deliveryOrderData, index) => index + 1,
+      selector: (row, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
       name: "Client Name",
-      selector: (deliveryOrderData) =>
-        new Date(deliveryOrderData?.piDate).toLocaleDateString("en-CA"),
+      selector: (row) => {
+        const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
+        const clientInfo = clientInformation?.find(
+          (x) => x._id == piInfo?.customerID
+        );
+        return clientInfo ? clientInfo?.clientName : "N/A";
+      },
       sortable: true,
       center: true,
       filterable: true,
     },
+
     {
       name: "PI Number",
-      selector: (deliveryOrderData) => deliveryOrderData?.piNumber,
+      selector: (row) => {
+        const piNumber = invoiceInformation?.find(
+          (x) => x._id === row?.piNumber
+        );
+        return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+      },
       sortable: true,
       center: true,
       filterable: true,
@@ -49,25 +87,40 @@ const DeliveryOrderListData = ({ permission }) => {
 
     {
       name: "DO Number",
-      selector: (deliveryOrderData) => deliveryOrderData?.piNumber,
+      selector: (row) => row?.doNo,
       sortable: true,
       center: true,
       filterable: true,
     },
+
+    {
+      name: "Item Name",
+      selector: (row) => {
+        const itemName = finishGoodsInfo?.find(
+          (x) => x._id === row?.detailsData.itemId
+        );
+        return itemName ? itemName.itemName : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
     {
       name: "Delivery Quantity",
-      selector: (deliveryOrderData) => deliveryOrderData?.deliverQty,
+      selector: (row) => row.detailsData?.deliverQty,
       sortable: true,
       center: true,
       filterable: true,
     },
+
     {
       name: "Delivery Status",
-      selector: (deliveryOrderData) => {
-        return deliveryOrderData.isApproved ? (
+      selector: (row) => {
+        return row.isApproved ? (
           <p className="text-success">Approved</p>
         ) : (
-          <p className="text-danger">Unapprove</p>
+          <p className="text-danger fw-bold">Not Delivered</p>
         );
       },
       sortable: true,
@@ -80,7 +133,7 @@ const DeliveryOrderListData = ({ permission }) => {
       button: true,
       width: "150px",
       grow: 2,
-      cell: (deliveryOrderData) => (
+      cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
           {permission?.isPDF ? (
             <a
@@ -96,18 +149,16 @@ const DeliveryOrderListData = ({ permission }) => {
                 borderRadius: "5px",
               }}
               onClick={() => {
-                //   downloadInvoicePDF(
-                //     deliveryOrderData,
-                //     finishGoodsData,
-                //     customerInfo,
-                //     unitInfo,
-                //     sizeInfo,
-                //     paymentInfo,
-                //     base64Logo,
-                //     signature,
-                //     { companyinfo },
-                //     reportTitle
-                //   );
+                downloadDeliveryOrderPDF(
+                  row,
+                  deliveryOrderData,
+                  invoiceInformation,
+                  clientInformation,
+                  finishGoodsInfo,
+                  itemsizeinfo,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -130,7 +181,7 @@ const DeliveryOrderListData = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-invoice/${deliveryOrderData?._id}`);
+                window.open(`update-invoice/${row?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -162,10 +213,20 @@ const DeliveryOrderListData = ({ permission }) => {
                   dangerMode: true,
                 }).then((willDelete) => {
                   if (willDelete) {
-                    // deleteInvoice(deliveryOrderData?._id);
-                    swal("Your data has been deleted!", {
-                      icon: "success",
-                    });
+                    if (row.deliveryStatus == true) {
+                      swal({
+                        title: "Sorry!",
+                        text: "Delivery already completed.",
+                        icon: "warning",
+                        button: "OK",
+                      });
+                    } else {
+                      deleteDOInfo(row?._id);
+                      refetch();
+                      swal("Your data has been deleted!", {
+                        icon: "success",
+                      });
+                    }
                   } else {
                     swal("Your data is safe!");
                   }
@@ -202,9 +263,18 @@ const DeliveryOrderListData = ({ permission }) => {
         borderRight: "1px solid gray",
       },
     },
+    title: {
+      style: {
+        fontSize: "24px",
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#4A90E2",
+        padding: "10px",
+      },
+    },
   };
 
-  const filteredItems = deliveryOrderData?.filter(
+  const filteredItems = transformedDOData?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
@@ -295,6 +365,18 @@ const DeliveryOrderListData = ({ permission }) => {
       <div className="col mt-sm-4 mt-md-4 mt-lg-0">
         <div className="shadow-lg">
           <DataTable
+            title={
+              <h2
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#000",
+                  padding: "10px",
+                }}
+              >
+                DO List
+              </h2>
+            }
             columns={columns}
             data={filteredItems}
             defaultSortField="name"

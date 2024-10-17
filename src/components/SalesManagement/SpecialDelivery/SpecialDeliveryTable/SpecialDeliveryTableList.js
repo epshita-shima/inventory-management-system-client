@@ -136,7 +136,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
       }
     });
   };
-console.log(formValues)
+
   const handleSpecialApprove = async () => {
     if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f"){
       // const response = await approveStatus(selectedData);
@@ -625,7 +625,7 @@ console.log(formValues)
                     value: 0,
                   }}
                   value={invoiceListOption?.filter(function (option) {
-                    return option?.label === piNumber;
+                    return option?.value === piNumber;
                   })}
                   styles={{
                     control: (baseStyles, state) => ({
@@ -650,14 +650,14 @@ console.log(formValues)
                     },
                   })}
                   onChange={(e) => {
-                    setPINumber(e.label);
+                    setPINumber(e.value);
                     const invoiceListMatchingData = invoiceList.find(
                       (data) => data._id === e.value
                     );
                     setInvoiveByInvoiceNumber(invoiceListMatchingData);
                     setFilters((prevFilters) => ({
                       ...prevFilters,
-                      piNumber: e.label,
+                      piNumber: e.value,
                     }));
                   }}
                 ></Select>

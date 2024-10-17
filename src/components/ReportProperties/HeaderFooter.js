@@ -679,6 +679,7 @@ const downloadPaymentReceivedPDF = (
   // Save the PDF
   doc.save(`${fileName}.pdf`);
 };
+
 const downloadPaymentReceivedAllSelectedPIPDF = (
   data,
   customerInfo,
@@ -780,6 +781,149 @@ const downloadPaymentReceivedAllSelectedPIPDF = (
     },
   });
 
+  addFooterForPaymentReceive(doc, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc.save(`${fileName}.pdf`);
+};
+
+const downloadDeliveryOrderPDF = (
+  row,
+  data,
+  invoiceInformation,
+  customerInfo,
+  finishGoods,
+  itemsizeinfo,
+  companyinfo,
+  reportTitle
+) => {
+console.log(row,
+  data)
+  const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
+  const customerName = customerInfo?.find((x) => x._id === piInfo.customerID);
+
+  console.log(customerName)
+
+
+  // const totalNetQuantity=
+
+  const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
+  const doc = new jsPDF();
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const xCoordinate = 20;
+  const labelWidth = 40;
+
+  const textY = 60;
+
+  // Left side text
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Client Name", xCoordinate, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${customerName?.clientName}`, xCoordinate + labelWidth, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Client Address", xCoordinate, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${customerName?.address}`, xCoordinate + labelWidth, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("PI Number", xCoordinate, textY + 12);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${piInfo.invoiceNo}`, xCoordinate + labelWidth, textY + 12);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("DO Number", xCoordinate, textY + 18);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${row.doNo}`, xCoordinate + labelWidth, textY + 18);
+
+  // Calculate the position for the second table
+  const finalY = doc.previousAutoTable.finalY || 80;
+const filteredData=data.find((item)=>item._id===row._id)
+const itemNames = filteredData?.detailsData.map((item) => {
+  const foundItem = finishGoods?.find((rawItem) => rawItem._id === item.itemId);
+  return foundItem   // Assuming finishGoods has itemName field
+});
+const filteredItemSize = itemNames?.map((item) => {
+  const foundSize = itemsizeinfo?.find((rawItem) => rawItem._id === item.sizeId);
+  console.log(foundSize)
+  return foundSize 
+});
+
+  const finalRows = filteredData?.detailsData?.map((rows, index) =>{
+    const itemName = itemNames[index]?.itemName 
+    const filteredItemSizes = filteredItemSize[index]?.sizeInfo 
+    return[
+      index + 1,
+      `${itemName} (${filteredItemSizes})`,
+      rows.previousDelivaryQty == 0 ? "-" : rows.previousDelivaryQty,
+      rows.deliverQty == 0 ? "-" : rows.deliverQty,
+    ]
+  });
+
+  const totalDeliverQty = filteredData?.detailsData?.reduce((accumulator, rows) => {
+    return accumulator + (parseInt(rows.deliverQty, 10) || 0); // Convert to number
+  }, 0);
+
+  finalRows.push([
+    {
+      content: "Total",
+      colSpan: 3,
+      styles: { halign: "right", fontStyle: "bold" },
+    },
+    totalDeliverQty
+
+  ]);
+  doc.autoTable({
+    head: [
+      [
+        "Sl.",
+        "Item Name",
+        "Previous Delivered Qty",
+        "Delivered Qty"
+      ],
+    ],
+
+    body: finalRows,
+    startY: finalY + 10,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128],
+      textColor: [255, 255, 255],
+    },
+    theme: "grid",
+    tableLineWidth: 0.5,
+    styles: {
+      lineColor: [0, 0, 0],
+      textColor: [0, 0, 0],
+      font: "times",
+      fontSize: 9,
+      overflow: "linebreak",
+      cellWidth: "wrap",
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: "auto" },
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center";
+      // const lastRowIndex = data.table.body.length - 1;
+
+      // if (data.row.index === lastRowIndex) {
+     
+      //   data.cell.styles.fontSize = 10;
+      //   data.cell.styles.fontStyle = "bold";
+      // }
+    },
+  });
+
+  // Add footer text to each page
   addFooterForPaymentReceive(doc, companyinfo, reportTitle);
 
   // Save the PDF
@@ -1489,6 +1633,7 @@ export {
   downloadProductionPDFPERBatch,
   downloadPaymentReceivedPDF,
   downloadPaymentReceivedAllSelectedPIPDF,
+  downloadDeliveryOrderPDF,
   downloadHeadingProductionPDF,
   downloadInvoiceSingleDataPDF,
 };

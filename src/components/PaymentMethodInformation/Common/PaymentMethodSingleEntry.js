@@ -182,7 +182,7 @@ const PaymentMethodSingleEntry = () => {
         });
       });
       const filterPiData = invoiceInformation?.find(
-        (item) => item.invoiceNo === modelData.piNumber
+        (item) => item._id === modelData.piNumber
       );
       const totalPiAmount = filterPiData?.detailsData.reduce(
         (acc, item) => acc + item.totalAmount,
@@ -212,6 +212,8 @@ const PaymentMethodSingleEntry = () => {
         .reduce((acc, amount) => acc + amount, 0);
       const totalPreviousAdjustPayment =
         previousAdjustPayment + totalAdjustmentAmount;
+        console.log(totalPreviousAdjustPayment , totalPiAmount)
+
       try {
         if (totalPreviousAdjustPayment < totalPiAmount) {
           const response = await insertPaymentReceive(modelData);
@@ -496,14 +498,14 @@ const PaymentMethodSingleEntry = () => {
                                             option
                                           ) {
                                             return (
-                                              option?.label ===
+                                              option?.value ===
                                               updatePaymentReceiveInformation?.piNumber
                                             );
                                           })
                                         : invoiceListOption?.filter(function (
                                             option
                                           ) {
-                                            return option?.label === piNumber;
+                                            return option?.value === piNumber;
                                           })
                                     }
                                     styles={{
@@ -532,11 +534,11 @@ const PaymentMethodSingleEntry = () => {
                                     })}
                                     onChange={(e) => {
                                       if (id) {
-                                        setPINumber(e.label);
-                                        setFieldValue("piNumber", e.label);
+                                        setPINumber(e.value);
+                                        setFieldValue("piNumber", e.value);
                                         const filterPaymentData =
                                           paymnetReceiveData?.find(
-                                            (data) => data.piNumber === e.label
+                                            (data) => data.piNumber === e.value
                                           );
                                         console.log(filterPaymentData);
                                         if (filterPaymentData !== undefined) {
@@ -571,12 +573,12 @@ const PaymentMethodSingleEntry = () => {
                                           }
                                         );
                                       } else {
-                                        setPINumber(e.label);
-                                        setFieldValue("piNumber", e.label);
+                                        setPINumber(e.value);
+                                        setFieldValue("piNumber", e.value);
                                         const filterPaymentData =
                                           paymnetReceiveData?.filter(
                                             (data) =>
-                                              data.piNumber === e.label &&
+                                              data.piNumber === e.value &&
                                               data.clientId === clientName
                                           );
                                         console.log(filterPaymentData);

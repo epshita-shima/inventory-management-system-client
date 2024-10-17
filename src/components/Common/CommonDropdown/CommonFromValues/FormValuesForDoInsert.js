@@ -13,6 +13,7 @@ const getInitialDOFormValues = (piNumber, makebyUser) => ({
   updateDate: null,
   detailsData: [
     {
+      piNumber: "",
       piDetailsId: "",
       itemId: "",
       previousDelivaryQty: "",

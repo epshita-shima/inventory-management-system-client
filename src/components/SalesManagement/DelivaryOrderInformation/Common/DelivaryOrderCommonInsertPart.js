@@ -65,7 +65,7 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: singleInvoiceData } = useGetSingleInvoiceQuery(invoiceId);
   const [updateInvoiceShipmentNo] = useUpdateInvoiceShipmentMutation();
 
-  const [insertDOInfo] =useInsertDeliveryOrderInformationMutation()
+  const [insertDOInfo] = useInsertDeliveryOrderInformationMutation();
   console.log(singleInvoiceData?.shipmentNo + 1);
 
   useEffect(() => {
@@ -191,13 +191,13 @@ const DelivaryOrderCommonInsertPart = () => {
     }
   }, [piNumber, singlePaymentReceiveInfo]);
 
-console.log(paymentReceiveSelectedItem)
+  console.log(paymentReceiveSelectedItem);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const removeDashFromDate = new Date().toLocaleDateString("en-CA");
     const removeDash = removeDashFromDate.replace(/-/g, "");
- 
+
     const serialData = {
       serialNo: serialNo?.serialNo,
       type: "do",
@@ -226,29 +226,30 @@ console.log(paymentReceiveSelectedItem)
       approveStatus: false,
       approveBy: "",
       approveDate: "",
-      deliveryStatus:false,
+      deliveryStatus: false,
       makeBy: makebyUser || "",
       updateBy: null,
       makeDate: new Date(),
       updateDate: null,
-      detailsData:[]
+      detailsData: [],
     };
 
-    paymentReceiveSelectedItem[0]?.detailsData.map((item)=>{
+    paymentReceiveSelectedItem[0]?.detailsData.map((item) => {
       modelData.detailsData.push({
+        piNumber: paymentReceiveSelectedItem[0]?.piNumber,
         piDetailsId: item.piDetailsId,
-      itemId: item.itemId,
-      previousDelivaryQty: 0,
-      dueQty: 0,
-      deliverQty: item.totalNetQuantity
+        itemId: item.itemId,
+        previousDelivaryQty: 0,
+        dueQty: 0,
+        deliverQty: item.totalNetQuantity,
       });
-    })
+    });
 
     const response = await insertDOInfo(modelData);
     if (response?.data?.status === 200) {
       await Promise.all([
         createSerialNo(serialData),
-        createSerialNo(delivaryChallanData)
+        createSerialNo(delivaryChallanData),
       ]);
       serialRefetch();
       await updateInvoiceShipmentNo(singleInvoiceData);
@@ -260,16 +261,13 @@ console.log(paymentReceiveSelectedItem)
 
   useEffect(() => {}, [paymentReceiveSelectedItem]);
 
-  console.log(piNumber)
-
   useEffect(() => {
     if (piType !== "" && piNumber !== "") {
       setIsDisplay(true);
     } else {
       setIsDisplay(false);
     }
-  
-}, [piNumber, piType]);
+  }, [piNumber, piType]);
 
   return (
     <div
@@ -339,7 +337,7 @@ console.log(paymentReceiveSelectedItem)
                                   height: "25px",
                                 }}
                                 onClick={() => {
-                                  navigate("/main-view/payment-received-list");
+                                  navigate("/main-view/do-list");
                                 }}
                               >
                                 <FontAwesomeIcon
@@ -452,7 +450,7 @@ console.log(paymentReceiveSelectedItem)
                                     value={invoiceListOption?.filter(function (
                                       option
                                     ) {
-                                      return option?.label === piNumber;
+                                      return option?.value === piNumber;
                                     })}
                                     styles={{
                                       control: (baseStyles, state) => ({
@@ -480,14 +478,14 @@ console.log(paymentReceiveSelectedItem)
                                     })}
                                     onChange={(e) => {
                                       setInvoiceId(e.value);
-                                      setPINumber(e.label);
-                                      setFieldValue("piNumber", e.label);
+                                      setPINumber(e.value);
+                                      setFieldValue("piNumber", e.value);
                                       if (
                                         paymentReceiveInformation.length > 0
                                       ) {
                                         const matchPIWithPaymentReceive =
                                           paymentReceiveInformation.filter(
-                                            (item) => item.piNumber === e.label
+                                            (item) => item.piNumber === e.value
                                           );
                                         if (
                                           matchPIWithPaymentReceive.length > 0
