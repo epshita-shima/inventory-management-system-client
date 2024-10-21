@@ -4,7 +4,7 @@ const deliveryinfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllDelieryOrderInformation: builder.query({
       query: () => "/delivery-order",
-      providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo,deletedeliveryorderinfo"],
+      providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","changdeliveryorderapprove","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
     }),
@@ -18,6 +18,7 @@ const deliveryinfoApi = api.injectEndpoints({
         }
       },
     }),
+
     getFilteredDeliveryOrder: builder.query({
       query: (queryParams) => ({
         url: 'delivery-order/filtered',
@@ -27,7 +28,19 @@ const deliveryinfoApi = api.injectEndpoints({
       refetchOnFocus: true,
       }),
     }),
-
+    insertDeliveryOrderInformation: builder.mutation({
+      query: (payload) => ({
+        url: "/delivery-order",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: ["insertdeliveryorderinfo"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+    
     updateDeliveryOrderInformation: builder.mutation({
       query: (payload) => ({
         url: `/delivery-order/${payload._id}`,
@@ -41,13 +54,15 @@ const deliveryinfoApi = api.injectEndpoints({
       }),
     }),
 
-    insertDeliveryOrderInformation: builder.mutation({
-      query: (payload) => ({
-        url: "/delivery-order",
-        method: "POST",
-        body: payload,
+
+
+    updateDeliveryOrderApproveStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/delivery-order/approve-status",
+        method: "PUT",
+        body: dataToUpdate,
       }),
-      invalidatesTags: ["insertdeliveryorderinfo"],
+      invalidatesTags: ["changdeliveryorderapprove"],
       transformResponse: (response, meta) => ({
         data: response,
         status: meta.response.status,
@@ -70,9 +85,10 @@ const deliveryinfoApi = api.injectEndpoints({
 
 export const {
   useGetAllDelieryOrderInformationQuery,
-  useLazyGetFilteredDeliveryOrderQuery,
   useInsertDeliveryOrderInformationMutation,
   useGetSingleDeliveryOrderInformationQuery,
+  useLazyGetFilteredDeliveryOrderQuery,
   useUpdateDeliveryOrderInformationMutation,
+  useUpdateDeliveryOrderApproveStatusMutation,
   useDeleteDeliveryOrderInformationMutation,
 } = deliveryinfoApi;

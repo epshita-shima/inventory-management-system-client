@@ -104,7 +104,8 @@ const DelivaryOrderCommonInsertPart = () => {
     function groupDataByPiNumberAndItemId(data) {
       const groupedData = {};
       data?.forEach((entry) => {
-        const { piNumber, detailsData } = entry;
+        const { piNumber, clientId, detailsData } = entry;
+        console.log(clientId);
         detailsData?.forEach((item) => {
           const { itemId, piDetailsId, amount, quantity, paymentStatus } = item;
           if (!groupedData[piNumber]) {
@@ -113,6 +114,7 @@ const DelivaryOrderCommonInsertPart = () => {
           if (!groupedData[piNumber][itemId]) {
             groupedData[piNumber][itemId] = {
               piNumber,
+              clientId,
               itemId,
               paidTotalQuantity: 0,
               paidTotalAmount: 0,
@@ -168,6 +170,7 @@ const DelivaryOrderCommonInsertPart = () => {
       } else {
         acc.push({
           piNumber: item.piNumber,
+          clientId: item.clientId,
           detailsData: [
             {
               itemId: item.itemId,
@@ -185,13 +188,13 @@ const DelivaryOrderCommonInsertPart = () => {
 
       return acc;
     }, []);
+
+    console.log(result);
     if (result) {
       setPaymentReceiveSelectedItem(result);
       setCheckNetTotalQuantity(result);
     }
   }, [piNumber, singlePaymentReceiveInfo]);
-
-  console.log(paymentReceiveSelectedItem);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -205,6 +208,7 @@ const DelivaryOrderCommonInsertPart = () => {
       makeby: makebyUser,
       updateby: "",
     };
+
     const delivaryChallanData = {
       serialNo: serialNo?.serialNo,
       type: "deliveryChallan",
@@ -214,6 +218,7 @@ const DelivaryOrderCommonInsertPart = () => {
     };
 
     const modelData = {
+      clientId: paymentReceiveSelectedItem[0]?.clientId,
       piNumber: paymentReceiveSelectedItem[0]?.piNumber,
       doNo: `DO-${removeDash}-${
         serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
@@ -236,6 +241,7 @@ const DelivaryOrderCommonInsertPart = () => {
 
     paymentReceiveSelectedItem[0]?.detailsData.map((item) => {
       modelData.detailsData.push({
+        clientId: paymentReceiveSelectedItem[0]?.clientId,
         piNumber: paymentReceiveSelectedItem[0]?.piNumber,
         piDetailsId: item.piDetailsId,
         itemId: item.itemId,
@@ -246,6 +252,7 @@ const DelivaryOrderCommonInsertPart = () => {
     });
 
     const response = await insertDOInfo(modelData);
+    console.log(modelData);
     if (response?.data?.status === 200) {
       await Promise.all([
         createSerialNo(serialData),
@@ -487,6 +494,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                           paymentReceiveInformation.filter(
                                             (item) => item.piNumber === e.value
                                           );
+                                        console.log(matchPIWithPaymentReceive);
                                         if (
                                           matchPIWithPaymentReceive.length > 0
                                         ) {
@@ -500,6 +508,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                             icon: "warning",
                                             button: "OK",
                                           });
+                                          setIsDisplay(false);
                                         }
                                       }
 

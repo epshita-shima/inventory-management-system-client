@@ -166,30 +166,7 @@ const DeliveryOrderListData = ({ permission }) => {
           ) : (
             ""
           )}
-          {permission?.isUpdated ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Update menu"
-              style={{
-                color: "#2DDC1B",
-                border: "2px solid #2DDC1B",
-                padding: "3px",
-                borderRadius: "5px",
-                marginLeft: "10px",
-              }}
-              onClick={() => {
-                window.open(`update-invoice/${row?._id}`);
-              }}
-            >
-              <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-
+    
           {permission?.isRemoved ? (
             <a
               target="_blank"

@@ -1,12 +1,12 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react'
-import DeliveryOrderListData from './DeliveryOrderListData';
-import { useGetAllUserQuery } from '../../../../../redux/features/user/userApi';
-import { useNavigate } from 'react-router-dom';
-import DeliveryOrderApproveList from '../../DeliveryOderApproveList/DeliveryOrderApproveList';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useMemo, useState } from "react";
 
-const DeliveryOrderList = () => {
+import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
+import { useNavigate } from "react-router-dom";
+import DeliveryOrderApproveListData from "./DeliveryOrderApproveListData";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const DeliveryOrderApproveList = () => {
     const clickhandler = (name) => console.log("delete", name);
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
   
@@ -27,7 +27,7 @@ const DeliveryOrderList = () => {
           if (currentUser) {
             currentUser?.menulist?.forEach((menu) => {
               const userListSubMenu = menu?.items?.find(
-                (subItem) => subItem?.label === "DO List"
+                (subItem) => subItem?.label === "Approve List"
               );
               if (userListSubMenu) {
                 userList = userListSubMenu;
@@ -80,36 +80,9 @@ const DeliveryOrderList = () => {
     }
     return (
         <div>
-         <DeliveryOrderListData permission={permission}></DeliveryOrderListData>
-          {permission?.isInserted ? (
-            <div
-              className={`position-absolute`}
-              style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
-            >
-              <div className="">
-                <a
-                  href="/main-view/create-do"
-                  target="_blank"
-                  className="text-white text-center d-flex justify-content-center align-items-center"
-                  style={{
-                    backgroundColor: "#2DDC1B",
-                    height: "40px",
-                    width: "40px",
-                    borderRadius: "50px",
-                  }}
-                >
-                  <FontAwesomeIcon
-                    className="text-white fs-4"
-                    icon={faPlus}
-                  ></FontAwesomeIcon>
-                </a>
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
+         <DeliveryOrderApproveListData permission={permission}></DeliveryOrderApproveListData>
         </div>
       );
-}
+};
 
-export default DeliveryOrderList
+export default DeliveryOrderApproveList;

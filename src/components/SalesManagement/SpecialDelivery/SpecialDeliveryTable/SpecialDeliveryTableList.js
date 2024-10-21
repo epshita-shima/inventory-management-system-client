@@ -78,7 +78,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
     getInitialFormValues(customerID, piNumber, makebyUser, new Date())
   );
 
-  console.log(paymentStatusMood);
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);

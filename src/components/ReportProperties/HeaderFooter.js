@@ -903,7 +903,7 @@ const filteredItemSize = itemNames?.map((item) => {
       lineColor: [0, 0, 0],
       textColor: [0, 0, 0],
       font: "times",
-      fontSize: 9,
+      fontSize: 10,
       overflow: "linebreak",
       cellWidth: "wrap",
     },

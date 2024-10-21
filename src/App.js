@@ -45,6 +45,8 @@ import InvoiceInformationList from "./components/SalesManagement/ProformaInvoice
 import SpecialDeliveryTableList from "./components/SalesManagement/SpecialDelivery/SpecialDeliveryTable/SpecialDeliveryTableList";
 import DelivaryOrderCommonInsertPart from "./components/SalesManagement/DelivaryOrderInformation/Common/DelivaryOrderCommonInsertPart";
 import DeliveryOrderList from "./components/SalesManagement/DelivaryOrderInformation/Index/DeliveryOrderListTable/DeliveryOrderList";
+import DeliveryOrderApproveList from "./components/SalesManagement/DelivaryOrderInformation/DeliveryOderApproveList/DeliveryOrderApproveList";
+import FinishGoodsDeliveryList from "./components/FinishGoodsDelivery/DeliveryListTable/FinishGoodsDeliveryList";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -283,6 +285,18 @@ function App() {
                 path="do-list"
                 element={
                   <DeliveryOrderList></DeliveryOrderList>
+                }
+              ></Route>
+              <Route
+                path="approve-list"
+                element={
+                  <DeliveryOrderApproveList></DeliveryOrderApproveList>
+                }
+              ></Route>
+              <Route
+                path="list-page"
+                element={
+                  <FinishGoodsDeliveryList></FinishGoodsDeliveryList>
                 }
               ></Route>
               {/* <Route
