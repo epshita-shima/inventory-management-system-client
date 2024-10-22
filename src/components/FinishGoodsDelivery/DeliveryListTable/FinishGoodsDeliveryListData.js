@@ -9,6 +9,7 @@ import {
   faCheckToSlot,
   faDownload,
   faFilePdf,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useLazyGetFilteredFinishGoodsDeliveryInfoQuery } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
@@ -31,13 +32,13 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [filters, setFilters] = useState({
-    clientId:"",
+    clientId: "",
     approveStatus: "",
   });
   const { data: clientInformation } =
     useGetAllClientInformationQuery(undefined);
   const [trigger, { data: filteredDatas, error, isFetching }] =
-  useLazyGetFilteredFinishGoodsDeliveryInfoQuery();
+    useLazyGetFilteredFinishGoodsDeliveryInfoQuery();
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
@@ -53,17 +54,16 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     }))
   );
 
-
-  console.log(filteredDatas)
+  console.log(filteredDatas);
 
   const handleApproveStatus = async (e, doData) => {
     const updatedObject = {
       ...doData,
-      approveStatus: true, // Toggle approveStatus
+      approveStatus: true,
       approveBy: getMakebyUser(),
       approveDate: new Date(),
     };
-    console.log(updatedObject);
+
     const response = await insertApproveStatus(updatedObject);
     if (response.data.status === 200) {
       swal("Done", "Data Update status Successfully", "success");
@@ -83,7 +83,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   ];
 
   const handleApplyFilters = () => {
-    if (filters.approveStatus !== "" && filters.clientId !== "" ) {
+    if (filters.approveStatus !== "" || filters.clientId !== "") {
       setExecuteQuery(true);
     }
   };
@@ -105,8 +105,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     }
   }, [executeQuery, trigger, filters, filteredDatas]);
 
-
-
   const columns = [
     {
       name: "Sl.",
@@ -117,9 +115,8 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     {
       name: "Client Name",
       selector: (row) => {
-        const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
         const clientInfo = clientInformation?.find(
-          (x) => x._id == piInfo?.clientId
+          (x) => x._id ==row?.clientId
         );
         return clientInfo ? clientInfo?.clientName : "N/A";
       },
@@ -150,40 +147,31 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
       filterable: true,
     },
 
-    {
-      name: "Item Name",
-      selector: (row) => {
-        const itemName = finishGoodsInfo?.find(
-          (x) => x._id === row?.detailsData.itemId
-        );
-        return itemName ? itemName.itemName : "N/A";
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
+    // {
+    //   name: "Item Name",
+    //   selector: (row) => {
+    //     const itemName = finishGoodsInfo?.find(
+    //       (x) => x._id === row?.detailsData.itemId
+    //     );
+    //     return itemName ? itemName.itemName : "N/A";
+    //   },
+    //   sortable: true,
+    //   center: true,
+    //   filterable: true,
+    // },
 
     {
       name: "Delivery Quantity",
-      selector: (row) => row.detailsData?.deliverQty,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Delivery Status",
       selector: (row) => {
-        return row.isApproved ? (
-          <p className="text-success">Approved</p>
-        ) : (
-          <p className="text-danger fw-bold">Not Delivered</p>
-        );
+        const totalDeliverQty = row.detailsData.reduce((acc, cur) => acc + parseFloat(cur.deliverQty || 0), 0);
+        console.log(totalDeliverQty);
+        return totalDeliverQty; // Return the total if needed
       },
       sortable: true,
       center: true,
       filterable: true,
     },
+
 
     {
       name: "Action",
@@ -192,36 +180,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
       grow: 2,
       cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
-          {row.approveStatus === false && (
-            <a
-              target="_blank"
-              className="action-icon"
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="approve item"
-              style={{
-                textDecoration: "none",
-                color: "red",
-                // fontSize: "22px",
-                textAlign: "center",
-                fontWeight: "bold",
-                border: `${
-                  transformedDOData?.items?.length == 0
-                    ? "2px solid gray"
-                    : "2px solid red"
-                }`,
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={(e) => {
-                handleApproveStatus(e, row);
-              }}
-            >
-              <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
-            </a>
-          )}
-
-          {permission?.isPDF ? (
+           {permission?.isPDF && (
             <a
               target="_blank"
               className={` action-icon `}
@@ -233,7 +192,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 border: "2px solid orange",
                 padding: "3px",
                 borderRadius: "5px",
-                marginLeft: "5px",
               }}
               onClick={() => {
                 downloadDeliveryOrderPDF(
@@ -250,9 +208,29 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
+          {permission?.isUpdated && row.deliveryStatus == false && (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Show Details"
+              style={{
+                color: "#2DDC1B",
+                border: "2px solid #2DDC1B",
+                padding: "3px",
+                borderRadius: "5px",
+                marginLeft: "10px",
+              }}
+              onClick={() => {
+                window.open(`finish-goods-delivery-order-info/${row?._id}`);
+              }}
+            >
+              <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
+            </a>
+          )}
+         
         </div>
       ),
     },
@@ -280,7 +258,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     },
   };
 
-  const filteredItems = transformedDOData?.filter(
+  const filteredItems = filteredDatas?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
@@ -319,7 +297,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
             style={{ width: "75%" }}
           >
-            <div style={{width:"35%"}}>
+            <div style={{ width: "35%" }}>
               <label htmlFor="">Client Name</label>
               <div>
                 <Select
@@ -366,7 +344,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div style={{width:"35%"}}>
+            <div style={{ width: "35%" }}>
               <label htmlFor="">Approve Type</label>
               <div>
                 <Select
@@ -447,7 +425,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 onClick={() => {
                   setFilters((prevFilters) => ({
                     ...prevFilters,
-                    clientId:'',
+                    clientId: "",
                     approveStatus: "",
                   }));
                   setIsTableDisplay(false);

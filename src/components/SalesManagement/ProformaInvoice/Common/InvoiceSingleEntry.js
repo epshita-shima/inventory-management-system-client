@@ -56,7 +56,7 @@ const InvoiceSingleEntry = ({
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
-            className="text-center custom-datepicker-production"
+            className="text-center custom-datepicker-invoice"
             value={
               id
                 ? new Date(updateSingleInvoiceData?.piDate).toLocaleDateString(
@@ -98,7 +98,7 @@ const InvoiceSingleEntry = ({
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
             dateFormat="y-MM-dd"
-            className="text-center custom-datepicker-production"
+            className="text-center custom-datepicker-invoice"
             value={
               id
                 ? new Date(

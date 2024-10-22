@@ -1,4 +1,4 @@
-.custom-datepicker-production {
+.custom-datepicker-invoice {
   border: 1px solid #2ddc1b;
   padding: 5px;
   border-radius: 5px;
@@ -66,7 +66,7 @@ input[type="number"] {
   .insertpo-responsive-custom {
     height: calc(30vh - 120px);
   }
-  .custom-datepicker-production {
+  .custom-datepicker-invoice {
     width: 168px;
   }
   .custom-calendar {

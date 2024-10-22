@@ -1,0 +1,282 @@
+import React, { useEffect, useState } from "react";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import { Field, FieldArray, Form, Formik } from "formik";
+import * as Yup from "yup";
+import swal from "sweetalert";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import InsertFinishGoodsDelivery from "../Insert/InsertFinishGoodsDelivery";
+import InsertFinishGoodsDeliveryDetails from "../Insert/InsertFinishGoodsDeliveryDetails";
+import {
+  useGetSingleFinishGoodsDeliveryInformationQuery,
+  useInsertFinishGoodsDeliveryInformationMutation,
+} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
+import { useUpdateDeliveryOrderStatusMutation } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+
+const FinishGoodsDeliveryCommonPart = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const initialValues = {
+    driverName: "",
+    driverContactNo: "",
+    truckNo: "",
+  };
+  const [deliveryOrderInformation, setDeliveryOrderInformation] = useState([]);
+  const { data: singleDeliveryOrderData } =
+    useGetSingleFinishGoodsDeliveryInformationQuery(id);
+  const [insertFinishGoodsDeliveryInfo] =
+    useInsertFinishGoodsDeliveryInformationMutation();
+  const [updateDeliveryOrderStatus] = useUpdateDeliveryOrderStatusMutation();
+
+  useEffect(() => {
+    setDeliveryOrderInformation(singleDeliveryOrderData);
+    setDeliveryOrderInformation((prev) => ({
+        ...prev,
+        deliveryStatus: true, // Change to true or false as needed
+      }));
+  }, [singleDeliveryOrderData]);
+
+  console.log(JSON.stringify(deliveryOrderInformation));
+
+  const handleSubmit = async (e,values) => {
+    e.preventDefault();
+    const modelData = {
+      finishGoodsDeliveryDate: new Date(),
+      piId: deliveryOrderInformation?.piNumber,
+      doId: deliveryOrderInformation?._id,
+      clientId: deliveryOrderInformation?.clientId,
+      totalDelivarQty: deliveryOrderInformation?.detailsData?.reduce(
+        (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
+        0
+      ),
+      driverName:values.driverName,
+      driverContactNo:values.driverContactNo,
+      truckNo:values.truckNo,
+      approveStatus: false,
+      approveBy: "",
+      approveDate: "",
+      makeBy: getMakebyUser(),
+      updateBy: "",
+      makeDate: new Date(),
+      updateDate: "",
+      detailsData: [],
+    };
+    deliveryOrderInformation?.detailsData.map((item) => {
+      modelData.detailsData.push({
+        piDetailsId: item?.piDetailsId,
+        piId: item?.piNumber,
+        doId: deliveryOrderInformation?._id,
+        itemId: item.itemId,
+        deliverQty: item.deliverQty,
+      });
+    });
+
+ 
+
+    const response = await insertFinishGoodsDeliveryInfo(modelData);
+    if (response?.data?.status === 200) {
+        await updateDeliveryOrderStatus(deliveryOrderInformation);
+      swal("Done", "Data Save Successfully", "success");
+    } else if (response?.error?.status === 400) {
+      swal("Not Possible!", response?.error?.data?.message, "error");
+    }
+  };
+
+  return (
+    <div
+      className=" row px-4 mx-4"
+      style={{
+        overflow: "scroll",
+        height: "calc(98vh - 120px)",
+        zIndex: "9999",
+      }}
+    >
+      <div class="">
+        <div className="px-4 rounded-4">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={Yup.object({
+              driverName: Yup.string().required("Required"),
+              driverContactNo: Yup.string()
+                .required("Required")
+                .min(11, "Must be at least 11 characters long")
+                .max(11, "Must be at most 11 characters long")
+                .matches(/^[0-9]+$/, "Must be a valid phone number"),
+              truckNo: Yup.string().required("Required"),
+            })}
+            onSubmit={(values, { setSubmitting, resetForm }) => {
+              resetForm({ values: initialValues });
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              resetForm,
+              setFieldValue,
+              isSubmitting,
+              errors,
+              touched,
+              isValid,
+              dirty,
+            }) => (
+              <Form
+                id="pocreation-form"
+                onSubmit={(e) => {
+                  handleSubmit(e, values, resetForm);
+                }}
+              >
+                <FieldArray
+                  name="detailsData"
+                  render={(arrayHelpers) => {
+                    const details = values.detailsData;
+                    const totalDeliverQtyCalculate =
+                      deliveryOrderInformation?.detailsData?.reduce(
+                        (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
+                        0
+                      );
+                    console.log(totalDeliverQtyCalculate);
+                    return (
+                      <div className=" shadow-lg py-2 px-5">
+                        <div class="container-fluid">
+                          <div class="row justify-content-center">
+                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                              <div className="d-lg-flex justify-content-between align-items-center">
+                                <h2
+                                  style={{
+                                    fontSize: "24px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Finish Goods Delivery Insert Form
+                                </h2>
+                                <div>
+                                  <button
+                                    style={{
+                                      backgroundColor: "#E55566",
+                                      outline: "none",
+                                      border: "none",
+                                      color: "white",
+                                      height: "25px",
+                                    }}
+                                    onClick={() => {
+                                      navigate("/main-view/production-list");
+                                    }}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faArrowAltCircleLeft}
+                                    ></FontAwesomeIcon>
+                                    Back to ItemList
+                                  </button>
+                                </div>
+                              </div>
+                              {
+                                <InsertFinishGoodsDelivery
+                                  values={values}
+                                  deliveryOrderInformation={
+                                    deliveryOrderInformation
+                                  }
+                                  setFieldValue={setFieldValue}
+                                  touched={touched}
+                                  errors={errors}
+                                ></InsertFinishGoodsDelivery>
+                                // <ProductionSingleInfo
+                                // finishGoodsDeliveryDate={finishGoodsDeliveryDate}
+                                //   setFieldValue={setFieldValue}
+                                //   touched={touched}
+                                //   errors={errors}
+                                //   values={values}
+                                //   makebyUser={getMakebyUser()}
+
+                                // ></ProductionSingleInfo>
+                              }
+                              <div>
+                                <h2
+                                  style={{
+                                    fontSize: "20px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Details Information
+                                </h2>
+                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                  <div className="d-lg-flex justify-content-between">
+                                    <button
+                                      type="submit"
+                                      form="pocreation-form"
+                                      className="border-0 "
+                                      style={{
+                                        backgroundColor:
+                                          isValid && dirty ? "#2DDC1B" : "gray",
+                                        color: "white",
+                                        padding: "5px 10px",
+                                        fontSize: "14px",
+                                        fontWeight: 900,
+                                        borderRadius: "5px",
+                                        width: "100px",
+                                      }}
+                                      disabled={!(isValid && dirty)}
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <label htmlFor="totalDeliverQty">
+                                      Total Deliver Qty
+                                    </label>
+                                    <Field
+                                      type="text"
+                                      name={`totalDeliverQty`}
+                                      placeholder="totalDeliverQty"
+                                      value={totalDeliverQtyCalculate}
+                                      disabled
+                                      style={{
+                                        border: "1px solid #2DDC1B",
+                                        padding: "5px",
+                                        width: "60%",
+                                        borderRadius: "5px",
+                                        height: "38px",
+                                        textAlign: "center",
+                                        marginLeft: "5px",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              {
+                                <InsertFinishGoodsDeliveryDetails
+                                  deliveryOrderInformation={
+                                    deliveryOrderInformation
+                                  }
+                                ></InsertFinishGoodsDeliveryDetails>
+                                // <InsertProduction
+                                //   details={details}
+                                //   setFieldValue={setFieldValue}
+                                //   touched={touched}
+                                //   errors={errors}
+                                //   arrayHelpers={arrayHelpers}
+                                //   values={values}
+                                //   receipeOptions={receipeOptions}
+                                //   cftData={cftData}
+                                //   receipeOptionsLessQty={receipeOptionsLessQty}
+                                //   rawMaterialsData={rawMaterialsData}
+                                // ></InsertProduction>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FinishGoodsDeliveryCommonPart;

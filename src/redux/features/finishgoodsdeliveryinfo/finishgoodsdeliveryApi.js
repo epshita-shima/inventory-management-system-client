@@ -31,7 +31,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
 
     insertFinishGoodsDeliveryInformation: builder.mutation({
       query: (payload) => ({
-        url: "/payment-receive",
+        url: "/finish-goods-delivery",
         method: "POST",
         body: payload,
       }),
@@ -40,6 +40,16 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
         data: response,
         status: meta.response.status,
       }),
+    }),
+
+    getSingleFinishGoodsDeliveryInformation: builder.query({
+      query: (id) => {
+        if (id) {
+          return `/finish-goods-delivery/${id}`;
+        } else {
+          throw new Error("DeliveryOrder id is required");
+        }
+      },
     }),
 
     deletefinishgoodsdeliveryInfo: builder.mutation({
@@ -59,4 +69,6 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
 export const {
 useGetAllFinishGoodsDeliveryInformationQuery,
 useLazyGetFilteredFinishGoodsDeliveryInfoQuery,
+useInsertFinishGoodsDeliveryInformationMutation,
+useGetSingleFinishGoodsDeliveryInformationQuery
 } = finishgoodsdeliveryApi;

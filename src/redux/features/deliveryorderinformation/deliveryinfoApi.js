@@ -69,6 +69,19 @@ const deliveryinfoApi = api.injectEndpoints({
       }),
     }),
 
+    updateDeliveryOrderStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/delivery-order/delivery-status",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changdeliveryorderstatus"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+
     deleteDeliveryOrderInformation: builder.mutation({
       query: (id) => ({
         url: `/delivery-order/${id}`,
@@ -90,5 +103,6 @@ export const {
   useLazyGetFilteredDeliveryOrderQuery,
   useUpdateDeliveryOrderInformationMutation,
   useUpdateDeliveryOrderApproveStatusMutation,
+  useUpdateDeliveryOrderStatusMutation,
   useDeleteDeliveryOrderInformationMutation,
 } = deliveryinfoApi;
