@@ -48,6 +48,7 @@ import DeliveryOrderList from "./components/SalesManagement/DelivaryOrderInforma
 import DeliveryOrderApproveList from "./components/SalesManagement/DelivaryOrderInformation/DeliveryOderApproveList/DeliveryOrderApproveList";
 import FinishGoodsDeliveryList from "./components/FinishGoodsDelivery/DeliveryListTable/FinishGoodsDeliveryList";
 import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Common/FinishGoodsDeliveryCommonPart";
+import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -304,6 +305,12 @@ function App() {
                 path="finish-goods-delivery-order-info/:id"
                 element={
                   <FinishGoodsDeliveryCommonPart></FinishGoodsDeliveryCommonPart>
+                }
+              ></Route>
+              <Route
+                path="return-information"
+                element={
+                  <DeliverReturnCommonPart></DeliverReturnCommonPart>
                 }
               ></Route>
               {/* <Route

@@ -123,6 +123,17 @@ const paymnetInformationDropdown = (options) => {
   });
   return result;
 };
+const deliveryOrderDropdown = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.doNo
+    });
+  });
+  return result;
+};
 
 export {
   supplierDropdown,
@@ -135,5 +146,6 @@ export {
   finishGoodsDropdown,
   unitInformationDropdown,
   userInfoDropdown,
-  paymnetInformationDropdown
+  paymnetInformationDropdown,
+  deliveryOrderDropdown
 };

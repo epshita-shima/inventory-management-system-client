@@ -209,7 +209,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
           )}
-          {permission?.isUpdated && row.deliveryStatus == false && (
+          {permission?.isUpdated  && row.approveStatus == true && (
             <a
               target="_blank"
               className={` action-icon `}

@@ -219,7 +219,7 @@ const DelivaryOrderCommonInsertPart = () => {
 
     const modelData = {
       clientId: paymentReceiveSelectedItem[0]?.clientId,
-      piNumber: paymentReceiveSelectedItem[0]?.piNumber,
+      piId: paymentReceiveSelectedItem[0]?.piNumber,
       doNo: `DO-${removeDash}-${
         serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
       }`,
@@ -242,12 +242,14 @@ const DelivaryOrderCommonInsertPart = () => {
     paymentReceiveSelectedItem[0]?.detailsData.map((item) => {
       modelData.detailsData.push({
         clientId: paymentReceiveSelectedItem[0]?.clientId,
-        piNumber: paymentReceiveSelectedItem[0]?.piNumber,
+        piId: paymentReceiveSelectedItem[0]?.piNumber,
         piDetailsId: item.piDetailsId,
         itemId: item.itemId,
         previousDelivaryQty: 0,
         dueQty: 0,
         deliverQty: item.totalNetQuantity,
+        returnStatus: false,
+        returnId: "",
       });
     });
 

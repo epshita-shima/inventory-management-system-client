@@ -1,85 +1,36 @@
-import React, { useEffect, useState } from "react";
-import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import React, { useState } from "react";
+import DeliverReturnSinglePart from "./DeliverReturnSinglePart";
 import { Field, FieldArray, Form, Formik } from "formik";
-import * as Yup from "yup";
-import swal from "sweetalert";
-import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import InsertFinishGoodsDelivery from "../Insert/InsertFinishGoodsDelivery";
-import InsertFinishGoodsDeliveryDetails from "../Insert/InsertFinishGoodsDeliveryDetails";
-import {
-  useGetSingleFinishGoodsDeliveryInformationQuery,
-  useInsertFinishGoodsDeliveryInformationMutation,
-} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
-import { useUpdateDeliveryOrderStatusMutation } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import * as Yup from "yup";
+import swal from "sweetalert";
+import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { invoiceListDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllDelieryOrderInformationAfterDeliverQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 
-const FinishGoodsDeliveryCommonPart = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+const DeliverReturnCommonPart = () => {
+  const { data: invoiceInformation } =
+    useGetAllInvoiceInformationQuery(undefined);
+
+  const { data: deliveryOrderDataInformation } =
+    useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
+
+  const [returnDate, setReturnDate] = useState(new Date());
   const initialValues = {
-    driverName: "",
-    driverContactNo: "",
-    truckNo: "",
+    returnDate: "",
+    piId: "",
+    doId: "",
+    transferFromClientId: "",
+    transferToCompanyId: "",
+    detailsData: [{}],
   };
-  const [deliveryOrderInformation, setDeliveryOrderInformation] = useState([]);
-  const { data: singleDeliveryOrderData } =
-    useGetSingleFinishGoodsDeliveryInformationQuery(id);
-  const [insertFinishGoodsDeliveryInfo] =
-    useInsertFinishGoodsDeliveryInformationMutation();
-  const [updateDeliveryOrderStatus] = useUpdateDeliveryOrderStatusMutation();
 
-  useEffect(() => {
-    setDeliveryOrderInformation(singleDeliveryOrderData);
-    setDeliveryOrderInformation((prev) => ({
-        ...prev,
-        deliveryStatus: true, // Change to true or false as needed
-      }));
-  }, [singleDeliveryOrderData]);
+  const piNumberOptions = invoiceListDropdown(invoiceInformation);
+  console.log(piNumberOptions);
 
-  console.log(JSON.stringify(deliveryOrderInformation));
-
-  const handleSubmit = async (e,values) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const modelData = {
-      finishGoodsDeliveryDate: new Date(),
-      piId: deliveryOrderInformation?.piId,
-      doId: deliveryOrderInformation?._id,
-      clientId: deliveryOrderInformation?.clientId,
-      totalDelivarQty: deliveryOrderInformation?.detailsData?.reduce(
-        (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
-        0
-      ),
-      driverName:values.driverName,
-      driverContactNo:values.driverContactNo,
-      truckNo:values.truckNo,
-      approveStatus: false,
-      approveBy: "",
-      approveDate: "",
-      makeBy: getMakebyUser(),
-      updateBy: "",
-      makeDate: new Date(),
-      updateDate: "",
-      detailsData: [],
-    };
-    deliveryOrderInformation?.detailsData.map((item) => {
-      modelData.detailsData.push({
-        piDetailsId: item?.piDetailsId,
-        piId: item?.piId,
-        doId: deliveryOrderInformation?._id,
-        itemId: item.itemId,
-        deliverQty: item.deliverQty,
-      });
-    });
-
-    const response = await insertFinishGoodsDeliveryInfo(modelData);
-    if (response?.data?.status === 200) {
-        await updateDeliveryOrderStatus(deliveryOrderInformation);
-      swal("Done", "Data Save Successfully", "success");
-      navigate('/main-view/list-page');
-    } else if (response?.error?.status === 400) {
-      swal("Not Possible!", response?.error?.data?.message, "error");
-    }
   };
 
   return (
@@ -129,12 +80,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                   name="detailsData"
                   render={(arrayHelpers) => {
                     const details = values.detailsData;
-                    const totalDeliverQtyCalculate =
-                      deliveryOrderInformation?.detailsData?.reduce(
-                        (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
-                        0
-                      );
-                    console.log(totalDeliverQtyCalculate);
+
                     return (
                       <div className=" shadow-lg py-2 px-5">
                         <div class="container-fluid">
@@ -147,7 +93,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                                     fontWeight: "bold",
                                   }}
                                 >
-                                  Finish Goods Delivery Insert Form
+                                  Sales Return Insert Form
                                 </h2>
                                 <div>
                                   <button
@@ -159,7 +105,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                                       height: "25px",
                                     }}
                                     onClick={() => {
-                                      navigate('/main-view/list-page');
+                                      //   navigate('/main-view/list-page');
                                     }}
                                   >
                                     <FontAwesomeIcon
@@ -167,19 +113,21 @@ const FinishGoodsDeliveryCommonPart = () => {
                                     ></FontAwesomeIcon>
                                     Back to ItemList
                                   </button>
-                                </div> 
+                                </div>
                               </div>
                               {
-                                <InsertFinishGoodsDelivery
+                                <DeliverReturnSinglePart
                                   values={values}
-                                  deliveryOrderInformation={
-                                    deliveryOrderInformation
-                                  }
                                   setFieldValue={setFieldValue}
                                   touched={touched}
                                   errors={errors}
-                                ></InsertFinishGoodsDelivery>
-                             
+                                  returnDate={returnDate}
+                                  setReturnDate={setReturnDate}
+                                  piNumberOptions={piNumberOptions}
+                                  deliveryOrderDataInformation={
+                                    deliveryOrderDataInformation
+                                  }
+                                ></DeliverReturnSinglePart>
                               }
                               <div>
                                 <h2
@@ -218,8 +166,8 @@ const FinishGoodsDeliveryCommonPart = () => {
                                     <Field
                                       type="text"
                                       name={`totalDeliverQty`}
-                                      placeholder="totalDeliverQty"
-                                      value={totalDeliverQtyCalculate}
+                                      placeholder="Total Deliver Qty"
+                                      //   value={totalDeliverQtyCalculate}
                                       disabled
                                       style={{
                                         border: "1px solid #2DDC1B",
@@ -236,23 +184,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                               </div>
 
                               {
-                                <InsertFinishGoodsDeliveryDetails
-                                  deliveryOrderInformation={
-                                    deliveryOrderInformation
-                                  }
-                                ></InsertFinishGoodsDeliveryDetails>
-                                // <InsertProduction
-                                //   details={details}
-                                //   setFieldValue={setFieldValue}
-                                //   touched={touched}
-                                //   errors={errors}
-                                //   arrayHelpers={arrayHelpers}
-                                //   values={values}
-                                //   receipeOptions={receipeOptions}
-                                //   cftData={cftData}
-                                //   receipeOptionsLessQty={receipeOptionsLessQty}
-                                //   rawMaterialsData={rawMaterialsData}
-                                // ></InsertProduction>
+                                // <DeliverReturnSinglePart></DeliverReturnSinglePart>
                               }
                             </div>
                           </div>
@@ -270,4 +202,4 @@ const FinishGoodsDeliveryCommonPart = () => {
   );
 };
 
-export default FinishGoodsDeliveryCommonPart;
+export default DeliverReturnCommonPart;

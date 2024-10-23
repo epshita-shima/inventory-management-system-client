@@ -32,7 +32,7 @@ const InsertFinishGoodsDeliveryDetails = ({ deliveryOrderInformation }) => {
                         (item) => item._id == detail.itemId
                       );
                       console.log(itemName);
-                      const sizeInfo = itemSizeInfo.find(
+                      const sizeInfo = itemSizeInfo?.find(
                         (size) => size._id == itemName?.sizeId
                       );
                       console.log(sizeInfo);
@@ -47,7 +47,7 @@ const InsertFinishGoodsDeliveryDetails = ({ deliveryOrderInformation }) => {
                               type="text"
                               name={`detailsData.${index}.itemName`}
                               placeholder="Less"
-                              value={`${itemName.itemName} (${sizeInfo.sizeInfo})`}
+                              value={`${itemName?.itemName} (${sizeInfo?.sizeInfo})`}
                               disabled
                               style={{
                                 border: "1px solid #2DDC1B",
