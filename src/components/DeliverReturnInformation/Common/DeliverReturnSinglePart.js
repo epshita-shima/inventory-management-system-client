@@ -4,12 +4,26 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { Field } from "formik";
 import swal from "sweetalert";
-import './DeliverReturnSinglePart.css'
+import "./DeliverReturnSinglePart.css";
 import { deliveryOrderDropdown } from "../../Common/CommonDropdown/CommonDropdown";
-const DeliverReturnSinglePart = ({deliveryOrderDataInformation,values, setFieldValue, touched, errors,returnDate,setReturnDate,piNumberOptions }) => {
-const [filteredDeliveryOrderData,setFilteredDeliveryOrderData]=useState([])
-  const doOptions=deliveryOrderDropdown(filteredDeliveryOrderData)
-    return (
+
+const DeliverReturnSinglePart = ({
+  deliveryOrderDataInformation,
+  values,
+  setFieldValue,
+  touched,
+  errors,
+  returnDate,
+  setReturnDate,
+  piNumberOptions,
+  setDoDetailsFilteredData,
+}) => {
+  const [filteredDeliveryOrderData, setFilteredDeliveryOrderData] = useState(
+    []
+  );
+  const doOptions = deliveryOrderDropdown(filteredDeliveryOrderData);
+
+  return (
     <div class="row row-cols-1 row-cols-lg-4">
       <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
         <label htmlFor="paymentId">Return Date</label>
@@ -22,8 +36,6 @@ const [filteredDeliveryOrderData,setFilteredDeliveryOrderData]=useState([])
             selected={returnDate}
             required
             onChange={(returnDate) => {
-              console.log(returnDate);
-
               setReturnDate(returnDate.toLocaleDateString("en-CA"));
               setFieldValue(
                 "productionDate",
@@ -42,13 +54,73 @@ const [filteredDeliveryOrderData,setFilteredDeliveryOrderData]=useState([])
               className="w-100 mb-3"
               aria-label="Default select example"
               name="piId"
-                options={piNumberOptions}
+              options={piNumberOptions}
               defaultValue={{
                 label: "Select PI Number",
                 value: 0,
               }}
-                value={ piNumberOptions.filter(function (option) {
-                        return option.value === values.piId;
+              value={piNumberOptions.filter(function (option) {
+                return option.value === values.piId;
+              })}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  width: "100%",
+                  borderColor: state.isFocused ? "#fff" : "#fff",
+                  border: "1px solid #2DDC1B",
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 9999,
+                  height: "auto",
+                  // overflowY: "scroll",
+                }),
+              }}
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  primary25: "#B8FEB3",
+                  primary: "#2DDC1B",
+                },
+              })}
+              onChange={(e) => {
+                setFieldValue("piId", e.value);
+                console.log(e.value);
+                const filteredDeliveryData =
+                  deliveryOrderDataInformation?.filter(
+                    (order) => order.piId == e.value
+                  );
+                setFilteredDeliveryOrderData(filteredDeliveryData);
+                // swal(
+                //   "Relax!",
+                //   "Production Per Batch not Decleared, Please Contact with HO",
+                //   "warning"
+                // );
+              }}
+            ></Select>
+
+           
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+        <label htmlFor="paymentId">DO Number</label>
+        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
+          <div className="w-100">
+            <Select
+              class="form-select"
+              className="w-100 mb-3"
+              aria-label="Default select example"
+              name="doId"
+              isDisabled={filteredDeliveryOrderData?.length == 0}
+              options={doOptions}
+              defaultValue={{
+                label: "Select DO Number",
+                value: 0,
+              }}
+                value={ doOptions.filter(function (option) {
+                        return option.value === values.doId;
                       })
                 }
               styles={{
@@ -74,77 +146,14 @@ const [filteredDeliveryOrderData,setFilteredDeliveryOrderData]=useState([])
                 },
               })}
               onChange={(e) => {
-                setFieldValue('piId',e.value)
-               console.log(e.value)
-                const filteredDeliveryData=deliveryOrderDataInformation?.filter((order)=>order.piId==e.value)
-                setFilteredDeliveryOrderData(filteredDeliveryData)
-                // swal(
-                //   "Relax!",
-                //   "Production Per Batch not Decleared, Please Contact with HO",
-                //   "warning"
-                // );
-              }}
-            ></Select>
-
-            {touched.piId && errors.piId && (
-              <div className="text-danger">{errors.piId}</div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
-        <label htmlFor="paymentId">DO Number</label>
-        <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
-          <div className="w-100">
-            <Select
-              class="form-select"
-              className="w-100 mb-3"
-              aria-label="Default select example"
-              name="doId"
-              isDisabled={filteredDeliveryOrderData?.length == 0}
-                options={doOptions}
-              defaultValue={{
-                label: "Select DO Number",
-                value: 0,
-              }}
-              //   value={ finishGoodsOptions.filter(function (option) {
-              //           return option.value === values.productionItemName;
-              //         })
-              //   }
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  width: "100%",
-                  borderColor: state.isFocused ? "#fff" : "#fff",
-                  border: "1px solid #2DDC1B",
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
-                }),
-              }}
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary25: "#B8FEB3",
-                  primary: "#2DDC1B",
-                },
-              })}
-              onChange={(e) => {
-                swal(
-                  "Relax!",
-                  "Production Per Batch not Decleared, Please Contact with HO",
-                  "warning"
+                const filteredData = deliveryOrderDataInformation.find(
+                  (doOrder) => doOrder._id === e.value
                 );
+                setFieldValue('doId',e.value)
+                setDoDetailsFilteredData(filteredData);
               }}
             ></Select>
-
-            {touched.doId && errors.doId && (
-              <div className="text-danger">{errors.doId}</div>
-            )}
+           
           </div>
         </div>
       </div>

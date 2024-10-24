@@ -25,15 +25,26 @@ const deliveryinfoApi = api.injectEndpoints({
       },
     }),
 
-    getFilteredDeliveryOrder: builder.query({
+    getDeliveryOrderInfoForReturn: builder.query({
       query: (queryParams) => ({
-        url: 'delivery-order/filtered',
+        url: 'delivery-order/single-info',
         params: queryParams,
-        providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo,deletedeliveryorderinfo"],
+        providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
       }),
     }),
+
+    getFilteredDeliveryOrder: builder.query({
+      query: (queryParams) => ({
+        url: 'delivery-order/filtered',
+        params: queryParams,
+        providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","deletedeliveryorderinfo"],
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+      }),
+    }),
+
     insertDeliveryOrderInformation: builder.mutation({
       query: (payload) => ({
         url: "/delivery-order",
@@ -60,8 +71,6 @@ const deliveryinfoApi = api.injectEndpoints({
       }),
     }),
 
-
-
     updateDeliveryOrderApproveStatus: builder.mutation({
       query: (dataToUpdate) => ({
         url: "/delivery-order/approve-status",
@@ -78,6 +87,18 @@ const deliveryinfoApi = api.injectEndpoints({
     updateDeliveryOrderStatus: builder.mutation({
       query: (dataToUpdate) => ({
         url: "/delivery-order/delivery-status",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changdeliveryorderstatus"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+    updateDeliveryOrderRetunStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/delivery-order/return-status",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -107,9 +128,11 @@ export const {
   useGetAllDelieryOrderInformationAfterDeliverQuery,
   useInsertDeliveryOrderInformationMutation,
   useGetSingleDeliveryOrderInformationQuery,
+  useLazyGetDeliveryOrderInfoForReturnQuery,
   useLazyGetFilteredDeliveryOrderQuery,
   useUpdateDeliveryOrderInformationMutation,
   useUpdateDeliveryOrderApproveStatusMutation,
   useUpdateDeliveryOrderStatusMutation,
+  useUpdateDeliveryOrderRetunStatusMutation,
   useDeleteDeliveryOrderInformationMutation,
 } = deliveryinfoApi;

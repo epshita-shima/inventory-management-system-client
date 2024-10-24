@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeliverReturnSinglePart from "./DeliverReturnSinglePart";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,15 +7,28 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { invoiceListDropdown } from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllDelieryOrderInformationAfterDeliverQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import {
+  useGetAllDelieryOrderInformationAfterDeliverQuery,
+  useUpdateDeliveryOrderRetunStatusMutation,
+} from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import InsertDeliverReturnDetails from "../Insert/InsertDeliverReturnDetails";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
+import { useInsertReturnDeliveredInformationMutation } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 
 const DeliverReturnCommonPart = () => {
+  const [isDisplay, setIsDisplay] = useState(false);
+
+  const [doDetailsFilteredData, setDoDetailsFilteredData] = useState([]);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
-
+  const { data: companyInfo } = useGetCompanyInfoQuery(undefined);
   const { data: deliveryOrderDataInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
-
+  const [insertReturnDelivredInfo] =
+    useInsertReturnDeliveredInformationMutation();
+  const [updateDeliveryOrderReturnStatus] =
+    useUpdateDeliveryOrderRetunStatusMutation();
   const [returnDate, setReturnDate] = useState(new Date());
   const initialValues = {
     returnDate: "",
@@ -23,14 +36,98 @@ const DeliverReturnCommonPart = () => {
     doId: "",
     transferFromClientId: "",
     transferToCompanyId: "",
-    detailsData: [{}],
+    detailsData: [
+      {
+        piDetailsId: "",
+        itemId: "",
+        returnQty: "",
+        deliveredQty: "",
+        deliveryChallanNo: "",
+        piId: "",
+        doId: "",
+      },
+    ],
   };
 
   const piNumberOptions = invoiceListDropdown(invoiceInformation);
-  console.log(piNumberOptions);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (doDetailsFilteredData?.length !== 0) {
+      setIsDisplay(true);
+    }
+  }, [doDetailsFilteredData]);
+
+  useEffect(()=>{
+    setDoDetailsFilteredData((prev) => ({
+      
+    }));
+  },[])
+
+  const handleSubmit = async (e, values) => {
     e.preventDefault();
+   const transformedData=doDetailsFilteredData.detailsData.map((detail) => ({
+      ...detail,
+      returnStatus: true, 
+    }))
+    console.log(transformedData)
+    const modelData = {
+      returnDate: new Date(returnDate),
+      piId: doDetailsFilteredData?.piId,
+      doId: doDetailsFilteredData?._id,
+      transferFromClientId: doDetailsFilteredData?.clientId,
+      transferToCompanyId: companyInfo[0]?._id,
+      clientId: doDetailsFilteredData?.clientId,
+      makeBy: getMakebyUser(),
+      updateBy: "",
+      makeDate: new Date(),
+      updateDate: "",
+      detailsData: [],
+    };
+
+    doDetailsFilteredData?.detailsData.map((item, index) => {
+      modelData.detailsData.push({
+        piDetailsId: item?.piDetailsId,
+        piId: item?.piId,
+        doId: doDetailsFilteredData?._id,
+        itemId: item.itemId,
+        deliveredQty: parseFloat(item.deliverQty),
+        returnQty: parseFloat(values.detailsData[index]?.returnQty) || 0,
+        deliveryChallanNo: doDetailsFilteredData?.deliveryChallanNo,
+      });
+    });
+    console.log(JSON.stringify(modelData));
+    // const allReturnQtyValid = modelData.detailsData.every((detail) => {
+    //   const hasReturnQty = detail.hasOwnProperty("returnQty");
+    //   const isNotEmpty = detail.returnQty === "";
+    //   console.log(
+    //     `Detail:`,
+    //     detail,
+    //     `- Has returnQty: ${!hasReturnQty}, Is not empty: ${isNotEmpty}`
+    //   );
+    //   return !hasReturnQty && isNotEmpty;
+    // });
+
+    // console.log(allReturnQtyValid);
+
+    // if (allReturnQtyValid) {
+    //
+    // } else {
+    // const response = await insertReturnDelivredInfo(modelData);
+    // console.log(response);
+    // if (response?.data?.status === 200) {
+    //   await updateDeliveryOrderReturnStatus(doDetailsFilteredData);
+    //   swal("Done", "Data Save Successfully", "success");
+    //   // navigate('/main-view/list-page');
+    // } else if (response?.error?.status === 400) {
+    //   swal("Not Possible!", response?.error?.data?.message, "error");
+    // }
+    //   swal({
+    //     title: "Not Possible!",
+    //     text: "Please fill request quantity field",
+    //     icon: "warning",
+    //     button: "OK",
+    //   });
+    // }
   };
 
   return (
@@ -47,13 +144,9 @@ const DeliverReturnCommonPart = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
-              driverName: Yup.string().required("Required"),
-              driverContactNo: Yup.string()
-                .required("Required")
-                .min(11, "Must be at least 11 characters long")
-                .max(11, "Must be at most 11 characters long")
-                .matches(/^[0-9]+$/, "Must be a valid phone number"),
-              truckNo: Yup.string().required("Required"),
+              returnQty: Yup.string()
+                .required("Required") // Add validation for returnQty
+                .matches(/^\d+$/, "Must be a number"),
             })}
             onSubmit={(values, { setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
@@ -80,7 +173,14 @@ const DeliverReturnCommonPart = () => {
                   name="detailsData"
                   render={(arrayHelpers) => {
                     const details = values.detailsData;
-
+                    const totalQtyCalculate =
+                      doDetailsFilteredData?.detailsData?.reduce(
+                        (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
+                        0
+                      );
+                    console.log(JSON.stringify(values));
+                    console.log("isValid:", isValid, "dirty:", dirty);
+                    console.log("Form Errors:", errors);
                     return (
                       <div className=" shadow-lg py-2 px-5">
                         <div class="container-fluid">
@@ -127,6 +227,10 @@ const DeliverReturnCommonPart = () => {
                                   deliveryOrderDataInformation={
                                     deliveryOrderDataInformation
                                   }
+                                  setIsDisplay={setIsDisplay}
+                                  setDoDetailsFilteredData={
+                                    setDoDetailsFilteredData
+                                  }
                                 ></DeliverReturnSinglePart>
                               }
                               <div>
@@ -145,8 +249,7 @@ const DeliverReturnCommonPart = () => {
                                       form="pocreation-form"
                                       className="border-0 "
                                       style={{
-                                        backgroundColor:
-                                          isValid && dirty ? "#2DDC1B" : "gray",
+                                        backgroundColor: "#2DDC1B",
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
@@ -154,7 +257,6 @@ const DeliverReturnCommonPart = () => {
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
-                                      disabled={!(isValid && dirty)}
                                     >
                                       Save
                                     </button>
@@ -167,7 +269,7 @@ const DeliverReturnCommonPart = () => {
                                       type="text"
                                       name={`totalDeliverQty`}
                                       placeholder="Total Deliver Qty"
-                                      //   value={totalDeliverQtyCalculate}
+                                      value={totalQtyCalculate}
                                       disabled
                                       style={{
                                         border: "1px solid #2DDC1B",
@@ -183,9 +285,17 @@ const DeliverReturnCommonPart = () => {
                                 </div>
                               </div>
 
-                              {
-                                // <DeliverReturnSinglePart></DeliverReturnSinglePart>
-                              }
+                              {isDisplay && (
+                                <InsertDeliverReturnDetails
+                                  values={values}
+                                  doDetailsFilteredData={doDetailsFilteredData}
+                                  setDoDetailsFilteredData={
+                                    setDoDetailsFilteredData
+                                  }
+                                  setFieldValue={setFieldValue}
+                                  touched={touched}
+                                ></InsertDeliverReturnDetails>
+                              )}
                             </div>
                           </div>
                         </div>
