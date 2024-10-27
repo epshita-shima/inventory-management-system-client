@@ -69,6 +69,8 @@ const FinishGoodsDeliveryCommonPart = () => {
         doId: deliveryOrderInformation?._id,
         itemId: item.itemId,
         deliverQty: item.deliverQty,
+        returnStatus: false,
+        returnQty: 0,
       });
     });
 

@@ -60,7 +60,7 @@ const DeliveryOrderListData = ({ permission }) => {
     {
       name: "Client Name",
       selector: (row) => {
-        const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
+        const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
         const clientInfo = clientInformation?.find(
           (x) => x._id == piInfo?.customerID
         );
@@ -69,13 +69,15 @@ const DeliveryOrderListData = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width:"220px"
     },
 
     {
       name: "PI Number",
       selector: (row) => {
+        console.log(row)
         const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piNumber
+          (x) => x._id === row?.piId
         );
         return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
@@ -95,15 +97,24 @@ const DeliveryOrderListData = ({ permission }) => {
 
     {
       name: "Item Name",
-      selector: (row) => {
+      selector: (row,index) => {
         const itemName = finishGoodsInfo?.find(
           (x) => x._id === row?.detailsData.itemId
         );
-        return itemName ? itemName.itemName : "N/A";
+       
+        const filteredItemSize = finishGoodsInfo?.map((item) => {
+          const foundSize = itemsizeinfo?.find(
+            (rawItem) => rawItem._id === item.sizeId
+          );
+          return foundSize;
+        });
+        const filteredItemSizes = filteredItemSize ? filteredItemSize[index]?.sizeInfo : null;
+        return itemName ? itemName.itemName +` (${filteredItemSizes})` : "N/A";
       },
       sortable: true,
       center: true,
       filterable: true,
+      width:"250px"
     },
 
     {
@@ -112,6 +123,7 @@ const DeliveryOrderListData = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
 
     {
@@ -126,6 +138,7 @@ const DeliveryOrderListData = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "200px",
     },
 
     {

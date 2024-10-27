@@ -5,6 +5,7 @@ import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/ite
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
+import { useGetAllReturnDeliveredInformationQuery } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 
 const InsertDeliverReturnDetails = ({
   doDetailsFilteredData,
@@ -16,6 +17,10 @@ const InsertDeliverReturnDetails = ({
 }) => {
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
+  const { data: previousSalesReturnInfo } =
+    useGetAllReturnDeliveredInformationQuery(undefined);
+  console.log(previousSalesReturnInfo);
+
   return (
     <div class="row justify-content-center">
       <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
@@ -83,7 +88,7 @@ const InsertDeliverReturnDetails = ({
                             }}
                           />
                         </td>
-                        
+
                         <td className="text-center  align-items-center">
                           <Field
                             type="text"
@@ -124,7 +129,7 @@ const InsertDeliverReturnDetails = ({
                             type="text"
                             name={`detailsData.${index}.returnQty`}
                             placeholder="Return Quantity"
-                            value={values.detailsData[{index}]?.returnQty}
+                            value={values.detailsData[{ index }]?.returnQty}
                             required
                             style={{
                               border: "1px solid #2DDC1B",
@@ -135,18 +140,42 @@ const InsertDeliverReturnDetails = ({
                               textAlign: "center",
                             }}
                             onChange={(e) => {
-                              if (detail.deliverQty < e.target.value) {
+                              const newReturnQty = Number(e.target.value); // The new return quantity entered by the user
+                              const itemId = detail.itemId; // The current item's ID
+                              const deliveredQty = detail.deliverQty; // The delivered quantity for this item
+                            
+                              const findMatchedReturnItem =
+                                previousSalesReturnInfo.filter(
+                                  (item) => item.doId === values.doId
+                                );
+                              const totalReturnQtyPerItem = {};
+                                findMatchedReturnItem.forEach((item) => {
+                                  item.detailsData.forEach((detail) => {
+                                    const itemId = detail.itemId;
+                                    const returnQty = Number(detail.returnQty);
+
+                                    if (totalReturnQtyPerItem[itemId]) {
+                                      totalReturnQtyPerItem[itemId] +=
+                                        returnQty;
+                                    } else {
+                                      totalReturnQtyPerItem[itemId] = returnQty;
+                                    }
+                                  });
+                                });
+                                const previouslyReturnedQty = totalReturnQtyPerItem[itemId] || 0;
+                               
+                              if (newReturnQty + previouslyReturnedQty > deliveredQty) {
                                 swal({
                                   title: "Not Possible!",
-                                  text: "You can not return more than delivered quantity",
+                                  text: `You can not return more than ${deliveredQty -previouslyReturnedQty}`,
                                   icon: "warning",
                                   button: "OK",
                                 });
                                 setFieldValue(
                                   `detailsData.${index}.returnQty`,
-                                  ''
+                                  ""
                                 );
-                                e.target.value=''
+                                e.target.value = "";
                               } else {
                                 setFieldValue(
                                   `detailsData.${index}.returnQty`,

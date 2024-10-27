@@ -8,6 +8,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
         "insertfinishgoodsdeliveryinfo",
         "updatefinishgoodsdeliveryinfo",
         "changefinishgoodsdeliverystatus",
+       " changereturnstatus",
         "deletefinishgoodsdeliveryinfo",
       ],
       refetchOnReconnect: true,
@@ -20,9 +21,8 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
         params: queryParams,
         providesTags: [
           "insertfinishgoodsdeliveryinfo",
-          "updatefinishgoodsdeliveryinfo,deletefinishgoodsdeliveryinfo",
+          "updatefinishgoodsdeliveryinfo","changereturnstatus","deletefinishgoodsdeliveryinfo",
         ],
-
         keepUnusedDataFor: 600,
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -50,6 +50,19 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
           throw new Error("DeliveryOrder id is required");
         }
       },
+    }),
+
+    updateFinishGoodsRetunStatus: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/finish-goods-delivery/return-status",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changereturnstatus"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
     }),
 
     deletefinishgoodsdeliveryInfo: builder.mutation({

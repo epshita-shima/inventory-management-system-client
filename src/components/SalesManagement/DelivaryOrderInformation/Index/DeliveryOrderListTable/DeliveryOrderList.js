@@ -78,10 +78,11 @@ const DeliveryOrderList = () => {
         </div>
       );
     }
+    console.log(permission)
     return (
         <div>
          <DeliveryOrderListData permission={permission}></DeliveryOrderListData>
-          {permission?.isInserted ? (
+          {permission?.isInserted && (
             <div
               className={`position-absolute`}
               style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
@@ -105,8 +106,6 @@ const DeliveryOrderList = () => {
                 </a>
               </div>
             </div>
-          ) : (
-            ""
           )}
         </div>
       );

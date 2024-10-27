@@ -14,17 +14,23 @@ import {
 import InsertDeliverReturnDetails from "../Insert/InsertDeliverReturnDetails";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
-import { useInsertReturnDeliveredInformationMutation } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
+import {
+  useInsertReturnDeliveredInformationMutation,
+} from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
+import { useNavigate } from "react-router-dom";
+import { useGetAllFinishGoodsDeliveryInformationQuery } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliverReturnCommonPart = () => {
+  const navigate=useNavigate()
   const [isDisplay, setIsDisplay] = useState(false);
-
   const [doDetailsFilteredData, setDoDetailsFilteredData] = useState([]);
+  const {data:finishGoodsDeliveyInfo}=useGetAllFinishGoodsDeliveryInformationQuery(undefined)
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInfo } = useGetCompanyInfoQuery(undefined);
   const { data: deliveryOrderDataInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
+
   const [insertReturnDelivredInfo] =
     useInsertReturnDeliveredInformationMutation();
   const [updateDeliveryOrderReturnStatus] =
@@ -50,26 +56,14 @@ const DeliverReturnCommonPart = () => {
   };
 
   const piNumberOptions = invoiceListDropdown(invoiceInformation);
-
   useEffect(() => {
     if (doDetailsFilteredData?.length !== 0) {
       setIsDisplay(true);
     }
   }, [doDetailsFilteredData]);
-
-  useEffect(()=>{
-    setDoDetailsFilteredData((prev) => ({
-      
-    }));
-  },[])
-
+console.log(finishGoodsDeliveyInfo)
   const handleSubmit = async (e, values) => {
     e.preventDefault();
-   const transformedData=doDetailsFilteredData.detailsData.map((detail) => ({
-      ...detail,
-      returnStatus: true, 
-    }))
-    console.log(transformedData)
     const modelData = {
       returnDate: new Date(returnDate),
       piId: doDetailsFilteredData?.piId,
@@ -96,38 +90,16 @@ const DeliverReturnCommonPart = () => {
       });
     });
     console.log(JSON.stringify(modelData));
-    // const allReturnQtyValid = modelData.detailsData.every((detail) => {
-    //   const hasReturnQty = detail.hasOwnProperty("returnQty");
-    //   const isNotEmpty = detail.returnQty === "";
-    //   console.log(
-    //     `Detail:`,
-    //     detail,
-    //     `- Has returnQty: ${!hasReturnQty}, Is not empty: ${isNotEmpty}`
-    //   );
-    //   return !hasReturnQty && isNotEmpty;
-    // });
 
-    // console.log(allReturnQtyValid);
-
-    // if (allReturnQtyValid) {
-    //
-    // } else {
-    // const response = await insertReturnDelivredInfo(modelData);
-    // console.log(response);
-    // if (response?.data?.status === 200) {
-    //   await updateDeliveryOrderReturnStatus(doDetailsFilteredData);
-    //   swal("Done", "Data Save Successfully", "success");
-    //   // navigate('/main-view/list-page');
-    // } else if (response?.error?.status === 400) {
-    //   swal("Not Possible!", response?.error?.data?.message, "error");
-    // }
-    //   swal({
-    //     title: "Not Possible!",
-    //     text: "Please fill request quantity field",
-    //     icon: "warning",
-    //     button: "OK",
-    //   });
-    // }
+    const response = await insertReturnDelivredInfo(modelData);
+    console.log(response);
+    if (response?.data?.status === 200) {
+      await updateDeliveryOrderReturnStatus(doDetailsFilteredData);
+      swal("Done", "Data Save Successfully", "success");
+      navigate('/main-view/list-information');
+    } else if (response?.error?.status === 400) {
+      swal("Not Possible!", response?.error?.data?.message, "error");
+    }
   };
 
   return (

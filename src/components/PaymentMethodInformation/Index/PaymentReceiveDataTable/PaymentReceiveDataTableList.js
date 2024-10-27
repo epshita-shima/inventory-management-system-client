@@ -246,7 +246,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     },
     {
       name: "PI Number",
-      selector: (row) => (row.isGroup ? row.piNumber : row.piNumber),
+      selector: (row) => {
+        const invoiceNo = invoiceData?.find((x) => x._id === row?.piNumber);
+        return invoiceNo ? invoiceNo?.invoiceNo : "N/A"; // Default to "N/A" if not found
+      },
       sortable: true,
       center: true,
       width: "200px",
@@ -271,7 +274,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       name: "Currency",
       selector: (row) => {
         const currency = invoiceData?.find(
-          (x) => x.invoiceNo === row?.piNumber
+          (x) => x._id === row?.piNumber
         );
         return currency ? currency.currency : "N/A";
       },
@@ -287,7 +290,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           return null;
         }
         const filterPIData = invoiceData?.find(
-          (x) => x.invoiceNo === row?.piNumber
+          (x) => x._id === row?.piNumber
         );
         const findPiQuantityPerItem = filterPIData?.detailsData.find(
           (item) => item.itemId === row.detail.itemId
@@ -304,7 +307,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           return null;
         }
         const filterPIData = invoiceData?.find(
-          (x) => x.invoiceNo === row?.piNumber
+          (x) => x._id === row?.piNumber
         );
         const findPiAmountPerItem = filterPIData?.detailsData.find(
           (item) => item.itemId === row.detail.itemId
@@ -868,7 +871,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                     value: 0,
                   }}
                   value={piInfoOptions.filter(function (option) {
-                    return option.label === piNumber;
+                    return option.value === piNumber;
                   })}
                   styles={{
                     control: (baseStyles, state) => ({
@@ -894,10 +897,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                   })}
                   onChange={(e) => {
                     console.log(e);
-                    setPiNumber(e.label);
+                    setPiNumber(e.value);
                     setFilters((prevFilters) => ({
                       ...prevFilters,
-                      piNumber: e.label,
+                      piNumber: e.value,
                     }));
                   }}
                 ></Select>
@@ -1285,7 +1288,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                       (x) => x?._id === itemNames?.sizeId
                     );
                     const matchPiNumber = invoiceData?.find(
-                      (x) => row?.piNumber === x.invoiceNo
+                      (x) => row?.piNumber === x._id
                     );
                     const filterIPQuantity = matchPiNumber?.detailsData.find(
                       (item) => item.itemId === detail.itemId

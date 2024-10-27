@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import FinishGoodsDeliveryListData from './FinishGoodsDeliveryListData';
 import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FinishGoodsDeliveryList = () => {
     const clickhandler = (name) => console.log("delete", name);
@@ -78,6 +80,7 @@ const FinishGoodsDeliveryList = () => {
     return (
         <div>
          <FinishGoodsDeliveryListData permission={permission}></FinishGoodsDeliveryListData>
+        
         </div>
       );
 }

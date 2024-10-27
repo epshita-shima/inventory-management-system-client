@@ -248,8 +248,6 @@ const DelivaryOrderCommonInsertPart = () => {
         previousDelivaryQty: 0,
         dueQty: 0,
         deliverQty: item.totalNetQuantity,
-        returnStatus: false,
-        returnId: "",
       });
     });
 
@@ -263,6 +261,7 @@ const DelivaryOrderCommonInsertPart = () => {
       serialRefetch();
       await updateInvoiceShipmentNo(singleInvoiceData);
       swal("Done", "Data Save Successfully", "success");
+      navigate('/main-view/do-list')
     } else if (response?.error?.status === 400) {
       swal("Not Possible!", response?.error?.data?.message, "error");
     }

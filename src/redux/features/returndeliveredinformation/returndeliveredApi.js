@@ -4,7 +4,7 @@ const returndeliveredApi = api.injectEndpoints({
     endpoints: (builder) => ({
       getAllReturnDeliveredInformation: builder.query({
         query: () => "/return-deliver",
-        providesTags: ["insertdeliveryorderinfo"],
+        providesTags: ["insertdeliveryorderinfo","deletereturndeliveredinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
       }),
@@ -20,11 +20,32 @@ const returndeliveredApi = api.injectEndpoints({
           status: meta.response.status,
         }),
       }),
-      
+      getReturnDelivredInformationById: builder.query({
+        query: (id) => {
+          if (id) {
+            return `/return-deliver/${id}`;
+          } else {
+            throw new Error("DeliveryOrder id is required");
+          }
+        },
+      }),
+      deleteReturnDeliveredInformation: builder.mutation({
+        query: (id) => ({
+          url: `/return-deliver/${id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["deletereturndeliveredinfo"],
+        transformResponse: (response, meta) => ({
+          data: response,
+          status: meta.response.status,
+        }),
+      }),
     }),
 });
 
 export const {
 useGetAllReturnDeliveredInformationQuery,
-useInsertReturnDeliveredInformationMutation
+useInsertReturnDeliveredInformationMutation,
+useGetReturnDelivredInformationByIdQuery,
+useDeleteReturnDeliveredInformationMutation
 } = returndeliveredApi;

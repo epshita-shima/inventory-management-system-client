@@ -88,14 +88,14 @@ const InsertDetailsDOInformation = ({
                         );
 
                         const filterPIData = invoiceInformation?.filter(
-                          (x) => x.invoiceNo === details[0]?.piNumber
+                          (x) => x._id === details[0]?.piNumber
                         );
 
                         const findPiQuantityPerItem =
                           filterPIData[0]?.detailsData?.find(
                             (item) => item.itemId === detail?.itemId
                           );
-
+console.log(details[0]?.piNumber)
                         return (
                           <tr key={index}>
                             <td className="text-center align-middle">

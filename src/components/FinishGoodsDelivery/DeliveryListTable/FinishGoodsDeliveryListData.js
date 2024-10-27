@@ -54,8 +54,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     }))
   );
 
-  console.log(filteredDatas);
-
   const handleApproveStatus = async (e, doData) => {
     const updatedObject = {
       ...doData,

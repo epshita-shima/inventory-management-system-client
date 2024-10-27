@@ -49,6 +49,7 @@ import DeliveryOrderApproveList from "./components/SalesManagement/DelivaryOrder
 import FinishGoodsDeliveryList from "./components/FinishGoodsDelivery/DeliveryListTable/FinishGoodsDeliveryList";
 import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Common/FinishGoodsDeliveryCommonPart";
 import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
+import DeliveredReturnList from "./components/DeliverReturnInformation/Index/DeliveredReturnList";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -285,21 +286,15 @@ function App() {
 
               <Route
                 path="do-list"
-                element={
-                  <DeliveryOrderList></DeliveryOrderList>
-                }
+                element={<DeliveryOrderList></DeliveryOrderList>}
               ></Route>
               <Route
                 path="approve-list"
-                element={
-                  <DeliveryOrderApproveList></DeliveryOrderApproveList>
-                }
+                element={<DeliveryOrderApproveList></DeliveryOrderApproveList>}
               ></Route>
               <Route
                 path="list-page"
-                element={
-                  <FinishGoodsDeliveryList></FinishGoodsDeliveryList>
-                }
+                element={<FinishGoodsDeliveryList></FinishGoodsDeliveryList>}
               ></Route>
               <Route
                 path="finish-goods-delivery-order-info/:id"
@@ -308,11 +303,14 @@ function App() {
                 }
               ></Route>
               <Route
-                path="return-information"
-                element={
-                  <DeliverReturnCommonPart></DeliverReturnCommonPart>
-                }
+                path="create-return-information"
+                element={<DeliverReturnCommonPart></DeliverReturnCommonPart>}
               ></Route>
+              <Route
+                path="list-information"
+                element={<DeliveredReturnList></DeliveredReturnList>}
+              ></Route>
+            
               {/* <Route
                 path="/main-view/user-list"
                 element={

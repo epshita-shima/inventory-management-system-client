@@ -128,7 +128,7 @@ const downloadInvoiceSingleDataPDF = (
   const finalRows = data?.map((row, index) => [
     index + 1,
     new Date(row.piDate).toLocaleDateString("en-CA"),
-    row.invoiceNo,
+    row?.invoiceNo,
     customerInfo
       ?.filter((rawItem) => rawItem._id === row.customerID)
       .map((filteredItem) => filteredItem.clientName)
@@ -423,9 +423,9 @@ const downloadPaymentReceivedPDF = (
   companyinfo,
   reportTitle
 ) => {
-  console.log(data);
+
   const customerName = customerInfo?.find((x) => x._id === row?.clientId);
-  const currency = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
+  const currency = invoiceData?.find((x) => x._id === row?.piNumber);
   const itemNames = finishGoods?.find(
     (rawItem) => rawItem._id === row.detail.itemId
   );
@@ -433,7 +433,7 @@ const downloadPaymentReceivedPDF = (
     (x) => x?._id === itemNames?.sizeId
   );
 
-  const matchPI = invoiceData?.find((x) => x.invoiceNo === row?.piNumber);
+  const matchPI = invoiceData?.find((x) => x._id === row?.piNumber);
 
   // const totalNetQuantity=
   const filterIPQuantity = matchPI.detailsData.find((item) =>
@@ -464,7 +464,7 @@ const downloadPaymentReceivedPDF = (
   doc.text("Client Name", xCoordinate, textY);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
-  doc.text(`:${customerName.clientName}`, xCoordinate + labelWidth, textY);
+  doc.text(`:${customerName?.clientName || "N/A"}`, xCoordinate + labelWidth, textY);
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("PI Number", xCoordinate, textY + 6);
@@ -477,7 +477,7 @@ const downloadPaymentReceivedPDF = (
   doc.setFontSize(11);
   doc.setFont("times", "normal");
   doc.text(
-    `:${itemNames.itemName} (${filteredItemSize?.sizeInfo || "N/A"})`,
+    `:${itemNames?.itemName} (${filteredItemSize?.sizeInfo || "N/A"})`,
     xCoordinate + labelWidth,
     textY + 12
   );
@@ -486,14 +486,14 @@ const downloadPaymentReceivedPDF = (
   doc.text("Currency", xCoordinate, textY + 18);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
-  doc.text(`:${currency.currency}`, xCoordinate + labelWidth, textY + 18);
+  doc.text(`:${currency?.currency || "N/A"}`, xCoordinate + labelWidth, textY + 18);
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("PI Quantity", xCoordinate, textY + 24);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
   doc.text(
-    `:${filterIPQuantity.quantity.toLocaleString()}`,
+    `:${filterIPQuantity?.quantity?.toLocaleString() || "N/A"}`,
     xCoordinate + labelWidth,
     textY + 24
   );
@@ -503,7 +503,7 @@ const downloadPaymentReceivedPDF = (
   doc.setFontSize(11);
   doc.setFont("times", "normal");
   doc.text(
-    `:${filterIPQuantity.totalAmount.toLocaleString()}`,
+    `:${filterIPQuantity?.totalAmount?.toLocaleString() || "N/A"}`,
     xCoordinate + labelWidth,
     textY + 30
   );
@@ -605,7 +605,6 @@ const downloadPaymentReceivedPDF = (
       formattedDates ? formattedDates : "N/A",
       adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
       adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
-     
     ];
   });
 
@@ -620,8 +619,8 @@ const downloadPaymentReceivedPDF = (
     "",
     totaladjustmentItemsQuantity.toLocaleString(),
     totaladjustmentItemsAmount.toLocaleString(),
-
   ]);
+
   doc.autoTable({
     head: [
       [
@@ -797,13 +796,11 @@ const downloadDeliveryOrderPDF = (
   companyinfo,
   reportTitle
 ) => {
-console.log(row,
-  data)
+  console.log(row, data);
   const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
-  const customerName = customerInfo?.find((x) => x._id === piInfo.customerID);
+  const customerName = customerInfo?.find((x) => x._id === piInfo?.customerID);
 
-  console.log(customerName)
-
+  console.log(customerName);
 
   // const totalNetQuantity=
 
@@ -835,7 +832,7 @@ console.log(row,
   doc.text("PI Number", xCoordinate, textY + 12);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
-  doc.text(`:${piInfo.invoiceNo}`, xCoordinate + labelWidth, textY + 12);
+  doc.text(`:${piInfo?.invoiceNo}`, xCoordinate + labelWidth, textY + 12);
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("DO Number", xCoordinate, textY + 18);
@@ -845,50 +842,50 @@ console.log(row,
 
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 80;
-const filteredData=data.find((item)=>item._id===row._id)
-const itemNames = filteredData?.detailsData.map((item) => {
-  const foundItem = finishGoods?.find((rawItem) => rawItem._id === item.itemId);
-  return foundItem   // Assuming finishGoods has itemName field
-});
-const filteredItemSize = itemNames?.map((item) => {
-  const foundSize = itemsizeinfo?.find((rawItem) => rawItem._id === item.sizeId);
-  console.log(foundSize)
-  return foundSize 
-});
+  const filteredData = data?.filter((item) => item._id === row._id);
+  console.log(filteredData);
+  const itemNames = filteredData?.detailsData?.map((item) => {
+    const foundItem = finishGoods?.find(
+      (rawItem) => rawItem._id === item.itemId
+    );
+    return foundItem; // Assuming finishGoods has itemName field
+  });
+  const filteredItemSize = itemNames?.map((item) => {
+    const foundSize = itemsizeinfo?.find(
+      (rawItem) => rawItem._id === item.sizeId
+    );
+    console.log(foundSize);
+    return foundSize;
+  });
 
-  const finalRows = filteredData?.detailsData?.map((rows, index) =>{
-    const itemName = itemNames[index]?.itemName 
-    const filteredItemSizes = filteredItemSize[index]?.sizeInfo 
-    return[
+  const finalRows = filteredData?.detailsData?.map((rows, index) => {
+    const itemName = itemNames[index]?.itemName;
+    const filteredItemSizes = filteredItemSize[index]?.sizeInfo;
+    return [
       index + 1,
       `${itemName} (${filteredItemSizes})`,
       rows.previousDelivaryQty == 0 ? "-" : rows.previousDelivaryQty,
       rows.deliverQty == 0 ? "-" : rows.deliverQty,
-    ]
+    ];
   });
 
-  const totalDeliverQty = filteredData?.detailsData?.reduce((accumulator, rows) => {
-    return accumulator + (parseInt(rows.deliverQty, 10) || 0); // Convert to number
-  }, 0);
+  const totalDeliverQty = filteredData?.detailsData?.reduce(
+    (accumulator, rows) => {
+      return accumulator + (parseInt(rows.deliverQty, 10) || 0); // Convert to number
+    },
+    0
+  );
 
-  finalRows.push([
+  finalRows?.push([
     {
       content: "Total",
       colSpan: 3,
       styles: { halign: "right", fontStyle: "bold" },
     },
-    totalDeliverQty
-
+    totalDeliverQty,
   ]);
   doc.autoTable({
-    head: [
-      [
-        "Sl.",
-        "Item Name",
-        "Previous Delivered Qty",
-        "Delivered Qty"
-      ],
-    ],
+    head: [["Sl.", "Item Name", "Previous Delivered Qty", "Delivered Qty"]],
 
     body: finalRows,
     startY: finalY + 10,
@@ -916,7 +913,172 @@ const filteredItemSize = itemNames?.map((item) => {
       // const lastRowIndex = data.table.body.length - 1;
 
       // if (data.row.index === lastRowIndex) {
-     
+
+      //   data.cell.styles.fontSize = 10;
+      //   data.cell.styles.fontStyle = "bold";
+      // }
+    },
+  });
+
+  // Add footer text to each page
+  addFooterForPaymentReceive(doc, companyinfo, reportTitle);
+
+  // Save the PDF
+  doc.save(`${fileName}.pdf`);
+};
+
+const downloadReturnDeliveredPDF = (
+  row,
+  data,
+  deliverOrderInformation,
+  clientInformation,
+  finishGoods,
+  itemsizeinfo,
+  itemUnitInformation,
+  companyinfo,
+  reportTitle
+) => {
+  const transferFrom = clientInformation.find(
+    (client) => client._id === row.transferFromClientId
+  );
+console.log(itemUnitInformation)
+  const formatDate = (adjustDate) => {
+    const date = new Date(adjustDate);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatedDate = formatDate(row.returnDate);
+
+  const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
+  const doc = new jsPDF();
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const xCoordinate = 20;
+  const labelWidth = 40;
+
+  const textY = 60;
+
+  // Left side text
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Retrun Date", xCoordinate, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${formatedDate}`, xCoordinate + labelWidth, textY);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Transfer From", xCoordinate, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(`:${transferFrom?.clientName}`, xCoordinate + labelWidth, textY + 6);
+  doc.setFontSize(11);
+  doc.setFont("times", "bold");
+  doc.text("Transfer To", xCoordinate, textY + 12);
+  doc.setFontSize(11);
+  doc.setFont("times", "normal");
+  doc.text(
+    `:${companyinfo[0]?.companyName}`,
+    xCoordinate + labelWidth,
+    textY + 12
+  );
+
+  // Calculate the position for the second table
+  const finalY = doc.previousAutoTable.finalY || 75;
+
+  const filteredDoNumber = deliverOrderInformation.find(
+    (deliverOrder) => deliverOrder._id === row.doId
+  );
+  const itemNames = row?.detailsData?.map((item) => {
+    const foundItem = finishGoods?.find(
+      (rawItem) => rawItem._id === item.itemId
+    );
+    return foundItem;
+  });
+  console.log(itemNames)
+  const filteredItemSize = itemNames?.map((item) => {
+    const foundSize = itemsizeinfo?.find(
+      (rawItem) => rawItem._id === item.sizeId
+    );
+    return foundSize;
+  });
+
+  const filteredItemUnit = itemNames?.map((item) => {
+    const foundUnit = itemUnitInformation?.find(
+      (rawItem) => rawItem._id === item.unitId
+    );
+    console.log(foundUnit)
+    return foundUnit;
+  });
+console.log(filteredItemUnit)
+  const finalRows = row?.detailsData?.map((rows, index) => {
+    const itemName = itemNames[index]?.itemName;
+    const filteredItemSizes = filteredItemSize[index]?.sizeInfo;
+    const unitInfo = filteredItemUnit[index]?.unitInfo || "N/A"; // Add fallback
+  
+    return [
+      index + 1,
+      `${filteredDoNumber?.doNo}`,
+      `${itemName} (${filteredItemSizes})`,
+      `${unitInfo}`,
+      rows.deliveredQty == 0 ? "-" : rows.deliveredQty,
+      rows.returnQty == 0 ? "-" : rows.returnQty,
+    ];
+  });
+
+  const totalDeliverQty = row?.detailsData?.reduce(
+    (accumulator, rows) => {
+      return accumulator + (parseInt(rows.deliveredQty, 10) || 0); // Convert to number
+    },
+    0
+  );
+  const totalReturnQty = row?.detailsData?.reduce(
+    (accumulator, rows) => {
+      return accumulator + (parseInt(rows.returnQty, 10) || 0); // Convert to number
+    },
+    0
+  );
+
+  finalRows?.push([
+    {
+      content: "Total",
+      colSpan: 4,
+      styles: { halign: "right", fontStyle: "bold" },
+    },
+    totalDeliverQty,
+    totalReturnQty
+  ]);
+  doc.autoTable({
+    head: [["Sl.", "DO Number", "Item Name", "Unit", " Delivered Qty", "Return Qty"]],
+
+    body: finalRows,
+    startY: finalY + 10,
+    margin: { top: 50, bottom: 32 },
+    headerStyles: {
+      fillColor: [128, 128, 128],
+      textColor: [255, 255, 255],
+    },
+    theme: "grid",
+    tableLineWidth: 0.5,
+    styles: {
+      lineColor: [0, 0, 0],
+      textColor: [0, 0, 0],
+      font: "times",
+      fontSize: 10,
+      overflow: "linebreak",
+      cellWidth: "wrap",
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: "auto" },
+    },
+    didParseCell: function (data) {
+      data.cell.styles.halign = "center";
+      // const lastRowIndex = data.table.body.length - 1;
+
+      // if (data.row.index === lastRowIndex) {
+
       //   data.cell.styles.fontSize = 10;
       //   data.cell.styles.fontStyle = "bold";
       // }
@@ -1505,10 +1667,9 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
     // const logoWidth = pageWidth * logoWidthPercentage;
     // const logoHeight = logoWidth * (40 / 40);
     // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
-    if (companyinfo && companyinfo?.companyinfo[0]) {
-      if (companyinfo?.companyinfo[0]?.companyName) {
-        var companyNameUpper =
-          companyinfo?.companyinfo[0]?.companyName.toUpperCase();
+    if (companyinfo) {
+      if (companyinfo[0]?.companyName) {
+        var companyNameUpper = companyinfo[0]?.companyName.toUpperCase();
       }
     }
 
@@ -1522,7 +1683,7 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
       align: "center",
       width: companyDetailsWidth,
     });
-    if(i===1){
+    if (i === 1) {
       doc.setLineWidth(0.5);
       doc.line(
         10,
@@ -1531,31 +1692,30 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
         contentStartY
       );
     }
- 
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
     // doc.setFont("helvetica");
-    if (companyinfo && companyinfo?.companyinfo[0]) {
-      if (companyinfo?.companyinfo[0]?.companyAddress) {
+    if (companyinfo) {
+      if (companyinfo[0]?.companyAddress) {
         doc.text(
-          companyinfo?.companyinfo[0]?.companyAddress,
+          companyinfo[0]?.companyAddress,
           doc.internal.pageSize.width / 2,
           headerY + 14,
           { align: "center", width: companyDetailsWidth }
         );
       }
-      if (companyinfo?.companyinfo[0].companyContact) {
+      if (companyinfo[0].companyContact) {
         doc.text(
-          companyinfo?.companyinfo[0]?.companyContact,
+          companyinfo[0]?.companyContact,
           doc.internal.pageSize.width / 2,
           headerY + 19,
           { align: "center", width: companyDetailsWidth }
         );
       }
-      if (companyinfo?.companyinfo[0].companyEmail) {
+      if (companyinfo) {
         doc.text(
-          companyinfo?.companyinfo[0]?.companyEmail,
+          companyinfo[0]?.companyEmail,
           doc.internal.pageSize.width / 2,
           headerY + 24,
           { align: "center", width: companyDetailsWidth }
@@ -1587,26 +1747,16 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
 
     doc.setLineWidth(0.5);
     doc.line(10, footerY - 15, doc.internal.pageSize.width - 10, footerY - 15); // Draw line above footer
-    if (companyinfo && companyinfo?.companyinfo[0]) {
-      if (companyinfo?.companyinfo[0]?.footerAddress) {
-        doc.text(
-          companyinfo?.companyinfo[0]?.footerAddress,
-          pageWidth / 2,
-          footerY - 10,
-          {
-            align: "center",
-          }
-        );
+    if (companyinfo) {
+      if (companyinfo[0]?.footerAddress) {
+        doc.text(companyinfo[0]?.footerAddress, pageWidth / 2, footerY - 10, {
+          align: "center",
+        });
       }
-      if (companyinfo?.companyinfo[0]?.footerContact) {
-        doc.text(
-          companyinfo?.companyinfo[0]?.footerContact,
-          pageWidth / 2,
-          footerY - 5,
-          {
-            align: "center",
-          }
-        );
+      if (companyinfo) {
+        doc.text(companyinfo[0]?.footerContact, pageWidth / 2, footerY - 5, {
+          align: "center",
+        });
       }
     }
     const now = new Date();
@@ -1634,6 +1784,7 @@ export {
   downloadPaymentReceivedPDF,
   downloadPaymentReceivedAllSelectedPIPDF,
   downloadDeliveryOrderPDF,
+  downloadReturnDeliveredPDF,
   downloadHeadingProductionPDF,
   downloadInvoiceSingleDataPDF,
 };
