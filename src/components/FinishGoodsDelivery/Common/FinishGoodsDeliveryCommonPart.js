@@ -37,8 +37,6 @@ const FinishGoodsDeliveryCommonPart = () => {
       }));
   }, [singleDeliveryOrderData]);
 
-  console.log(JSON.stringify(deliveryOrderInformation));
-
   const handleSubmit = async (e,values) => {
     e.preventDefault();
     const modelData = {
@@ -52,6 +50,7 @@ const FinishGoodsDeliveryCommonPart = () => {
       ),
       driverName:values.driverName,
       driverContactNo:values.driverContactNo,
+      deliveryChallanNo: deliveryOrderInformation?.deliveryChallanNo,
       truckNo:values.truckNo,
       approveStatus: false,
       approveBy: "",

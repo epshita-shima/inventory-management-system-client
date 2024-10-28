@@ -83,5 +83,6 @@ export const {
 useGetAllFinishGoodsDeliveryInformationQuery,
 useLazyGetFilteredFinishGoodsDeliveryInfoQuery,
 useInsertFinishGoodsDeliveryInformationMutation,
-useGetSingleFinishGoodsDeliveryInformationQuery
+useGetSingleFinishGoodsDeliveryInformationQuery,
+useUpdateFinishGoodsRetunStatusMutation,
 } = finishgoodsdeliveryApi;

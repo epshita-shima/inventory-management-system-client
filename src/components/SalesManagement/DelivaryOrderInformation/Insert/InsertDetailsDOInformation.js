@@ -58,13 +58,13 @@ const InsertDetailsDOInformation = ({
                       className="bg-white text-center  align-items-center"
                       // style={{ width: "25%" }}
                     >
-                      Previous Deliver Quantity
+                      Previous Deliver Qty
                     </th>
                     <th
                       className="bg-white text-center  align-items-center"
                       // style={{ width: "20%" }}
                     >
-                      Due Quantity
+                      Return Quantity
                     </th>
                     <th className="bg-white text-center  align-items-center ">
                       Deliver Quantity
@@ -202,8 +202,8 @@ console.log(details[0]?.piNumber)
                             <td className="text-center  align-items-center">
                               <Field
                                 type="number"
-                                name={`detailsData.${index}.dueQuantity`}
-                                placeholder="Due Quantity"
+                                name={`detailsData.${index}.returnQty`}
+                                placeholder="Return Quantity"
                                 value={0}
                                 disabled
                                 style={{

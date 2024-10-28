@@ -6,20 +6,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
 import { useGetAllReturnDeliveredInformationQuery } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
+import { useGetAllFinishGoodsDeliveryInformationQuery } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const InsertDeliverReturnDetails = ({
   doDetailsFilteredData,
   setDoDetailsFilteredData,
+  doInformation,
   values,
   setFieldValue,
   touched,
-  errors,
+  errors
 }) => {
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: previousSalesReturnInfo } =
     useGetAllReturnDeliveredInformationQuery(undefined);
-  console.log(previousSalesReturnInfo);
+    const matchedDoInfo=doInformation?.find((deliverOrder)=>deliverOrder._id==doDetailsFilteredData?.doId);
+const {data:finishGoodsDeliveryInfo}=useGetAllFinishGoodsDeliveryInformationQuery(undefined)
 
   return (
     <div class="row justify-content-center">
@@ -57,6 +60,7 @@ const InsertDeliverReturnDetails = ({
               {doDetailsFilteredData &&
               doDetailsFilteredData?.detailsData?.length > 0
                 ? doDetailsFilteredData?.detailsData?.map((detail, index) => {
+                  console.log(detail)
                     const itemName = finishGoods?.find(
                       (item) => item._id == detail.itemId
                     );
@@ -76,7 +80,7 @@ const InsertDeliverReturnDetails = ({
                             type="text"
                             name={`detailsData.${index}.doNo`}
                             placeholder="Do Number"
-                            value={doDetailsFilteredData.doNo}
+                            value={matchedDoInfo?.doNo}
                             disabled
                             style={{
                               border: "1px solid #2DDC1B",
@@ -146,14 +150,28 @@ const InsertDeliverReturnDetails = ({
                             
                               const findMatchedReturnItem =
                                 previousSalesReturnInfo.filter(
-                                  (item) => item.doId === values.doId
+                                  (item) => item.piId === values.piId
                                 );
+                            
                               const totalReturnQtyPerItem = {};
+                              const totalDeliverQtyPerItem = {};
+                              finishGoodsDeliveryInfo.forEach((item)=>{
+                                item.detailsData.forEach((detail)=>{
+                                  const itemId = detail.itemId;
+                                  const deliverQty=Number(detail.deliverQty);
+                                  if (totalDeliverQtyPerItem[itemId]) {
+                                    totalDeliverQtyPerItem[itemId] +=
+                                    deliverQty;
+                                  } else {
+                                    totalDeliverQtyPerItem[itemId] = deliverQty;
+                                  }
+                                })
+                              })
                                 findMatchedReturnItem.forEach((item) => {
                                   item.detailsData.forEach((detail) => {
                                     const itemId = detail.itemId;
                                     const returnQty = Number(detail.returnQty);
-
+                                    
                                     if (totalReturnQtyPerItem[itemId]) {
                                       totalReturnQtyPerItem[itemId] +=
                                         returnQty;
@@ -163,11 +181,12 @@ const InsertDeliverReturnDetails = ({
                                   });
                                 });
                                 const previouslyReturnedQty = totalReturnQtyPerItem[itemId] || 0;
+                                const previouslyDeliveredQty = totalDeliverQtyPerItem[itemId] || 0;
                                
-                              if (newReturnQty + previouslyReturnedQty > deliveredQty) {
+                              if (newReturnQty + previouslyReturnedQty > previouslyDeliveredQty) {
                                 swal({
                                   title: "Not Possible!",
-                                  text: `You can not return more than ${deliveredQty -previouslyReturnedQty}`,
+                                  text: `You can not return more than ${previouslyDeliveredQty - previouslyReturnedQty}`,
                                   icon: "warning",
                                   button: "OK",
                                 });

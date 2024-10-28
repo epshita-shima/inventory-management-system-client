@@ -124,6 +124,7 @@ const paymnetInformationDropdown = (options) => {
   return result;
 };
 const deliveryOrderDropdown = (options) => {
+  console.log(options)
   let result = [];
   options?.forEach((option) => {
     result.push({

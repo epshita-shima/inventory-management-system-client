@@ -349,7 +349,7 @@ const DeliveryOrderListData = ({ permission }) => {
 
   return (
     <div
-      className="row px-5 mx-4"
+      className="row px-2 mx-4"
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <div className="col mt-sm-4 mt-md-4 mt-lg-0">

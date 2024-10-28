@@ -89,7 +89,7 @@ const DeliveredReturnList = () => {
             >
               <div className="">
                 <a
-                  href="/main-view/create-do"
+                  href="/main-view/create-return-information"
                   target="_blank"
                   className="text-white text-center d-flex justify-content-center align-items-center"
                   style={{

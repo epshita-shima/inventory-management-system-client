@@ -96,18 +96,7 @@ const deliveryinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
-    updateDeliveryOrderRetunStatus: builder.mutation({
-      query: (dataToUpdate) => ({
-        url: "/delivery-order/return-status",
-        method: "PUT",
-        body: dataToUpdate,
-      }),
-      invalidatesTags: ["changdeliveryorderstatus"],
-      transformResponse: (response, meta) => ({
-        data: response,
-        status: meta.response.status,
-      }),
-    }),
+
 
     deleteDeliveryOrderInformation: builder.mutation({
       query: (id) => ({
@@ -133,6 +122,5 @@ export const {
   useUpdateDeliveryOrderInformationMutation,
   useUpdateDeliveryOrderApproveStatusMutation,
   useUpdateDeliveryOrderStatusMutation,
-  useUpdateDeliveryOrderRetunStatusMutation,
   useDeleteDeliveryOrderInformationMutation,
 } = deliveryinfoApi;

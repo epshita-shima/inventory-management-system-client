@@ -18,24 +18,25 @@ import {
   useInsertReturnDeliveredInformationMutation,
 } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 import { useNavigate } from "react-router-dom";
-import { useGetAllFinishGoodsDeliveryInformationQuery } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
+import { useGetAllFinishGoodsDeliveryInformationQuery, useUpdateFinishGoodsRetunStatusMutation } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliverReturnCommonPart = () => {
   const navigate=useNavigate()
   const [isDisplay, setIsDisplay] = useState(false);
   const [doDetailsFilteredData, setDoDetailsFilteredData] = useState([]);
-  const {data:finishGoodsDeliveyInfo}=useGetAllFinishGoodsDeliveryInformationQuery(undefined)
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInfo } = useGetCompanyInfoQuery(undefined);
   const { data: deliveryOrderDataInformation } =
-    useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
-
+    useGetAllFinishGoodsDeliveryInformationQuery(undefined);
+const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
   const [insertReturnDelivredInfo] =
     useInsertReturnDeliveredInformationMutation();
-  const [updateDeliveryOrderReturnStatus] =
-    useUpdateDeliveryOrderRetunStatusMutation();
+  const [updateFinishGoodsReturnStatus] =
+  useUpdateFinishGoodsRetunStatusMutation();
   const [returnDate, setReturnDate] = useState(new Date());
+
+  
   const initialValues = {
     returnDate: "",
     piId: "",
@@ -56,18 +57,20 @@ const DeliverReturnCommonPart = () => {
   };
 
   const piNumberOptions = invoiceListDropdown(invoiceInformation);
+
+  console.log(doDetailsFilteredData)
   useEffect(() => {
     if (doDetailsFilteredData?.length !== 0) {
       setIsDisplay(true);
     }
   }, [doDetailsFilteredData]);
-console.log(finishGoodsDeliveyInfo)
+
   const handleSubmit = async (e, values) => {
     e.preventDefault();
     const modelData = {
       returnDate: new Date(returnDate),
       piId: doDetailsFilteredData?.piId,
-      doId: doDetailsFilteredData?._id,
+      doId: doDetailsFilteredData?.doId,
       transferFromClientId: doDetailsFilteredData?.clientId,
       transferToCompanyId: companyInfo[0]?._id,
       clientId: doDetailsFilteredData?.clientId,
@@ -82,19 +85,18 @@ console.log(finishGoodsDeliveyInfo)
       modelData.detailsData.push({
         piDetailsId: item?.piDetailsId,
         piId: item?.piId,
-        doId: doDetailsFilteredData?._id,
+        doId: doDetailsFilteredData?.doId,
         itemId: item.itemId,
         deliveredQty: parseFloat(item.deliverQty),
         returnQty: parseFloat(values.detailsData[index]?.returnQty) || 0,
         deliveryChallanNo: doDetailsFilteredData?.deliveryChallanNo,
       });
     });
-    console.log(JSON.stringify(modelData));
 
     const response = await insertReturnDelivredInfo(modelData);
-    console.log(response);
+    console.log(response)
     if (response?.data?.status === 200) {
-      await updateDeliveryOrderReturnStatus(doDetailsFilteredData);
+      await updateFinishGoodsReturnStatus(doDetailsFilteredData);
       swal("Done", "Data Save Successfully", "success");
       navigate('/main-view/list-information');
     } else if (response?.error?.status === 400) {
@@ -203,6 +205,7 @@ console.log(finishGoodsDeliveyInfo)
                                   setDoDetailsFilteredData={
                                     setDoDetailsFilteredData
                                   }
+                                  doInformation={doInformation}
                                 ></DeliverReturnSinglePart>
                               }
                               <div>
@@ -264,6 +267,7 @@ console.log(finishGoodsDeliveyInfo)
                                   setDoDetailsFilteredData={
                                     setDoDetailsFilteredData
                                   }
+                                  doInformation={doInformation}
                                   setFieldValue={setFieldValue}
                                   touched={touched}
                                 ></InsertDeliverReturnDetails>

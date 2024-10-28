@@ -59,13 +59,13 @@ const SalesManagementCommonPart = () => {
   const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
   const { data: userList } = useGetAllUserQuery(undefined);
   const [marketingPerSon, setMarketingPerson] = useState("");
-  
+
   const initialValues = {
     piDate: piDate,
     expireDate: expireDate,
     invoiceNo: "",
     customerID: "",
-    shipmentNo:0,
+    shipmentNo: 0,
     paymentId: "",
     currency: "",
     approveBy: "",
@@ -87,6 +87,8 @@ const SalesManagementCommonPart = () => {
         quantity: "",
         unitPrice: "",
         totalAmount: "",
+        deliveredQty: 0,
+        returnQty: 0,
         specialApproveForDelivary: false,
         specialApproveBy: "",
         specialApproveDate: "",
@@ -346,6 +348,8 @@ const SalesManagementCommonPart = () => {
                                               quantity: "",
                                               unitPrice: "",
                                               totalAmount: "",
+                                              deliveredQty: 0,
+                                              returnQty: 0,
                                               specialApproveForDelivary: false,
                                               specialApproveBy: "",
                                               specialApproveDate: "",
@@ -363,6 +367,8 @@ const SalesManagementCommonPart = () => {
                                           quantity: "",
                                           unitPrice: "",
                                           totalAmount: "",
+                                          deliveredQty: 0,
+                                          returnQty: 0,
                                           specialApproveForDelivary: false,
                                           specialApproveBy: "",
                                           specialApproveDate: "",

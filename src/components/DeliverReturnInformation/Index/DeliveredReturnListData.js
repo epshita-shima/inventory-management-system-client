@@ -10,16 +10,17 @@ import FilterComponent from "../../Common/ListDataSearchBoxDesign/FilterComponen
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faTrash } from "@fortawesome/free-solid-svg-icons";
-import {
-  useGetAllDelieryOrderInformationAfterDeliverQuery,
-  useUpdateDeliveryOrderRetunStatusMutation,
-} from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import { useGetAllDelieryOrderInformationAfterDeliverQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import { downloadReturnDeliveredPDF } from "../../ReportProperties/HeaderFooter";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import {
+  useGetAllFinishGoodsDeliveryInformationQuery,
+  useUpdateFinishGoodsRetunStatusMutation,
+} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliveredReturnListData = ({ permission }) => {
   const reportTitle = "Sales Return Report";
@@ -29,6 +30,8 @@ const DeliveredReturnListData = ({ permission }) => {
     useGetAllReturnDeliveredInformationQuery(undefined);
   const { data: deliverOrderInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
+  const { data: finishGoodsDeliveryInfo } =
+    useGetAllFinishGoodsDeliveryInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInformation } = useGetCompanyInfoQuery(undefined);
@@ -36,13 +39,11 @@ const DeliveredReturnListData = ({ permission }) => {
     useGetAllClientInformationQuery(undefined);
   const [deleteReturnDeliveredInfo] =
     useDeleteReturnDeliveredInformationMutation();
-  const [updateDeliveryOrderReturnStatus] =
-    useUpdateDeliveryOrderRetunStatusMutation();
-  const { data: deliveryOrderInformation } =
-    useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
+  const [updateFinishGoodsReturnStatus] =
+    useUpdateFinishGoodsRetunStatusMutation();
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
-  const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined)
+  const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
   const transformedDOData = deliveredReturnInformationData?.flatMap(
     (itemDetails) =>
       itemDetails.detailsData.map((detail) => ({
@@ -50,6 +51,9 @@ const DeliveredReturnListData = ({ permission }) => {
         detailsData: detail,
       }))
   );
+
+  console.log(finishGoodsDeliveryInfo);
+
   const columns = [
     {
       name: "Sl.",
@@ -148,26 +152,43 @@ const DeliveredReturnListData = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                const filteredData = deliveryOrderInformation.find(
-                  (deliverOrder) => deliverOrder._id == row.doId
-                );
-                console.log(filteredData);
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",
                   icon: "warning",
                   buttons: true,
                   dangerMode: true,
-                }).then((willDelete) => {
+                }).then(async (willDelete) => {
                   if (willDelete) {
-                    const response = deleteReturnDeliveredInfo(row?._id);
-                    console.log(response);
+                    await deleteReturnDeliveredInfo(row?._id);
 
-                    updateDeliveryOrderReturnStatus(filteredData);
-                    swal("Your data has been deleted!", {
-                      icon: "success",
-                    });
-                    refetch();
+                    const filteredData = finishGoodsDeliveryInfo.find(
+                      (deliverOrder) => deliverOrder.doId === row.doId
+                    );
+
+                    if (
+                      filteredData &&
+                      filteredData?.detailsData &&
+                      row.detailsData
+                    ) {
+                      const matchedDetails = filteredData?.detailsData.filter(
+                        (detail) =>
+                          row.detailsData.some(
+                            (rowDetail) => rowDetail.itemId === detail.itemId
+                          )
+                      );
+
+                      const result = {
+                        ...filteredData,
+                        detailsData: matchedDetails,
+                      };
+
+                      await updateFinishGoodsReturnStatus(result);
+                      swal("Your data has been deleted!", {
+                        icon: "success",
+                      });
+                      refetch();
+                    }
                   } else {
                     swal("Your data is safe!");
                   }

@@ -246,7 +246,7 @@ const DelivaryOrderCommonInsertPart = () => {
         piDetailsId: item.piDetailsId,
         itemId: item.itemId,
         previousDelivaryQty: 0,
-        dueQty: 0,
+        returnQty: 0,
         deliverQty: item.totalNetQuantity,
       });
     });
@@ -488,8 +488,10 @@ const DelivaryOrderCommonInsertPart = () => {
                                       setInvoiceId(e.value);
                                       setPINumber(e.value);
                                       setFieldValue("piNumber", e.value);
+                                        
+                                        console.log(paymentReceiveInformation)
                                       if (
-                                        paymentReceiveInformation.length > 0
+                                        paymentReceiveInformation.length !== 0 
                                       ) {
                                         const matchPIWithPaymentReceive =
                                           paymentReceiveInformation.filter(

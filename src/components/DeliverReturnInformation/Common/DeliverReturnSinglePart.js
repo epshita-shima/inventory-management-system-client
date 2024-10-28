@@ -17,11 +17,15 @@ const DeliverReturnSinglePart = ({
   setReturnDate,
   piNumberOptions,
   setDoDetailsFilteredData,
+  doInformation
 }) => {
   const [filteredDeliveryOrderData, setFilteredDeliveryOrderData] = useState(
     []
   );
-  const doOptions = deliveryOrderDropdown(filteredDeliveryOrderData);
+  const matchedDeliverInfo = doInformation?.filter((deliverOrder) => 
+    filteredDeliveryOrderData.some((item) => item.piId === deliverOrder.piId)
+  );
+  const deliveryOptions = deliveryOrderDropdown(matchedDeliverInfo);
 
   return (
     <div class="row row-cols-1 row-cols-lg-4">
@@ -114,12 +118,12 @@ const DeliverReturnSinglePart = ({
               aria-label="Default select example"
               name="doId"
               isDisabled={filteredDeliveryOrderData?.length == 0}
-              options={doOptions}
+              options={deliveryOptions}
               defaultValue={{
                 label: "Select DO Number",
                 value: 0,
               }}
-                value={ doOptions.filter(function (option) {
+                value={ deliveryOptions.filter(function (option) {
                         return option.value === values.doId;
                       })
                 }
@@ -147,7 +151,7 @@ const DeliverReturnSinglePart = ({
               })}
               onChange={(e) => {
                 const filteredData = deliveryOrderDataInformation.find(
-                  (doOrder) => doOrder._id === e.value
+                  (doOrder) => doOrder.doId === e.value
                 );
                 setFieldValue('doId',e.value)
                 setDoDetailsFilteredData(filteredData);

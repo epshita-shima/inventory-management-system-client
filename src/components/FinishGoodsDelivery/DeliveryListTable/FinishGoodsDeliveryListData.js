@@ -46,7 +46,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const [insertApproveStatus] = useUpdateDeliveryOrderApproveStatusMutation();
   const clientInfoOptions = clientInfoDropdown(clientInformation);
-
+console.log(filteredDatas)
   const transformedDOData = filteredDatas?.flatMap((itemDetails) =>
     itemDetails.detailsData.map((detail) => ({
       ...itemDetails,
@@ -127,7 +127,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
       name: "PI Number",
       selector: (row) => {
         const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piNumber
+          (x) => x._id === row?.piId
         );
         return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
