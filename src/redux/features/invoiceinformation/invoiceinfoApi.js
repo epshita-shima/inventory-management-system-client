@@ -9,6 +9,7 @@ const invoiceinfoApi = api.injectEndpoints({
         "updateinvoiceinfo",
         "changeinvoicestatus",
         "changeinvoiceshipment",
+        "changeinvoicedeliveredqty",
         "deleteinvoiceinfo",
       ],
       refetchOnReconnect: true,
@@ -47,6 +48,7 @@ const invoiceinfoApi = api.injectEndpoints({
           "updateinvoiceinfo",
           "changeinvoicestatus",
           "changeinvoicespecialapprove",
+          "changeinvoicedeliveredqty",
           "deleteinvoiceinfo",
         ],
         refetchOnReconnect: true,
@@ -65,7 +67,7 @@ const invoiceinfoApi = api.injectEndpoints({
         data: response,
         status: meta.response.status,
       }),
-    }),
+    }), 
 
     updateInvoiceSpecialPIApproveStatus: builder.mutation({
       query: (dataToUpdate) => ({
@@ -87,6 +89,19 @@ const invoiceinfoApi = api.injectEndpoints({
         body: dataToUpdate,
       }),
       invalidatesTags: ["changeinvoicestatus"],
+      transformResponse: (response, meta) => ({
+        data: response,
+        status: meta.response.status,
+      }),
+    }),
+
+    updateInvoiceDeliveredQty: builder.mutation({
+      query: (dataToUpdate) => ({
+        url: "/invoiceinfo/update-delivered-qty",
+        method: "PUT",
+        body: dataToUpdate,
+      }),
+      invalidatesTags: ["changeinvoicedeliveredqty"],
       transformResponse: (response, meta) => ({
         data: response,
         status: meta.response.status,
@@ -128,6 +143,7 @@ export const {
   useUpdateInvoiceStatusMutation,
   useUpdateInvoiceSpecialPIApproveStatusMutation,
   useUpdateInvoiceShipmentMutation,
+  useUpdateInvoiceDeliveredQtyMutation,
   useDeleteInvoiceInfoMutation,
   useLazyGetFilteredInvoiceInfoQuery,
 } = invoiceinfoApi;

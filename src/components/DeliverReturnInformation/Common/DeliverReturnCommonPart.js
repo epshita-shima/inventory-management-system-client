@@ -9,7 +9,6 @@ import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoic
 import { invoiceListDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import {
   useGetAllDelieryOrderInformationAfterDeliverQuery,
-  useUpdateDeliveryOrderRetunStatusMutation,
 } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import InsertDeliverReturnDetails from "../Insert/InsertDeliverReturnDetails";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
@@ -18,7 +17,7 @@ import {
   useInsertReturnDeliveredInformationMutation,
 } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 import { useNavigate } from "react-router-dom";
-import { useGetAllFinishGoodsDeliveryInformationQuery, useUpdateFinishGoodsRetunStatusMutation } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
+import { useGetAllFinishGoodsDeliveryInformationQuery,} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliverReturnCommonPart = () => {
   const navigate=useNavigate()
@@ -32,8 +31,7 @@ const DeliverReturnCommonPart = () => {
 const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
   const [insertReturnDelivredInfo] =
     useInsertReturnDeliveredInformationMutation();
-  const [updateFinishGoodsReturnStatus] =
-  useUpdateFinishGoodsRetunStatusMutation();
+
   const [returnDate, setReturnDate] = useState(new Date());
 
   
@@ -71,6 +69,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
       returnDate: new Date(returnDate),
       piId: doDetailsFilteredData?.piId,
       doId: doDetailsFilteredData?.doId,
+      deliveredId:doDetailsFilteredData?._id,
       transferFromClientId: doDetailsFilteredData?.clientId,
       transferToCompanyId: companyInfo[0]?._id,
       clientId: doDetailsFilteredData?.clientId,
@@ -96,10 +95,10 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
     const response = await insertReturnDelivredInfo(modelData);
     console.log(response)
     if (response?.data?.status === 200) {
-      await updateFinishGoodsReturnStatus(doDetailsFilteredData);
+      // await updateFinishGoodsReturnStatus(doDetailsFilteredData);
       swal("Done", "Data Save Successfully", "success");
       navigate('/main-view/list-information');
-    } else if (response?.error?.status === 400) {
+    } else if (response?.error?.status === 500) {
       swal("Not Possible!", response?.error?.data?.message, "error");
     }
   };

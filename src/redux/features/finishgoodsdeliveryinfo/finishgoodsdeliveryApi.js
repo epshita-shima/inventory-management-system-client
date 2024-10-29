@@ -52,18 +52,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
       },
     }),
 
-    updateFinishGoodsRetunStatus: builder.mutation({
-      query: (dataToUpdate) => ({
-        url: "/finish-goods-delivery/return-status",
-        method: "PUT",
-        body: dataToUpdate,
-      }),
-      invalidatesTags: ["changereturnstatus"],
-      transformResponse: (response, meta) => ({
-        data: response,
-        status: meta.response.status,
-      }),
-    }),
+
 
     deletefinishgoodsdeliveryInfo: builder.mutation({
       query: (payload) => ({
@@ -83,6 +72,5 @@ export const {
 useGetAllFinishGoodsDeliveryInformationQuery,
 useLazyGetFilteredFinishGoodsDeliveryInfoQuery,
 useInsertFinishGoodsDeliveryInformationMutation,
-useGetSingleFinishGoodsDeliveryInformationQuery,
-useUpdateFinishGoodsRetunStatusMutation,
+useGetSingleFinishGoodsDeliveryInformationQuery
 } = finishgoodsdeliveryApi;

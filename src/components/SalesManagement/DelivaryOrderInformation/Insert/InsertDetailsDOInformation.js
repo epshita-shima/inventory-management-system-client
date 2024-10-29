@@ -204,7 +204,7 @@ console.log(details[0]?.piNumber)
                                 type="number"
                                 name={`detailsData.${index}.returnQty`}
                                 placeholder="Return Quantity"
-                                value={0}
+                                value={detail?.returnQty}
                                 disabled
                                 style={{
                                   border: "1px solid #2DDC1B",

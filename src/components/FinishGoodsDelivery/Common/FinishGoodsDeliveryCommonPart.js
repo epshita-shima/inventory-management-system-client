@@ -12,7 +12,6 @@ import {
   useGetSingleFinishGoodsDeliveryInformationQuery,
   useInsertFinishGoodsDeliveryInformationMutation,
 } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
-import { useUpdateDeliveryOrderStatusMutation } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 
 const FinishGoodsDeliveryCommonPart = () => {
   const navigate = useNavigate();
@@ -27,7 +26,6 @@ const FinishGoodsDeliveryCommonPart = () => {
     useGetSingleFinishGoodsDeliveryInformationQuery(id);
   const [insertFinishGoodsDeliveryInfo] =
     useInsertFinishGoodsDeliveryInformationMutation();
-  const [updateDeliveryOrderStatus] = useUpdateDeliveryOrderStatusMutation();
 
   useEffect(() => {
     setDeliveryOrderInformation(singleDeliveryOrderData);
@@ -75,7 +73,6 @@ const FinishGoodsDeliveryCommonPart = () => {
 
     const response = await insertFinishGoodsDeliveryInfo(modelData);
     if (response?.data?.status === 200) {
-        await updateDeliveryOrderStatus(deliveryOrderInformation);
       swal("Done", "Data Save Successfully", "success");
       navigate('/main-view/list-page');
     } else if (response?.error?.status === 400) {

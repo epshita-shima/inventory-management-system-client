@@ -105,17 +105,28 @@ const DelivaryOrderCommonInsertPart = () => {
       const groupedData = {};
       data?.forEach((entry) => {
         const { piNumber, clientId, detailsData } = entry;
-        console.log(clientId);
+
         detailsData?.forEach((item) => {
-          const { itemId, piDetailsId, amount, quantity, paymentStatus } = item;
+          const {
+            itemId,
+            piDetailsId,
+            amount,
+            returnQty,
+            deliveredQty,
+            quantity,
+            paymentStatus,
+          } = item;
           if (!groupedData[piNumber]) {
             groupedData[piNumber] = {};
           }
+          console.log(detailsData)
           if (!groupedData[piNumber][itemId]) {
             groupedData[piNumber][itemId] = {
               piNumber,
               clientId,
               itemId,
+              returnQty: 0,
+              deliveredQty: 0,
               paidTotalQuantity: 0,
               paidTotalAmount: 0,
               adjustTotalAmount: 0,
@@ -132,6 +143,8 @@ const DelivaryOrderCommonInsertPart = () => {
             groupedData[piNumber][itemId].adjustTotalQuantity += quantity || 0;
             groupedData[piNumber][itemId].adjustTotalAmount += amount || 0;
           }
+          groupedData[piNumber][itemId].returnQty = returnQty;
+          groupedData[piNumber][itemId].deliveredQty = deliveredQty;
           groupedData[piNumber][itemId].itemId = itemId;
           groupedData[piNumber][itemId].piNumber = piNumber;
           groupedData[piNumber][itemId].piDetailsId = piDetailsId;
@@ -159,6 +172,8 @@ const DelivaryOrderCommonInsertPart = () => {
       if (existingPiNumber) {
         existingPiNumber.detailsData.push({
           itemId: item.itemId,
+          returnQty:item.returnQty,
+          deliveredQty:item.deliveredQty,
           piDetailsId: item.piDetailsId,
           paidTotalQuantity: item.paidTotalQuantity,
           paidTotalAmount: item.paidTotalAmount,
@@ -174,6 +189,8 @@ const DelivaryOrderCommonInsertPart = () => {
           detailsData: [
             {
               itemId: item.itemId,
+              returnQty:item.returnQty,
+              deliveredQty:item.deliveredQty,
               piDetailsId: item.piDetailsId,
               paidTotalQuantity: item.paidTotalQuantity,
               paidTotalAmount: item.paidTotalAmount,
@@ -261,14 +278,14 @@ const DelivaryOrderCommonInsertPart = () => {
       serialRefetch();
       await updateInvoiceShipmentNo(singleInvoiceData);
       swal("Done", "Data Save Successfully", "success");
-      navigate('/main-view/do-list')
+      navigate("/main-view/do-list");
     } else if (response?.error?.status === 400) {
       swal("Not Possible!", response?.error?.data?.message, "error");
     }
   };
 
   useEffect(() => {}, [paymentReceiveSelectedItem]);
-
+console.log(paymentReceiveSelectedItem)
   useEffect(() => {
     if (piType !== "" && piNumber !== "") {
       setIsDisplay(true);
@@ -488,10 +505,10 @@ const DelivaryOrderCommonInsertPart = () => {
                                       setInvoiceId(e.value);
                                       setPINumber(e.value);
                                       setFieldValue("piNumber", e.value);
-                                        
-                                        console.log(paymentReceiveInformation)
+
+                                      console.log(paymentReceiveInformation);
                                       if (
-                                        paymentReceiveInformation.length !== 0 
+                                        paymentReceiveInformation.length !== 0
                                       ) {
                                         const matchPIWithPaymentReceive =
                                           paymentReceiveInformation.filter(

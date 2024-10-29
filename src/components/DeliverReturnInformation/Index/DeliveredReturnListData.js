@@ -18,8 +18,7 @@ import { useGetAllItemInformationQuery } from "../../../redux/features/iteminfor
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import {
-  useGetAllFinishGoodsDeliveryInformationQuery,
-  useUpdateFinishGoodsRetunStatusMutation,
+  useGetAllFinishGoodsDeliveryInformationQuery
 } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliveredReturnListData = ({ permission }) => {
@@ -39,8 +38,7 @@ const DeliveredReturnListData = ({ permission }) => {
     useGetAllClientInformationQuery(undefined);
   const [deleteReturnDeliveredInfo] =
     useDeleteReturnDeliveredInformationMutation();
-  const [updateFinishGoodsReturnStatus] =
-    useUpdateFinishGoodsRetunStatusMutation();
+
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
@@ -161,34 +159,11 @@ const DeliveredReturnListData = ({ permission }) => {
                 }).then(async (willDelete) => {
                   if (willDelete) {
                     await deleteReturnDeliveredInfo(row?._id);
-
-                    const filteredData = finishGoodsDeliveryInfo.find(
-                      (deliverOrder) => deliverOrder.doId === row.doId
-                    );
-
-                    if (
-                      filteredData &&
-                      filteredData?.detailsData &&
-                      row.detailsData
-                    ) {
-                      const matchedDetails = filteredData?.detailsData.filter(
-                        (detail) =>
-                          row.detailsData.some(
-                            (rowDetail) => rowDetail.itemId === detail.itemId
-                          )
-                      );
-
-                      const result = {
-                        ...filteredData,
-                        detailsData: matchedDetails,
-                      };
-
-                      await updateFinishGoodsReturnStatus(result);
                       swal("Your data has been deleted!", {
                         icon: "success",
                       });
                       refetch();
-                    }
+                    // }
                   } else {
                     swal("Your data is safe!");
                   }
