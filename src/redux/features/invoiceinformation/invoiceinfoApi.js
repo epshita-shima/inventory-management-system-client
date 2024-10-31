@@ -55,6 +55,22 @@ const invoiceinfoApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
+    getFilteredForReportInvoiceInfo: builder.query({
+      query: (queryParams) => ({
+        url: "invoiceinfo/report",
+        params: queryParams,
+        providesTags: [
+          "insertinvoiceinfo",
+          "updateinvoiceinfo",
+          "changeinvoicestatus",
+          "changeinvoicespecialapprove",
+          "changeinvoicedeliveredqty",
+          "deleteinvoiceinfo",
+        ],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
 
     updateInvoiceInfo: builder.mutation({
       query: (payload) => ({
@@ -138,6 +154,7 @@ const invoiceinfoApi = api.injectEndpoints({
 export const {
   useGetAllInvoiceInformationQuery,
   useInsertInvoiceInformationMutation,
+  useLazyGetFilteredForReportInvoiceInfoQuery,
   useGetSingleInvoiceQuery,
   useUpdateInvoiceInfoMutation,
   useUpdateInvoiceStatusMutation,

@@ -85,7 +85,7 @@ const InsertPaymentMethodInformation = ({
                       className="bg-white text-center  align-items-center"
                       style={{ width: "15%" }}
                     >
-                      Payment Status
+                      Payment Type
                     </th>
                     <th
                       className="bg-white text-center  align-items-center"

@@ -1,0 +1,36 @@
+.fixed-column{
+  width: 100%;
+}
+.doinsertdata-main-view {
+  overflow: auto;
+}
+
+@media (min-width: 333px) and (max-width: 577px) {
+  .doinsertdata-main-view {
+    height: calc(40vh - 120px); /* Smaller height for small screens */
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  .doinsertdata-main-view {
+    height: calc(35vh - 120px)!important; /* Medium height for medium screens */
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .doinsertdata-main-view {
+    height: calc(40vh - 120px) !important; /* Default height for large screens */
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1366px){
+  .doinsertdata-main-view {
+    height: calc(59vh - 120px) !important; 
+  }
+}
+
+@media (min-width: 1367px) {
+  .doinsertdata-main-view {
+    height: calc(80vh - 120px) !important; /* Default height for large screens */
+  }
+}

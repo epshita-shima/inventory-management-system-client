@@ -39,6 +39,7 @@ const DelivaryOrderCommonInsertPart = () => {
   const [piNumber, setPINumber] = useState("");
   const [invoiceList, setInvoiceList] = useState([]);
   const [piType, setPIType] = useState("");
+  const [isDOSave,setIsDOSave]=useState(false)
   const [singlePaymentReceiveInfo, setSinglePaymentReceiveInfo] = useState([]);
   const [formValues, setFormValues] = useState(
     getInitialDOFormValues(piNumber, makebyUser)
@@ -67,7 +68,7 @@ const DelivaryOrderCommonInsertPart = () => {
 
   const [insertDOInfo] = useInsertDeliveryOrderInformationMutation();
   console.log(singleInvoiceData?.shipmentNo + 1);
-
+console.log(isDOSave)
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
@@ -119,7 +120,7 @@ const DelivaryOrderCommonInsertPart = () => {
           if (!groupedData[piNumber]) {
             groupedData[piNumber] = {};
           }
-          console.log(detailsData)
+          console.log(detailsData);
           if (!groupedData[piNumber][itemId]) {
             groupedData[piNumber][itemId] = {
               piNumber,
@@ -172,8 +173,8 @@ const DelivaryOrderCommonInsertPart = () => {
       if (existingPiNumber) {
         existingPiNumber.detailsData.push({
           itemId: item.itemId,
-          returnQty:item.returnQty,
-          deliveredQty:item.deliveredQty,
+          returnQty: item.returnQty,
+          deliveredQty: item.deliveredQty,
           piDetailsId: item.piDetailsId,
           paidTotalQuantity: item.paidTotalQuantity,
           paidTotalAmount: item.paidTotalAmount,
@@ -189,8 +190,8 @@ const DelivaryOrderCommonInsertPart = () => {
           detailsData: [
             {
               itemId: item.itemId,
-              returnQty:item.returnQty,
-              deliveredQty:item.deliveredQty,
+              returnQty: item.returnQty,
+              deliveredQty: item.deliveredQty,
               piDetailsId: item.piDetailsId,
               paidTotalQuantity: item.paidTotalQuantity,
               paidTotalAmount: item.paidTotalAmount,
@@ -213,7 +214,7 @@ const DelivaryOrderCommonInsertPart = () => {
     }
   }, [piNumber, singlePaymentReceiveInfo]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e,values) => {
     e.preventDefault();
     const removeDashFromDate = new Date().toLocaleDateString("en-CA");
     const removeDash = removeDashFromDate.replace(/-/g, "");
@@ -256,7 +257,7 @@ const DelivaryOrderCommonInsertPart = () => {
       detailsData: [],
     };
 
-    paymentReceiveSelectedItem[0]?.detailsData.map((item) => {
+    paymentReceiveSelectedItem[0]?.detailsData.map(((item,index) => {
       modelData.detailsData.push({
         clientId: paymentReceiveSelectedItem[0]?.clientId,
         piId: paymentReceiveSelectedItem[0]?.piNumber,
@@ -264,9 +265,9 @@ const DelivaryOrderCommonInsertPart = () => {
         itemId: item.itemId,
         previousDelivaryQty: 0,
         returnQty: 0,
-        deliverQty: item.totalNetQuantity,
+        deliverQty: parseFloat(values.detailsData[index]?.deliverQty),
       });
-    });
+    }));
 
     const response = await insertDOInfo(modelData);
     console.log(modelData);
@@ -285,7 +286,7 @@ const DelivaryOrderCommonInsertPart = () => {
   };
 
   useEffect(() => {}, [paymentReceiveSelectedItem]);
-console.log(paymentReceiveSelectedItem)
+  console.log(paymentReceiveSelectedItem);
   useEffect(() => {
     if (piType !== "" && piNumber !== "") {
       setIsDisplay(true);
@@ -296,10 +297,10 @@ console.log(paymentReceiveSelectedItem)
 
   return (
     <div
-      className=" row mx-4"
+      className=" row mx-2"
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      <div class="overflow-hidden">
+      <div class="">
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={formValues}
@@ -343,7 +344,7 @@ console.log(paymentReceiveSelectedItem)
                     // const details = result?.detailsData;
 
                     return (
-                      <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
+                      <div className=" flex-1 items-center d-flex-nowrap mt-3  px-4">
                         <div>
                           <div className="d-flex justify-content-between align-items-center">
                             <h2
@@ -595,21 +596,18 @@ console.log(paymentReceiveSelectedItem)
                                     type="submit"
                                     form="do-form"
                                     className="border-0"
+
                                     style={{
-                                      backgroundColor: "#2DDC1B",
+                                      backgroundColor:`${isDOSave ? "gray" :"#2DDC1B" }` ,
                                       color: "white",
                                       padding: "5px 10px",
                                       fontSize: "14px",
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    // disabled={
-                                    //   id
-                                    //     ? false
-                                    //     : areFieldsEmpty()
-                                    //     ? true
-                                    //     : false
-                                    // }
+                                    disabled={
+                                      isDOSave ? true : false
+                                    }
                                   >
                                     Save
                                   </button>
@@ -627,6 +625,8 @@ console.log(paymentReceiveSelectedItem)
                                 setFieldValue={setFieldValue}
                                 invoiceInformation={invoiceInformation}
                                 checkNetTotalQuantity={checkNetTotalQuantity}
+                                setIsDOSave={setIsDOSave}
+                                values={values}
                               ></InsertDetailsDOInformation>
                             }
                           </>

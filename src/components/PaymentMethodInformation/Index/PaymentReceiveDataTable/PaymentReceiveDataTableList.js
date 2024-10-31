@@ -666,6 +666,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     return acc;
   }, []);
 
+  console.log(result)
 //group by piNumber and all items are single
 
   // const groupedDataByPINumber = filteredDatas?.reduce((acc, curr) => {
@@ -727,10 +728,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                           downloadPaymentReceivedAllSelectedPIPDF(
                             filteredDatas,
                             customerInfo,
-                            finishGoods,
-                            invoiceData,
-                            itemsizeinfo,
-                            bankInformation,
                             { companyinfo },
                             reportTitle
                           );
@@ -783,7 +780,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     finishGoods,
     invoiceData,
     itemsizeinfo,
-    bankInformation,
   ]);
 
   return (
@@ -974,262 +970,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         ""
       )}
 
-      {/* <table id="my-paymnet-receive-table" className="d-none">
-        <thead>
-          <tr>
-            <th>PI Number</th>
-            <th>Item Name</th>
-            <th>Currency</th>
-            <th>PI Quantity</th>
-            <th>PI Amount</th>
-            <th>Paid Quantity</th>
-            <th>Paid Amount</th>
-            <th>Adjust Quantity</th>
-            <th>Adjust Amount</th>
-            <th>Net Quantity</th>
-            <th>Net Amount</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {Object.keys(groupedData)?.map((key) => {
-           
-
-            return groupedArray.map((group, groupIndex) => {
-              // Grouping the detailsData by itemName and size
-              const groupedDetailsData = groupItemsByNameAndSize(
-                group.detailsData
-              );
-              console.log(Object.values(groupedDetailsData));
-              const rowSpan = Object.keys(groupedDetailsData).length;
-
-              const totalCashQuantity = Object.values(groupedDetailsData)
-                .filter((item) => item.paymentStatus === "cash")
-                .reduce((sum, item) => sum + item.paidQuantity, 0);
-
-              const totalCashAmount = Object.values(groupedDetailsData)
-                .filter((item) => item.paymentStatus === "cash")
-                .reduce((sum, item) => sum + item.paidAmount, 0);
-
-              const totalAdjustQuantity = Object.values(groupedDetailsData)
-                .filter((item) => item.paymentStatus === "adjustment")
-                .reduce((sum, item) => sum + item.adjustQuantity, 0);
-
-              const totalAdjustAmount = Object.values(groupedDetailsData)
-                .filter((item) => item.paymentStatus === "adjustment")
-                .reduce((sum, item) => sum + item.adjustAmount, 0);
-
-              const totalNetQuantity = totalCashQuantity - totalAdjustQuantity;
-              const totalNetAmount = totalCashAmount - totalAdjustAmount;
-
-              return (
-                <>
-                  {Object.values(groupedDetailsData).map((row, rowIndex) => {
-                    console.log(row);
-                    const itemNames = finishGoods?.find(
-                      (rawItem) => rawItem._id === row.itemId
-                    );
-                    const filteredItemSize = itemsizeinfo?.find(
-                      (x) => x?._id === itemNames?.sizeId
-                    );
-                    const matchPiNumber = invoiceData?.find(
-                      (x) => x.invoiceNo === group?.piNumber
-                    );
-                    const filterIPQuantity = matchPiNumber.detailsData.find(
-                      (item) => row.itemId === item.itemId
-                    );
-
-                    const cashItemQuantity =
-                      row.paymentStatus === "cash" ? row.quantity : 0;
-                    const cashItemAmount =
-                      row.paymentStatus === "cash" ? row.amount : 0;
-                    const adjustmentItemsQuantity =
-                      row.paymentStatus === "adjustment" ? row.quantity : 0;
-                    const adjustmentItemsAmount =
-                      row.paymentStatus === "adjustment" ? row.amount : 0;
-
-                    const netQuantity =
-                      cashItemQuantity - adjustmentItemsQuantity;
-                    const netAmount = cashItemAmount - adjustmentItemsAmount;
-
-                    return (
-                      <tr key={row._id}>
-                        {rowIndex === 0 && (
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                            {group?.piNumber}
-                          </td>
-                        )}
-                        <td>{`${itemNames?.itemName} (${filteredItemSize?.sizeInfo}) `}</td>
-                        <td>{matchPiNumber.currency}</td>
-                        <td>{filterIPQuantity.quantity.toLocaleString()}</td>
-                        <td>{filterIPQuantity.totalAmount.toLocaleString()}</td>
-                        <td>
-                          {cashItemQuantity === 0
-                            ? "-"
-                            : cashItemQuantity.toLocaleString()}
-                        </td>
-                        <td>
-                          {cashItemAmount === 0
-                            ? "-"
-                            : cashItemAmount.toLocaleString()}
-                        </td>
-                        <td>
-                          {adjustmentItemsQuantity === 0
-                            ? "-"
-                            : adjustmentItemsQuantity.toLocaleString()}
-                        </td>
-                        <td>
-                          {adjustmentItemsAmount === 0
-                            ? "-"
-                            : adjustmentItemsAmount.toLocaleString()}
-                        </td>
-                        <td>
-                          {netQuantity < 0
-                            ? `(${Math.abs(netQuantity)})`
-                            : netQuantity.toLocaleString()}
-                        </td>
-                        <td>
-                          {netAmount < 0
-                            ? `(${Math.abs(netAmount)})`
-                            : netAmount.toLocaleString()}
-                        </td>
-                      </tr>
-                    );
-                  })}
-
-                
-                  <tr>
-                    <td
-                      colSpan={5}
-                      style={{
-                        textAlign: "right",
-                        fontWeight: "bold",
-                        padding: "8px",
-                        border: "1px solid black",
-                      }}
-                    >
-                      PI wise Total
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalCashQuantity.toLocaleString()}
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalCashAmount.toLocaleString()}
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalAdjustQuantity === 0
-                        ? "-"
-                        : totalAdjustQuantity.toLocaleString()}
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalAdjustAmount === 0
-                        ? "-"
-                        : totalAdjustAmount.toLocaleString()}
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalNetQuantity === 0
-                        ? "-"
-                        : totalNetQuantity.toLocaleString()}
-                    </td>
-                    <td
-                      style={{ textAlign: "center", border: "1px solid black" }}
-                    >
-                      {totalNetAmount === 0
-                        ? "-"
-                        : totalNetAmount.toLocaleString()}
-                    </td>
-                  </tr>
-                </>
-              );
-            });
-          })}
-
-
-          <tr>
-            <td
-              colSpan={5}
-              style={{
-                textAlign: "right",
-                fontWeight: "bold",
-                padding: "8px",
-                border: "1px solid black",
-              }}
-            >
-              Grand Total
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalCashQuantity?.toLocaleString()}
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalCashAmount?.toLocaleString()}
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalAdjustQuantity?.toLocaleString()}
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalAdjustAmount?.toLocaleString()}
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalNetQuantity?.toLocaleString()}
-            </td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalNetAmount?.toLocaleString()}
-            </td>
-          </tr>
-        </tbody>
-      </table> */}
       <table id="my-paymnet-receive-table" className="d-none">
         <thead>
           <tr>

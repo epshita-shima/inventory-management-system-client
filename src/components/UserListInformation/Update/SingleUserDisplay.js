@@ -32,6 +32,7 @@ const SingleUserDisplay = () => {
   } = useGetUserRoleQuery();
 
   const navigate = useNavigate();
+  console.log(singleUser)
   useEffect(() => {
     setSingleUserData(singleUser);
   }, [singleUser]);
@@ -101,15 +102,15 @@ const SingleUserDisplay = () => {
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     console.log(JSON.stringify(singleUserData));
-    try {
-      await updateUser(singleUserData);
-      // Data has been successfully updated
-      swal("Done", "Data Update Successfully", "success");
-      navigate("/main-view/user-setting");
-    } catch (error) {
-      // An error occurred while updating data
-      swal("Not possible", "Try again", "warning");
-    }
+    // try {
+    //   await updateUser(singleUserData);
+    //   // Data has been successfully updated
+    //   swal("Done", "Data Update Successfully", "success");
+    //   navigate("/main-view/user-setting");
+    // } catch (error) {
+    //   // An error occurred while updating data
+    //   swal("Not possible", "Try again", "warning");
+    // }
   };
 
   const handleChange = (e) => {
@@ -152,29 +153,7 @@ const SingleUserDisplay = () => {
         overflow: "hidden",
       }}
     >
-      {/* <nav class="navbar navbar-expand-lg" style={{ background: "#CBF3F0" }}>
-        <div class="container">
-          <div
-            class="collapse navbar-collapse d-flex justify-content-start align-items-center"
-            id="navbarNav"
-          >
-            <ul class="navbar-nav ">
-              <li class="nav-item nav-button-active">
-                <a class="active nav-link text-uppercase">User List</a>
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link text-uppercase
-            "
-                  href="#"
-                >
-                  {isUpdate ? "Update User" : "Add User(s)"}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav> */}
+    
       <div class="container">
         <div className="shadow-lg mt-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">

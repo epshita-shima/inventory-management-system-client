@@ -50,6 +50,7 @@ import FinishGoodsDeliveryList from "./components/FinishGoodsDelivery/DeliveryLi
 import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Common/FinishGoodsDeliveryCommonPart";
 import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
 import DeliveredReturnList from "./components/DeliverReturnInformation/Index/DeliveredReturnList";
+import OrderDetailsReport from "./components/SalesReport/OrderDetailsReport/OrderDetailsReport";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -310,7 +311,7 @@ function App() {
                 path="list-information"
                 element={<DeliveredReturnList></DeliveredReturnList>}
               ></Route>
-            
+
               {/* <Route
                 path="/main-view/user-list"
                 element={
@@ -338,6 +339,12 @@ function App() {
                 element={<MenuDataList></MenuDataList>}
               ></Route>
               <Route path="*" element={<NotFound></NotFound>}></Route>
+
+              {/* sales report */}
+              <Route
+                path="order-details-report"
+                element={<OrderDetailsReport></OrderDetailsReport>}
+              ></Route>
             </Route>
           </Routes>
         </div>

@@ -210,7 +210,7 @@ console.log(detail)
                         Item Name With Description Details
                       </th>
                       <th className="bg-white text-center">Bank Name</th>
-                      <th className="bg-white text-center">Payment Status</th>
+                      <th className="bg-white text-center">Payment Type</th>
                       <th className="bg-white text-center">Cheque No</th>
                       <th className="bg-white text-center">Cheque Date</th>
                       <th className="bg-white text-center">Deposite Slip No</th>
@@ -262,7 +262,7 @@ console.log(detail)
                                   name="sizeinfo"
                                   options={paymentStatusOptions}
                                   defaultValue={{
-                                    label: "Select Payment Status",
+                                    label: "Select Payment Type",
                                     value: 0,
                                   }}
                                   value={paymentStatusOptions?.filter(function (

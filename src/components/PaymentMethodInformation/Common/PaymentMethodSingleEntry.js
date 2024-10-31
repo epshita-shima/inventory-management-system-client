@@ -78,6 +78,7 @@ const PaymentMethodSingleEntry = () => {
   ];
   const paymentStatusOptions = [
     { value: "cash", label: "Cash" },
+    { value: "advance", label: "Advance" },
     { value: "adjustment", label: "Adjustment" },
   ];
 
