@@ -57,7 +57,7 @@ const invoiceinfoApi = api.injectEndpoints({
     }),
     getFilteredForReportInvoiceInfo: builder.query({
       query: (queryParams) => ({
-        url: "invoiceinfo/report",
+        url: "/report",
         params: queryParams,
         providesTags: [
           "insertinvoiceinfo",

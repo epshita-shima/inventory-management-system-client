@@ -77,7 +77,7 @@ const OrderDetailsReport = () => {
     }
     return (
         <div>
-          <OrderDetailsReportTable></OrderDetailsReportTable>
+          <OrderDetailsReportTable  permission={permission}></OrderDetailsReportTable>
         </div>
       );
 }

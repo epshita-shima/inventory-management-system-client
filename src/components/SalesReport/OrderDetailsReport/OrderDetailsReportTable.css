@@ -3,7 +3,7 @@
   padding: 5px;
   border-radius: 5px;
   outline: #2DDC1B;
-  width: 135px;
+  width: 210px;
   height: 38px;
 }
 .custom-datepicker-update{
@@ -11,7 +11,7 @@
   padding: 8px;
   border-radius: 5px;
   outline: #2DDC1B;
-  width:200px;
+  width:210px;
 }
 .custom-calendar-order-details-report .react-datepicker__current-month,
 .custom-calendar-order-details-report .react-datepicker__day,
@@ -30,7 +30,7 @@ font-size: 14px; /* Change the selected day text size */
 }
 .custom-calendar-order-details-report {
   background-color: #B8FEB3;
-  width: 200px;
+  width: 220px;
 }
 .custom-calendar-order-details-report .react-datepicker__month-container {
   width: 100%; /* Ensure the month container takes the full width */
