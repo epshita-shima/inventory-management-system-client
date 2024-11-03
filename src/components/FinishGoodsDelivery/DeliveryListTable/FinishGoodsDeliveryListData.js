@@ -6,8 +6,6 @@ import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import swal from "sweetalert";
 import {
-  faCheckToSlot,
-  faDownload,
   faFilePdf,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
@@ -144,19 +142,6 @@ console.log(filteredDatas)
       center: true,
       filterable: true,
     },
-
-    // {
-    //   name: "Item Name",
-    //   selector: (row) => {
-    //     const itemName = finishGoodsInfo?.find(
-    //       (x) => x._id === row?.detailsData.itemId
-    //     );
-    //     return itemName ? itemName.itemName : "N/A";
-    //   },
-    //   sortable: true,
-    //   center: true,
-    //   filterable: true,
-    // },
 
     {
       name: "Delivery Quantity",

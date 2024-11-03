@@ -1,22 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
-import "./OrderDetailsReportTable.css";
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from "react-data-table-component";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
+import React from 'react'
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-
-const OrderDetailsReportTable = ({
-  permission,
-  filteredDatas,
-  isTableDispaly,
-  finishGoodsItemInfo,itemSizeInfo
-}) => {
+const SalesDetailsReport = ({permission,piInformation,doInformation,clientInformation,filteredDatas,isTableDispaly,finishGoodsItemInfo,itemSizeInfo}) => {
   const [filterText, setFilterText] = React.useState("");
-
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-
   const transformedPIData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
       ...piDetails,
@@ -24,48 +13,52 @@ const OrderDetailsReportTable = ({
     }))
   );
   console.log(transformedPIData);
-
   const columns = [
     {
       name: "Sl.",
-      selector: (invoiceDetails, index) => index + 1,
+      selector: (row, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
-      name: "Pi Date",
-      selector: (invoiceDetails) =>
-        new Date(invoiceDetails?.piDate).toLocaleDateString("en-CA"),
+      name: "Make Date",
+      selector: (row) => new Date(row.finishGoodsDeliveryDate).toLocaleDateString('en-CA'),
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Invoice No",
-      selector: (invoiceDetails) => invoiceDetails?.invoiceNo,
+      name: "Client Name",
+      selector: (row) => {
+        const clientInfo = clientInformation?.find(
+          (x) => x._id ==row?.clientId
+        );
+        return clientInfo ? clientInfo?.clientName : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+       width:'200px'
+    },
+
+    {
+      name: "PI Number",
+      selector: (row) => {
+        const piNumber = piInformation?.find(
+          (x) => x._id === row?.piId
+        );
+        return piNumber ? piNumber.invoiceNo : "N/A"; 
+      },
       sortable: true,
       center: true,
       filterable: true,
       width: "200px",
     },
     {
-      name: "Client Name",
-      selector: (invoiceDetails) => {
-        const customerName = customerInfo?.find(
-          (x) => x._id === invoiceDetails?.customerID
-        );
-        return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "220px",
-    },
-    {
       name: "Item Name",
-      selector: (invoiceDetails) => {
+      selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => invoiceDetails?.detailsData.itemId == x._id
+          (x) => row?.detailsData.itemId == x._id
         );
         const itemSize = itemSizeInfo?.find(
           (size) => size._id == itemName.sizeId
@@ -79,44 +72,86 @@ const OrderDetailsReportTable = ({
     },
 
     {
-      name: "Quantity",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData?.quantity,
+      name: "Currency",
+      selector: (row) => {
+        const piNumber = piInformation?.find(
+          (x) => x._id === row?.piId
+        );
+        return piNumber ? piNumber?.currency : "N/A"; 
+      },
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
+    },
+    // {
+    //   name: "Ordered Qty in PC's",
+    //   selector: (row) => {
+    //     const piData = piInformation?.find(
+    //       (x) => x._id === row?.piId
+    //     );
+    //     const itemDetails=piData?.detailsData.find((item)=>item.itemId==row.detailsData.itemId)
+    //     return itemDetails ?  itemDetails.quantity : "N/A"
+    //   },
+    //   sortable: true,
+    //   center: true,
+    //   filterable: true,
+    //    width:'200px'
+    // },
+
+    {
+      name: "Delivery Qty in PC's",
+      selector: (row) =>row.detailsData.deliverQty
+      ,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width:'200px'
     },
     {
       name: "Unit Price",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData.unitPrice,
+      selector: (row) => {
+        const piData = piInformation?.find(
+          (x) => x._id === row?.piId
+        );
+        const itemDetails=piData?.detailsData.find((item)=>item.itemId==row.detailsData.itemId)
+        return itemDetails ?  itemDetails.unitPrice : "N/A"
+      },
       sortable: true,
       center: true,
       filterable: true,
-      width: "120px",
+       width:'150px'
     },
     {
-      name: "Total Amount",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData.totalAmount,
+      name: "Amount in BDT",
+      selector: (row) => {
+        const piData = piInformation?.find(
+          (x) => x._id === row?.piId
+        );
+        const itemDetails=piData?.detailsData.find((item)=>item.itemId==row.detailsData.itemId)
+        return itemDetails ?  itemDetails.unitPrice * row.detailsData.deliverQty: "N/A"
+       
+      },
       sortable: true,
       center: true,
       filterable: true,
-      width: "180px",
+       width:'200px'
     },
+
 
     {
       name: "Action",
       button: true,
-      width: "100px",
+      width: "120px",
       grow: 2,
-      cell: (invoiceDetails) => (
+      cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
+           {permission?.isPDF && (
             <a
               target="_blank"
               className={` action-icon `}
               data-toggle="tooltip"
               data-placement="bottom"
-              title="Report View"
+              title="PDF Item"
               style={{
                 color: "orange",
                 border: "2px solid orange",
@@ -124,15 +159,13 @@ const OrderDetailsReportTable = ({
                 borderRadius: "5px",
               }}
               onClick={() => {
-                // downloadInvoicePDF(
-                //   invoiceDetails,
-                //   finishGoodsData,
-                //   customerInfo,
-                //   unitInfo,
-                //   sizeInfo,
-                //   paymentInfo,
-                //   base64Logo,
-                //   signature,
+                // downloadDeliveryOrderPDF(
+                //   row,
+                //   transformedDOData,
+                //   invoiceInformation,
+                //   clientInformation,
+                //   finishGoodsInfo,
+                //   itemsizeinfo,
                 //   { companyinfo },
                 //   reportTitle
                 // );
@@ -140,9 +173,9 @@ const OrderDetailsReportTable = ({
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
+        
+         
         </div>
       ),
     },
@@ -168,16 +201,6 @@ const OrderDetailsReportTable = ({
         borderRight: "1px solid gray",
       },
     },
-    headRow: {
-      style: {
-        paddingTop: "0px",
-      },
-    },
-    header: {
-      style: {
-        marginTop: "8px",
-      },
-    },
   };
 
   const filteredItems = transformedPIData?.filter(
@@ -187,13 +210,12 @@ const OrderDetailsReportTable = ({
   );
 
   return (
-    <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
-      {isTableDispaly && (
-        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
-          <div className="shadow-lg">
+    <div>
+       {isTableDispaly ? (
+          <div
+            className=" "
+            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+          >
             <DataTable
               title={
                 <h2
@@ -203,7 +225,7 @@ const OrderDetailsReportTable = ({
                     color: "#000",
                   }}
                 >
-                  Order Details Report
+                  Sales Details Report
                 </h2>
               }
               columns={columns}
@@ -215,10 +237,10 @@ const OrderDetailsReportTable = ({
               subHeader
             />
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        ) : null}
+      </div>
+    
+  )
+}
 
-export default OrderDetailsReportTable;
+export default SalesDetailsReport

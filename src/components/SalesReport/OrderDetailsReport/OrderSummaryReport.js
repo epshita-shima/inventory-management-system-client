@@ -1,29 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
-import "./OrderDetailsReportTable.css";
+import React, { useEffect, useState } from 'react'
+
+import { useGetAllClientInformationQuery } from '../../../redux/features/clientinformation/clientInfoApi';
+
 import DataTable from "react-data-table-component";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { useGetAllPaymentInformationQuery } from '../../../redux/features/paymnetinformation/paymentInfoApi';
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-
-const OrderDetailsReportTable = ({
-  permission,
-  filteredDatas,
-  isTableDispaly,
-  finishGoodsItemInfo,itemSizeInfo
-}) => {
+const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
+  const {data:paymentTypeInfo}=useGetAllPaymentInformationQuery(undefined)
   const [filterText, setFilterText] = React.useState("");
 
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-
-  const transformedPIData = filteredDatas?.flatMap((piDetails) =>
-    piDetails.detailsData.map((detail) => ({
-      ...piDetails,
-      detailsData: detail,
-    }))
-  );
-  console.log(transformedPIData);
+  const { data: customerInfo } = useGetAllClientInformationQuery(undefined)
 
   const columns = [
     {
@@ -39,6 +28,7 @@ const OrderDetailsReportTable = ({
       sortable: true,
       center: true,
       filterable: true,
+      width: "150px",
     },
     {
       name: "Invoice No",
@@ -54,49 +44,70 @@ const OrderDetailsReportTable = ({
         const customerName = customerInfo?.find(
           (x) => x._id === invoiceDetails?.customerID
         );
-        return customerName ? customerName.clientName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+        return customerName ? customerName.clientName : "N/A"; 
       },
       sortable: true,
       center: true,
       filterable: true,
-      width: "220px",
+      width: "200px",
     },
+    
     {
-      name: "Item Name",
+      name: "Payment Status",
       selector: (invoiceDetails) => {
-        const itemName = finishGoodsItemInfo?.find(
-          (x) => invoiceDetails?.detailsData.itemId == x._id
+        const paymentType = paymentTypeInfo?.find(
+          (x) => x._id === invoiceDetails?.paymentId
         );
-        const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName.sizeId
-        );
-        return itemName ? itemName?.itemName + ` (${itemSize?.sizeInfo})` : "N/A";
+        return paymentType ? paymentType.paymentMode : "N/A"; 
       },
       sortable: true,
       center: true,
       filterable: true,
-      width: "230px",
+      width: "180px",
     },
 
     {
-      name: "Quantity",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData?.quantity,
+      name: "Total Quantity",
+      selector: (invoiceDetails) => {
+        const totalQuantity = invoiceDetails.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.quantity, 10),
+          0
+        );
+        return totalQuantity;
+      },
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
+      width: "180px",
     },
     {
-      name: "Unit Price",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData.unitPrice,
+      name: "Rate in Avarage",
+      selector: (invoiceDetails) => {
+        const totalAmount = invoiceDetails.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+          0
+        );
+        const totalQuantity = invoiceDetails.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.quantity, 10),
+          0
+        );
+        return totalAmount /totalQuantity ;
+        
+      },
       sortable: true,
       center: true,
       filterable: true,
-      width: "120px",
+      width: "180px",
     },
     {
       name: "Total Amount",
-      selector: (invoiceDetails) => invoiceDetails?.detailsData.totalAmount,
+      selector: (invoiceDetails) => {
+        const totalAmount = invoiceDetails.detailsData.reduce(
+          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
+          0
+        );
+        return totalAmount;
+      },
       sortable: true,
       center: true,
       filterable: true,
@@ -143,6 +154,9 @@ const OrderDetailsReportTable = ({
           ) : (
             ""
           )}
+      
+
+        
         </div>
       ),
     },
@@ -170,32 +184,38 @@ const OrderDetailsReportTable = ({
     },
     headRow: {
       style: {
-        paddingTop: "0px",
+        paddingTop: "0px", 
       },
     },
     header: {
       style: {
-        marginTop: "8px",
+        marginTop: "8px",     
       },
     },
   };
 
-  const filteredItems = transformedPIData?.filter(
+  const filteredItems = filteredDatas?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
 
+  console.log(filteredItems)
+
+
+
   return (
     <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+      // className="row px-5 mx-2"
+      // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
+
+
       {isTableDispaly && (
         <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <div className="shadow-lg">
             <DataTable
-              title={
+               title={
                 <h2
                   style={{
                     fontSize: "24px",
@@ -203,7 +223,7 @@ const OrderDetailsReportTable = ({
                     color: "#000",
                   }}
                 >
-                  Order Details Report
+                  Order Summary Report
                 </h2>
               }
               columns={columns}
@@ -219,6 +239,6 @@ const OrderDetailsReportTable = ({
       )}
     </div>
   );
-};
+}
 
-export default OrderDetailsReportTable;
+export default OrderSummaryReport

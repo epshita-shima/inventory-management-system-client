@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import OrderDetailsReportTable from './OrderDetailsReportTable';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
+import ReportView from './ReportView';
 
 const OrderDetailsReport = () => {
   const clickhandler = (name) => console.log("delete", name);
@@ -77,7 +78,7 @@ const OrderDetailsReport = () => {
     }
     return (
         <div>
-          <OrderDetailsReportTable  permission={permission}></OrderDetailsReportTable>
+          <ReportView  permission={permission}></ReportView>
         </div>
       );
 }
