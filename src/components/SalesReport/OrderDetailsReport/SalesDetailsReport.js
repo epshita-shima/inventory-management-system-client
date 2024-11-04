@@ -26,6 +26,7 @@ const SalesDetailsReport = ({permission,piInformation,doInformation,clientInform
       sortable: true,
       center: true,
       filterable: true,
+      width:"150px"
     },
     {
       name: "Client Name",

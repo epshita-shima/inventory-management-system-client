@@ -12,6 +12,7 @@ const CommonParameter = ({
   clientInfoOptions,
   filters,
   piInfoOptions,
+  itemsOptions,
   handleApplyFilters,
   setIsOrderDetailsReport,
   setIsOrderSummmaryReport,
@@ -94,6 +95,54 @@ const CommonParameter = ({
           className="d-flex justify-content-between align-items-center"
         >
           <div className="w-100">
+            <label htmlFor="">Item Name</label>
+            <br />
+            <div className="w-100">
+              <Select
+                class="form-select"
+                className="w-100"
+                aria-label="Default select example"
+                name="iteminfo"
+                options={itemsOptions}
+                defaultValue={{
+                  label: "Select Client Name",
+                  value: 0,
+                }}
+                value={itemsOptions.filter(function (option) {
+                  return option.value === filters?.itemId;
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                    borderColor: state.isFocused ? "#fff" : "#fff",
+                    border: "1px solid #2DDC1B",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                    height: "auto",
+                    // overflowY: "scroll",
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#B8FEB3",
+                    primary: "#2DDC1B",
+                  },
+                })}
+                onChange={(e) => {
+                  setFilters((prevFilters) => ({
+                    ...prevFilters,
+                    itemId: e.value,
+                  }));
+                }}
+              ></Select>
+            </div>
+          </div>
+          <div className="w-100 ms-3">
             <label htmlFor="">Client Name</label>
             <br />
             <div className="w-100">

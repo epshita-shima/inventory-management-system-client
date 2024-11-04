@@ -16,7 +16,7 @@ const OrderDetailsReportTable = ({
   const [filterText, setFilterText] = React.useState("");
 
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-
+console.log(filteredDatas)
   const transformedPIData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
       ...piDetails,

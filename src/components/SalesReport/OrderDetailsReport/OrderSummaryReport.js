@@ -14,6 +14,27 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
 
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined)
 
+  console.log(filteredDatas)
+  // const { grandQuantity, grandAmount } = filteredDatas?.reduce(
+  //   (acc, detail) => {
+  //     // Accumulate quantity and totalAmount for each matched item in detailsData
+  //     detail.detailsData.forEach((item) => {
+  //       acc.grandQuantity += item.quantity || 0;
+  //       acc.grandAmount += item.totalAmount || 0;
+  //     });
+  //     return acc;
+  //   },
+  //   { grandQuantity: 0, grandAmount: 0 } // Initial accumulator values
+  // );
+
+  // const summaryData = [
+  //   {
+  //     grandQuantity,
+  //     grandAmount,
+  //     averageRate: grandQuantity ? Math.round(grandAmount / grandQuantity) : 0,
+  //   },
+  // ];
+
   const columns = [
     {
       name: "Sl.",
@@ -22,96 +43,39 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
       width: "60px",
     },
     {
-      name: "Pi Date",
-      selector: (invoiceDetails) =>
-        new Date(invoiceDetails?.piDate).toLocaleDateString("en-CA"),
+      name: "Date",
+      selector:(row) => row.date,
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
     },
     {
-      name: "Invoice No",
-      selector: (invoiceDetails) => invoiceDetails?.invoiceNo,
+      name: "Payment Type",
+      selector:(row) => row.paymentType,
       sortable: true,
       center: true,
       filterable: true,
-      width: "200px",
     },
-    {
-      name: "Client Name",
-      selector: (invoiceDetails) => {
-        const customerName = customerInfo?.find(
-          (x) => x._id === invoiceDetails?.customerID
-        );
-        return customerName ? customerName.clientName : "N/A"; 
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "200px",
-    },
-    
-    {
-      name: "Payment Status",
-      selector: (invoiceDetails) => {
-        const paymentType = paymentTypeInfo?.find(
-          (x) => x._id === invoiceDetails?.paymentId
-        );
-        return paymentType ? paymentType.paymentMode : "N/A"; 
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "180px",
-    },
-
     {
       name: "Total Quantity",
-      selector: (invoiceDetails) => {
-        const totalQuantity = invoiceDetails.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.quantity, 10),
-          0
-        );
-        return totalQuantity;
-      },
+      selector:(row) => row.grandQuantity,
       sortable: true,
       center: true,
       filterable: true,
-      width: "180px",
     },
     {
       name: "Rate in Avarage",
-      selector: (invoiceDetails) => {
-        const totalAmount = invoiceDetails.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
-          0
-        );
-        const totalQuantity = invoiceDetails.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.quantity, 10),
-          0
-        );
-        return totalAmount /totalQuantity ;
-        
-      },
+      selector: (row) =>row.averageRate,
       sortable: true,
       center: true,
       filterable: true,
-      width: "180px",
     },
     {
       name: "Total Amount",
-      selector: (invoiceDetails) => {
-        const totalAmount = invoiceDetails.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.totalAmount, 10),
-          0
-        );
-        return totalAmount;
-      },
+      selector:(row) => row.grandAmount,
       sortable: true,
       center: true,
       filterable: true,
-      width: "180px",
     },
 
     {
@@ -194,15 +158,6 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     },
   };
 
-  const filteredItems = filteredDatas?.filter(
-    (item) =>
-      JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
-      -1
-  );
-
-  console.log(filteredItems)
-
-
 
   return (
     <div
@@ -227,7 +182,7 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
                 </h2>
               }
               columns={columns}
-              data={filteredItems}
+              data={filteredDatas}
               defaultSortField="name"
               customStyles={customStyles}
               striped

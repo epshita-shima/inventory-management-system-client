@@ -101,7 +101,7 @@ const SalesReturnDetailsReport = ({permission,filteredDatas,filterText,piInforma
     {
       name: "Action",
       button: true,
-      width: "150px",
+      width: "100px",
       grow: 2,
       cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -195,7 +195,7 @@ const SalesReturnDetailsReport = ({permission,filteredDatas,filterText,piInforma
                     color: "#000",
                   }}
                 >
-                  Sales Summary Report
+                  Sales Return Details Report
                 </h2>
               }
               columns={columns}

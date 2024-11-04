@@ -152,7 +152,7 @@ const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInforma
                     color: "#000",
                   }}
                 >
-                  Sales Summary Report
+                  Sales Return Summary Report
                 </h2>
               }
               columns={columns}

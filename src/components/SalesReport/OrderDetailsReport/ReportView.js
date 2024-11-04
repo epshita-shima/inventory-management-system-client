@@ -4,6 +4,7 @@ import OrderSummaryReport from "./OrderSummaryReport";
 import CommonParameter from "../CommonParameterDetails/CommonParameter";
 import {
   clientInfoDropdown,
+  finishGoodsWithSizeItemDropdown,
   invoiceListDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
@@ -50,6 +51,7 @@ const ReportView = ({ permission }) => {
   });
   const clientInfoOptions = clientInfoDropdown(clientInformation);
   const piInfoOptions = invoiceListDropdown(piInformation);
+  const itemsOptions=finishGoodsWithSizeItemDropdown(finishGoodsItemInfo,itemSizeInfo)
   const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredForReportInvoiceInfoQuery();
 console.log(filteredDatas)
@@ -81,6 +83,7 @@ console.log(filteredDatas)
           clientInfoOptions={clientInfoOptions}
           filters={filters}
           piInfoOptions={piInfoOptions}
+          itemsOptions={itemsOptions}
           handleApplyFilters={handleApplyFilters}
           setIsOrderDetailsReport={setIsOrderDetailsReport}
           setIsOrderSummmaryReport={setIsOrderSummmaryReport}
