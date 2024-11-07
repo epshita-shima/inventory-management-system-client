@@ -44,14 +44,17 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     },
     {
       name: "Date",
-      selector:(row) => row.date,
+      selector:(row) =>new Date(row.date).toLocaleDateString('en-CA') ,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Payment Type",
-      selector:(row) => row.paymentType,
+      selector:(row) => {
+        const paymnetInfo=paymentTypeInfo.find((type)=>type._id==row.paymentId)
+        return paymnetInfo ? paymnetInfo.paymentMode : 'N/A'
+      },
       sortable: true,
       center: true,
       filterable: true,
@@ -164,13 +167,11 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
       // className="row px-5 mx-2"
       // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
-
-
       {isTableDispaly && (
         <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <div className="shadow-lg">
             <DataTable
-               title={
+              title={
                 <h2
                   style={{
                     fontSize: "24px",

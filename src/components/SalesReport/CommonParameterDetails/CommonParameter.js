@@ -353,7 +353,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(false)
                 }
-                if (e.value === "ordersummaryreport") {
+               else if  (e.value === "ordersummaryreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(true);
                   setIsSalesSummaryReport(false);
@@ -361,7 +361,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(false)
                 }
-                if(e.value === "salesdetailsreport"){
+               else if(e.value === "salesdetailsreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
@@ -369,7 +369,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(false)
                 }
-                if(e.value === "salessummaryreport"){
+               else if(e.value === "salessummaryreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(true);
@@ -377,7 +377,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(false)
                 }
-                if(e.value === "salesreturnsummaryreport"){
+               else if(e.value === "salesreturnsummaryreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
@@ -385,13 +385,16 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(true);
                   setIsSalesReturnDetailsReport(false)
                 }
-                if(e.value === "salesreturndetailsreport"){
+              else  if(e.value === "salesreturndetailsreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(true)
+                }
+                else{
+                  console.log('something is wrong');
                 }
 
                 // Update the filters state
