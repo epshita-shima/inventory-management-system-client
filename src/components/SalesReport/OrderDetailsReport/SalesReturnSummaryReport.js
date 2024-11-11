@@ -5,8 +5,7 @@ import DataTable from "react-data-table-component";
 import React from 'react'
 
 const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInformation,clientInformation,companyInformation,isTableDispaly}) => {
-
-
+console.log(filteredDatas) 
   const columns = [
     {
       name: "Sl.",
@@ -25,12 +24,18 @@ const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInforma
 
     {
       name: "Total Return Qty",
+      selector: (row) =>  row.totalReturnQty,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    
+    {
+      name: "Avg Unit Price",
       selector: (row) => {
-        const totalReturnQty = row.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.returnQty, 10),
-          0
-        );
-        return totalReturnQty;
+       const unitPrice=row.totalReturnAmount /  row.totalReturnQty
+       
+        return  Math.round(unitPrice);
       },
       sortable: true,
       center: true,
@@ -38,17 +43,7 @@ const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInforma
     },
     {
       name: "Total Return Amount",
-      selector: (row) => {
-        const piInfo = piInformation?.find(
-          (x) => x._id === row?.piId
-        );
-        const itemDetails=piInfo?.detailsData.find((item)=>row.detailsData.some((rowItem)=>item.itemId==rowItem.itemId))
-        const totalReturnQty = row.detailsData.reduce(
-          (acc, cur) => acc + parseInt(cur.returnQty, 10),
-          0
-        );
-        return totalReturnQty * itemDetails?.unitPrice;
-      },
+      selector: (row) =>row.totalReturnAmount,
       sortable: true,
       center: true,
       filterable: true,

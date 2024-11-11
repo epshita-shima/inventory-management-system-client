@@ -5,8 +5,37 @@ import DataTable from "react-data-table-component";
 import React from 'react'
 
 const SalesSummaryReport = ({permission,piInformation,doInformation,clientInformation,filteredDatas,isTableDispaly}) => {
- 
+ console.log(JSON.stringify(filteredDatas))
   const [filterText, setFilterText] = React.useState("");
+  // const groupedData = filteredDatas?.reduce((acc, item) => {
+  //   // Create a unique key based on itemId, paymentId, and date
+  //   const key = `${item.itemId}-${item.paymentId}-${item.date}`;
+  //     // Check if the group already exists in the accumulator
+  //   if (!acc[key]) {
+  //     // If not, initialize a new group
+  //     acc[key] = {
+  //       itemId: item.itemId,
+  //       paymentId: item.paymentId,
+  //       date: item.date,
+  //       totalDeliverQty: 0,
+  //       totalAmount: 0
+  //     };
+  //   }
+  //   const deliverQty = Number(item.totalDeliverQty) || 0;
+  //   const amount = Number(item.totalAmount) || 0;
+  //   // Add the values to the group
+  //   acc[key].totalDeliverQty += deliverQty;
+  //   acc[key].totalAmount += amount;
+  
+  //   return acc;
+  // }, {});
+  
+  // console.log( Object.values(groupedData))
+  // const result = Object.values(groupedData);
+  
+  // console.log(result);
+ 
+ 
   const columns = [
     {
       name: "Sl.",
@@ -15,52 +44,30 @@ const SalesSummaryReport = ({permission,piInformation,doInformation,clientInform
       width: "60px",
     },
     {
-      name: "Client Name",
-      selector: (row) => {
-        const clientInfo = clientInformation?.find(
-          (x) => x._id ==row?.clientId
-        );
-        return clientInfo ? clientInfo?.clientName : "N/A";
-      },
+      name: "Delivery Date",
+      selector: (row) => row.date,
       sortable: true,
       center: true,
       filterable: true,
     },
 
     {
-      name: "PI Number",
-      selector: (row) => {
-        const piNumber = piInformation?.find(
-          (x) => x._id === row?.piId
-        );
-        return piNumber ? piNumber.invoiceNo : "N/A"; 
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "200px",
-    },
-
-    {
-      name: "DO Number",
-      selector: (row) => {
-        const doNumber = doInformation?.find(
-          (x) => x._id === row?.doId
-        );
-        return doNumber ? doNumber.doNo : "N/A"; 
-      },
+      name: "Unit Price",
+      selector: (row) => row.unitPrice,
       sortable: true,
       center: true,
       filterable: true,
     },
-
     {
       name: "Delivered Quantity",
-      selector: (row) => {
-        const totalDeliverQty = row.detailsData.reduce((acc, cur) => acc + parseFloat(cur.deliverQty || 0), 0);
-        console.log(totalDeliverQty);
-        return totalDeliverQty;
-      },
+      selector: (row) => row.totalDeliverQty,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Total Amount",
+      selector: (row) => row.totalAmount,
       sortable: true,
       center: true,
       filterable: true,

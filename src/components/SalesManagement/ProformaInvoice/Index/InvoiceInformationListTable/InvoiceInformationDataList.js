@@ -12,11 +12,13 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-
 // import reportImage from "../../../../assets/images/reportlogo.png";
 import reportImage from "../../../../../assets/images/reportlogo.png";
 import authorizesSingatureImage from "../../../../../assets/images/Image_20240831165135.png";
-import { useDeleteInvoiceInfoMutation, useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import {
+  useDeleteInvoiceInfoMutation,
+  useGetAllInvoiceInformationQuery,
+} from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
@@ -25,7 +27,7 @@ import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinf
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllPaymentReceiveInformationQuery } from "../../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import { useGetUserRoleQuery } from "../../../../../redux/features/userrole/userroleApi";
-import InvoiceListHeading from "../../../../Common/ListHeading/InvoiceListHeading"
+import InvoiceListHeading from "../../../../Common/ListHeading/InvoiceListHeading";
 import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
 import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
@@ -37,8 +39,7 @@ const InvoiceInformationDataList = ({ permission }) => {
     React.useState(false);
   const { data: invoiceDatas, refetch } =
     useGetAllInvoiceInformationQuery(undefined);
-  const { data: customerInfo } = useGetAllClientInformationQuery
-(undefined);
+  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
@@ -313,7 +314,11 @@ const InvoiceInformationDataList = ({ permission }) => {
                   (item) => item.piNumber === userWaysListData.invoiceNo
                 );
 
-                if ((userWaysListData?.paymentId=="667d2b983e37e91c4e1f3a20" && isSpecialPaymentExist) || isPaymentReceiveExist) {
+                if (
+                  (userWaysListData?.paymentId == "667d2b983e37e91c4e1f3a20" &&
+                    isSpecialPaymentExist) ||
+                  isPaymentReceiveExist
+                ) {
                   swal({
                     title: "Not Possible!",
                     text: "This PI has already prepared for delivery.",
@@ -481,18 +486,23 @@ const InvoiceInformationDataList = ({ permission }) => {
         base64Logo={base64Logo}
         signature={signature}
       ></InvoiceListHeading>
-      <div className="col  mt-sm-4 mt-md-4 mt-lg-0">
-        <div className="shadow-lg">
-          <DataTable
-            columns={columns}
-            data={filteredItems}
-            defaultSortField="name"
-            customStyles={customStyles}
-            striped
-            pagination
-            subHeader
-            subHeaderComponent={subHeaderComponent}
-          />
+      <div
+        className="px-2 mx-4"
+        style={{ height: "calc(80vh - 120px)", overflowY: "auto" }}
+      >
+        <div className="col  mt-sm-4 mt-md-4 mt-lg-0">
+          <div className="shadow-lg">
+            <DataTable
+              columns={columns}
+              data={filteredItems}
+              defaultSortField="name"
+              customStyles={customStyles}
+              striped
+              pagination
+              subHeader
+              subHeaderComponent={subHeaderComponent}
+            />
+          </div>
         </div>
       </div>
     </div>
