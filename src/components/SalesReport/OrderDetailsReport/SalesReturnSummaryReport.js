@@ -6,6 +6,7 @@ import React from 'react'
 
 const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInformation,clientInformation,companyInformation,isTableDispaly}) => {
 console.log(filteredDatas) 
+
   const columns = [
     {
       name: "Sl.",

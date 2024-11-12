@@ -7,34 +7,6 @@ import React from 'react'
 const SalesSummaryReport = ({permission,piInformation,doInformation,clientInformation,filteredDatas,isTableDispaly}) => {
  console.log(JSON.stringify(filteredDatas))
   const [filterText, setFilterText] = React.useState("");
-  // const groupedData = filteredDatas?.reduce((acc, item) => {
-  //   // Create a unique key based on itemId, paymentId, and date
-  //   const key = `${item.itemId}-${item.paymentId}-${item.date}`;
-  //     // Check if the group already exists in the accumulator
-  //   if (!acc[key]) {
-  //     // If not, initialize a new group
-  //     acc[key] = {
-  //       itemId: item.itemId,
-  //       paymentId: item.paymentId,
-  //       date: item.date,
-  //       totalDeliverQty: 0,
-  //       totalAmount: 0
-  //     };
-  //   }
-  //   const deliverQty = Number(item.totalDeliverQty) || 0;
-  //   const amount = Number(item.totalAmount) || 0;
-  //   // Add the values to the group
-  //   acc[key].totalDeliverQty += deliverQty;
-  //   acc[key].totalAmount += amount;
-  
-  //   return acc;
-  // }, {});
-  
-  // console.log( Object.values(groupedData))
-  // const result = Object.values(groupedData);
-  
-  // console.log(result);
- 
  
   const columns = [
     {
@@ -45,15 +17,18 @@ const SalesSummaryReport = ({permission,piInformation,doInformation,clientInform
     },
     {
       name: "Delivery Date",
-      selector: (row) => row.date,
+      selector: (row) => row.deliverDate,
       sortable: true,
       center: true,
       filterable: true,
     },
 
     {
-      name: "Unit Price",
-      selector: (row) => row.unitPrice,
+      name: "Avg Unit Price",
+      selector: (row) => {
+        const avgUnitPrice=row.totalDeliverAmount / row.totalDeliverQty
+        return Math.round(avgUnitPrice)
+      },
       sortable: true,
       center: true,
       filterable: true,
@@ -67,7 +42,7 @@ const SalesSummaryReport = ({permission,piInformation,doInformation,clientInform
     },
     {
       name: "Total Amount",
-      selector: (row) => row.totalAmount,
+      selector: (row) => row.totalDeliverAmount,
       sortable: true,
       center: true,
       filterable: true,

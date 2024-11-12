@@ -21,7 +21,11 @@ import SalesReturnSummaryReport from "./SalesReturnSummaryReport";
 import SalesReturnDetailsReport from "./SalesReturnDetailsReport";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import {
+  useLazyGetOrderDetailsReportQuery,
   useLazyGetOrderSummaryReportQuery,
+  useLazyGetReturnDetailsReportQuery,
+  useLazyGetReturnSummaryReportQuery,
+  useLazyGetSalesDetailsReportQuery,
   useLazyGetSalesSummaryReportQuery,
 } from "../../../redux/features/allreport/allreportApi";
 
@@ -65,10 +69,19 @@ const ReportView = ({ permission }) => {
   const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredForReportInvoiceInfoQuery();
 
+  const [triggerOrderDetailsReport, { data: orderDetailsData }] =
+    useLazyGetOrderDetailsReportQuery();
   const [triggerOrderSummaryReport, { data: orderSummaryData }] =
     useLazyGetOrderSummaryReportQuery();
+  const [triggerSalesDetailsReport, { data: salesDetailsData }] =
+    useLazyGetSalesDetailsReportQuery();
   const [triggerSalesSummaryReport, { data: salesSummaryData }] =
     useLazyGetSalesSummaryReportQuery();
+  const [triggerReturnDetailsReport, { data: returnDetailsData }] =
+    useLazyGetReturnDetailsReportQuery();
+  const [triggerReturnSummaryReport, { data: returnSummaryData }] =
+    useLazyGetReturnSummaryReportQuery();
+
   console.log(orderSummaryData);
   useEffect(() => {
     if (executeQuery) {
@@ -80,11 +93,20 @@ const ReportView = ({ permission }) => {
 
   const handleApplyFilters = async (updatedFilters) => {
     setExecuteQuery(true);
-    await trigger(updatedFilters);
-    if (updatedFilters.reportStatus == "ordersummaryreport")
+    // await trigger(updatedFilters);
+    if (updatedFilters.reportStatus === "orderdetailsreport") {
+      await triggerOrderDetailsReport(updatedFilters);
+    } else if (updatedFilters.reportStatus === "ordersummaryreport") {
       await triggerOrderSummaryReport(updatedFilters);
-    if (updatedFilters.reportStatus === "salessummaryreport")
+    } else if (updatedFilters.reportStatus === "salesdetailsreport") {
+      await triggerSalesDetailsReport(updatedFilters);
+    } else if (updatedFilters.reportStatus === "salessummaryreport") {
       await triggerSalesSummaryReport(updatedFilters);
+    } else if (updatedFilters.reportStatus === "returndetailsreport") {
+      await triggerReturnDetailsReport(updatedFilters);
+    } else if (updatedFilters.reportStatus === "returnsummaryreport") {
+      await triggerReturnSummaryReport(updatedFilters);
+    }
   };
 
   return (
@@ -117,7 +139,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={filteredDatas}
+            filteredDatas={orderDetailsData}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
           ></OrderDetailsReportTable>
@@ -137,7 +159,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={filteredDatas}
+            filteredDatas={salesDetailsData}
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
@@ -161,7 +183,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={filteredDatas}
+            filteredDatas={returnDetailsData}
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
@@ -175,7 +197,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={filteredDatas}
+            filteredDatas={returnSummaryData}
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}

@@ -26,8 +26,8 @@ const CommonParameter = ({
     { value: "ordersummaryreport", label: "Order Summary Report" },
     { value: "salesdetailsreport", label: "Sales Details Report" },
     { value: "salessummaryreport", label: "Sales Summary Report" },
-    { value: "salesreturndetailsreport", label: "Sales Return Details Report" },
-    { value: "salesreturnsummaryreport", label: "Sales Return Summary Report" },
+    { value: "returndetailsreport", label: "Sales Return Details Report" },
+    { value: "returnsummaryreport", label: "Sales Return Summary Report" },
     { value: "combinereport", label: "Combine Report" },
   ];
 
@@ -377,7 +377,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(false);
                   setIsSalesReturnDetailsReport(false)
                 }
-               else if(e.value === "salesreturnsummaryreport"){
+               else if(e.value === "returnsummaryreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
@@ -385,7 +385,7 @@ const CommonParameter = ({
                   setIsSalesReturnSummaryReport(true);
                   setIsSalesReturnDetailsReport(false)
                 }
-              else  if(e.value === "salesreturndetailsreport"){
+              else  if(e.value === "returndetailsreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);

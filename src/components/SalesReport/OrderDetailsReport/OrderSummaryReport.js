@@ -52,7 +52,7 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     {
       name: "Payment Type",
       selector:(row) => {
-        const paymnetInfo=paymentTypeInfo.find((type)=>type._id==row.paymentId)
+        const paymnetInfo=paymentTypeInfo?.find((type)=>type._id==row.paymentId)
         return paymnetInfo ? paymnetInfo.paymentMode : 'N/A'
       },
       sortable: true,
