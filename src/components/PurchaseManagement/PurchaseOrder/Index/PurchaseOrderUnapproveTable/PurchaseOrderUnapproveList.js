@@ -15,7 +15,7 @@ import swal from "sweetalert";
 import {
   useDeletePurchaseOrderInformationMutation
 } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
-import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
+import { downloadPOPDF } from "../../../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";

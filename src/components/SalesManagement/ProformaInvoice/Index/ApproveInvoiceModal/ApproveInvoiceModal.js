@@ -10,8 +10,8 @@ import { useGetAllClientInformationQuery } from "../../../../../redux/features/c
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
-import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
+import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
+import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 
 const ApproveInvoiceModal = ({permission}) => {
     const [filterText, setFilterText] = useState("");

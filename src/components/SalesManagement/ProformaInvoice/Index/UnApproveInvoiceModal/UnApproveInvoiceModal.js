@@ -17,10 +17,10 @@ import {
 import swal from "sweetalert";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
-import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
+import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
+import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import './UnApproveInvoiceModal.css'
-import { downloadInvoicePDF } from "../../../../ReportProperties/InvoiceReportDownload";
+import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
 
 const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsData,unitInfo,
   sizeInfo,

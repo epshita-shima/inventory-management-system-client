@@ -23,7 +23,7 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
-import { downloadInvoicePDF } from "../../../ReportProperties/InvoiceReportDownload";
+import { downloadInvoicePDF } from "../../../ReportProperties/PDF/InvoiceReportDownload";
 import SpecialDelivaryModal from "../SpecialDelivaryModal";
 import getInitialFormValues from "../../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";

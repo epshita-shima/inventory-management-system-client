@@ -19,7 +19,7 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
-import { downloadDeliveryOrderPDF } from "../../../ReportProperties/HeaderFooter";
+import { downloadDeliveryOrderPDF } from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 

@@ -8,7 +8,8 @@ const handleGRNDownload = (
   purchaseInfoData,
   companyinfo,
   reportTitle
-) => {
+) => 
+  {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("GRNlist Report");

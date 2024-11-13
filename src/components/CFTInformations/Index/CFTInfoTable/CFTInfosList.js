@@ -17,15 +17,15 @@ import {
   downloadAllImage,
   downloadImage,
   downloadPDF,
-} from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import { useDeleteCFTInfoMutation } from "../../../../redux/features/cftinformation/cftInfosApi";
 import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import handleCFTExcel from "../../../ReportProperties/handleCFTExcel";
+import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
+
 const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   console.log(cftInfosData);

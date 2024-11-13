@@ -19,7 +19,7 @@ import {
 import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
-import { downloadDeliveryOrderPDF } from "../../../../ReportProperties/HeaderFooter";
+import { downloadDeliveryOrderPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 

@@ -13,7 +13,7 @@ import { faFilePdf, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useGetAllDelieryOrderInformationAfterDeliverQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
-import { downloadReturnDeliveredPDF } from "../../ReportProperties/HeaderFooter";
+import { downloadReturnDeliveredPDF } from "../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";

@@ -21,11 +21,11 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import styles from "./GRNInfoList.css";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
-import { downloadGRNPDF } from "../../../ReportProperties/handleGRNReport";
+import { downloadGRNPDF } from "../../../ReportProperties/PDF/handleGRNReport";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { supplierDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import makeAnimated from "react-select/animated";
-import handleGRNDownload from "../../../ReportProperties/handleGRNExcel";
+import handleGRNDownload from "../../../ReportProperties/Excel/handleGRNExcel";
 
 const GRNInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -796,16 +796,17 @@ const GRNInfoList = ({ permission }) => {
         <tbody>
            {Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
+            console.log(key)
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
 
             const totalGroupWaysQuantity = group?.reduce(
               (accumulator, currentValue) => {
-                const amount = parseFloat(
+                const quantity = parseFloat(
                   currentValue.grandTotalReceivedQuantity
                 );
-                return accumulator + (isNaN(amount) ? 0 : amount);
+                return accumulator + (isNaN(quantity) ? 0 : quantity);
               },
               0
             );

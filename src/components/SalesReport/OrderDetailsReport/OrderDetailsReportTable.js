@@ -1,29 +1,85 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./OrderDetailsReportTable.css";
 import DataTable from "react-data-table-component";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
-
+import reportImage from "../../../assets/images/reportlogo.png";
+import authorizesSingatureImage from "../../../assets/images/Image_20240831165135.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { downloadInvoicePDF } from "../../ReportProperties/PDF/InvoiceReportDownload";
+import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
+import { downloadOrderDetailsAllDataPDF } from "../../ReportProperties/PDF/handleOrderDetailsAllReport";
+import handleOrderDetailsExcel from "../../ReportProperties/Excel/handleOrderDetailsExcel";
 
 const OrderDetailsReportTable = ({
   permission,
   filteredDatas,
   isTableDispaly,
-  finishGoodsItemInfo,itemSizeInfo
+  finishGoodsItemInfo,
+  itemSizeInfo,
 }) => {
   const [filterText, setFilterText] = React.useState("");
-
+  const [groupedData, setGroupedData] = useState({});
+  const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
+  const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-console.log(filteredDatas)
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const reportTitle = "PRO FORMA INVOICE";
+  const base64Logo = reportImage;
+  const signature = authorizesSingatureImage;
+
   const transformedPIData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
       ...piDetails,
       detailsData: detail,
     }))
   );
-  console.log(transformedPIData);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const grandTotalQuantity = filteredDatas?.reduce((totalQuantity, item) => {
+    const detailsTotal = item.detailsData.reduce(
+      (sum, detail) => sum + detail.quantity,
+      0
+    );
+    return totalQuantity + detailsTotal;
+  }, 0);
+
+  const grandTotalAmount = filteredDatas?.reduce((totalAmount, item) => {
+    const detailsTotal = item.detailsData.reduce(
+      (sum, detail) => sum + detail.totalAmount,
+      0
+    );
+    return totalAmount + detailsTotal;
+  }, 0);
+
+  useEffect(() => {
+    const groupData = async (data) => {
+      return data?.reduce((acc, row) => {
+        const key = `${row.piDate}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(row);
+        return acc;
+      }, {});
+    };
+
+    // Process and set grouped data
+    const processData = async () => {
+      const data = await groupData(filteredDatas);
+      setGroupedData(data);
+    };
+
+    processData();
+  }, [filteredDatas]);
 
   const columns = [
     {
@@ -70,7 +126,9 @@ console.log(filteredDatas)
         const itemSize = itemSizeInfo?.find(
           (size) => size._id == itemName.sizeId
         );
-        return itemName ? itemName?.itemName + ` (${itemSize?.sizeInfo})` : "N/A";
+        return itemName
+          ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
+          : "N/A";
       },
       sortable: true,
       center: true,
@@ -124,18 +182,23 @@ console.log(filteredDatas)
                 borderRadius: "5px",
               }}
               onClick={() => {
-                // downloadInvoicePDF(
-                //   invoiceDetails,
-                //   finishGoodsData,
-                //   customerInfo,
-                //   unitInfo,
-                //   sizeInfo,
-                //   paymentInfo,
-                //   base64Logo,
-                //   signature,
-                //   { companyinfo },
-                //   reportTitle
-                // );
+                const filterReportData = filteredDatas.find(
+                  (item) => item._id === invoiceDetails._id
+                );
+
+                console.log(filterReportData);
+                downloadInvoicePDF(
+                  filterReportData,
+                  finishGoodsItemInfo,
+                  customerInfo,
+                  unitInfo,
+                  itemSizeInfo,
+                  paymentInfo,
+                  base64Logo,
+                  signature,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -186,6 +249,65 @@ console.log(filteredDatas)
       -1
   );
 
+  const subHeaderComponent = useMemo(() => {
+    return (
+      <div className="d-block d-sm-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-end align-items-center">
+          <div className="table-head-icon d-flex">
+            <div class="dropdown">
+              <button
+                class="btn btn-download dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Download
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      if (companyinfo?.length !== 0 || undefined) {
+                        downloadOrderDetailsAllDataPDF(
+                          { companyinfo },
+                          reportTitle
+                        );
+                      }
+                    }}
+                  >
+                    PDF
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      handleOrderDetailsExcel(
+                        transformedPIData,
+                        filteredDatas,
+                        finishGoodsItemInfo,
+                        itemSizeInfo,
+                        customerInfo,
+                        companyinfo,
+                        reportTitle
+                        );
+                    }}
+                  >
+                    Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }, [companyinfo, customerInfo, finishGoodsItemInfo, itemSizeInfo, transformedPIData]);
+
   return (
     <div
     // className="row px-5 mx-2"
@@ -206,6 +328,7 @@ console.log(filteredDatas)
                   Order Details Report
                 </h2>
               }
+              subHeaderComponent={subHeaderComponent}
               columns={columns}
               data={filteredItems}
               defaultSortField="name"
@@ -217,6 +340,182 @@ console.log(filteredDatas)
           </div>
         </div>
       )}
+
+      <table id="my-order-details-table" className="d-none">
+        <thead>
+          <tr>
+            <th>PI Date</th>
+            <th>Client Name</th>
+            <th>Invoice No</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {groupedData &&
+          typeof groupedData === "object" &&
+          Object.keys(groupedData).length > 0 ? (
+            Object.keys(groupedData)?.map((key) => {
+              const group = groupedData[key];
+              console.log(group);
+              const formattedDate = formatDate(group[0].piDate);
+              const rowSpan = group.reduce(
+                (total, item) => total + item.detailsData.length,
+                0
+              );
+              const rowSpan2 = group.reduce(
+                (total, item) => total + item.detailsData.length,
+                0
+              );
+              const dateWiseTotalQuantity = group.reduce(
+                (totalQty, item) =>
+                  totalQty +
+                  item.detailsData.reduce(
+                    (itemTotal, detail) => itemTotal + detail.quantity,
+                    0
+                  ),
+                0
+              );
+              const dateWiseTotalAmount = group.reduce(
+                (totalQty, item) =>
+                  totalQty +
+                  item.detailsData.reduce(
+                    (itemTotal, detail) => itemTotal + detail.totalAmount,
+                    0
+                  ),
+                0
+              );
+              console.log(dateWiseTotalQuantity);
+              return (
+                <>
+                  {group?.map((row, rowIndex) => {
+                    return row.detailsData.map((detail, detailIndex) => {
+                      // Retrieve item name, client name, and currency based on detail and row data
+                      const itemNames = finishGoodsItemInfo?.find(
+                        (item) => item._id === detail.itemId
+                      );
+                      console.log(itemNames);
+                      const itemSize = itemSizeInfo.find(
+                        (size) => size._id === itemNames.sizeId
+                      );
+                      const clientName = customerInfo
+                        ?.filter((client) => client._id === row.customerID)
+                        .map((filteredItem) => filteredItem.clientName)
+                        .join(", ");
+                      const currency = filteredDatas
+                        ?.filter((piItem) => piItem._id === row._id)
+                        .map((filteredItem) => filteredItem.currencyId)
+                        .join(",");
+
+                      return (
+                        <tr key={detail._id}>
+                          {rowIndex === 0 && detailIndex === 0 && (
+                            <td
+                              rowSpan={rowSpan}
+                              style={{
+                                textAlign: "center",
+                                verticalAlign: "middle",
+                              }}
+                            >
+                              {formattedDate}
+                            </td>
+                          )}
+
+                          <td>{clientName}</td>
+
+                          <td>{row.invoiceNo}</td>
+
+                          <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
+                          <td>{detail.quantity}</td>
+                          <td>{detail.unitPrice}</td>
+                          <td>{detail.totalAmount.toLocaleString()}</td>
+                        </tr>
+                      );
+                    });
+                  })}
+
+                  {/* Datewise Total Row */}
+                  <tr>
+                    <td
+                      colSpan={4}
+                      style={{
+                        textAlign: "right",
+                        fontWeight: "bold",
+                        padding: "8px",
+                        border: "1px solid black",
+                      }}
+                    >
+                      Datewise Total
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        border: "1px solid black",
+                      }}
+                    >
+                      {dateWiseTotalQuantity.toLocaleString()}
+                    </td>
+                    <td></td>
+                    <td
+                      style={{
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        border: "1px solid black",
+                      }}
+                    >
+                      {dateWiseTotalAmount.toLocaleString()}
+                    </td>
+                  </tr>
+                </>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan="7" style={{ textAlign: "center" }}>
+                No data available
+              </td>
+            </tr>
+          )}
+
+          <tr>
+            <td
+              colSpan={4}
+              style={{
+                textAlign: "right",
+                fontWeight: "bold",
+                padding: "8px",
+                border: "1px solid black",
+              }}
+            >
+              Grand Total
+            </td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {grandTotalQuantity != null
+                ? grandTotalQuantity.toLocaleString()
+                : 0}
+            </td>
+            <td></td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {grandTotalAmount != null ? grandTotalAmount.toLocaleString() : 0}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

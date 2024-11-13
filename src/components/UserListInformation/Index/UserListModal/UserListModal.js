@@ -5,11 +5,10 @@ import "./UserListModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import DataTable from "react-data-table-component";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import {
   downloadAllPDF,
-  downloadPDF,
-} from "../../../ReportProperties/HeaderFooter";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 

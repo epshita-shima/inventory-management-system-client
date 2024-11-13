@@ -10,8 +10,8 @@ import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitIn
 import { useDeleteItemInfoMutation } from "../../../../../redux/features/iteminformation/iteminfoApi";
 import ListHeading from "../../../../Common/ListHeading/ListHeading";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
-import { downloadPDF } from "../../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../../ReportProperties/Excel/HandelExcelDownload";
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";

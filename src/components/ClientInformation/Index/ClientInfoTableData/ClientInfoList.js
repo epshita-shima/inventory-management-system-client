@@ -16,8 +16,8 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
-import { downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 

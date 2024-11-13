@@ -23,9 +23,9 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 import {
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
-} from "../../../ReportProperties/HeaderFooter";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import ProductionListHeading from "../../../Common/ListHeading/ProductionListHeading";
-import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
+import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 

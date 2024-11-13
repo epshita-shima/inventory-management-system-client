@@ -80,53 +80,6 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
       center: true,
       filterable: true,
     },
-
-    {
-      name: "Action",
-      button: true,
-      width: "100px",
-      grow: 2,
-      cell: (invoiceDetails) => (
-        <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Report View"
-              style={{
-                color: "orange",
-                border: "2px solid orange",
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                // downloadInvoicePDF(
-                //   invoiceDetails,
-                //   finishGoodsData,
-                //   customerInfo,
-                //   unitInfo,
-                //   sizeInfo,
-                //   paymentInfo,
-                //   base64Logo,
-                //   signature,
-                //   { companyinfo },
-                //   reportTitle
-                // );
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-      
-
-        
-        </div>
-      ),
-    },
   ];
 
   const customStyles = {

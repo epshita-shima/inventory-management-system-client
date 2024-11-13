@@ -48,47 +48,6 @@ const SalesSummaryReport = ({permission,piInformation,doInformation,clientInform
       filterable: true,
     },
 
-    {
-      name: "Action",
-      button: true,
-      width: "150px",
-      grow: 2,
-      cell: (row) => (
-        <div className="d-flex justify-content-between align-content-center">
-           {permission?.isPDF && (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="PDF Item"
-              style={{
-                color: "orange",
-                border: "2px solid orange",
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                // downloadDeliveryOrderPDF(
-                //   row,
-                //   transformedDOData,
-                //   invoiceInformation,
-                //   clientInformation,
-                //   finishGoodsInfo,
-                //   itemsizeinfo,
-                //   { companyinfo },
-                //   reportTitle
-                // );
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          )}
-        
-         
-        </div>
-      ),
-    },
   ];
 
   const customStyles = {

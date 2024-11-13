@@ -9,8 +9,8 @@ import handleCheckboxClick from "../../../Common/ListHeadingModal/Function/handl
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faPenToSquare, faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
-import { downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 
 const SupplierInfoList = ({permission}) => {

@@ -9,7 +9,7 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 
 import { useGetAllSupplierInformationQuery } from "../../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
-import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
+import { downloadPOPDF } from "../../../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./UserActivationModal.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useGetSingleUserQuery, useUpdateUserMutation } from "../../../../redux/features/user/userApi";
 import swal from "sweetalert";
 const UserActivationModal = ({userId}) => {

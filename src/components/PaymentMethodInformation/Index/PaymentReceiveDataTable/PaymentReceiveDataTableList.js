@@ -18,10 +18,10 @@ import {
 import {
   downloadPaymentReceivedAllSelectedPIPDF,
   downloadPaymentReceivedPDF,
-} from "../../../ReportProperties/HeaderFooter";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
-import handelPaymentReceiveExcel from "../../../ReportProperties/handelPaymentReceiveExcel";
+import handelPaymentReceiveExcel from "../../../ReportProperties/Excel/handelPaymentReceiveExcel";
 
 const PaymentReceiveDataTableList = ({ permission }) => {
   const reportTitle = "PAYMENT RECEIVE INFORMATION";

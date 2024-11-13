@@ -4,9 +4,9 @@ import DataTable from "react-data-table-component";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { downloadHeadingProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
+import { downloadHeadingProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
+import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 const ProductionTotalModal = ({ totalProduction,permission}) => {

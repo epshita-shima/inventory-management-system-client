@@ -13,6 +13,7 @@ const downloadInvoicePDF = async (
   companyinfo,
   reportTitle
 ) => {
+  console.log(data)
   const customerFilterData = customerInfo.filter(
     (x) => x._id === data.customerID
   );

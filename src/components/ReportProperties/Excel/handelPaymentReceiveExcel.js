@@ -131,7 +131,8 @@ const handelPaymentReceiveExcel = (
   data.forEach((item) => {
     console.log(item);
     const customerName = customerInfo?.find((x) => x._id === item?.clientId);
-    const piCurrency = invoiceData?.find((x) => x.invoiceNo === item?.piNumber);
+    const piCurrency = invoiceData?.find((x) => x._id === item?.piNumber);
+    console.log('piCurrency',piCurrency)
     item.detailsData.map((singleItem) => {
       const itemNames = finishGoods?.find(
         (rawItem) => rawItem._id === singleItem.itemId
@@ -140,8 +141,8 @@ const handelPaymentReceiveExcel = (
         (x) => x?._id === itemNames?.sizeId
       );
 
-      const matchPI = invoiceData?.find((x) => x.invoiceNo === item?.piNumber);
-      const filterIPQuantity = matchPI.detailsData.find(
+      const matchPI = invoiceData?.find((x) => x._id === item?.piNumber);
+      const filterIPQuantity = matchPI?.detailsData.find(
         (item) => item.itemId === singleItem.itemId
       );
 

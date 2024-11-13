@@ -50,48 +50,6 @@ console.log(filteredDatas)
       filterable: true,
     },
 
-
-    {
-      name: "Action",
-      button: true,
-      width: "150px",
-      grow: 2,
-      cell: (row) => (
-        <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF && (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Report View"
-              style={{
-                color: "orange",
-                border: "2px solid orange",
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                // downloadReturnDeliveredPDF(
-                //   row,
-                //   transformedDOData,
-                //   deliverOrderInformation,
-                //   clientInformation,
-                //   finishGoodsInfo,
-                //   itemsizeinfo,
-                //   itemUnitInformation,
-                //   companyInformation,
-                //   reportTitle
-                // );
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          )}
-         
-        </div>
-      ),
-    },
   ];
   const customStyles = {
     rows: {

@@ -19,7 +19,7 @@ import { useGetAllItemInformationQuery } from "../../../redux/features/iteminfor
 import { useUpdateDeliveryOrderApproveStatusMutation } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-import { downloadDeliveryOrderPDF } from "../../ReportProperties/HeaderFooter";
+import { downloadDeliveryOrderPDF } from "../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../Common/ListDataSearchBoxDesign/FilterComponent";
 
 const FinishGoodsDeliveryListData = ({ permission }) => {

@@ -28,10 +28,10 @@ import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/
 import { useGetAllPaymentReceiveInformationQuery } from "../../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import { useGetUserRoleQuery } from "../../../../../redux/features/userrole/userroleApi";
 import InvoiceListHeading from "../../../../Common/ListHeading/InvoiceListHeading";
-import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/HeaderFooter";
-import handleInvoiceExcel from "../../../../ReportProperties/handleInvoiceExcel";
+import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import { downloadInvoicePDF } from "../../../../ReportProperties/InvoiceReportDownload";
+import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
 
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");

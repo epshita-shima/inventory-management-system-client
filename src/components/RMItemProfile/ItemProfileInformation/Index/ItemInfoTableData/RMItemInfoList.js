@@ -18,8 +18,8 @@ import {
   useDeleteRMItemInfoMutation,
   useGetAllRMItemInformationQuery,
 } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
-import { downloadPDF } from "../../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../../ReportProperties/Excel/HandelExcelDownload";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";

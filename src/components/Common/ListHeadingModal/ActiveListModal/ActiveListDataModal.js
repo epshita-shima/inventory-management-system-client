@@ -8,8 +8,8 @@ import {
   downloadAllPDF,
   downloadInactivePDF,
   downloadPDF,
-} from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+} from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import { useUpdateMultipleUserStatusMutation } from "../../../../redux/features/user/userApi";
 import MenuIdCollection from "../../MenuIdCollection/MenuIdCollection";
 import { useUpdateRawMaterialStatusMutation } from "../../../../redux/features/iteminformation/rmItemInfoApi";
