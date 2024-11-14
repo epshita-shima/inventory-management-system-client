@@ -793,7 +793,7 @@ const downloadDeliveryOrderPDF = (
   reportTitle
 ) => {
   console.log(row, data);
-  const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
+  const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
   const customerName = customerInfo?.find((x) => x._id === piInfo?.customerID);
 
   console.log(customerName);
@@ -984,8 +984,10 @@ console.log(itemUnitInformation)
   const finalY = doc.previousAutoTable.finalY || 75;
 
   const filteredDoNumber = deliverOrderInformation.find(
-    (deliverOrder) => deliverOrder._id === row.doId
+    (deliverOrder) => deliverOrder._id === row?.doId
   );
+  console.log('deliverOrderInformation',deliverOrderInformation)
+  console.log('filteredDoNumber',row.doId,filteredDoNumber)
   const itemNames = row?.detailsData?.map((item) => {
     const foundItem = finishGoods?.find(
       (rawItem) => rawItem._id === item.itemId
@@ -1007,7 +1009,7 @@ console.log(itemUnitInformation)
     console.log(foundUnit)
     return foundUnit;
   });
-console.log(filteredItemUnit)
+  console.log(filteredItemUnit)
   const finalRows = row?.detailsData?.map((rows, index) => {
     const itemName = itemNames[index]?.itemName;
     const filteredItemSizes = filteredItemSize[index]?.sizeInfo;

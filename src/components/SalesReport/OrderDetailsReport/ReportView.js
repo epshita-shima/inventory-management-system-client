@@ -28,6 +28,7 @@ import {
   useLazyGetSalesDetailsReportQuery,
   useLazyGetSalesSummaryReportQuery,
 } from "../../../redux/features/allreport/allreportApi";
+import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 
 const ReportView = ({ permission }) => {
   const [isOrderDetailsReport, setIsOrderDetailsReport] = useState(false);
@@ -48,6 +49,8 @@ const ReportView = ({ permission }) => {
   const { data: finishGoodsItemInfo } =
     useGetAllItemInformationQuery(undefined);
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
+  const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined);
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: doInformation } =
     useGetAllDelieryOrderInformationQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
@@ -60,6 +63,8 @@ const ReportView = ({ permission }) => {
     piId: "",
     reportStatus: "",
   });
+
+  console.log({doInformation})
   const clientInfoOptions = clientInfoDropdown(clientInformation);
   const piInfoOptions = invoiceListDropdown(piInformation);
   const itemsOptions = finishGoodsWithSizeItemDropdown(
@@ -142,6 +147,7 @@ const ReportView = ({ permission }) => {
             filteredDatas={orderDetailsData}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
+            companyinfo={companyinfo}
           ></OrderDetailsReportTable>
         )}
 
@@ -190,6 +196,8 @@ const ReportView = ({ permission }) => {
             companyInformation={companyInformation}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
+            itemUnitInformation={itemUnitInformation}
+            companyinfo={companyinfo}
           ></SalesReturnDetailsReport>
         )}
         {isSalesReturnSummaryReport && (

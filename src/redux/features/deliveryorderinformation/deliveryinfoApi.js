@@ -8,6 +8,7 @@ const deliveryinfoApi = api.injectEndpoints({
       refetchOnReconnect: true,
       refetchOnFocus: true,
     }),
+
     getAllDelieryOrderInformationAfterDeliver: builder.query({
       query: () => "/delivery-order/after-deliver",
       providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","changdeliveryorderapprove","deletedeliveryorderinfo"],
@@ -83,7 +84,6 @@ const deliveryinfoApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
-
 
     deleteDeliveryOrderInformation: builder.mutation({
       query: (id) => ({

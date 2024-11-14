@@ -20,13 +20,14 @@ const OrderDetailsReportTable = ({
   isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
+  companyinfo
 }) => {
   const [filterText, setFilterText] = React.useState("");
   const [groupedData, setGroupedData] = useState({});
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  
   const reportTitle = "PRO FORMA INVOICE";
   const base64Logo = reportImage;
   const signature = authorizesSingatureImage;
@@ -306,7 +307,7 @@ const OrderDetailsReportTable = ({
         </div>
       </div>
     );
-  }, [companyinfo, customerInfo, finishGoodsItemInfo, itemSizeInfo, transformedPIData]);
+  }, [companyinfo, customerInfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, transformedPIData]);
 
   return (
     <div

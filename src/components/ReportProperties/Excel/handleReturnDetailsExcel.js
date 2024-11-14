@@ -1,7 +1,7 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleOrderDetailsExcel = (
+const handleReturnDetailsExcel = (
   data,
   mainData,
   finishGoodsInfo,
@@ -15,22 +15,24 @@ const handleOrderDetailsExcel = (
   const worksheet = workbook.addWorksheet("GRNlist Report");
 
   const columnsToInclude = [
-    "piDate",
-    "clientName",
-    "invoiceNo",
+    "returnDate",
+    "transferFrom",
+    "transferTo",
+    "piNo",
     "itemName",
-    "quantity",
+    "returnQty",
     "unitPrice",
     "totalAmount",
   ];
 
   console.log(columnsToInclude);
   let dynamicColumns = [
-    { header: "PI Date", key: "piDate", width: 15 },
-    { header: "Client Name", key: "clientName", width: 15 },
-    { header: "Invoice No", key: "invoiceNo", width: 20 },
+    { header: "Return Date", key: "piDate", width: 15 },
+    { header: "Transfer From", key: "transferFrom", width: 15 },
+    { header: "Transfer To", key: "transferTo", width: 20 },
+    { header: "PI Number", key: "piNo", width: 20 },
     { header: "Item Name", key: "itemName", width: 20 },
-    { header: "Quantity", key: "quantity", width: 20 },
+    { header: "ReturnQuantity", key: "returnQty", width: 20 },
     { header: "Unit Price", key: "unitPrice", width: 20 },
     { header: "Total Amount", key: "totalAmount", width: 20 },
   ];
@@ -111,52 +113,41 @@ const handleOrderDetailsExcel = (
     cell.font = { bold: true };
   });
 
-  // worksheet.columns = columnsToInclude.map((col) => ({
-  //   header: col,
-  //   key: col,
-  //   width: 20,
-  // }));
 
-  // if (Array.isArray(mainData) && mainData.length > 0) {
-  //   mainData.forEach((item) => {
-  //     if (item.detailsData && Array.isArray(item.detailsData) && item.detailsData.length > 0) {
-  //       totalQuantity += parseFloat(item.detailsData[0].quantity || 0);
-  //       totalAmount += parseFloat(item.detailsData[0].totalAmount || 0);
-  //     } else {
-  //       console.log('detailsData is missing or empty in item:', item);
-  //     }
-  //   });
-  
-  //   console.log('totalQuantity=', totalQuantity, 'totalAmount=', totalAmount);
-  // } else {
-  //   console.log('data is empty or not an array:', data);
-  // }
-
-  data.forEach((item) => {
+  data?.forEach((item) => {
     const itemName = finishGoodsInfo?.filter(
       (items) => item?.detailsData?.itemId === items._id
     );
+
     const itemSize = itemSizeInfo.find(
       (size) => size._id === itemName[0]?.sizeId
     );
-    const clientName = clientInformation
-      ?.filter((client) => client._id === item.customerID)
+
+    const transferFrom = clientInformation
+      ?.filter((client) => client._id === item.transferFromClientId)
       .map((filteredItem) => filteredItem.clientName)
       .join(", ");
 
+    const transferTo = companyinfo
+      ?.filter((company) => company._id === item.transferToCompanyId)
+      .map((filteredItem) => filteredItem.companyName)
+      .join(", ");
+
     const values = {
-      piDate: new Date(item.piDate).toLocaleDateString("en-CA"),
-      clientName: clientName,
+      returnDate: new Date(item.piDate).toLocaleDateString("en-CA"),
+      transferFrom: transferFrom,
+      transferTo: transferTo,
       invoiceNo: item.invoiceNo,
       itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
-      quantity: item.detailsData.quantity,
-      unitPrice: item.detailsData.unitPrice,
-      totalAmount: item.detailsData.totalAmount,
+      returnQty: item.detailsData.returnQty,
+      // unitPrice: item.detailsData.unitPrice,
+      // totalAmount: item.detailsData.totalAmount,
     };
 
     const singleRow = worksheet.addRow(
       dynamicColumns.map((col) => values[col.key])
     );
+
     singleRow.eachCell((cell) => {
       cell.border = {
         top: { style: "thin" },
@@ -166,38 +157,20 @@ const handleOrderDetailsExcel = (
       };
       cell.alignment = { horizontal: "center" };
     });
-
-    // worksheet.addRow(columnsToInclude.map((col) =>
-    //     values[col]
-    // ));
   });
 
-  // const totalQuantity = data.reduce((total, data) => {
-  //   const paidQuantity = data.detailsData.reduce((sum, item) => {
-  //     // Only add the quantity if the paymentStatus is "cash"
-  //     return item.paymentStatus === "cash" ? sum + item.quantity : sum;
-  //   }, 0);
-
-  //   return total + paidQuantity;
-  // }, 0);
-  // const totalAmount = data.reduce((total, data) => {
-  //   const paidAmount = data.detailsData.reduce((sum, item) => {
-  //     // Only add the quantity if the paymentStatus is "cash"
-  //     return item.paymentStatus === "cash" ? sum + item.amount : sum;
-  //   }, 0);
-
-  //   return total + paidAmount;
-  // }, 0);
+ 
 const totalQuantity= mainData.reduce((totalQty,item)=>{
-  const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
+  const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.returnQty,0);
   return totalQty +detailsQty
 },0)
-const totalAmount= mainData.reduce((totalAmt,item)=>{
-  const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
-  return totalQuantity +detailsAmt
-},0)
+
+// const totalAmount= mainData.reduce((totalAmt,item)=>{
+//   const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
+//   return totalQuantity +detailsAmt
+// },0)
   
-console.log(totalQuantity)
+// console.log(totalQuantity)
 
   const datas = {
     piDate: "",
@@ -206,7 +179,7 @@ console.log(totalQuantity)
     itemName: "Grand Total",
     quantity: totalQuantity,
     unitPrice: "",
-    totalAmount: totalAmount,
+    // totalAmount: totalAmount,
   };
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
   footerRow.eachCell((cell) => {
@@ -225,4 +198,4 @@ console.log(totalQuantity)
   });
 };
 
-export default handleOrderDetailsExcel;
+export default handleReturnDetailsExcel
