@@ -179,7 +179,7 @@ console.log(filteredDatas)
               onClick={() => {
                 downloadDeliveryOrderPDF(
                   row,
-                  transformedDOData,
+                  filteredDatas,
                   invoiceInformation,
                   clientInformation,
                   finishGoodsInfo,

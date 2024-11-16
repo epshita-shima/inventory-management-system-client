@@ -1,7 +1,7 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleReturnDetailsExcel = (
+const handleSalesDetailsExcel = ( 
   data,
   mainData,
   piInformation,
@@ -9,31 +9,29 @@ const handleReturnDetailsExcel = (
   itemSizeInfo,
   clientInformation,
   companyinfo,
-  reportTitle
-) => {
+  reportTitle) => {
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("GRNlist Report");
 
   const columnsToInclude = [
-    "returnDate",
-    "transferFrom",
-    "transferTo",
+    "finishGoodsDeliveryDate",
+    "clientName",
+    "currency",
     "piNo",
     "itemName",
-    "returnQty",
+    "deliverQty",
     "unitPrice",
     "totalAmount",
   ];
 
-  console.log(columnsToInclude);
   let dynamicColumns = [
-    { header: "Return Date", key: "returnDate", width: 15 },
-    { header: "Transfer From", key: "transferFrom", width: 15 },
-    { header: "Transfer To", key: "transferTo", width: 20 },
+    { header: "Return Date", key: "finishGoodsDeliveryDate", width: 15 },
+    { header: "Client Name", key: "clientName", width: 15 },
+    { header: "Currency", key: "currency", width: 20 },
     { header: "PI Number", key: "piNo", width: 20 },
     { header: "Item Name", key: "itemName", width: 20 },
-    { header: "ReturnQuantity", key: "returnQty", width: 20 },
+    { header: "ReturnQuantity", key: "deliverQty", width: 20 },
     { header: "Unit Price", key: "unitPrice", width: 20 },
     { header: "Total Amount", key: "totalAmount", width: 20 },
   ];
@@ -123,32 +121,28 @@ const handleReturnDetailsExcel = (
       (size) => size._id === itemName[0]?.sizeId
     );
 
-    const transferFrom = clientInformation
-      ?.filter((client) => client._id === item.transferFromClientId)
+    const clientName = clientInformation
+      ?.filter((client) => client._id === item.clientId)
       .map((filteredItem) => filteredItem.clientName)
       .join(", ");
 
-    const transferTo = companyinfo
-      ?.filter((company) => company._id === item.transferToCompanyId)
-      .map((filteredItem) => filteredItem.companyName)
-      .join(", ");
-      console.log(piInformation)
     const findInvoice = piInformation.find((piData) => piData._id === item.piId);
     const unitPrice = findInvoice?.detailsData.find(
       (unit) => unit.itemId === item?.detailsData?.itemId
     );
 
+    const totalAmount=unitPrice?.unitPrice * item.detailsData.deliverQty;
+    const avarageUbitPrice = totalAmount / item.detailsData.deliverQty;
 
-    const avarageUbitPrice = unitPrice?.unitPrice * Number(item.detailsData.returnQty);
     const values = {
-      returnDate: new Date(item.returnDate).toLocaleDateString("en-CA"),
-      transferFrom: transferFrom,
-      transferTo: transferTo,
+      finishGoodsDeliveryDate: new Date(item.finishGoodsDeliveryDate).toLocaleDateString("en-CA"),
+      clientName: clientName,
+      currency: findInvoice?.currency,
       piNo: findInvoice?.invoiceNo,
       itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
-      returnQty: item.detailsData.returnQty,
+      deliverQty: item.detailsData.deliverQty,
       unitPrice: avarageUbitPrice,
-      totalAmount: unitPrice?.unitPrice * item.detailsData.returnQty,
+      totalAmount: unitPrice?.unitPrice * item.detailsData.deliverQty,
     };
 
     const singleRow = worksheet.addRow(
@@ -168,32 +162,32 @@ const handleReturnDetailsExcel = (
 
   const totalQuantity = mainData.reduce((totalQty, item) => {
     const detailsQty = item.detailsData.reduce(
-      (sum, detail) => sum + Number(detail.returnQty),
+      (sum, detail) => sum + Number(detail.deliverQty),
       0
     );
     return totalQty + detailsQty;
   }, 0);
 
-  const grandTotalRetuenAmount = mainData?.reduce((totalQty, detail) => {
+  const grandTotalDeliverAmount = mainData?.reduce((totalQty, detail) => {
     const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
       const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
       const unitPrice = piNumber?.detailsData.find(
-        (item) => item.itemId == detail.itemId
+        (item) => item.itemId === detail.itemId
       );
-      return sum + (Number(detail.returnQty) * Number(unitPrice?.unitPrice));
+      return sum + (Number(detail.deliverQty) * Number(unitPrice?.unitPrice));
     }, 0);
     return totalQty + detailReturnQty;
   }, 0);
 
   const datas = {
-    returnDate: "",
-    transferFrom: "",
-    transferTo: "",
+    finishGoodsDeliveryDate: "",
+    clientName: "",
+    currency: "",
     piNo: "",
     itemName:"Grand Total",
-    returnQty: totalQuantity,
+    deliverQty: totalQuantity,
     unitPrice: "",
-    totalAmount: grandTotalRetuenAmount,
+    totalAmount: grandTotalDeliverAmount,
   };
 
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
@@ -213,4 +207,4 @@ const handleReturnDetailsExcel = (
   });
 };
 
-export default handleReturnDetailsExcel;
+export default handleSalesDetailsExcel

@@ -171,6 +171,7 @@ const ReportView = ({ permission }) => {
             doInformation={doInformation}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
+            companyinfo={companyinfo}
           ></SalesDetailsReport>
         )}
         {isSalesSummaryReport && (

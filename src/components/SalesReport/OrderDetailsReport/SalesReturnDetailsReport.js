@@ -35,26 +35,27 @@ const SalesReturnDetailsReport = ({
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
+
   const grandTotalRetuenQty = filteredDatas?.reduce((totalQty, detail) => {
     const detailReturnQty = detail.detailsData.reduce(
       (sum, item) => sum + Number(item.returnQty),
       0
     );
     return totalQty + Number(detailReturnQty);
-  },0);
+  }, 0);
 
-  console.log("grandTotalRetuenQty",grandTotalRetuenQty)
+
 
   const grandTotalRetuenAmount = filteredDatas?.reduce((totalQty, detail) => {
     const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
       const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
-      const unitPrice = piNumber.detailsData.find(
+      const unitPrice = piNumber?.detailsData.find(
         (item) => item.itemId == detail.itemId
       );
-      return sum + detail.returnQty * unitPrice.unitPrice;
-    },0);
+      return sum + detail.returnQty * unitPrice?.unitPrice;
+    }, 0);
     return totalQty + detailReturnQty;
-  },0);
+  }, 0);
 
   useEffect(() => {
     const groupData = (data) => {
@@ -137,7 +138,6 @@ const SalesReturnDetailsReport = ({
         const transferTo = companyInformation?.find(
           (x) => x._id === row?.transferToCompanyId
         );
-        console.log(transferTo);
         return transferTo ? transferTo.companyName : "N/A";
       },
       sortable: true,
@@ -307,12 +307,13 @@ const SalesReturnDetailsReport = ({
                       handleReturnDetailsExcel(
                         transformedSalsReturnData,
                         filteredDatas,
+                        piInformation,
                         finishGoodsItemInfo,
                         itemSizeInfo,
                         clientInformation,
                         companyinfo,
                         reportTitle
-                        );
+                      );
                     }}
                   >
                     Excel
@@ -324,7 +325,7 @@ const SalesReturnDetailsReport = ({
         </div>
       </div>
     );
-  }, [companyinfo]);
+  }, [clientInformation, companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, piInformation, transformedSalsReturnData]);
 
   return (
     <div>
@@ -366,6 +367,7 @@ const SalesReturnDetailsReport = ({
             <th>PI Number</th>
             <th>Item Name</th>
             <th>Return Qty</th>
+            <th>Unit Price</th>
             <th>Return Amount</th>
           </tr>
         </thead>
@@ -430,7 +432,14 @@ const SalesReturnDetailsReport = ({
 
                     const calCulateAmount =
                       unitPrice.unitPrice * detail.returnQty;
-
+                    const calculateAvgPrice =
+                      calCulateAmount / detail.returnQty;
+                    console.log(
+                      "calculateAvgPrice",
+                      calCulateAmount,
+                      detail.returnQty,
+                      calculateAvgPrice
+                    );
                     return (
                       <tr key={detail._id}>
                         {detailIndex === 0 && (
@@ -479,6 +488,7 @@ const SalesReturnDetailsReport = ({
                         )}
                         <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
                         <td>{detail.returnQty.toLocaleString()}</td>
+                        <td>{calculateAvgPrice.toLocaleString()}</td>
                         <td>{calCulateAmount.toLocaleString()}</td>
                       </tr>
                     );
@@ -505,6 +515,7 @@ const SalesReturnDetailsReport = ({
                     >
                       {dateWiseTotalQuantity.toLocaleString()}
                     </td>
+                    <td></td>
                     <td
                       style={{
                         textAlign: "center",
@@ -538,6 +549,7 @@ const SalesReturnDetailsReport = ({
             >
               Grand Total
             </td>
+
             <td
               style={{
                 textAlign: "center",
@@ -549,6 +561,7 @@ const SalesReturnDetailsReport = ({
                 ? grandTotalRetuenQty.toLocaleString()
                 : 0}
             </td>
+            <td></td>
             <td
               style={{
                 textAlign: "center",
@@ -556,7 +569,9 @@ const SalesReturnDetailsReport = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalRetuenAmount != null ? grandTotalRetuenAmount.toLocaleString() : 0}
+              {grandTotalRetuenAmount != null
+                ? grandTotalRetuenAmount.toLocaleString()
+                : 0}
             </td>
           </tr>
         </tbody>

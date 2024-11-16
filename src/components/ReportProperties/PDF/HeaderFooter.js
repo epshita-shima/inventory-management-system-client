@@ -790,20 +790,15 @@ const downloadDeliveryOrderPDF = (
   finishGoods,
   itemsizeinfo,
   companyinfo,
-  reportTitle
+  reportTitle,
+  doInformation
 ) => {
   console.log(row, data);
   const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
   const customerName = customerInfo?.find((x) => x._id === piInfo?.customerID);
 
-  console.log(customerName);
-
-  // const totalNetQuantity=
-
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
-
-  const pageWidth = doc.internal.pageSize.getWidth();
 
   const xCoordinate = 20;
   const labelWidth = 40;
@@ -839,24 +834,24 @@ const downloadDeliveryOrderPDF = (
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 80;
   const filteredData = data?.filter((item) => item._id === row._id);
-  console.log(filteredData);
-  const itemNames = filteredData?.detailsData?.map((item) => {
-    const foundItem = finishGoods?.find(
-      (rawItem) => rawItem._id === item.itemId
-    );
+  console.log("Finish Goods:", finishGoods);
+  console.log(filteredData[0]?.detailsData)
+  const itemNames = filteredData[0]?.detailsData?.map((item) => {
+    const foundItem = finishGoods?.find((rawItem) => rawItem._id === item.itemId);
+    console.log("Searching for itemId:", item.itemId, "Found:", foundItem);
     return foundItem; // Assuming finishGoods has itemName field
   });
   const filteredItemSize = itemNames?.map((item) => {
     const foundSize = itemsizeinfo?.find(
       (rawItem) => rawItem._id === item.sizeId
     );
-    console.log(foundSize);
     return foundSize;
   });
 
-  const finalRows = filteredData?.detailsData?.map((rows, index) => {
+  const finalRows = filteredData[0]?.detailsData?.map((rows, index) => {
     const itemName = itemNames[index]?.itemName;
     const filteredItemSizes = filteredItemSize[index]?.sizeInfo;
+    console.log(itemName,filteredItemSizes)
     return [
       index + 1,
       `${itemName} (${filteredItemSizes})`,
@@ -865,13 +860,15 @@ const downloadDeliveryOrderPDF = (
     ];
   });
 
-  const totalDeliverQty = filteredData?.detailsData?.reduce(
+  const totalDeliverQty = filteredData[0]?.detailsData?.reduce(
     (accumulator, rows) => {
       return accumulator + (parseInt(rows.deliverQty, 10) || 0); // Convert to number
     },
     0
   );
+  console.log("Final Rows:", finalRows);
 
+  console.log("Total Delivered Quantity:", totalDeliverQty);
   finalRows?.push([
     {
       content: "Total",
