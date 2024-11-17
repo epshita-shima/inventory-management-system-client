@@ -27,6 +27,7 @@ const SalesDetailsReport = ({
       detailsData: detail,
     }))
   );
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
@@ -50,6 +51,7 @@ const SalesDetailsReport = ({
     }, 0);
     return totalQty + detailReturnQty;
   }, 0);
+
   useEffect(() => {
     const groupData = (data) => {
       return data?.reduce((acc, row) => {
@@ -95,6 +97,7 @@ const SalesDetailsReport = ({
 
     processData();
   }, [filteredDatas]);
+
   const columns = [
     {
       name: "Sl.",

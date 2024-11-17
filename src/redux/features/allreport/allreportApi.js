@@ -56,6 +56,15 @@ const allreportApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
+    getCombineReport: builder.query({
+      query: (queryParams) => ({
+        url: "/report/combine",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
   })
 })
 export const {
@@ -64,5 +73,6 @@ export const {
   useLazyGetSalesDetailsReportQuery,
   useLazyGetSalesSummaryReportQuery,
   useLazyGetReturnDetailsReportQuery,
-  useLazyGetReturnSummaryReportQuery
+  useLazyGetReturnSummaryReportQuery,
+  useLazyGetCombineReportQuery
 }=allreportApi

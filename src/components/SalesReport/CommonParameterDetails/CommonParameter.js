@@ -18,8 +18,9 @@ const CommonParameter = ({
   setIsOrderSummmaryReport,
   setIsSalesSummaryReport,
   setIsSalesDetailsReport,
-  setIsSalesReturnSummaryReport,
-  setIsSalesReturnDetailsReport
+  setIsReturnSummaryReport,
+  setIsReturnDetailsReport,
+  setIsCombineReport
 }) => {
   const reportStatusOptions = [
     { value: "orderdetailsreport", label: "Order Details Report" },
@@ -350,48 +351,63 @@ const CommonParameter = ({
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
-                  setIsSalesReturnSummaryReport(false);
-                  setIsSalesReturnDetailsReport(false)
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(false)
                 }
                else if  (e.value === "ordersummaryreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(true);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
-                  setIsSalesReturnSummaryReport(false);
-                  setIsSalesReturnDetailsReport(false)
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(false)
                 }
                else if(e.value === "salesdetailsreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(true);
-                  setIsSalesReturnSummaryReport(false);
-                  setIsSalesReturnDetailsReport(false)
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(false)
                 }
                else if(e.value === "salessummaryreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(true);
                   setIsSalesDetailsReport(false);
-                  setIsSalesReturnSummaryReport(false);
-                  setIsSalesReturnDetailsReport(false)
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(false)
                 }
                else if(e.value === "returnsummaryreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
-                  setIsSalesReturnSummaryReport(true);
-                  setIsSalesReturnDetailsReport(false)
+                  setIsReturnSummaryReport(true);
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(false)
                 }
               else  if(e.value === "returndetailsreport"){
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
-                  setIsSalesReturnSummaryReport(false);
-                  setIsSalesReturnDetailsReport(true)
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(true);
+                  setIsCombineReport(false)
+                }
+                else if(e.value==='combinereport'){
+                  setIsOrderDetailsReport(false);
+                  setIsOrderSummmaryReport(false);
+                  setIsSalesSummaryReport(false);
+                  setIsSalesDetailsReport(false);
+                  setIsReturnSummaryReport(false);
+                  setIsReturnDetailsReport(false)
+                  setIsCombineReport(true)
                 }
                 else{
                   console.log('something is wrong');

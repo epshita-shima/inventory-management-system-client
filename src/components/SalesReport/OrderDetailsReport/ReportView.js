@@ -21,6 +21,7 @@ import SalesReturnSummaryReport from "./SalesReturnSummaryReport";
 import SalesReturnDetailsReport from "./SalesReturnDetailsReport";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import {
+  useLazyGetCombineReportQuery,
   useLazyGetOrderDetailsReportQuery,
   useLazyGetOrderSummaryReportQuery,
   useLazyGetReturnDetailsReportQuery,
@@ -29,15 +30,18 @@ import {
   useLazyGetSalesSummaryReportQuery,
 } from "../../../redux/features/allreport/allreportApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import CombineReport from "./CombineReport";
 
 const ReportView = ({ permission }) => {
   const [isOrderDetailsReport, setIsOrderDetailsReport] = useState(false);
   const [isOrderSumaryReport, setIsOrderSummmaryReport] = useState(false);
   const [isSalesDetailsReport, setIsSalesDetailsReport] = useState(false);
   const [isSalesSummaryReport, setIsSalesSummaryReport] = useState(false);
-  const [isSalesReturnDetailsReport, setIsSalesReturnDetailsReport] =
+  const [isReturnDetailsReport, setIsReturnDetailsReport] =
     useState(false);
-  const [isSalesReturnSummaryReport, setIsSalesReturnSummaryReport] =
+  const [isReturnSummaryReport, setIsReturnSummaryReport] =
+    useState(false);
+  const [isCombineReport, setIsCombineReport] =
     useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
@@ -64,15 +68,12 @@ const ReportView = ({ permission }) => {
     reportStatus: "",
   });
 
-  console.log({doInformation})
   const clientInfoOptions = clientInfoDropdown(clientInformation);
   const piInfoOptions = invoiceListDropdown(piInformation);
   const itemsOptions = finishGoodsWithSizeItemDropdown(
     finishGoodsItemInfo,
     itemSizeInfo
   );
-  const [trigger, { data: filteredDatas }] =
-    useLazyGetFilteredForReportInvoiceInfoQuery();
 
   const [triggerOrderDetailsReport, { data: orderDetailsData }] =
     useLazyGetOrderDetailsReportQuery();
@@ -86,8 +87,10 @@ const ReportView = ({ permission }) => {
     useLazyGetReturnDetailsReportQuery();
   const [triggerReturnSummaryReport, { data: returnSummaryData }] =
     useLazyGetReturnSummaryReportQuery();
+  const [triggerCombineReport, { data: combineReportData }] =
+    useLazyGetCombineReportQuery();
 
-  console.log(orderSummaryData);
+
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -97,6 +100,7 @@ const ReportView = ({ permission }) => {
   }, [executeQuery]);
 
   const handleApplyFilters = async (updatedFilters) => {
+    console.log(updatedFilters)
     setExecuteQuery(true);
     // await trigger(updatedFilters);
     if (updatedFilters.reportStatus === "orderdetailsreport") {
@@ -111,6 +115,8 @@ const ReportView = ({ permission }) => {
       await triggerReturnDetailsReport(updatedFilters);
     } else if (updatedFilters.reportStatus === "returnsummaryreport") {
       await triggerReturnSummaryReport(updatedFilters);
+    } else if (updatedFilters.reportStatus === "combinereport") {
+      await triggerCombineReport(updatedFilters);
     }
   };
 
@@ -135,9 +141,10 @@ const ReportView = ({ permission }) => {
           setIsOrderSummmaryReport={setIsOrderSummmaryReport}
           setIsSalesSummaryReport={setIsSalesSummaryReport}
           setIsSalesDetailsReport={setIsSalesDetailsReport}
-          setIsSalesReturnSummaryReport={setIsSalesReturnSummaryReport}
-          setIsSalesReturnDetailsReport={setIsSalesReturnDetailsReport}
-        ></CommonParameter>
+          setIsReturnSummaryReport={setIsReturnSummaryReport}
+          setIsReturnDetailsReport={setIsReturnDetailsReport}
+          setIsCombineReport={setIsCombineReport}
+        />
 
         {isOrderDetailsReport && (
           <OrderDetailsReportTable
@@ -148,7 +155,7 @@ const ReportView = ({ permission }) => {
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
             companyinfo={companyinfo}
-          ></OrderDetailsReportTable>
+          />
         )}
 
         {isOrderSumaryReport && (
@@ -157,7 +164,7 @@ const ReportView = ({ permission }) => {
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
             filteredDatas={orderSummaryData}
-          ></OrderSummaryReport>
+          />
         )}
 
         {isSalesDetailsReport && (
@@ -172,7 +179,7 @@ const ReportView = ({ permission }) => {
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
             companyinfo={companyinfo}
-          ></SalesDetailsReport>
+          />
         )}
         {isSalesSummaryReport && (
           <SalesSummaryReport
@@ -183,9 +190,9 @@ const ReportView = ({ permission }) => {
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
-          ></SalesSummaryReport>
+          />
         )}
-        {isSalesReturnDetailsReport && (
+        {isReturnDetailsReport && (
           <SalesReturnDetailsReport
             permission={permission}
             isTableDispaly={isTableDispaly}
@@ -199,9 +206,9 @@ const ReportView = ({ permission }) => {
             itemSizeInfo={itemSizeInfo}
             itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}
-          ></SalesReturnDetailsReport>
+          />
         )}
-        {isSalesReturnSummaryReport && (
+        {isReturnSummaryReport && (
           <SalesReturnSummaryReport
             permission={permission}
             isTableDispaly={isTableDispaly}
@@ -210,7 +217,18 @@ const ReportView = ({ permission }) => {
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
-          ></SalesReturnSummaryReport>
+          />
+        )}
+        {isCombineReport && (
+          <CombineReport
+            permission={permission}
+            isTableDispaly={isTableDispaly}
+            setIsTableDisplay={setIsTableDisplay}
+            filteredDatas={returnSummaryData}
+            clientInformation={clientInformation}
+            piInformation={piInformation}
+            doInformation={doInformation}
+          />
         )}
       </div>
     </div>

@@ -83,13 +83,6 @@ console.log(filteredDatas)
     },
   };
 
-  // const filteredItems = filteredDatas?.filter(
-  //   (item) =>
-  //     JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
-  //     -1
-  // );
-
-  // console.log(filteredItems)
   return (
     <div>
        {isTableDispaly ? (
