@@ -100,7 +100,6 @@ const ReportView = ({ permission }) => {
   }, [executeQuery]);
 
   const handleApplyFilters = async (updatedFilters) => {
-    console.log(updatedFilters)
     setExecuteQuery(true);
     // await trigger(updatedFilters);
     if (updatedFilters.reportStatus === "orderdetailsreport") {
@@ -224,7 +223,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={returnSummaryData}
+            filteredDatas={combineReportData}
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
