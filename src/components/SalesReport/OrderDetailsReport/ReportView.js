@@ -227,6 +227,7 @@ const ReportView = ({ permission }) => {
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
+            companyinfo={companyinfo}
           />
         )}
       </div>
