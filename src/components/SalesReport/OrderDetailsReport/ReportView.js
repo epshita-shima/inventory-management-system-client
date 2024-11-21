@@ -223,7 +223,7 @@ const ReportView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={combineReportData}
+            filteredCombineData={combineReportData}
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}

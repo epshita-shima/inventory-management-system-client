@@ -2,10 +2,11 @@
 import DataTable from "react-data-table-component";
 import React, { useMemo } from "react";
 import downloadCombineReportPDF from "../../ReportProperties/PDF/handleCombineReportPDF";
+import handelCombineReportExcel from "../../ReportProperties/Excel/handelCombineReportExcel";
 
 const CombineReport = ({
   permission,
-  filteredDatas,
+  filteredCombineData,
   filterText,
   piInformation,
   clientInformation,
@@ -14,17 +15,41 @@ const CombineReport = ({
   companyinfo,
   itemSizeInfo,
 }) => {
-  const reportTitle = "COMBINE REPORT";
-  console.log(filteredDatas);
+  const { groupedResult, orderInfo } = filteredCombineData || {};
+  const reportTitle = "COMBINE REPORT (SALES)";
 
-  const grandTotalPIQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalPIQuantity,0)
-  const grandTotalPIAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalPiAmount,0)
-  const grandTotalDeliveredQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliveredQty,0)
-  const grandTotalDeliveredAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliveredAmount,0)
-  const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnQty,0)
-  const grandTotalReturnAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnAmount,0)
-  const grandTotalNetQty=filteredDatas?.reduce((sum,detail)=>sum+detail.netQuantity,0)
-  const grandTotalNetAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalNetAmount,0)
+  const grandTotalPIQty = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalPIQuantity,
+    0
+  );
+  const grandTotalPIAmount = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalPiAmount,
+    0
+  );
+  const grandTotalDeliveredQty = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalDeliveredQty,
+    0
+  );
+  const grandTotalDeliveredAmount = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalDeliveredAmount,
+    0
+  );
+  const grandTotalReturnQty = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalReturnQty,
+    0
+  );
+  const grandTotalReturnAmount = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalReturnAmount,
+    0
+  );
+  const grandTotalNetQty = groupedResult?.reduce(
+    (sum, detail) => sum + detail.netQuantity,
+    0
+  );
+  const grandTotalNetAmount = groupedResult?.reduce(
+    (sum, detail) => sum + detail.totalNetAmount,
+    0
+  );
   const columns = [
     {
       name: "Sl.",
@@ -256,11 +281,90 @@ const CombineReport = ({
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      // handleReturnDetailsExcel(
-                      //   filteredDatas,
-                      //   companyinfo,
-                      //   reportTitle
-                      // );
+                      const calculateInvoiceMetrics = (data) => {
+                        const grouped = {};
+                      
+                        data?.forEach((entry) => {
+                          const { piDate, invoiceNo, detailsData } = entry;
+                      
+                          if (!grouped[invoiceNo]) {
+                            grouped[invoiceNo] = {
+                              piDate,
+                              invoiceNo,
+                              totalQuantity: 0,
+                              totalPiAmount: 0,
+                              totalDeliveredQty: 0,
+                              totalDeliveredAmount: 0,
+                              totalReturnAmount: 0,
+                              totalReturnQty: 0,
+                              totalNetQty: 0,
+                              piUnitPrice: 0,
+                              deliveredAvgUnitprice: 0,
+                              returnAvgUnitPrice: 0,
+                              totalNetAmount: 0,
+                              netAvgUnitPrice: 0,
+                            };
+                          }
+                      
+                          detailsData?.forEach(
+                            ({
+                              quantity,
+                              unitPrice,
+                              deliveredQty,
+                              returnQty,
+                            }) => {
+                              grouped[invoiceNo].totalQuantity += quantity;
+                              grouped[invoiceNo].totalDeliveredQty += deliveredQty;
+                              grouped[invoiceNo].totalReturnQty += returnQty;
+                              grouped[invoiceNo].totalNetQty += deliveredQty - returnQty;
+                      
+                              grouped[invoiceNo].totalPiAmount += Number(quantity) * Number(unitPrice);
+                      
+                              grouped[invoiceNo].piUnitPrice = Math.round(
+                                grouped[invoiceNo].totalPiAmount /
+                                  grouped[invoiceNo].totalQuantity
+                              );
+                      
+                              grouped[invoiceNo].totalDeliveredAmount += deliveredQty * unitPrice;
+                      console.log('unitPrice=',unitPrice,"deliveredQty=",grouped[invoiceNo].totalDeliveredQty)
+                              grouped[invoiceNo].totalReturnAmount += returnQty * unitPrice;
+                      
+                              grouped[invoiceNo].deliveredAvgUnitprice = 
+                              grouped[invoiceNo].totalDeliveredQty > 0
+                                ? Math.round(grouped[invoiceNo].totalDeliveredAmount / grouped[invoiceNo].totalDeliveredQty)
+                                : 0;
+                      
+                              grouped[invoiceNo].returnAvgUnitPrice = grouped[invoiceNo].totalReturnQty > 0 ? Math.round(
+                                grouped[invoiceNo].totalReturnAmount /
+                                  grouped[invoiceNo].totalReturnQty
+                              ):0;
+                      
+                              grouped[invoiceNo].date = piDate;
+                      
+                              grouped[invoiceNo].totalNetQty = (grouped[invoiceNo].totalQuantity -
+                                grouped[invoiceNo].totalDeliveredQty) + grouped[invoiceNo].totalReturnQty;
+                      
+                              grouped[invoiceNo].totalNetAmount = grouped[invoiceNo].totalNetQty * grouped[invoiceNo].piUnitPrice;
+                      
+                              grouped[invoiceNo].netAvgUnitPrice = Math.round(
+                                grouped[invoiceNo].totalNetAmount /
+                                  grouped[invoiceNo].totalNetQty
+                              );
+                            }
+                          );
+                        });
+                      
+                        // Convert grouped object to an array
+                        return Object.values(grouped);
+                      };
+                      
+                      const calculatedData = calculateInvoiceMetrics(orderInfo);
+
+                      handelCombineReportExcel(
+                        calculatedData,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -272,7 +376,7 @@ const CombineReport = ({
         </div>
       </div>
     );
-  }, [companyinfo]);
+  }, [companyinfo, orderInfo]);
 
   return (
     <div>
@@ -294,7 +398,7 @@ const CombineReport = ({
               </h2>
             }
             columns={columns}
-            data={filteredDatas}
+            data={groupedResult}
             defaultSortField="name"
             customStyles={customStyles}
             subHeaderComponent={subHeaderComponent}
@@ -310,22 +414,22 @@ const CombineReport = ({
           <tr>
             <th>Date</th>
             <th>PI Quantity</th>
-            <th>PI Rate</th>
+            <th>Rate In Avg</th>
             <th>PI Amount</th>
             <th>Delivered Quantity</th>
-            <th>Avarage Delivared Rate</th>
+            <th>Rate In Avg</th>
             <th>Delivered Amount</th>
             <th>Return Quantity</th>
-            <th>Avarage Return Rate</th>
+            <th>Rate In Avg</th>
             <th>Return Amount</th>
             <th>Net Quantity</th>
-            <th>Avarage Net Rate</th>
+            <th>Rate In Avg</th>
             <th>Net Amount</th>
           </tr>
         </thead>
         <tbody>
           <>
-            {filteredDatas?.map((detail, detailIndex) => {
+            {groupedResult?.map((detail, detailIndex) => {
               const formatedDate = formatDate(detail.date);
 
               return (
@@ -365,32 +469,38 @@ const CombineReport = ({
                     {detail.totalPiAmount.toLocaleString()}
                   </td>
                   <td>
-                    {detail.totalDeliveredQty === 0 ||detail.totalDeliveredQty === null
+                    {detail.totalDeliveredQty === 0 ||
+                    detail.totalDeliveredQty === null
                       ? `-`
                       : detail.totalDeliveredQty.toLocaleString()}
                   </td>
                   <td>
-                    {detail.deliveredAvgUnitPrice === 0 ||detail.deliveredAvgUnitPrice === null
+                    {detail.deliveredAvgUnitPrice === 0 ||
+                    detail.deliveredAvgUnitPrice === null
                       ? `-`
                       : detail.deliveredAvgUnitPrice.toLocaleString()}
                   </td>
                   <td>
-                    {detail.totalDeliveredAmount === 0 || detail.totalDeliveredAmount === null
+                    {detail.totalDeliveredAmount === 0 ||
+                    detail.totalDeliveredAmount === null
                       ? `-`
                       : detail.totalDeliveredAmount.toLocaleString()}
                   </td>
                   <td>
-                    {detail.totalReturnQty === 0 || detail.totalReturnQty === null
+                    {detail.totalReturnQty === 0 ||
+                    detail.totalReturnQty === null
                       ? `-`
                       : detail.totalReturnQty.toLocaleString()}
                   </td>
                   <td>
-                    {detail.returnAvgUnitPrice === 0 || detail.returnAvgUnitPrice === null
-                      ? `-` 
+                    {detail.returnAvgUnitPrice === 0 ||
+                    detail.returnAvgUnitPrice === null
+                      ? `-`
                       : detail.returnAvgUnitPrice.toLocaleString()}
                   </td>
                   <td>
-                    {detail.totalReturnAmount === 0 || detail.totalReturnAmount === null
+                    {detail.totalReturnAmount === 0 ||
+                    detail.totalReturnAmount === null
                       ? `-`
                       : detail.totalReturnAmount.toLocaleString()}
                   </td>
@@ -416,12 +526,10 @@ const CombineReport = ({
                 </tr>
               );
             })}
-
           </>
 
           <tr>
             <td
-             
               style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -439,9 +547,7 @@ const CombineReport = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalPIQty != null
-                ? grandTotalPIQty.toLocaleString()
-                : 0}
+              {grandTotalPIQty != null ? grandTotalPIQty.toLocaleString() : 0}
             </td>
             <td></td>
             <td
@@ -508,9 +614,7 @@ const CombineReport = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalNetQty != null
-                ? grandTotalNetQty.toLocaleString()
-                : 0}
+              {grandTotalNetQty != null ? grandTotalNetQty.toLocaleString() : 0}
             </td>
             <td></td>
             <td
@@ -524,7 +628,6 @@ const CombineReport = ({
                 ? grandTotalNetAmount.toLocaleString()
                 : 0}
             </td>
-        
           </tr>
         </tbody>
       </table>

@@ -1,39 +1,43 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handelCombineReportExcel = (
-  data,
-  mainData,
-  finishGoodsInfo,
-  itemSizeInfo,
-  clientInformation,
-  companyinfo,
-  reportTitle
-) => {
+const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("GRNlist Report");
+  const worksheet = workbook.addWorksheet("Combine Report");
 
+  console.log(data);
   const columnsToInclude = [
-    "date",
-    "totalPIQuantity",
+    "piDate",
+    "totalQuantity",
     "piUnitPrice",
-    
+    "totalPiAmount",
     "totalDeliveredQty",
-    "arage Delivered Unitprice",
-    "",
-    "totalAmount",
+    "deliveredAvgUnitprice",
+    "totalDeliveredAmount",
+    "totalReturnQty",
+    "returnAvgUnitPrice",
+    "totalReturnAmount",
+    "totalNetQty",
+    "netAvgUnitPrice",
+    "totalNetAmount",
+    
   ];
 
-  console.log(columnsToInclude);
   let dynamicColumns = [
     { header: "PI Date", key: "piDate", width: 15 },
-    { header: "Client Name", key: "clientName", width: 15 },
-    { header: "Invoice No", key: "invoiceNo", width: 20 },
-    { header: "Item Name", key: "itemName", width: 20 },
-    { header: "Quantity", key: "quantity", width: 20 },
-    { header: "Unit Price", key: "unitPrice", width: 20 },
-    { header: "Total Amount", key: "totalAmount", width: 20 },
+    { header: "PI Quantity", key: "totalQuantity", width: 15 },
+    { header: "PI Unitprice", key: "piUnitPrice", width: 15 },
+    { header: "Total PI Amount", key: "totalPiAmount", width: 15 },
+    { header: "Delivered Quantity", key: "totalDeliveredQty", width: 20 },
+    { header: "Delivered Unitprice", key: "deliveredAvgUnitprice", width: 20 },
+    { header: "Delivered Amount", key: "totalDeliveredAmount", width: 20 },
+    { header: "Return Quantity", key: "totalReturnQty", width: 20 },
+    { header: "Return Unitprice", key: "returnAvgUnitPrice", width: 20 },
+    { header: "Return Amount", key: "totalReturnAmount", width: 20 },
+    { header: "Net Quantity", key: "totalNetQty", width: 20 },
+    { header: "Net Unitprice", key: "netAvgUnitPrice", width: 20 },
+    { header: "Net Amount", key: "totalNetAmount", width: 20 },
   ];
 
   columnsToInclude.forEach((item, index) => {
@@ -112,47 +116,26 @@ const handelCombineReportExcel = (
     cell.font = { bold: true };
   });
 
-  // worksheet.columns = columnsToInclude.map((col) => ({
-  //   header: col,
-  //   key: col,
-  //   width: 20,
-  // }));
-
-  // if (Array.isArray(mainData) && mainData.length > 0) {
-  //   mainData.forEach((item) => {
-  //     if (item.detailsData && Array.isArray(item.detailsData) && item.detailsData.length > 0) {
-  //       totalQuantity += parseFloat(item.detailsData[0].quantity || 0);
-  //       totalAmount += parseFloat(item.detailsData[0].totalAmount || 0);
-  //     } else {
-  //       console.log('detailsData is missing or empty in item:', item);
-  //     }
-  //   });
-  
-  //   console.log('totalQuantity=', totalQuantity, 'totalAmount=', totalAmount);
-  // } else {
-  //   console.log('data is empty or not an array:', data);
-  // }
-
   data.forEach((item) => {
-    const itemName = finishGoodsInfo?.filter(
-      (items) => item?.detailsData?.itemId === items._id
-    );
-    const itemSize = itemSizeInfo.find(
-      (size) => size._id === itemName[0]?.sizeId
-    );
-    const clientName = clientInformation
-      ?.filter((client) => client._id === item.customerID)
-      .map((filteredItem) => filteredItem.clientName)
-      .join(", ");
-
     const values = {
       piDate: new Date(item.piDate).toLocaleDateString("en-CA"),
-      clientName: clientName,
-      invoiceNo: item.invoiceNo,
-      itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
-      quantity: item.detailsData.quantity,
-      unitPrice: item.detailsData.unitPrice,
-      totalAmount: item.detailsData.totalAmount,
+      totalQuantity: item.totalQuantity,
+      piUnitPrice: item.piUnitPrice,
+      totalPiAmount: item.totalPiAmount,
+      totalDeliveredQty: `${item.totalDeliveredQty ===0 ? `-` : item.totalDeliveredQty}`,
+      deliveredAvgUnitprice: `${item.deliveredAvgUnitprice ===0 ? `-` : item.deliveredAvgUnitprice}`,
+      totalDeliveredAmount: `${item.totalDeliveredAmount ===0 ? `-` : item.totalDeliveredAmount}`,
+      totalReturnQty:`${ item.totalReturnQty ===0 ? '-' :  item.totalReturnQty}`,
+      returnAvgUnitPrice: `${item.returnAvgUnitPrice === 0 ? "-":item.returnAvgUnitPrice}`,
+      totalReturnAmount: `${item.totalReturnAmount === 0 ? '-' : item.totalReturnAmount}`,
+      totalNetQty: `${
+        item.totalNetQty < 0
+          ? `(${Math.abs(item.totalNetQty)})`
+          : item.totalNetQty
+      }`,
+      netAvgUnitPrice: item.netAvgUnitPrice,
+      totalNetAmount: `${item.totalNetAmount <0 ? `(${Math.abs(item.totalNetAmount)})` : item.totalNetAmount}`,
+      
     };
 
     const singleRow = worksheet.addRow(
@@ -173,14 +156,32 @@ const handelCombineReportExcel = (
     // ));
   });
 
-  // const totalQuantity = data.reduce((total, data) => {
-  //   const paidQuantity = data.detailsData.reduce((sum, item) => {
-  //     // Only add the quantity if the paymentStatus is "cash"
-  //     return item.paymentStatus === "cash" ? sum + item.quantity : sum;
-  //   }, 0);
+  const totalQuantity = data.reduce((total, details) => {
+    return total + details.totalQuantity;
+  }, 0);
+  const grandTotalPIAmount = data.reduce((total, details) => {
+    return total + details.totalPiAmount;
+  }, 0);
+  const grandTotalDeliveredQty = data.reduce((total, details) => {
+    return total + details.totalDeliveredQty;
+  }, 0);
+  const grandTotalDeliveredAmount= data.reduce((total, details) => {
+    return total + details.totalDeliveredAmount;
+  }, 0);
+  const grandTotalReturnQty= data.reduce((total, details) => {
+    return total + details.totalReturnQty;
+  }, 0);
+  const grandTotalReturnAmount= data.reduce((total, details) => {
+    return total + details.totalReturnAmount;
+  }, 0);
+  const grandTotalNetQty= data.reduce((total, details) => {
+    return total + details.totalNetQty;
+  }, 0);
+  const grandTotalNetAmount= data.reduce((total, details) => {
+    return total + details.totalNetAmount;
+  }, 0);
 
-  //   return total + paidQuantity;
-  // }, 0);
+
   // const totalAmount = data.reduce((total, data) => {
   //   const paidAmount = data.detailsData.reduce((sum, item) => {
   //     // Only add the quantity if the paymentStatus is "cash"
@@ -189,25 +190,31 @@ const handelCombineReportExcel = (
 
   //   return total + paidAmount;
   // }, 0);
-const totalQuantity= mainData.reduce((totalQty,item)=>{
-  const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
-  return totalQty +detailsQty
-},0)
-const totalAmount= mainData.reduce((totalAmt,item)=>{
-  const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
-  return totalQuantity +detailsAmt
-},0)
-  
-console.log(totalQuantity)
+  // const totalQuantity= mainData.reduce((totalQty,item)=>{
+  //   const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
+  //   return totalQty +detailsQty
+  // },0)
+  // const totalAmount= mainData.reduce((totalAmt,item)=>{
+  //   const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
+  //   return totalQuantity +detailsAmt
+  // },0)
+
+  // console.log(totalQuantity)
 
   const datas = {
-    piDate: "",
-    clientName: "",
-    invoiceNo: "",
-    itemName: "Grand Total",
-    quantity: totalQuantity,
-    unitPrice: "",
-    totalAmount: totalAmount,
+    piDate:  "Grand Total",
+    totalQuantity:totalQuantity,
+    piUnitPrice:'',
+    totalPiAmount:grandTotalPIAmount,
+    totalDeliveredQty:grandTotalDeliveredQty,
+    deliveredAvgUnitprice:"",
+    totalDeliveredAmount:grandTotalDeliveredAmount,
+    totalReturnQty:grandTotalReturnQty,
+    returnAvgUnitPrice:'',
+    totalReturnAmount:grandTotalReturnAmount,
+    totalNetQty:grandTotalNetQty,
+    netAvgUnitPrice:'',
+    totalNetAmount:grandTotalNetAmount,
   };
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
   footerRow.eachCell((cell) => {

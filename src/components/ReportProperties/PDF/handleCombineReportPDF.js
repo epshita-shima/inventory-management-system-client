@@ -36,15 +36,18 @@ const downloadCombineReportPDF =(  companyinfo,
       },
       columnStyles: {
         0: { cellWidth: "auto" }, // Custom width for first column
-        1: { cellWidth: "auto" }, // Custom width for second column
-        2: { cellWidth: 25 }, // Custom width for third column
-        3: { cellWidth: "auto" }, // Auto width for fourth column
-        4: { cellWidth: "auto" }, // Custom width for first column
-        5: { cellWidth: "auto" }, // Custom width for second column
-        6: { cellWidth: "auto" }, // Custom width for third column
-        7: { cellWidth: "auto" }, // Auto width for fourth column
-        8: { cellWidth: "auto" }, // Auto width for fourth column
+        1: { cellWidth: 25 }, // Custom width for second column
+        2: { cellWidth: 15 }, // Custom width for third column
+        3: { cellWidth: 25 }, // Auto width for fourth column
+        4: { cellWidth: 25 }, // Custom width for first column
+        5: { cellWidth: 15 }, // Custom width for second column
+        6: { cellWidth: 25 }, // Custom width for third column
+        7: { cellWidth: 25 }, // Auto width for fourth column
+        8: { cellWidth:15 }, // Auto width for fourth column
         9: { cellWidth: 25 }, // Auto width for fourth column
+        10: { cellWidth: 25 }, // Auto width for fourth column
+        11: { cellWidth: 15 }, // Auto width for fourth column
+        12: { cellWidth: 25 }, // Auto width for fourth column
       },
       didParseCell: function (data) {
         const rowIndex = data.row.index;
@@ -59,13 +62,18 @@ const downloadCombineReportPDF =(  companyinfo,
         const targetColumnIndex = 3;
         const textContent = cellContent?.innerText || cellContent?.textContent;
         console.log(textContent);
-        if (!isNaN(numericValue) && colIndex === targetColumnIndex) {
+        const lastRowIndex = data.table.body.length;
+        console.log('lastRowIndex=',lastRowIndex,"data.column.index=",data.column.index)
+        if (!isNaN(numericValue) && colIndex === totalCols - 1) {
           if (numericValue < 0) {
             data.cell.styles.textColor = [255, 0, 0]; // Red text for negative values
             data.cell.text = `(${Math.abs(numericValue).toLocaleString()})`; // Format negative values
           } else {
             data.cell.text = numericValue.toLocaleString(); // Format positive numbers
           }
+        }
+        if (data.column.index === 2 && data.row.index === lastRowIndex) {
+          data.cell.styles.fillColor = [255, 220, 220]; // Light red background
         }
         if (rowIndex === totalRows - 1) {
           data.cell.styles.fontStyle = "bold";
@@ -80,14 +88,20 @@ const downloadCombineReportPDF =(  companyinfo,
             cell.styles.fillColor = [138, 138, 138]; // Gray line color
             cell.styles.textColor = [255, 255, 255];
           });
-          data.cell.styles.halign = "right";
+          // data.cell.styles.halign = "right";
         }
         if (textContent?.trim().toLowerCase() === "grand total"){
           data.cell.styles.halign = "right";
-         
+        }
+        if (textContent?.trim().toLowerCase() === "rate"){
+          Object.values(data.row.cells).forEach((cell) => {
+            cell.styles = cell.styles || {};
+            cell.styles.fillColor = [255, 220, 220]; // Gray line color
+            // cell.styles.textColor = [255, 255, 255];
+          });
         }
         if (colIndex === totalCols - 1) {
-          data.cell.styles.halign = "right";
+          // data.cell.styles.halign = "right";
         }
 
       },
