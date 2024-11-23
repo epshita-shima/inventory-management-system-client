@@ -7,35 +7,35 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
   const worksheet = workbook.addWorksheet("Combine Report");
 
   console.log(data);
+  
   const columnsToInclude = [
-    "piDate",
-    "totalQuantity",
+    "date",
+    "totalPIQuantity",
     "piUnitPrice",
     "totalPiAmount",
     "totalDeliveredQty",
-    "deliveredAvgUnitprice",
+    "deliveredAvgUnitPrice",
     "totalDeliveredAmount",
     "totalReturnQty",
     "returnAvgUnitPrice",
     "totalReturnAmount",
-    "totalNetQty",
+    "netQuantity",
     "netAvgUnitPrice",
     "totalNetAmount",
-    
   ];
 
   let dynamicColumns = [
-    { header: "PI Date", key: "piDate", width: 15 },
-    { header: "PI Quantity", key: "totalQuantity", width: 15 },
+    { header: "PI Date", key: "date", width: 15 },
+    { header: "PI Quantity", key: "totalPIQuantity", width: 15 },
     { header: "PI Unitprice", key: "piUnitPrice", width: 15 },
     { header: "Total PI Amount", key: "totalPiAmount", width: 15 },
     { header: "Delivered Quantity", key: "totalDeliveredQty", width: 20 },
-    { header: "Delivered Unitprice", key: "deliveredAvgUnitprice", width: 20 },
+    { header: "Delivered Unitprice", key: "deliveredAvgUnitPrice", width: 20 },
     { header: "Delivered Amount", key: "totalDeliveredAmount", width: 20 },
     { header: "Return Quantity", key: "totalReturnQty", width: 20 },
     { header: "Return Unitprice", key: "returnAvgUnitPrice", width: 20 },
     { header: "Return Amount", key: "totalReturnAmount", width: 20 },
-    { header: "Net Quantity", key: "totalNetQty", width: 20 },
+    { header: "Net Quantity", key: "netQuantity", width: 20 },
     { header: "Net Unitprice", key: "netAvgUnitPrice", width: 20 },
     { header: "Net Amount", key: "totalNetAmount", width: 20 },
   ];
@@ -118,20 +118,20 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
 
   data.forEach((item) => {
     const values = {
-      piDate: new Date(item.piDate).toLocaleDateString("en-CA"),
-      totalQuantity: item.totalQuantity,
+      date: new Date(item.date).toLocaleDateString("en-CA"),
+      totalPIQuantity: item.totalPIQuantity,
       piUnitPrice: item.piUnitPrice,
       totalPiAmount: item.totalPiAmount,
       totalDeliveredQty: `${item.totalDeliveredQty ===0 ? `-` : item.totalDeliveredQty}`,
-      deliveredAvgUnitprice: `${item.deliveredAvgUnitprice ===0 ? `-` : item.deliveredAvgUnitprice}`,
+      deliveredAvgUnitPrice: `${item.deliveredAvgUnitPrice ===0 ? `-` : item.deliveredAvgUnitPrice}`,
       totalDeliveredAmount: `${item.totalDeliveredAmount ===0 ? `-` : item.totalDeliveredAmount}`,
       totalReturnQty:`${ item.totalReturnQty ===0 ? '-' :  item.totalReturnQty}`,
       returnAvgUnitPrice: `${item.returnAvgUnitPrice === 0 ? "-":item.returnAvgUnitPrice}`,
       totalReturnAmount: `${item.totalReturnAmount === 0 ? '-' : item.totalReturnAmount}`,
-      totalNetQty: `${
-        item.totalNetQty < 0
-          ? `(${Math.abs(item.totalNetQty)})`
-          : item.totalNetQty
+      netQuantity: `${
+        item.netQuantity < 0
+          ? `(${Math.abs(item.netQuantity)})`
+          : item.netQuantity
       }`,
       netAvgUnitPrice: item.netAvgUnitPrice,
       totalNetAmount: `${item.totalNetAmount <0 ? `(${Math.abs(item.totalNetAmount)})` : item.totalNetAmount}`,
@@ -156,8 +156,8 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
     // ));
   });
 
-  const totalQuantity = data.reduce((total, details) => {
-    return total + details.totalQuantity;
+  const totalPIQuantity = data.reduce((total, details) => {
+    return total + details.totalPIQuantity;
   }, 0);
   const grandTotalPIAmount = data.reduce((total, details) => {
     return total + details.totalPiAmount;
@@ -175,7 +175,7 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
     return total + details.totalReturnAmount;
   }, 0);
   const grandTotalNetQty= data.reduce((total, details) => {
-    return total + details.totalNetQty;
+    return total + details.netQuantity;
   }, 0);
   const grandTotalNetAmount= data.reduce((total, details) => {
     return total + details.totalNetAmount;
@@ -190,29 +190,29 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
 
   //   return total + paidAmount;
   // }, 0);
-  // const totalQuantity= mainData.reduce((totalQty,item)=>{
+  // const totalPIQuantity= mainData.reduce((totalQty,item)=>{
   //   const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
   //   return totalQty +detailsQty
   // },0)
   // const totalAmount= mainData.reduce((totalAmt,item)=>{
   //   const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
-  //   return totalQuantity +detailsAmt
+  //   return totalPIQuantity +detailsAmt
   // },0)
 
-  // console.log(totalQuantity)
+  // console.log(totalPIQuantity)
 
   const datas = {
-    piDate:  "Grand Total",
-    totalQuantity:totalQuantity,
+    date:  "Grand Total",
+    totalPIQuantity:totalPIQuantity,
     piUnitPrice:'',
     totalPiAmount:grandTotalPIAmount,
     totalDeliveredQty:grandTotalDeliveredQty,
-    deliveredAvgUnitprice:"",
+    deliveredAvgUnitPrice:"",
     totalDeliveredAmount:grandTotalDeliveredAmount,
     totalReturnQty:grandTotalReturnQty,
     returnAvgUnitPrice:'',
     totalReturnAmount:grandTotalReturnAmount,
-    totalNetQty:grandTotalNetQty,
+    netQuantity:grandTotalNetQty,
     netAvgUnitPrice:'',
     totalNetAmount:grandTotalNetAmount,
   };

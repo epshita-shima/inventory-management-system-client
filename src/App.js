@@ -342,7 +342,7 @@ function App() {
 
               {/* sales report */}
               <Route
-                path="view-all-report"
+                path="sales-report"
                 element={<OrderDetailsReport></OrderDetailsReport>}
               ></Route>
             </Route>

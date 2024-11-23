@@ -270,59 +270,62 @@ const SalesReturnDetailsReport = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Download
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadReturnDetailsInfoPDF(
-                          { companyinfo },
+        {
+          filteredDatas?.length > 0 && (<div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Download
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadReturnDetailsInfoPDF(
+                            { companyinfo },
+                            reportTitle
+                          );
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        handleReturnDetailsExcel(
+                          transformedSalsReturnData,
+                          filteredDatas,
+                          piInformation,
+                          finishGoodsItemInfo,
+                          itemSizeInfo,
+                          clientInformation,
+                          companyinfo,
                           reportTitle
                         );
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      handleReturnDetailsExcel(
-                        transformedSalsReturnData,
-                        filteredDatas,
-                        piInformation,
-                        finishGoodsItemInfo,
-                        itemSizeInfo,
-                        clientInformation,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </div>
+          </div>)
+        }
+        
       </div>
     );
   }, [clientInformation, companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, piInformation, transformedSalsReturnData]);
@@ -343,7 +346,7 @@ const SalesReturnDetailsReport = ({
                   color: "#000",
                 }}
               >
-                Sales Return Details Report
+                Return Details Report
               </h2>
             }
             subHeaderComponent={subHeaderComponent}

@@ -10,7 +10,6 @@ import {
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import {
   useGetAllInvoiceInformationQuery,
-  useLazyGetFilteredForReportInvoiceInfoQuery,
 } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import SalesSummaryReport from "./SalesSummaryReport";
 import { useGetAllDelieryOrderInformationQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
@@ -37,6 +36,7 @@ const ReportView = ({ permission }) => {
   const [isOrderSumaryReport, setIsOrderSummmaryReport] = useState(false);
   const [isSalesDetailsReport, setIsSalesDetailsReport] = useState(false);
   const [isSalesSummaryReport, setIsSalesSummaryReport] = useState(false);
+  const [isChangeItemName,setIsChangeItemName]=useState(false)
   const [isReturnDetailsReport, setIsReturnDetailsReport] =
     useState(false);
   const [isReturnSummaryReport, setIsReturnSummaryReport] =
@@ -101,7 +101,10 @@ const ReportView = ({ permission }) => {
 
   const handleApplyFilters = async (updatedFilters) => {
     setExecuteQuery(true);
-    // await trigger(updatedFilters);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      reportStatus: "",
+    }));
     if (updatedFilters.reportStatus === "orderdetailsreport") {
       await triggerOrderDetailsReport(updatedFilters);
     } else if (updatedFilters.reportStatus === "ordersummaryreport") {
@@ -126,6 +129,8 @@ const ReportView = ({ permission }) => {
         style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
       >
         <CommonParameter
+        setIsChangeItemName={setIsChangeItemName}
+        isChangeItemName={isChangeItemName}
           fromDate={fromDate}
           setFromDate={setFromDate}
           setFilters={setFilters}
@@ -143,6 +148,7 @@ const ReportView = ({ permission }) => {
           setIsReturnSummaryReport={setIsReturnSummaryReport}
           setIsReturnDetailsReport={setIsReturnDetailsReport}
           setIsCombineReport={setIsCombineReport}
+          setIsTableDisplay={setIsTableDisplay}
         />
 
         {isOrderDetailsReport && (

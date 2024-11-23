@@ -20,7 +20,8 @@ const CommonParameter = ({
   setIsSalesDetailsReport,
   setIsReturnSummaryReport,
   setIsReturnDetailsReport,
-  setIsCombineReport
+  setIsCombineReport,
+  setIsTableDisplay
 }) => {
   const reportStatusOptions = [
     { value: "orderdetailsreport", label: "Order Details Report" },
@@ -261,48 +262,26 @@ const CommonParameter = ({
               width: "100px",
               height: "38px",
               marginTop: "25px",
+
             }}
             onClick={() => {
-              // setIsTableDisplay(false);
-              // setFilters((prevFilters) => ({
-              //   ...prevFilters,
-              //   clientId: "",
-              //   piNumber: "",
-              // }));
-              // setClientId("");
-              // setPiNumber("");
+              setIsTableDisplay(false);
+              setFilters((prevFilters) => ({
+                ...prevFilters,
+                fromDate: new Date().toLocaleDateString("en-CA"),
+                toDate: new Date().toLocaleDateString("en-CA"),
+                itemId: "",
+                clientId: "",
+                piId: "",
+                reportStatus: "",
+              }));
+              setFromDate(new Date().toLocaleDateString("en-CA"));
+              setToDate(new Date().toLocaleDateString("en-CA"));
             }}
           >
             Clear
           </button>
-          <button
-            className="border-0 "
-            style={{
-              backgroundColor: "#2DDC1B",
-              color: "white",
-              padding: "5px 10px",
-              fontSize: "14px",
-              borderRadius: "5px",
-              width: "100px",
-              height: "38px",
-              marginLeft: "25px",
-              marginTop: "25px",
-            }}
-            onClick={() => {
-              // setIsTableDisplay(false);
-              // setFilters((prevFilters) => ({
-              //   ...prevFilters,
-              //   clientId: "",
-              //   piNumber: "",
-              // }));
-              // setClientId("");
-              // setPiNumber("");
-            }}
-          >
-            PDF
-          </button>
         </div>
-
         <div
           className=" d-flex mt-5 align-items-center justify-content-center"
           style={{ width: "40%" }}
@@ -346,6 +325,7 @@ const CommonParameter = ({
                   ...filters,
                   reportStatus: e.value,
                 };
+
                 if (e.value === "orderdetailsreport") {
                   setIsOrderDetailsReport(true);
                   setIsOrderSummmaryReport(false);
@@ -353,64 +333,57 @@ const CommonParameter = ({
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(false);
                   setIsReturnDetailsReport(false);
-                  setIsCombineReport(false)
-                }
-               else if  (e.value === "ordersummaryreport") {
+                  setIsCombineReport(false);
+                } else if (e.value === "ordersummaryreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(true);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(false);
                   setIsReturnDetailsReport(false);
-                  setIsCombineReport(false)
-                }
-               else if(e.value === "salesdetailsreport"){
+                  setIsCombineReport(false);
+                } else if (e.value === "salesdetailsreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(true);
                   setIsReturnSummaryReport(false);
                   setIsReturnDetailsReport(false);
-                  setIsCombineReport(false)
-                }
-               else if(e.value === "salessummaryreport"){
+                  setIsCombineReport(false);
+                } else if (e.value === "salessummaryreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(true);
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(false);
                   setIsReturnDetailsReport(false);
-                  setIsCombineReport(false)
-                }
-               else if(e.value === "returnsummaryreport"){
+                  setIsCombineReport(false);
+                } else if (e.value === "returnsummaryreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(true);
                   setIsReturnDetailsReport(false);
-                  setIsCombineReport(false)
-                }
-              else  if(e.value === "returndetailsreport"){
+                  setIsCombineReport(false);
+                } else if (e.value === "returndetailsreport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(false);
                   setIsReturnDetailsReport(true);
-                  setIsCombineReport(false)
-                }
-                else if(e.value==='combinereport'){
+                  setIsCombineReport(false);
+                } else if (e.value === "combinereport") {
                   setIsOrderDetailsReport(false);
                   setIsOrderSummmaryReport(false);
                   setIsSalesSummaryReport(false);
                   setIsSalesDetailsReport(false);
                   setIsReturnSummaryReport(false);
-                  setIsReturnDetailsReport(false)
-                  setIsCombineReport(true)
-                }
-                else{
-                  console.log('something is wrong');
+                  setIsReturnDetailsReport(false);
+                  setIsCombineReport(true);
+                } else {
+                  console.log("something is wrong");
                 }
 
                 // Update the filters state
@@ -420,7 +393,10 @@ const CommonParameter = ({
             ></Select>
           </div>
         </div>
+
+        
       </div>
+     
     </div>
   );
 };

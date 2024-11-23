@@ -73,7 +73,7 @@ const CombineReport = ({
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
+      width: "200px",
     },
     {
       name: "PI Unit Price",
@@ -89,7 +89,7 @@ const CombineReport = ({
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
+      width: "200px",
     },
 
     {
@@ -103,7 +103,7 @@ const CombineReport = ({
       width: "200px",
     },
     {
-      name: "Avarage Delivered Unitprice",
+      name: "Avg Delivered Unitprice",
       selector: (row) => (
         <span>
           {row.deliveredAvgUnitPrice === 0 || row.deliveredAvgUnitPrice === null
@@ -141,7 +141,7 @@ const CombineReport = ({
       width: "200px",
     },
     {
-      name: "Avarage Return Unitprice",
+      name: "Avg Return Unitprice",
       selector: (row) => (
         <span>
           {row.returnAvgUnitPrice === 0 || row.returnAvgUnitPrice === null
@@ -169,7 +169,7 @@ const CombineReport = ({
       width: "200px",
     },
     {
-      name: "Avarage Net Unitprice",
+      name: "Avg Net Unitprice",
       selector: (row) => (
         <span
           style={{
@@ -250,7 +250,8 @@ const CombineReport = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
-        <div className="d-flex justify-content-end align-items-center">
+        {
+          groupedResult?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">
               <button
@@ -326,7 +327,6 @@ const CombineReport = ({
                               );
                       
                               grouped[invoiceNo].totalDeliveredAmount += deliveredQty * unitPrice;
-                      console.log('unitPrice=',unitPrice,"deliveredQty=",grouped[invoiceNo].totalDeliveredQty)
                               grouped[invoiceNo].totalReturnAmount += returnQty * unitPrice;
                       
                               grouped[invoiceNo].deliveredAvgUnitprice = 
@@ -361,7 +361,7 @@ const CombineReport = ({
                       const calculatedData = calculateInvoiceMetrics(orderInfo);
 
                       handelCombineReportExcel(
-                        calculatedData,
+                        groupedResult,
                         companyinfo,
                         reportTitle
                       );
@@ -373,10 +373,12 @@ const CombineReport = ({
               </ul>
             </div>
           </div>
-        </div>
+        </div>)
+        }
+      
       </div>
     );
-  }, [companyinfo, orderInfo]);
+  }, [companyinfo, orderInfo,groupedResult]);
 
   return (
     <div>
@@ -394,7 +396,7 @@ const CombineReport = ({
                   color: "#000",
                 }}
               >
-                Sales Return Summary Report
+                Combine Report
               </h2>
             }
             columns={columns}

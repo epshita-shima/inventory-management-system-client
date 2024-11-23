@@ -26,7 +26,7 @@ const OrderDetailsReport = () => {
           if (currentUser) {
             currentUser?.menulist?.forEach((menu) => {
               const userListSubMenu = menu?.items?.find(
-                (subItem) => subItem?.label === "View All Report"
+                (subItem) => subItem?.label === "Sales Report"
               );
               if (userListSubMenu) {
                 userList = userListSubMenu;
@@ -34,7 +34,7 @@ const OrderDetailsReport = () => {
                 menu?.items?.forEach((subMenu) => {
                   if (subMenu?.label === subMenu?.label) {
                     const userListSubMenu = subMenu?.items?.find(
-                      (subItem) => subItem?.label === "View All Report"
+                      (subItem) => subItem?.label === "Sales Report"
                     );
                     if (userListSubMenu) {
                       userList = userListSubMenu;
