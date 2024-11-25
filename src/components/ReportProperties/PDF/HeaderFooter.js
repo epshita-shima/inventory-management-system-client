@@ -188,6 +188,7 @@ const downloadInvoiceSingleDataPDF = (
 const downloadProductionPDFPERBatch = (
   data,
   finishGoods,
+  itemSizeInfo,
   rawItemInfo,
   companyinfo,
   reportTitle
@@ -195,7 +196,9 @@ const downloadProductionPDFPERBatch = (
   const itemNames = finishGoods?.find(
     (item) => data?.productionItemName === item._id
   );
-
+  const itemSize = itemSizeInfo?.find(
+    (size) => size._id == itemNames?.sizeId
+  );
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -222,9 +225,9 @@ const downloadProductionPDFPERBatch = (
   const formattedProductionDate = formatDate1(data.productionDate);
   const formatteProductionStartDate = formatDate(data.productionStart);
   const formattedPRoductionEndDate = formatDate(data.productionEnd);
-  const xCoordinate = 20;
+  const xCoordinate = 15;
   const labelWidth = 40;
-  const labelWidth2 = 80;
+  const labelWidth2 = 95;
   const extraSpace = 25;
   const textY = 60;
 
@@ -282,7 +285,7 @@ const downloadProductionPDFPERBatch = (
   doc.setFontSize(10);
   doc.setFont("times", "normal");
   doc.text(
-    `:${itemNames?.itemName}`,
+    `:${itemNames?.itemName} (${itemSize.sizeInfo})`,
     rightXCoordinate + labelWidth + extraSpace,
     textY
   );
@@ -1577,7 +1580,7 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
     doc.setFontSize(14);
     doc.setFont("times", "bold");
     doc.text(
-      `${reportTitle} - BATCH WAYS`,
+      `${reportTitle} - BATCH WISE`,
       doc.internal.pageSize.width / 2,
       headerY + 35,
       {

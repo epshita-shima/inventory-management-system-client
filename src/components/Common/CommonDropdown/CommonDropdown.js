@@ -32,6 +32,20 @@ const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
   });
   return result;
 };
+
+const rawMaterialWithUnitDropdown = (options, unitInfo) => {
+  let result = [];
+  options?.forEach((option) => {
+    const filteredUnit = unitInfo?.find((x) => x?._id == option.unitId);
+    result.push({
+      value: option._id,
+      label: option.itemName + ` (${filteredUnit?.unitInfo})`,
+      productionQtyPerBatch: option?.productionQtyPerBatch,
+    });
+  });
+  return result;
+};
+
 const finishGoodsDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -135,6 +149,18 @@ const deliveryOrderDropdown = (options) => {
   });
   return result;
 };
+const productionBatchDropdown = (options) => {
+  console.log(options)
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.batchNo
+    });
+  });
+  return result;
+};
 
 export {
   supplierDropdown,
@@ -148,5 +174,7 @@ export {
   unitInformationDropdown,
   userInfoDropdown,
   paymnetInformationDropdown,
-  deliveryOrderDropdown
+  deliveryOrderDropdown,
+  rawMaterialWithUnitDropdown,
+  productionBatchDropdown
 };

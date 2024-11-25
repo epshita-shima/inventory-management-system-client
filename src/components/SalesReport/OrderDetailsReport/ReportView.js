@@ -27,7 +27,7 @@ import {
   useLazyGetReturnSummaryReportQuery,
   useLazyGetSalesDetailsReportQuery,
   useLazyGetSalesSummaryReportQuery,
-} from "../../../redux/features/allreport/allreportApi";
+} from "../../../redux/features/salesreport/allreportApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import CombineReport from "./CombineReport";
 

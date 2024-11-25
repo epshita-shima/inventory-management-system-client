@@ -51,6 +51,7 @@ import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Comm
 import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
 import DeliveredReturnList from "./components/DeliverReturnInformation/Index/DeliveredReturnList";
 import OrderDetailsReport from "./components/SalesReport/OrderDetailsReport/OrderDetailsReport";
+import ProductionReportTable from './components/ReportProperties/ProductionReport/ProductionReportSection/ProductionReportTable';
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -345,6 +346,8 @@ function App() {
                 path="sales-report"
                 element={<OrderDetailsReport></OrderDetailsReport>}
               ></Route>
+              <Route  path="production-report"
+                element={<ProductionReportTable></ProductionReportTable>}></Route>
             </Route>
           </Routes>
         </div>
