@@ -1,37 +1,30 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleOrderDetailsExcel = (
+const handleProductionDatewiseSummaryExcel = (
   data,
-  mainData,
   finishGoodsInfo,
   itemSizeInfo,
-  clientInformation,
+  itemUnitInfo,
   companyinfo,
   reportTitle
 ) => {
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Order Details Report");
+  const worksheet = workbook.addWorksheet("Order Summary Report");
 
   const columnsToInclude = [
-    "piDate",
-    "clientName",
-    "invoiceNo",
+    "date",
     "itemName",
-    "quantity",
-    "unitPrice",
-    "totalAmount",
+    "unit",
+    "totalProductionQty",
   ];
 
   let dynamicColumns = [
-    { header: "PI Date", key: "piDate", width: 15 },
-    { header: "Client Name", key: "clientName", width: 15 },
-    { header: "Invoice No", key: "invoiceNo", width: 20 },
+    { header: "Production Date", key: "date", width: 15 },
     { header: "Item Name", key: "itemName", width: 20 },
-    { header: "Quantity", key: "quantity", width: 20 },
-    { header: "Unit Price", key: "unitPrice", width: 20 },
-    { header: "Total Amount", key: "totalAmount", width: 20 },
+    { header: "Unit", key: "unit", width: 15 },
+    { header: "Production Quantity", key: "totalProductionQty", width: 20 },
   ];
 
   columnsToInclude.forEach((item, index) => {
@@ -113,24 +106,19 @@ const handleOrderDetailsExcel = (
 
   data.forEach((item) => {
     const itemName = finishGoodsInfo?.filter(
-      (items) => item?.detailsData?.itemId === items._id
+      (items) => item?.productionItemName === items._id
     );
     const itemSize = itemSizeInfo.find(
       (size) => size._id === itemName[0]?.sizeId
     );
-    const clientName = clientInformation
-      ?.filter((client) => client._id === item.customerID)
-      .map((filteredItem) => filteredItem.clientName)
-      .join(", ");
-
+    const itemUnit = itemUnitInfo.find(
+      (size) => size._id === itemName[0]?.unitId
+    );
     const values = {
-      piDate: new Date(item.piDate).toLocaleDateString("en-CA"),
-      clientName: clientName,
-      invoiceNo: item.invoiceNo,
+      date: new Date(item.date).toLocaleDateString("en-CA"),
       itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
-      quantity: item.detailsData.quantity,
-      unitPrice: item.detailsData.unitPrice,
-      totalAmount: item.detailsData.totalAmount,
+      unit: itemUnit?.unitInfo,
+      totalProductionQty: item.totalProductionQty,
     };
 
     const singleRow = worksheet.addRow(
@@ -145,32 +133,17 @@ const handleOrderDetailsExcel = (
       };
       cell.alignment = { horizontal: "center" };
     });
-
-    // worksheet.addRow(columnsToInclude.map((col) =>
-    //     values[col]
-    // ));
   });
 
-  const totalQuantity= mainData.reduce((totalQty,item)=>{
-    const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
-    return totalQty +detailsQty
-  },0)
-  const totalAmount= mainData.reduce((totalAmt,item)=>{
-    const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
-    return totalQuantity +detailsAmt
-  },0)
-  
-  console.log(totalQuantity)
 
+  const totalProductionQty= data.reduce((totalQty,item)=>totalQty+item.totalProductionQty,0);
   const datas = {
-    piDate: "",
-    clientName: "",
-    invoiceNo: "",
-    itemName: "Grand Total",
-    quantity: totalQuantity,
-    unitPrice: "",
-    totalAmount: totalAmount,
+    date: "",
+    itemName: "",
+    unit: "Grand Total",
+    totalProductionQty: totalProductionQty,
   };
+
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
   footerRow.eachCell((cell) => {
     cell.border = {
@@ -188,4 +161,4 @@ const handleOrderDetailsExcel = (
   });
 };
 
-export default handleOrderDetailsExcel;
+export default handleProductionDatewiseSummaryExcel;

@@ -11,7 +11,16 @@ const productionreportApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
+    getProductionDatewiseSummaryReport: builder.query({
+      query: (queryParams) => ({
+        url: "/production-report/datewise-summary",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
   })
 })
 
-export const {useLazyGetProductionDatewiseDetailsReportQuery}=productionreportApi
+export const {useLazyGetProductionDatewiseDetailsReportQuery,useLazyGetProductionDatewiseSummaryReportQuery}=productionreportApi

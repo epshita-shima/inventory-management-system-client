@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 
-const downloadProductionDatewiseDetailsInfoPDF = async (
+const downloadProductionDatewiseSummaryPDF = async (
   companyinfo,
   reportTitle
 ) => {
@@ -15,7 +15,7 @@ const downloadProductionDatewiseDetailsInfoPDF = async (
   textY = addTableContent(doc, textY + 10);
   function addTableContent(doc, startY) {
     doc.autoTable({
-      html: "#my-production-datewise-details-table",
+      html: "#my-production-datewise-summary-table",
       startY: startY,
       margin: { top: 50, bottom: 32, left: 10, right: 10 },
       headerStyles: {
@@ -220,4 +220,4 @@ const addFooterForPO = (doc, companyinfo, reportTitle) => {
   }
 };
 
-export { downloadProductionDatewiseDetailsInfoPDF };
+export { downloadProductionDatewiseSummaryPDF };

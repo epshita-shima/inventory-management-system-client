@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
 import { downloadProductionPDFPERBatch } from "../../PDF/HeaderFooter";
 import { downloadProductionDatewiseDetailsInfoPDF } from "../../PDF/handleProductionDatewiseDetailsPDF";
+import handleProductionDatewiseExcel from "../../Excel/handleProductionDatewiseExcel";
 const DatewiseProductionDetails = ({
   permission,
   isTableDispaly,
@@ -13,9 +14,10 @@ const DatewiseProductionDetails = ({
   finishGoodsItemInfo,
   itemSizeInfo,
   rawMaterialDataInfo,
-  companyinfo
+  itemUnitInformation,
+  companyinfo,
 }) => {
-  const reportTitle = "PRODUCTION INFORMATION";
+  const reportTitle = "PRODUCTION INFORMATION-(Datewise Details)";
   const [groupedData, setGroupedData] = useState({});
   const transformedProductionData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
@@ -23,38 +25,28 @@ const DatewiseProductionDetails = ({
       detailsData: detail,
     }))
   );
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
+
+  const grandTotalProductionQuantity = filteredDatas?.reduce((totalQuantity, item) => 
+    totalQuantity + item.productionQty,0);
+
   useEffect(() => {
     const groupData = (data) => {
       return data?.reduce((acc, row) => {
-        const key = `${new Date(row.productionDate).toLocaleDateString(
-          "en-CA"
-        )}`;
+        const key = new Date(row.productionDate).toLocaleDateString("en-CA");
 
         if (!acc[key]) {
           acc[key] = {
-            ...row,
-            detailsData: [],
+            mainData: [],
           };
         }
 
-        row.detailsData.forEach((detail) => {
-          const existingDetail = acc[key].detailsData.find(
-            (d) => d.itemId === detail.itemId
-          );
-          console.log(existingDetail);
-          if (existingDetail) {
-            existingDetail.deliverQty += Number(detail.deliverQty);
-          } else {
-            acc[key].detailsData.push({
-              ...detail
-            });
-          }
-        });
+        acc[key].mainData.push({ ...row });
 
         return acc;
       }, {});
@@ -68,7 +60,6 @@ const DatewiseProductionDetails = ({
     processData();
   }, [filteredDatas]);
 
-  console.log(groupedData)
   const columns = [
     {
       name: "Sl.",
@@ -79,7 +70,8 @@ const DatewiseProductionDetails = ({
 
     {
       name: "Production Date",
-      selector: (row) => new Date(row.productionDate).toLocaleDateString("en-CA"),
+      selector: (row) =>
+        new Date(row.productionDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
@@ -97,12 +89,30 @@ const DatewiseProductionDetails = ({
         const itemName = finishGoodsItemInfo?.find(
           (x) => row?.productionItemName == x._id
         );
-        console.log('row.detailsData',row.detailsData.itemId)
+        console.log("row.detailsData", row.detailsData.itemId);
         const itemSize = itemSizeInfo?.find(
           (size) => size._id == itemName?.sizeId
         );
         return itemName
           ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
+          : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "Unit",
+      selector: (row) => {
+        const itemName = finishGoodsItemInfo?.find(
+          (x) => row?.productionItemName == x._id
+        );
+        const itemUnit = itemUnitInformation?.find(
+          (size) => size._id == itemName?.unitId
+        );
+        return itemName
+          ? ` (${itemUnit?.unitInfo})`
           : "N/A";
       },
       sortable: true,
@@ -193,12 +203,11 @@ const DatewiseProductionDetails = ({
     },
   };
 
-
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
-        {
-          filteredDatas?.length > 0 && (<div className="d-flex justify-content-end align-items-center">
+        {filteredDatas?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
               <div class="dropdown">
                 <button
@@ -232,15 +241,14 @@ const DatewiseProductionDetails = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        // handleReturnDetailsExcel(
-                        //   transformedProductionData,
-                        //   filteredDatas,
-                        //   finishGoodsItemInfo,
-                        //   itemSizeInfo,
-                        //   clientInformation,
-                        //   companyinfo,
-                        //   reportTitle
-                        // );
+                        handleProductionDatewiseExcel(
+                          transformedProductionData,
+                          filteredDatas,
+                          finishGoodsItemInfo,
+                          itemSizeInfo,
+                          companyinfo,
+                          reportTitle
+                        );
                       }}
                     >
                       Excel
@@ -249,12 +257,11 @@ const DatewiseProductionDetails = ({
                 </ul>
               </div>
             </div>
-          </div>)
-        }
-        
+          </div>
+        )}
       </div>
     );
-  }, [companyinfo, filteredDatas,reportTitle]);
+  }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, transformedProductionData]);
 
   return (
     <div>
@@ -285,146 +292,128 @@ const DatewiseProductionDetails = ({
             subHeader
           />
 
-<table id="my-deliver-details-table" className="d-none">
-        <thead>
-          <tr>
-            <th>Production Date</th>
-            <th>Batch</th>
-            <th>Item Name</th>
-            <th>Production Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groupedData &&
-          typeof groupedData === "object" &&
-          Object.keys(groupedData).length > 0 ? (
-            Object.keys(groupedData)?.map((key) => {
-              const group = groupedData[key];
-              console.log(group);
-              const formattedDate = formatDate(group.finishGoodsDeliveryDate);
-              const rowSpan = group?.detailsData.length;
+          <table id="my-production-datewise-details-table" className="d-none">
+            <thead>
+              <tr>
+                <th>Production Date</th>
+                <th>Batch</th>
+                <th>Item Name</th>
+                <th>Unit</th>
+                <th>Production Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {groupedData &&
+              typeof groupedData === "object" &&
+              Object.keys(groupedData).length > 0 ? (
+                Object.keys(groupedData)?.map((key) => {
+                  const group = groupedData[key];
+                  const rowSpan = group?.mainData.length;
+                  const dateWiseTotalProductionQty = group.mainData.reduce(
+                    (total, detail) => total + detail.productionQty,
+                    0
+                  );
+                  return (
+                    <>
+                      {group?.mainData.map((detail, detailIndex) => {
+                        const itemNames = finishGoodsItemInfo?.find(
+                          (item) => item._id === detail.productionItemName
+                        );
+                        console.log(itemNames);
+                        const itemSize = itemSizeInfo.find(
+                          (size) => size._id === itemNames?.sizeId
+                        );
+                        const formattedDate = formatDate(detail.productionDate);
+                        const itemUnit = itemUnitInformation.find(
+                          (size) => size._id === itemNames?.unitId
+                        );
+                        return (
+                          <tr key={detail._id}>
+                            {detailIndex === 0 && (
+                              <td
+                                rowSpan={rowSpan}
+                                style={{
+                                  textAlign: "center",
+                                  verticalAlign: "middle",
+                                }}
+                              >
+                                {formattedDate}
+                              </td>
+                            )}
 
-              const dateWiseTotalProductionQty = group.reduce(
-                (total, detail) =>total + detail.productionQty  ,0);
-               ;
-              return (
-                <>
-                  {group?.detailsData.map((detail, detailIndex) => {
-                    const itemNames = finishGoodsItemInfo?.find(
-                      (item) => item._id === group.productionItemName
-                    );
-                    console.log(itemNames);
-                    const itemSize = itemSizeInfo.find(
-                      (size) => size._id === itemNames?.sizeId
-                    );
+                            <td>
+                              {detail.batchNo}
+                            </td>
+                            <td >{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
+                            <td>{itemUnit?.unitInfo}</td>
+                            <td>{detail.productionQty.toLocaleString()}</td>
+                          </tr>
+                        );
+                      })}
 
-                    return (
-                      <tr key={detail._id}>
-                        {detailIndex === 0 && (
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                            {formattedDate}
-                          </td>
-                        )}
-                    
-                     
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                           {detail.batchNo}
-                          </td>
-                       
-                        <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
-                        <td>{detail.productionQty.toLocaleString()}</td>
+                      <tr>
+                        <td
+                          colSpan={4}
+                          style={{
+                            textAlign: "right",
+                            fontWeight: "bold",
+                            padding: "8px",
+                            border: "1px solid black",
+                          }}
+                        >
+                          Datewise Total
+                        </td>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                            border: "1px solid black",
+                          }}
+                        >
+                          {dateWiseTotalProductionQty.toLocaleString()}
+                        </td>
                       </tr>
-                    );
-                  })}
+                    </>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: "center" }}>
+                    No data available
+                  </td>
+                </tr>
+              )}
 
-                  <tr>
-                    <td
-                      colSpan={5}
-                      style={{
-                        textAlign: "right",
-                        fontWeight: "bold",
-                        padding: "8px",
-                        border: "1px solid black",
-                      }}
-                    >
-                      Datewise Total
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "center",
-                        verticalAlign: "middle",
-                        border: "1px solid black",
-                      }}
-                    >
-                      {dateWiseTotalProductionQty.toLocaleString()}
-                    </td>
-                  </tr>
-                </>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
-                No data available
-              </td>
-            </tr>
-          )}
+              <tr>
+                <td
+                  colSpan={4}
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    padding: "8px",
+                    border: "1px solid black",
+                  }}
+                >
+                  Grand Total
+                </td>
 
-          <tr>
-            <td
-              colSpan={5}
-              style={{
-                textAlign: "right",
-                fontWeight: "bold",
-                padding: "8px",
-                border: "1px solid black",
-              }}
-            >
-              Grand Total
-            </td>
-
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {/* {grandTotalDeliverQty != null
-                ? grandTotalDeliverQty.toLocaleString()
-                : 0} */}
-            </td>
-            <td></td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {/* {grandTotalDeliverAmount != null
-                ? grandTotalDeliverAmount.toLocaleString()
-                : 0} */}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalProductionQuantity != null
+                ? grandTotalProductionQuantity.toLocaleString()
+                : 0}
+                </td>
+           
+              </tr>
+            </tbody>
+          </table>
         </div>
-      ) }
-
-
+      )}
     </div>
   );
 };

@@ -2,18 +2,23 @@ import React, { useEffect, useState } from "react";
 import CommonProductionReportParameter from "../CommonProductionReportParameter/CommonProductionReportParameter";
 import { finishGoodsWithSizeItemDropdown, productionBatchDropdown, rawMaterialWithUnitDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useLazyGetProductionDatewiseDetailsReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
 import DatewiseProductionDetails from "../DatewiseProductionDetails/DatewiseProductionDetails";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import DatewiseProductionSummary from "../DatewiseProductionSummary/DatewiseProductionSummary";
 
 const ProductionReportView = ({ permission }) => {
   const [
     isProductionDatewiseDetailsReport,
     setIsProductionDatewiseDetailsReport,
+  ] = useState(false);
+  const [
+    isProductionDatewiseSummaryReport,
+    setIsProductionDatewiseSummaryReport,
   ] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
@@ -36,16 +41,16 @@ const ProductionReportView = ({ permission }) => {
     triggerDatewiseDetailsReport,
     { data: productionDatewiseDetailsData },
   ] = useLazyGetProductionDatewiseDetailsReportQuery();
+  const [
+    triggerDatewiseSummaryReport,
+    { data: productionDatewiseSummaryData },
+  ] = useLazyGetProductionDatewiseSummaryReportQuery();
 
   const itemsOptions = finishGoodsWithSizeItemDropdown(
     finishGoodsItemInfo,
     itemSizeInfo
   );
 
-  // const itemsOptions = rawMaterialWithUnitDropdown(
-  //   rawMaterialDataInfo,
-  //   itemUnitInformation
-  // );
   const batchOptions =   productionBatchDropdown
   (
     productionAllData
@@ -67,6 +72,9 @@ const ProductionReportView = ({ permission }) => {
     }));
     if (updatedFilters.reportStatus === "datewiseproductiondetails") {
       await triggerDatewiseDetailsReport(updatedFilters);
+    }
+    else if(updatedFilters.reportStatus === "datewiseproductionsummary") {
+      await triggerDatewiseSummaryReport(updatedFilters);
     }
   };
 
@@ -90,6 +98,7 @@ const ProductionReportView = ({ permission }) => {
           batchOptions={batchOptions}
           handleApplyFilters={handleApplyFilters}
           setIsProductionDatewiseDetailsReport={setIsProductionDatewiseDetailsReport}
+          setIsProductionDatewiseSummaryReport={setIsProductionDatewiseSummaryReport}
           // setIsOrderSummmaryReport={setIsOrderSummmaryReport}
           // setIsSalesSummaryReport={setIsSalesSummaryReport}
           // setIsSalesDetailsReport={setIsSalesDetailsReport}
@@ -107,6 +116,20 @@ const ProductionReportView = ({ permission }) => {
             filteredDatas={productionDatewiseDetailsData}
             finishGoodsItemInfo={finishGoodsItemInfo}
             rawMaterialDataInfo={rawMaterialDataInfo}
+            itemUnitInformation={itemUnitInformation}
+            itemSizeInfo={itemSizeInfo}
+            companyinfo={companyinfo}
+          />
+        )}
+        {isProductionDatewiseSummaryReport && (
+          <DatewiseProductionSummary
+            permission={permission}
+            isTableDispaly={isTableDispaly}
+            setIsTableDisplay={setIsTableDisplay}
+            filteredDatas={productionDatewiseSummaryData}
+            finishGoodsItemInfo={finishGoodsItemInfo}
+            rawMaterialDataInfo={rawMaterialDataInfo}
+            itemUnitInformation={itemUnitInformation}
             itemSizeInfo={itemSizeInfo}
             companyinfo={companyinfo}
           />

@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
 
-const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate,setToDate,itemsOptions,filters,handleApplyFilters,setIsProductionDatewiseDetailsReport,setIsTableDisplay,batchOptions}) => {
+const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate,setToDate,itemsOptions,filters,handleApplyFilters,setIsProductionDatewiseDetailsReport,setIsTableDisplay,batchOptions,setIsProductionDatewiseSummaryReport}) => {
   const reportStatusOptions = [
     { value: "datewiseproductiondetails", label: "Datewise Production Details" },
     { value: "datewiseproductionsummary", label: "Datewise Production Summary" },
@@ -16,7 +16,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
 
   return (
     <div>
-      <h3 className="fw-bold mt-1">Sales Report</h3>
+      <h3 className="fw-bold mt-1">Producton Report</h3>
       <hr />
 
       <div className="d-flex justify-content-between align-items-center w-100">
@@ -261,7 +261,11 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
 
                 if (e.value === "datewiseproductiondetails") {
                   setIsProductionDatewiseDetailsReport(true);
-           
+                  setIsProductionDatewiseSummaryReport(false)
+                }
+                else if(e.value ==="datewiseproductionsummary"){
+                  setIsProductionDatewiseSummaryReport(true);
+                  setIsProductionDatewiseDetailsReport(false);
                 }
                 // Update the filters state
                 setFilters(updatedFilters);
