@@ -13,7 +13,7 @@ const downloadInvoicePDF = async (
   companyinfo,
   reportTitle
 ) => {
-  console.log(data)
+  console.log(data);
   const customerFilterData = customerInfo.filter(
     (x) => x._id === data.customerID
   );
@@ -46,7 +46,7 @@ const downloadInvoicePDF = async (
   const formattedDelivaryDate = formatDate(data.piDate);
 
   const doc = new jsPDF();
-  addFooterForPO(doc, companyinfo, reportTitle,reportImage);
+  addFooterForPO(doc, companyinfo, reportTitle, reportImage);
 
   doc.setFontSize(10);
   doc.setFont("times", "bold");
@@ -133,7 +133,7 @@ const downloadInvoicePDF = async (
       calculateTotalQuantity.toLocaleString(),
       "",
       "",
-      calculateTotalAmount.toLocaleString()
+      calculateTotalAmount.toLocaleString(),
     ]);
     finalRows.push([
       {
@@ -179,10 +179,10 @@ const downloadInvoicePDF = async (
 
         data.cell.styles.halign = "center";
 
-        if (columnIndex === 3 ) {
+        if (columnIndex === 3) {
           data.cell.styles.halign = "center";
         }
-        if (columnIndex === 6 ) {
+        if (columnIndex === 6) {
           data.cell.styles.halign = "right";
         }
 
@@ -216,7 +216,6 @@ const downloadInvoicePDF = async (
 
   function addContent(doc, xCoordinate, labelWidth, textY) {
     const pageHeight = doc.internal.pageSize.getHeight();
-  
 
     const conditionInfoHeaderY = textY + 12;
     conditionInformationHeader(doc, conditionInfoHeaderY);
@@ -240,22 +239,23 @@ const downloadInvoicePDF = async (
     );
 
     doc.text(
-      " I certify the above to be true and correct to the best of my knowledge.",  xCoordinate,
+      " I certify the above to be true and correct to the best of my knowledge.",
+      xCoordinate,
       additionalConditionTextY + 20
     );
     // Draw lines
     const footerY = doc.internal.pageSize.height - 55;
-    const lineWidth = (doc.internal.pageSize.width - 30) / 4; 
- // Position image above the line with some spacing
- // Assuming an initial X coordinate for the line
+    const lineWidth = (doc.internal.pageSize.width - 30) / 4;
+    // Position image above the line with some spacing
+    // Assuming an initial X coordinate for the line
 
     const imgWidth = 30; // Width of the image in the PDF
     const imgHeight = 20;
-    const imageX = (doc.internal.pageSize.width -15) - (imgWidth);
-    console.log(imageX)
-    const footerImageY = footerY - imgHeight - 3; 
+    const imageX = doc.internal.pageSize.width - 15 - imgWidth;
+    console.log(imageX);
+    const footerImageY = footerY - imgHeight - 3;
     // Draw lines
-   // Divide the width by 3 sections
+    // Divide the width by 3 sections
     doc.line(xCoordinate, footerY, xCoordinate + lineWidth, footerY); // Checked by line
     doc.line(
       xCoordinate + lineWidth + 5,
@@ -269,7 +269,7 @@ const downloadInvoicePDF = async (
       xCoordinate + 3 * lineWidth + 10,
       footerY
     ); // Authorized by line
-    doc.addImage(signature, 'PNG', imageX, footerImageY, imgWidth, imgHeight);
+    doc.addImage(signature, "PNG", imageX, footerImageY, imgWidth, imgHeight);
     doc.line(
       xCoordinate + 3 * lineWidth + 15,
       footerY,
@@ -302,20 +302,26 @@ const downloadInvoicePDF = async (
     });
     const footer2Y = doc.internal.pageSize.height - 40;
     const footer3Y = doc.internal.pageSize.height - 35;
-    const checkedByCenter2= xCoordinate + lineWidth / 2;
-    // doc.line(xCoordinate, footer2Y, xCoordinate + lineWidth, footer2Y); 
+    const checkedByCenter2 = xCoordinate + lineWidth / 2;
+    // doc.line(xCoordinate, footer2Y, xCoordinate + lineWidth, footer2Y);
     doc.setFontSize(8);
     doc.text("Accepted By", checkedByCenter2, footer2Y + textYOffset, {
       align: "center",
     });
-    doc.text(`${customerFilterData[0].clientName}`, checkedByCenter2, footer3Y + textYOffset, {
-      align: "center",
-    });
-
+    doc.text(
+      `${customerFilterData[0].clientName}`,
+      checkedByCenter2,
+      footer3Y + textYOffset,
+      {
+        align: "center",
+      }
+    );
   }
-  const pdfDataUrl = doc.output('datauristring');
+  const pdfDataUrl = doc.output("datauristring");
   const pdfWindow = window.open();
-  pdfWindow.document.write(`<iframe width='100%' height='100%' src='${pdfDataUrl}'></iframe>`);
+  pdfWindow.document.write(
+    `<iframe width='100%' height='100%' src='${pdfDataUrl}'></iframe>`
+  );
   doc.save(`${data.invoiceNo}.pdf`);
 };
 
@@ -365,7 +371,7 @@ const conditionInformationHeader = (doc, startY) => {
   );
 };
 
-const addFooterForPO = (doc, companyinfo, reportTitle,reportImage) => {
+const addFooterForPO = (doc, companyinfo, reportTitle, reportImage) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
   const detailsWidthPercentage = 0.8;
 
@@ -376,12 +382,12 @@ const addFooterForPO = (doc, companyinfo, reportTitle,reportImage) => {
     // const contentStartY = headerHeight + spaceBetween;
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-   
+
     const headerY = 10;
     const footerY = pageHeight - 10;
     const imgWidth = 20; // Width of the image in the PDF
     const imgHeight = 15; // Height of the image in the PDF
-   
+
     // Header content
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
@@ -391,7 +397,8 @@ const addFooterForPO = (doc, companyinfo, reportTitle,reportImage) => {
     }
 
     const companyDetailsWidth = pageWidth * detailsWidthPercentage;
-    const imageX = (doc.internal.pageSize.width / 2) - (companyDetailsWidth / 2) - 10;
+    const imageX =
+      doc.internal.pageSize.width / 2 - companyDetailsWidth / 2 - 10;
     doc.setFont("times", "normal", "bold");
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
@@ -400,7 +407,7 @@ const addFooterForPO = (doc, companyinfo, reportTitle,reportImage) => {
       align: "center",
       width: companyDetailsWidth,
     });
-    doc.addImage(reportImage, 'PNG', imageX, headerY, imgWidth, imgHeight);
+    doc.addImage(reportImage, "PNG", imageX, headerY, imgWidth, imgHeight);
     doc.setFontSize(14);
     doc.setFont("times", "bold");
     doc.text(`${reportTitle}`, doc.internal.pageSize.width / 2, headerY + 16, {

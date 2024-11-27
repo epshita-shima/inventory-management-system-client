@@ -1,14 +1,14 @@
 import jsPDF from "jspdf";
 import { addFooter } from "./footerUtility";
 
-const downloadProductionDatewiseSummaryPDF = async (
+const downloadRawMaterailConsumptionDetailsPDF = async (
   companyinfo,
   reportTitle
 ) => {
   const doc = new jsPDF();
     doc.autoTable({
-      html: "#my-production-datewise-summary-table",
-      startY:50,
+      html: "#my-raw-material-consumption-details-table",
+      startY: 50,
       margin: { top: 50, bottom: 32, left: 10, right: 10 },
       headerStyles: {
         fillColor: [128, 128, 128],
@@ -68,9 +68,9 @@ const downloadProductionDatewiseSummaryPDF = async (
 
       },
     });
-   
+
   addFooter(doc, companyinfo, reportTitle);
   doc.save(`${reportTitle}.pdf`);
 };
 
-export { downloadProductionDatewiseSummaryPDF };
+export { downloadRawMaterailConsumptionDetailsPDF };

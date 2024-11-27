@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import ProductionReportView from './ProductionReportView';
-import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
+import RawMaterialConsumptionView from './RawMaterialConsumptionView';
 import { useNavigate } from 'react-router-dom';
+import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 
-const ProductionReportTable = () => {
+const RawMaterialConsumptionTable = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
@@ -33,7 +33,7 @@ const ProductionReportTable = () => {
               menu?.items?.forEach((subMenu) => {
                 if (subMenu?.label === subMenu?.label) {
                   const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "Production Report"
+                    (subItem) => subItem?.label === "Finish Goods"
                   );
                   if (userListSubMenu) {
                     userList = userListSubMenu;
@@ -76,9 +76,9 @@ const ProductionReportTable = () => {
   }
   return (
       <div>
-        <ProductionReportView  permission={permission}></ProductionReportView>
+        <RawMaterialConsumptionView  permission={permission}></RawMaterialConsumptionView>
       </div>
     );
 }
 
-export default ProductionReportTable
+export default RawMaterialConsumptionTable

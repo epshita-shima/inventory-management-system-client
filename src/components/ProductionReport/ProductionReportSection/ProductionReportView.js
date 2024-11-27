@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import CommonProductionReportParameter from "../CommonProductionReportParameter/CommonProductionReportParameter";
-import { finishGoodsWithSizeItemDropdown, productionBatchDropdown, rawMaterialWithUnitDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../redux/features/productionreport/productionreportApi";
 import DatewiseProductionDetails from "../DatewiseProductionDetails/DatewiseProductionDetails";
-import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
-import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import DatewiseProductionSummary from "../DatewiseProductionSummary/DatewiseProductionSummary";
+import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllProductionInformationQuery } from "../../../redux/features/productioninformation/productionApi";
+import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
+import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 
 const ProductionReportView = ({ permission }) => {
   const [
@@ -20,6 +20,7 @@ const ProductionReportView = ({ permission }) => {
     isProductionDatewiseSummaryReport,
     setIsProductionDatewiseSummaryReport,
   ] = useState(false);
+
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -76,6 +77,7 @@ const ProductionReportView = ({ permission }) => {
     else if(updatedFilters.reportStatus === "datewiseproductionsummary") {
       await triggerDatewiseSummaryReport(updatedFilters);
     }
+   
   };
 
   console.log(productionDatewiseDetailsData);
@@ -119,6 +121,7 @@ const ProductionReportView = ({ permission }) => {
             itemUnitInformation={itemUnitInformation}
             itemSizeInfo={itemSizeInfo}
             companyinfo={companyinfo}
+            filters={filters}
           />
         )}
         {isProductionDatewiseSummaryReport && (
@@ -132,9 +135,9 @@ const ProductionReportView = ({ permission }) => {
             itemUnitInformation={itemUnitInformation}
             itemSizeInfo={itemSizeInfo}
             companyinfo={companyinfo}
+            filters={filters}
           />
         )}
-
       </div>
     </div>
   );

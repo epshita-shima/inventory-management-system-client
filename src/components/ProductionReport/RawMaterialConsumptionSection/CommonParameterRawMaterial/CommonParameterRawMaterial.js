@@ -4,14 +4,24 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
 
-const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate,setToDate,itemsOptions,filters,handleApplyFilters,setIsProductionDatewiseDetailsReport,setIsTableDisplay,batchOptions,setIsProductionDatewiseSummaryReport}) => {
+const CommonParameterRawMaterial = ({
+  fromDate,
+  setFilters,
+  setFromDate,
+  toDate,
+  setToDate,
+  itemsOptions,
+  filters,
+  setIsTableDisplay,
+  handleApplyFilters,
+  setIsRawMaterialDetails,
+}) => {
   const reportStatusOptions = [
-    { value: "datewiseproductiondetails", label: "Datewise Production Details" },
-    { value: "datewiseproductionsummary", label: "Datewise Production Summary" },
-    { value: "batchwiseproductiondetails", label: "Batchwise Production Details" },
-    { value: "batchwiseproductionsummary", label: "Batchwise Production Summary" },
-    { value: "itemwiseproductiondetails", label: "Itemwise Production Details" },
-    { value: "itemwiseproductionsummary", label: "Itemwise Production Semmary" },
+    { value: "rawmaterialconsumptiondetails", label: "Raw Material Consumption Details" },
+    {
+      value: "rawmaterialconsumptiondsummary",
+      label: "Raw Material Consumption Summary",
+    },
   ];
 
   return (
@@ -77,7 +87,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
           style={{ width: "65%" }}
           className="d-flex justify-content-between align-items-center"
         >
-          <div className="w-100">
+          <div className="w-50">
             <label htmlFor="">Item Name</label>
             <br />
             <div className="w-100">
@@ -92,7 +102,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
                   value: 0,
                 }}
                 value={itemsOptions.filter(function (option) {
-                  return option.value === filters?.productionItemName;
+                  return option.value === filters?.itemId;
                 })}
                 styles={{
                   control: (baseStyles, state) => ({
@@ -119,59 +129,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
                 onChange={(e) => {
                   setFilters((prevFilters) => ({
                     ...prevFilters,
-                    productionItemName: e.value,
-                  }));
-                }}
-              ></Select>
-            </div>
-          </div>
-       
-
-          <div className="w-100 ms-3">
-            <label htmlFor="">Batch No</label>
-            <br />
-            <div className="w-100">
-              <Select
-                class="form-select"
-                className="w-100"
-                aria-label="Default select example"
-                name="poinfo"
-                options={batchOptions}
-                defaultValue={{
-                  label: "Select Batch Number",
-                  value: 0,
-                }}
-                value={batchOptions.filter(function (option) {
-                  return option.value === filters?.batchNo;
-                })}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    width: "100%",
-                    borderColor: state.isFocused ? "#fff" : "#fff",
-                    border: "1px solid #2DDC1B",
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
-                  }),
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "#B8FEB3",
-                    primary: "#2DDC1B",
-                  },
-                })}
-                onChange={(e) => {
-                  // console.log(e);
-                  // setPiNumber(e.value);
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    batchNo: e.value,
+                    itemId: e.value,
                   }));
                 }}
               ></Select>
@@ -196,7 +154,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               width: "100px",
               height: "38px",
               marginTop: "25px",
-
             }}
             onClick={() => {
               setIsTableDisplay(false);
@@ -204,7 +161,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
                 ...prevFilters,
                 fromDate: new Date().toLocaleDateString("en-CA"),
                 toDate: new Date().toLocaleDateString("en-CA"),
-                productionItemName: "",
+                itemId: "",
                 batchNo: "",
                 reportStatus: "",
               }));
@@ -258,28 +215,19 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
                   ...filters,
                   reportStatus: e.value,
                 };
+                if (e.value === "rawmaterialconsumptiondetails") {
+                  setIsRawMaterialDetails(true);
+                }
 
-                if (e.value === "datewiseproductiondetails") {
-                  setIsProductionDatewiseDetailsReport(true);
-                  setIsProductionDatewiseSummaryReport(false)
-                }
-                else if(e.value ==="datewiseproductionsummary"){
-                  setIsProductionDatewiseSummaryReport(true);
-                  setIsProductionDatewiseDetailsReport(false);
-                }
-                // Update the filters state
                 setFilters(updatedFilters);
                 await handleApplyFilters(updatedFilters);
               }}
             ></Select>
           </div>
         </div>
-
-        
       </div>
-     
     </div>
   );
-}
+};
 
-export default CommonProductionReportParameter
+export default CommonParameterRawMaterial;

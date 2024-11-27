@@ -3,9 +3,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
-import { downloadProductionPDFPERBatch } from "../../PDF/HeaderFooter";
-import { downloadProductionDatewiseDetailsInfoPDF } from "../../PDF/handleProductionDatewiseDetailsPDF";
-import handleProductionDatewiseExcel from "../../Excel/handleProductionDatewiseExcel";
+import { downloadProductionPDFPERBatch } from "../../ReportProperties/PDF/HeaderFooter";
+import { downloadProductionDatewiseDetailsInfoPDF } from "../../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
+import handleProductionDatewiseExcel from './../../ReportProperties/Excel/handleProductionDatewiseExcel';
+
 const DatewiseProductionDetails = ({
   permission,
   isTableDispaly,

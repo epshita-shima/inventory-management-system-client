@@ -51,7 +51,8 @@ import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Comm
 import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
 import DeliveredReturnList from "./components/DeliverReturnInformation/Index/DeliveredReturnList";
 import OrderDetailsReport from "./components/SalesReport/OrderDetailsReport/OrderDetailsReport";
-import ProductionReportTable from './components/ReportProperties/ProductionReport/ProductionReportSection/ProductionReportTable';
+import ProductionReportTable from './components/ProductionReport/ProductionReportSection/ProductionReportTable';
+import RawMaterialConsumptionTable from "./components/ProductionReport/RawMaterialConsumptionSection/RawMaterialConsumptionTable/RawMaterialConsumptionTable";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -346,8 +347,10 @@ function App() {
                 path="sales-report"
                 element={<OrderDetailsReport></OrderDetailsReport>}
               ></Route>
-              <Route  path="production-report"
+              <Route  path="finish-goods"
                 element={<ProductionReportTable></ProductionReportTable>}></Route>
+              <Route  path="raw-material-consumption"
+                element={<RawMaterialConsumptionTable></RawMaterialConsumptionTable>}></Route>
             </Route>
           </Routes>
         </div>

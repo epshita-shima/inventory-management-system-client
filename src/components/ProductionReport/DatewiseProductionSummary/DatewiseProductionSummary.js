@@ -2,10 +2,9 @@
 import React, {  useMemo } from "react";
 
 import DataTable from "react-data-table-component";
+import { downloadProductionDatewiseSummaryPDF } from "../../ReportProperties/PDF/handlePRoductionDatewiseSummaryPDF";
+import handleProductionDatewiseSummaryExcel from './../../ReportProperties/Excel/handleProductionDatewiseSummaryExcel';
 
-import handleProductionDatewiseExcel from "../../Excel/handleProductionDatewiseExcel";
-import { downloadProductionDatewiseSummaryPDF } from "../../PDF/handlePRoductionDatewiseSummaryPDF";
-import handleProductionDatewiseSummaryExcel from "../../Excel/handleProductionDatewiseSummaryExcel";
 const DatewiseProductionSummary = ({
   permission,
   isTableDispaly,
@@ -16,8 +15,18 @@ const DatewiseProductionSummary = ({
   rawMaterialDataInfo,
   itemUnitInformation,
   companyinfo,
+  filters
 }) => {
-  const reportTitle = "PRODUCTION INFORMATION-(Datewise Summary)";
+
+  let reportTitle = "";
+
+  if (filters?.fromDate !=='' && filters?.productionItemName !== '' && filters.batchNo ==='') {
+      reportTitle = `PRODUCTION INFORMATION-(Item-wise Summary)`;
+  } else if (filters?.fromDate !=='' && filters?.batchNo !== '') {
+      reportTitle = `PRODUCTION INFORMATION-(Batch-wise Summary)`;
+  } else if (filters.fromDate !=='') {
+      reportTitle = 'PRODUCTION INFORMATION-(Date-wise Summary)';
+  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -177,7 +186,7 @@ const DatewiseProductionSummary = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, itemUnitInformation]);
+  }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, itemUnitInformation,reportTitle]);
 
   return (
     <div>
@@ -231,6 +240,7 @@ const DatewiseProductionSummary = ({
                 );
 
                 const formattedDate = formatDate(detail.date);
+                
                 return (
                   <tr key={detail._id}>
                       <td

@@ -1364,12 +1364,6 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
     const pageHeight = doc.internal.pageSize.height;
     const headerY = 10;
     const footerY = pageHeight - 10;
-
-    // Header content
-
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =

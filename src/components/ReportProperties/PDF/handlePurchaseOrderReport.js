@@ -9,20 +9,17 @@ const downloadPOPDF = async (
   companyinfo,
   reportTitle
 ) => {
-  console.log(data)
+
   const numberInWords = toWords(parseInt(data?.grandTotalAmount));
   const companyContact = companyinfo.companyinfo[0].companyContact;
   const companyEmail = companyinfo.companyinfo[0].companyEmail;
-  const factoryAddress=companyinfo.companyinfo[0].footerAddress
-  console.log(factoryAddress)
+  const factoryAddress = companyinfo.companyinfo[0].footerAddress;
   const matchesPaymentType = paymentData?.find(
     (payment) => payment._id === data.paymentId
   );
-  console.log(matchesPaymentType);
-
   const phoneNumber = companyContact.split(",")[0].split(": ")[1].trim();
   const contactEmail = companyEmail.split(",")[0].split(": ")[1].trim();
-const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
+  const factoryConvertAddress = factoryAddress.replace("Factory Address:", "");
   const filterBsnkInfo = (filterBsnkInfo) => {
     const matchData = filterBsnkInfo.find((item) => item._id == data.bankId);
     return matchData;
@@ -140,7 +137,9 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
     ]);
     finalRows.push([
       {
-        content: `SAY IN WORDS (${matchesPaymentType.paymentType=="cash" ? 'BDT' : 'USD'}): ${
+        content: `SAY IN WORDS (${
+          matchesPaymentType.paymentType == "cash" ? "BDT" : "USD"
+        }): ${
           numberInWords.charAt(0).toUpperCase() + numberInWords.slice(1)
         } only`,
         colSpan: 6,
@@ -212,7 +211,7 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
     });
     return doc.previousAutoTable.finalY;
   }
-  
+
   addContent(doc, xCoordinate, labelWidth, textY);
 
   function addContent(doc, xCoordinate, labelWidth, textY) {
@@ -238,7 +237,11 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
       additionalConditionTextY + 5
     );
     doc.text("Payment Terms", xCoordinate, additionalConditionTextY + 15);
-    doc.text(`:${matchesPaymentType.paymentMode}`, xCoordinate + labelWidth, additionalConditionTextY + 15);
+    doc.text(
+      `:${matchesPaymentType.paymentMode}`,
+      xCoordinate + labelWidth,
+      additionalConditionTextY + 15
+    );
     doc.text("Packing", xCoordinate, additionalConditionTextY + 20);
     doc.text(
       ":In standard Packing System Should be Maintaine",
@@ -246,7 +249,11 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
       additionalConditionTextY + 20
     );
     doc.text("Remarks", xCoordinate, additionalConditionTextY + 25);
-    doc.text(`:${data.remarks}`, xCoordinate + labelWidth, additionalConditionTextY + 25);
+    doc.text(
+      `:${data.remarks}`,
+      xCoordinate + labelWidth,
+      additionalConditionTextY + 25
+    );
 
     if (matchesPaymentType.paymentType !== "cash") {
       let bankingInfoHeaderY = textY + 105;
@@ -256,9 +263,8 @@ const factoryConvertAddress=factoryAddress.replace('Factory Address:','');
 
         addFooterForPO(doc, companyinfo, reportTitle);
         bankingInfoHeaderY = 40; // Reset the Y position
-      }
-      else{
-        bankingInfoHeaderY = textY+ 60
+      } else {
+        bankingInfoHeaderY = textY + 60;
       }
       bankingInformationHeader(doc, bankingInfoHeaderY);
 
@@ -400,14 +406,9 @@ const addShipInformationHeader = (doc, startY) => {
   // Add the centered text inside the header
   doc.setFontSize(12);
   doc.setFont("times", "bold");
-  doc.text(
-    " SHIP TO",
-    pageWidth / 2,
-    headerY + headerHeight + padding,
-    {
-      align: "center",
-    }
-  );
+  doc.text(" SHIP TO", pageWidth / 2, headerY + headerHeight + padding, {
+    align: "center",
+  });
 };
 
 const conditionInformationHeader = (doc, startY) => {

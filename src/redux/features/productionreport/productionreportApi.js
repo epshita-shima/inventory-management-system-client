@@ -20,7 +20,30 @@ const productionreportApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
-  })
-})
+    getProductionItemwiseDetailsReport: builder.query({
+      query: (queryParams) => ({
+        url: "/production-report/itemwise-details",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
+    getRawMaterialDetailsConsumptionReport: builder.query({
+      query: (queryParams) => ({
+        url: "/production-report/raw-material-consumption-details",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
+  }),
+});
 
-export const {useLazyGetProductionDatewiseDetailsReportQuery,useLazyGetProductionDatewiseSummaryReportQuery}=productionreportApi
+export const {
+  useLazyGetProductionDatewiseDetailsReportQuery,
+  useLazyGetProductionDatewiseSummaryReportQuery,
+  useGetProductionItemwiseDetailsReportQuery,
+  useLazyGetRawMaterialDetailsConsumptionReportQuery
+} = productionreportApi;
