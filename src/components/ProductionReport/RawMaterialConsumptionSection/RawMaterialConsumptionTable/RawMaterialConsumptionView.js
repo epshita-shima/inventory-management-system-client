@@ -5,12 +5,14 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { rawMaterialItemDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
-import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetRawMaterialDetailsConsumptionReportQuery, useLazyGetRawMaterialSummaryConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import RawMaterialConsumptionSummaryView from './../RawMaterialSummaryView/RawMaterialConsumptionSummaryView';
 
 const RawMaterialConsumptionView = ({ permission }) => {
   const [isRawMaterialDetails, setIsRawMaterialDetails] = useState(false);
+  const [isRawMaterialSummary, setIsRawMaterialSummary] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -32,6 +34,10 @@ const RawMaterialConsumptionView = ({ permission }) => {
     triggerRawMaterialDetailsReport,
     { data: rawMaterialConsumptionDetailsData },
   ] = useLazyGetRawMaterialDetailsConsumptionReportQuery();
+  const [
+    triggerRawMaterialSummaryReport,
+    { data: rawMaterialConsumptionSummaryData},
+  ] = useLazyGetRawMaterialSummaryConsumptionReportQuery();
 
   const itemsOptions = rawMaterialItemDropdown(rawMaterialDataInfo);
   useEffect(() => {
@@ -51,10 +57,13 @@ const RawMaterialConsumptionView = ({ permission }) => {
     if (updatedFilters.reportStatus === "rawmaterialconsumptiondetails") {
       await triggerRawMaterialDetailsReport(updatedFilters);
     }
+    if (updatedFilters.reportStatus === "rawmaterialconsumptiondsummary") {
+      await triggerRawMaterialSummaryReport(updatedFilters);
+    }
   };
 
-  console.log({ rawMaterialConsumptionDetailsData });
-  console.log("isRawMaterialDetails", isRawMaterialDetails);
+console.log({rawMaterialConsumptionSummaryData})
+
   return (
     <div>
       <div
@@ -73,6 +82,7 @@ const RawMaterialConsumptionView = ({ permission }) => {
           itemsOptions={itemsOptions}
           handleApplyFilters={handleApplyFilters}
           setIsRawMaterialDetails={setIsRawMaterialDetails}
+          setIsRawMaterialSummary={setIsRawMaterialSummary}
           setIsTableDisplay={setIsTableDisplay}
         />
 
@@ -82,6 +92,20 @@ const RawMaterialConsumptionView = ({ permission }) => {
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
             filteredDatas={rawMaterialConsumptionDetailsData}
+            rawMaterialDataInfo={rawMaterialDataInfo}
+            itemUnitInformation={itemUnitInformation}
+            companyinfo={companyinfo}
+            filters={filters}
+            finishGoodsItemInfo={finishGoodsItemInfo}
+            itemSizeInfo={itemSizeInfo}
+          />
+        )}
+        {isRawMaterialSummary && (
+          <RawMaterialConsumptionSummaryView
+            permission={permission}
+            isTableDispaly={isTableDispaly}
+            setIsTableDisplay={setIsTableDisplay}
+            filteredDatas={rawMaterialConsumptionSummaryData}
             rawMaterialDataInfo={rawMaterialDataInfo}
             itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}

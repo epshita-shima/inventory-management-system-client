@@ -38,6 +38,15 @@ const productionreportApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
+    getRawMaterialSummaryConsumptionReport: builder.query({
+      query: (queryParams) => ({
+        url: "/production-report/raw-material-consumption-summary",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
   }),
 });
 
@@ -45,5 +54,6 @@ export const {
   useLazyGetProductionDatewiseDetailsReportQuery,
   useLazyGetProductionDatewiseSummaryReportQuery,
   useGetProductionItemwiseDetailsReportQuery,
-  useLazyGetRawMaterialDetailsConsumptionReportQuery
+  useLazyGetRawMaterialDetailsConsumptionReportQuery,
+useLazyGetRawMaterialSummaryConsumptionReportQuery
 } = productionreportApi;

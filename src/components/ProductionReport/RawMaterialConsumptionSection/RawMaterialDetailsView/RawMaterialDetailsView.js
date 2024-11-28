@@ -5,6 +5,7 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { downloadRawMaterailConsumptionDetailsPDF } from "../../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
+import handleRawMaterialConsumptionDetails from "../../../ReportProperties/Excel/handleRawMaterialConsumptionDetails";
 const RawMaterialDetailsView = ({
   permission,
   isTableDispaly,
@@ -15,8 +16,22 @@ const RawMaterialDetailsView = ({
   finishGoodsItemInfo,
   itemSizeInfo,
   companyinfo,
+  filters,
 }) => {
-  const reportTitle = "RAW MATERIAL CONSUMPTION-(Datewise Details)";
+  let reportTitle;
+  if (filters.itemId !== "") {
+    const itemNames = rawMaterialDataInfo?.find(
+      (item) => item._id === filters.itemId
+    );
+
+    const itemUnit = itemUnitInformation.find(
+      (size) => size._id === itemNames?.unitId
+    );
+    reportTitle = `RAW MATERIAL CONSUMPTION-${itemNames?.itemName} (${itemUnit.unitInfo})`;
+  } else {
+    reportTitle = "RAW MATERIAL CONSUMPTION-(Datewise Details)";
+  }
+
   const reportTitleForSingle = "RAW MATERIAL CONSUMPTION";
   const [groupedData, setGroupedData] = useState({});
   const transformedProductionData = filteredDatas?.flatMap((piDetails) =>
@@ -25,55 +40,38 @@ const RawMaterialDetailsView = ({
       detailsData: detail,
     }))
   );
-  console.log(filteredDatas);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
-  const grandTotalProductionQuantity = filteredDatas?.reduce((totalMaterialUsed, item) =>
-  {
-    const detailsMaterialUsed = item.detailsData.reduce(
-      (sum, detail) => sum + Number(detail.materialUsed),
-      0
-    );
-    return totalMaterialUsed + detailsMaterialUsed;
-  }
-  ,0);
+  const grandTotalProductionQuantity = filteredDatas?.reduce(
+    (totalMaterialUsed, item) => {
+      const detailsMaterialUsed = item.detailsData.reduce(
+        (sum, detail) => sum + Number(detail.materialUsed),
+        0
+      );
+      return totalMaterialUsed + detailsMaterialUsed;
+    },
+    0
+  );
 
   useEffect(() => {
     const groupData = (data) => {
       return data?.reduce((acc, row) => {
-        // Use only `finishGoodsDeliveryDate` and `piNo` for grouping
-        const key = `${new Date(row.productionDate).toLocaleDateString(
-          "en-CA"
-        )}`;
+        // Group by productionDate
+        const key = new Date(row.productionDate).toLocaleDateString("en-CA");
 
         if (!acc[key]) {
-          // Initialize with row data and an empty detailsData array
-          acc[key] = {
-            ...row,
-            detailsData: [],
-          };
+          acc[key] = []; // Initialize an array for each date
         }
 
-        row.detailsData.forEach((detail) => {
-          // Check if the item already exists in the detailsData array
-          const existingDetail = acc[key].detailsData.find(
-            (d) => d.itemId === detail.itemId
-          );
-          console.log(existingDetail);
-          if (existingDetail) {
-            // If it exists, add to the existing materialUsed
-            existingDetail.materialUsed += Number(detail.materialUsed);
-          } else {
-            // If it doesn’t exist, add the detail to detailsData
-            acc[key].detailsData.push({
-              ...detail,
-              materialUsed: Number(detail.materialUsed),
-            });
-          }
+        // Push the batch and its detailsData as a separate object
+        acc[key].push({
+          batchNo: row.batchNo,
+          detailsData: row.detailsData,
         });
 
         return acc;
@@ -88,6 +86,7 @@ const RawMaterialDetailsView = ({
     processData();
   }, [filteredDatas]);
 
+  console.log(groupedData);
   const columns = [
     {
       name: "Sl.",
@@ -100,6 +99,13 @@ const RawMaterialDetailsView = ({
       name: "Production Date",
       selector: (row) =>
         new Date(row.productionDate).toLocaleDateString("en-CA"),
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Batch No",
+      selector: (row) => row.batchNo,
       sortable: true,
       center: true,
       filterable: true,
@@ -256,14 +262,20 @@ const RawMaterialDetailsView = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        // handleProductionDatewiseExcel(
-                        //   transformedProductionData,
-                        //   filteredDatas,
-                        //   finishGoodsItemInfo,
-                        //   itemSizeInfo,
-                        //   companyinfo,
-                        //   reportTitle
-                        // );
+                        console.log(  transformedProductionData,
+                          filteredDatas,
+                          rawMaterialDataInfo,
+                          itemUnitInformation,
+                          companyinfo,
+                          reportTitle)
+                        handleRawMaterialConsumptionDetails(
+                          transformedProductionData,
+                          filteredDatas,
+                          rawMaterialDataInfo,
+                          itemUnitInformation,
+                          companyinfo,
+                          reportTitle
+                        );
                       }}
                     >
                       Excel
@@ -276,7 +288,7 @@ const RawMaterialDetailsView = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas]);
+  }, [companyinfo, filteredDatas, itemUnitInformation, rawMaterialDataInfo, reportTitle, transformedProductionData]);
 
   return (
     <div>
@@ -307,12 +319,21 @@ const RawMaterialDetailsView = ({
             subHeader
           />
 
-          <table id="my-raw-material-consumption-details-table" className="d-none">
+          <table
+            id="my-raw-material-consumption-details-table"
+            className="d-none"
+          >
             <thead>
               <tr>
                 <th>Production Date</th>
-                <th>Item Name</th>
-                <th>Unit</th>
+                <th>Batch No</th>
+                {
+                  filters.itemId ? '' :  <th>Item Name</th>
+                }
+               {
+                filters.itemId ? '' : <th>Unit</th>
+               }
+               
                 <th>Material Used</th>
               </tr>
             </thead>
@@ -320,50 +341,98 @@ const RawMaterialDetailsView = ({
               {groupedData &&
               typeof groupedData === "object" &&
               Object.keys(groupedData)?.length > 0 ? (
-                Object.keys(groupedData)?.map((key) => {
-                  const group = groupedData[key];
-                  const formattedDate = formatDate(group.productionDate);
-                  const rowSpan = group?.detailsData?.length;
+                Object.keys(groupedData)?.map((dateKey) => {
+                  const batches = groupedData[dateKey]; // Get batches for this date
+                  const formattedDate = formatDate(dateKey); // Format the date key
 
-                  const dateWiseTotalMaterialUsed = group.detailsData.reduce(
-                    (cur, acc) => cur + acc.materialUsed,
+                  // Calculate total material used for the entire date
+                  const dateWiseTotalMaterialUsed = batches.reduce(
+                    (total, batch) =>
+                      total +
+                      batch.detailsData.reduce(
+                        (batchTotal, detail) =>
+                          batchTotal + detail.materialUsed,
+                        0
+                      ),
                     0
                   );
 
                   return (
-                    <>
-                      {group?.detailsData.map((detail, detailIndex) => {
-                        const itemNames = rawMaterialDataInfo?.find(
-                          (item) => item._id === detail.itemId
-                        );
+                    <React.Fragment key={dateKey}>
+                      {batches.map((batch, batchIndex) => {
+                        const rowSpan = batch.detailsData?.length || 1;
 
-                        const itemUnit = itemUnitInformation.find(
-                          (size) => size._id === itemNames?.unitId
-                        );
                         return (
-                          <tr key={detail._id}>
-                            {detailIndex === 0 && (
-                              <td
-                                rowSpan={rowSpan}
-                                style={{
-                                  textAlign: "center",
-                                  verticalAlign: "middle",
-                                }}
-                              >
-                                {formattedDate}
-                              </td>
-                            )}
+                          <React.Fragment key={batch.batchNo}>
+                            {batch.detailsData.map((detail, detailIndex) => {
+                              const itemNames = rawMaterialDataInfo?.find(
+                                (item) => item._id === detail.itemId
+                              );
 
-                            <td>{`${itemNames.itemName}`}</td>
-                            <td>{itemUnit.unitInfo}</td>
-                            <td>{detail.materialUsed.toLocaleString()}</td>
-                          </tr>
+                              const itemUnit = itemUnitInformation.find(
+                                (size) => size._id === itemNames?.unitId
+                              );
+
+                              return (
+                                <tr key={detail._id}>
+                                  {/* Render Production Date only once per date */}
+                                  {detailIndex === 0 && batchIndex === 0 && (
+                                    <td
+                                      rowSpan={batches.reduce(
+                                        (acc, curBatch) =>
+                                          acc + curBatch.detailsData.length,
+                                        0
+                                      )}
+                                      style={{
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                      }}
+                                    >
+                                      {formattedDate}
+                                    </td>
+                                  )}
+
+                                  {/* Render Batch No only once per batch */}
+                                  {detailIndex === 0 && (
+                                    <td
+                                      rowSpan={rowSpan}
+                                      style={{
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                      }}
+                                    >
+                                      {batch.batchNo}
+                                    </td>
+                                  )}
+
+                                  {/* Render Item Details */}
+                                  {filters.itemId ? (
+                                    ""
+                                  ) : (
+                                    <td>{`${
+                                      itemNames?.itemName || "Unknown Item"
+                                    }`}</td>
+                                  )}
+                                  {filters.itemId ? (
+                                    ""
+                                  ) : (
+                                    <td>{itemUnit?.unitInfo || "N/A"}</td>
+                                  )}
+
+                                  <td>
+                                    {detail.materialUsed.toLocaleString()}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
                         );
                       })}
 
+                      {/* Date-wise Total Row */}
                       <tr>
                         <td
-                          colSpan={3}
+                          colSpan={filters.itemId ? 2:4}
                           style={{
                             textAlign: "right",
                             fontWeight: "bold",
@@ -383,20 +452,21 @@ const RawMaterialDetailsView = ({
                           {dateWiseTotalMaterialUsed.toLocaleString()}
                         </td>
                       </tr>
-                    </>
+                    </React.Fragment>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan="3" style={{ textAlign: "center" }}>
+                  <td colSpan="5" style={{ textAlign: "center" }}>
                     No data available
                   </td>
                 </tr>
               )}
 
+              {/* Grand Total Row */}
               <tr>
                 <td
-                  colSpan={3}
+                  colSpan={filters.itemId ? 2:4}
                   style={{
                     textAlign: "right",
                     fontWeight: "bold",
@@ -406,7 +476,6 @@ const RawMaterialDetailsView = ({
                 >
                   Grand Total
                 </td>
-
                 <td
                   style={{
                     textAlign: "center",
@@ -415,8 +484,8 @@ const RawMaterialDetailsView = ({
                   }}
                 >
                   {grandTotalProductionQuantity != null
-                ? grandTotalProductionQuantity.toLocaleString()
-                : 0}
+                    ? grandTotalProductionQuantity.toLocaleString()
+                    : 0}
                 </td>
               </tr>
             </tbody>

@@ -15,9 +15,13 @@ const CommonParameterRawMaterial = ({
   setIsTableDisplay,
   handleApplyFilters,
   setIsRawMaterialDetails,
+  setIsRawMaterialSummary,
 }) => {
   const reportStatusOptions = [
-    { value: "rawmaterialconsumptiondetails", label: "Raw Material Consumption Details" },
+    {
+      value: "rawmaterialconsumptiondetails",
+      label: "Raw Material Consumption Details",
+    },
     {
       value: "rawmaterialconsumptiondsummary",
       label: "Raw Material Consumption Summary",
@@ -217,8 +221,11 @@ const CommonParameterRawMaterial = ({
                 };
                 if (e.value === "rawmaterialconsumptiondetails") {
                   setIsRawMaterialDetails(true);
+                  setIsRawMaterialSummary(false);
+                } else if (e.value === "rawmaterialconsumptiondsummary") {
+                  setIsRawMaterialSummary(true);
+                  setIsRawMaterialDetails(false);
                 }
-
                 setFilters(updatedFilters);
                 await handleApplyFilters(updatedFilters);
               }}
