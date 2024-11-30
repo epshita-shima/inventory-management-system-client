@@ -1,20 +1,41 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from "react";
 
-import { useGetAllClientInformationQuery } from '../../../redux/features/clientinformation/clientInfoApi';
+import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 
 import DataTable from "react-data-table-component";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { useGetAllPaymentInformationQuery } from '../../../redux/features/paymnetinformation/paymentInfoApi';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
+import { downloadSalesSummaryPDF } from "../../ReportProperties/PDF/handleSalesSummaryPDF";
+import handleOrderSummaryExcel from "../../ReportProperties/Excel/handleOrderSummaryExcel";
 
-const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
-  const {data:paymentTypeInfo}=useGetAllPaymentInformationQuery(undefined)
+const OrderSummaryReport = ({
+  permission,
+  isTableDispaly,
+  filteredDatas,
+  companyinfo,
+}) => {
+  const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const [filterText, setFilterText] = React.useState("");
+  const reportTitle = "ORDER SUMMARYF";
+  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
 
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined)
+  console.log(filteredDatas);
 
-  console.log(filteredDatas)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+  const grandTotalQuantity = filteredDatas?.reduce(
+    (sum, details) => sum + details.grandQuantity,
+    0
+  );
+  const grandTotalAmount = filteredDatas?.reduce(
+    (sum, details) => sum + details.grandAmount,
+    0
+  );
   // const { grandQuantity, grandAmount } = filteredDatas?.reduce(
   //   (acc, detail) => {
   //     // Accumulate quantity and totalAmount for each matched item in detailsData
@@ -44,16 +65,18 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     },
     {
       name: "Date",
-      selector:(row) =>new Date(row.date).toLocaleDateString('en-CA') ,
+      selector: (row) => new Date(row.date).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Payment Type",
-      selector:(row) => {
-        const paymnetInfo=paymentTypeInfo?.find((type)=>type._id==row.paymentId)
-        return paymnetInfo ? paymnetInfo.paymentMode : 'N/A'
+      selector: (row) => {
+        const paymnetInfo = paymentTypeInfo?.find(
+          (type) => type._id == row.paymentId
+        );
+        return paymnetInfo ? paymnetInfo.paymentMode : "N/A";
       },
       sortable: true,
       center: true,
@@ -61,21 +84,21 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     },
     {
       name: "Total Quantity",
-      selector:(row) => row.grandQuantity,
+      selector: (row) => row.grandQuantity,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Rate in Avarage",
-      selector: (row) =>row.averageRate,
+      selector: (row) => row.averageRate,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Total Amount",
-      selector:(row) => row.grandAmount,
+      selector: (row) => row.grandAmount,
       sortable: true,
       center: true,
       filterable: true,
@@ -104,21 +127,73 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
     },
     headRow: {
       style: {
-        paddingTop: "0px", 
+        paddingTop: "0px",
       },
     },
     header: {
       style: {
-        marginTop: "8px",     
+        marginTop: "8px",
       },
     },
   };
-
-
+  const subHeaderComponent = useMemo(() => {
+    return (
+      <div className="d-block d-sm-flex justify-content-between align-items-center">
+        {filteredDatas?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Download
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadSalesSummaryPDF({ companyinfo }, reportTitle);
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        handleOrderSummaryExcel(
+                          filteredDatas,
+                          paymentTypeInfo,
+                          companyinfo,
+                          reportTitle
+                        );
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }, [companyinfo, filteredDatas, reportTitle]);
   return (
     <div
-      // className="row px-5 mx-2"
-      // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+    // className="row px-5 mx-2"
+    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       {isTableDispaly && (
         <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
@@ -139,6 +214,7 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
               data={filteredDatas}
               defaultSortField="name"
               customStyles={customStyles}
+              subHeaderComponent={subHeaderComponent}
               striped
               pagination
               subHeader
@@ -146,8 +222,81 @@ const OrderSummaryReport = ({ permission ,isTableDispaly,filteredDatas}) => {
           </div>
         </div>
       )}
+
+      <table id="my-sales-summary-table" className="d-none">
+        <thead>
+          <tr>
+            <th>PI Date</th>
+            <th>Payment Type</th>
+            <th>Avg Unit Price</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredDatas?.map((detail, detailIndex) => {
+            const formattedDate = formatDate(detail.date);
+            const avarageUnitPrice = detail.grandAmount / detail.grandQuantity;
+            const paymentType = paymentTypeInfo?.find(
+              (x) => x._id == detail.paymentId
+            );
+            return (
+              <tr key={detail._id}>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  {formattedDate}
+                </td>
+                <td>{paymentType?.paymentMode}</td>
+                <td>{Math.round(avarageUnitPrice)}</td>
+                <td>{detail.grandQuantity.toLocaleString()}</td>
+                <td>{detail.grandAmount.toLocaleString()}</td>
+              </tr>
+            );
+          })}
+
+          <tr>
+            <td
+              colSpan={3}
+              style={{
+                textAlign: "right",
+                fontWeight: "bold",
+                padding: "8px",
+                border: "1px solid black",
+              }}
+            >
+              Grand Total
+            </td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {grandTotalQuantity != null
+                ? grandTotalQuantity?.toLocaleString()
+                : 0}
+            </td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {grandTotalAmount != null
+                ? grandTotalAmount?.toLocaleString()
+                : 0}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
-export default OrderSummaryReport
+export default OrderSummaryReport;

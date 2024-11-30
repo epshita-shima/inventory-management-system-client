@@ -169,6 +169,7 @@ const ReportView = ({ permission }) => {
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
             filteredDatas={orderSummaryData}
+            companyinfo={companyinfo}
           />
         )}
 
@@ -195,6 +196,7 @@ const ReportView = ({ permission }) => {
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
+            companyinfo={companyinfo}
           />
         )}
         {isReturnDetailsReport && (
@@ -222,6 +224,7 @@ const ReportView = ({ permission }) => {
             clientInformation={clientInformation}
             piInformation={piInformation}
             doInformation={doInformation}
+            companyinfo={companyinfo}
           />
         )}
         {isCombineReport && (

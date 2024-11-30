@@ -184,7 +184,7 @@ const RawMaterialConsumptionSummaryView = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas]);
+  }, [companyinfo, filteredDatas, itemUnitInformation, rawMaterialDataInfo, reportTitle]);
 
   return (
     <div>
