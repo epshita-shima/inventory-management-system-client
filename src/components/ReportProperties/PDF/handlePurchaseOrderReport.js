@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import { toWords } from "number-to-words";
+import { formatDate } from "../../Uitilites/DateUtilities";
 
 const downloadPOPDF = async (
   data,
@@ -25,12 +26,6 @@ const downloadPOPDF = async (
     return matchData;
   };
   const filteredData = filterBsnkInfo(bankInformation);
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const formattedDate = formatDate(data.makeDate);
   const formattedDelivaryDate = formatDate(data.deliveryDate);

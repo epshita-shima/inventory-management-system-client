@@ -25,6 +25,7 @@ import { useDeleteCFTInfoMutation } from "../../../../redux/features/cftinformat
 import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -541,13 +542,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
     rawItemInfo,
   ]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return isNaN(date.getTime())
-      ? "N/A"
-      : date.toLocaleDateString("en-US", options);
-  };
+
   return (
     <div className="row px-5 mx-4">
       <ListHeading

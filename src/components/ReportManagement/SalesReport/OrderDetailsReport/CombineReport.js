@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import DataTable from "react-data-table-component";
 import React, { useMemo } from "react";
-import downloadCombineReportPDF from "../../ReportProperties/PDF/handleCombineReportPDF";
-import handelCombineReportExcel from "../../ReportProperties/Excel/handelCombineReportExcel";
+import downloadCombineReportPDF from "../../../ReportProperties/PDF/handleCombineReportPDF";
+import handelCombineReportExcel from "../../../ReportProperties/Excel/handelCombineReportExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const CombineReport = ({
   permission,
@@ -242,11 +243,7 @@ const CombineReport = ({
       },
     },
   };
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
+
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">

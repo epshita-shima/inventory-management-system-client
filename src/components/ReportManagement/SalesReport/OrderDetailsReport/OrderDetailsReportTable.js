@@ -2,17 +2,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./OrderDetailsReportTable.css";
 import DataTable from "react-data-table-component";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
-import reportImage from "../../../assets/images/reportlogo.png";
-import authorizesSingatureImage from "../../../assets/images/Image_20240831165135.png";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
+import reportImage from "../../../../assets/images/reportlogo.png";
+import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { downloadInvoicePDF } from "../../ReportProperties/PDF/InvoiceReportDownload";
-import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
-import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
-import { downloadOrderDetailsAllDataPDF } from "../../ReportProperties/PDF/handleOrderDetailsAllReport";
-import handleOrderDetailsExcel from "../../ReportProperties/Excel/handleOrderDetailsExcel";
+import { downloadInvoicePDF } from "../../../ReportProperties/PDF/InvoiceReportDownload";
+import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { downloadOrderDetailsAllDataPDF } from "../../../ReportProperties/PDF/handleOrderDetailsAllReport";
+import handleOrderDetailsExcel from "../../../ReportProperties/Excel/handleOrderDetailsExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const OrderDetailsReportTable = ({
   permission,
@@ -39,11 +39,6 @@ const OrderDetailsReportTable = ({
     }))
   );
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const grandTotalQuantity = filteredDatas?.reduce((totalQuantity, item) => {
     const detailsTotal = item.detailsData.reduce(

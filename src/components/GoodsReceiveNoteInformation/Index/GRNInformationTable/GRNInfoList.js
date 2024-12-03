@@ -26,6 +26,7 @@ import { useGetAllRMItemInformationQuery } from "../../../../redux/features/item
 import { supplierDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import makeAnimated from "react-select/animated";
 import handleGRNDownload from "../../../ReportProperties/Excel/handleGRNExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const GRNInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -429,11 +430,7 @@ const GRNInfoList = ({ permission }) => {
     reportTitle,
   ]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
+
 
   const generateMonths = (year) => {
     const getYear = year.getFullYear();

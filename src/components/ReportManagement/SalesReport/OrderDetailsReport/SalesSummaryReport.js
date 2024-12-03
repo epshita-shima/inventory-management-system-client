@@ -1,49 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { downloadRawMaterialConsumptionSummaryPDF } from "../../../ReportProperties/PDF/handleRawMaterualConsumptionSummary";
-import handleRawMaterialConsumptionSummaryExcel from "../../../ReportProperties/Excel/handleRawMaterialConsumptionSummaryExcel";
-const RawMaterialConsumptionSummaryView = ({
-  permission,
-  isTableDispaly,
-  setIsTableDisplay,
+import React, { useMemo } from "react";
+import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
+import handleSalesSummaryExcel from "../../../ReportProperties/Excel/handleSalesSummaryExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
+
+const SalesSummaryReport = ({
   filteredDatas,
-  rawMaterialDataInfo,
-  itemUnitInformation,
-  finishGoodsItemInfo,
-  itemSizeInfo,
+  isTableDispaly,
   companyinfo,
-  filters
 }) => {
-  let reportTitle;
-  if (filters.itemId !== "") {
-    const itemNames = rawMaterialDataInfo?.find(
-      (item) => item._id === filters.itemId
-    );
+  const reportTitle = "SALES SUMMARY";
+  const [filterText, setFilterText] = React.useState("");
 
-    const itemUnit = itemUnitInformation.find(
-      (size) => size._id === itemNames?.unitId
-    );
-    reportTitle = `RAW MATERIAL CONSUMPTION-${itemNames?.itemName} (${itemUnit.unitInfo})`;
-  } else {
-    reportTitle = "RAW MATERIAL CONSUMPTION-(Datewise Summary)";
-  }
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
-  const grandTotalMaterialUsed = filteredDatas?.reduce(
-    (totalMaterialUsed, item) => totalMaterialUsed + item.totalMaterialUsed,
-    0
-  );
-
-  console.log(filteredDatas);
-
+  const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverAmount,0)
+  const grandTotalDeliveredQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverQty,0)
+  
   const columns = [
     {
       name: "Sl.",
@@ -51,44 +25,34 @@ const RawMaterialConsumptionSummaryView = ({
       center: true,
       width: "60px",
     },
-
     {
-      name: "Production Date",
-      selector: (row) => new Date(row.date).toLocaleDateString("en-CA"),
+      name: "Delivery Date",
+      selector: (row) => row.deliverDate,
       sortable: true,
       center: true,
       filterable: true,
     },
 
     {
-      name: "Item Name",
+      name: "Avg Unit Price",
       selector: (row) => {
-        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId == x._id);
-
-        return itemName ? itemName?.itemName : "N/A";
+        const avgUnitPrice = row.totalDeliverAmount / row.totalDeliverQty;
+        return Math.round(avgUnitPrice);
       },
       sortable: true,
       center: true,
       filterable: true,
     },
-
     {
-      name: "Unit",
-      selector: (row) => {
-        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId == x._id);
-        const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
-        );
-        return itemName ? ` (${itemUnit?.unitInfo})` : "N/A";
-      },
+      name: "Delivered Quantity",
+      selector: (row) => row.totalDeliverQty,
       sortable: true,
       center: true,
       filterable: true,
     },
-
     {
-      name: "Production Quantity",
-      selector: (row) => row.totalMaterialUsed,
+      name: "Total Amount",
+      selector: (row) => row.totalDeliverAmount,
       sortable: true,
       center: true,
       filterable: true,
@@ -115,17 +79,13 @@ const RawMaterialConsumptionSummaryView = ({
         borderRight: "1px solid gray",
       },
     },
-    headRow: {
-      style: {
-        paddingTop: "0px",
-      },
-    },
-    header: {
-      style: {
-        marginTop: "8px",
-      },
-    },
   };
+
+  const filteredItems = filteredDatas?.filter(
+    (item) =>
+      JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
+      -1
+  );
 
   const subHeaderComponent = useMemo(() => {
     return (
@@ -150,7 +110,7 @@ const RawMaterialConsumptionSummaryView = ({
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadRawMaterialConsumptionSummaryPDF(
+                          downloadSalesSummaryPDF(
                             { companyinfo },
                             reportTitle
                           );
@@ -165,10 +125,8 @@ const RawMaterialConsumptionSummaryView = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        handleRawMaterialConsumptionSummaryExcel(
+                        handleSalesSummaryExcel(
                           filteredDatas,
-                          rawMaterialDataInfo,
-                          itemUnitInformation,
                           companyinfo,
                           reportTitle
                         );
@@ -184,7 +142,7 @@ const RawMaterialConsumptionSummaryView = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, itemUnitInformation, rawMaterialDataInfo, reportTitle]);
+  }, [companyinfo, filteredDatas, reportTitle]);
 
   return (
     <div>
@@ -202,14 +160,14 @@ const RawMaterialConsumptionSummaryView = ({
                   color: "#000",
                 }}
               >
-                Datewise Summary Report
+                Sales Summary Report
               </h2>
             }
-            subHeaderComponent={subHeaderComponent}
             columns={columns}
-            data={filteredDatas}
+            data={filteredItems}
             defaultSortField="name"
             customStyles={customStyles}
+            subHeaderComponent={subHeaderComponent}
             striped
             pagination
             subHeader
@@ -217,26 +175,20 @@ const RawMaterialConsumptionSummaryView = ({
         </div>
       )}
 
-      <table id="my-raw-material-consumption-summary-table" className="d-none">
+      <table id="my-sales-summary-table" className="d-none">
         <thead>
           <tr>
-            <th>Production Date</th>
-            <th>Item Name</th>
-            <th>Unit</th>
-            <th>Production Qty</th>
+            <th>Delivery Date</th>
+            <th>Avg Unit Price</th>
+            <th>Delivered Qty</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           {filteredDatas?.map((detail, detailIndex) => {
-            const itemNames = rawMaterialDataInfo?.find(
-              (item) => item._id === detail.itemId
-            );
-            const itemUnit = itemUnitInformation.find(
-              (size) => size._id === itemNames?.unitId
-            );
-
-            const formattedDate = formatDate(detail.date);
-
+            const formattedDate = formatDate(detail.deliverDate);
+            const avarageUnitPrice =
+              detail.totalDeliverAmount / detail.totalDeliverQty;
             return (
               <tr key={detail._id}>
                 <td
@@ -247,16 +199,16 @@ const RawMaterialConsumptionSummaryView = ({
                 >
                   {formattedDate}
                 </td>
-                <td>{`${itemNames.itemName}`}</td>
-                <td>{itemUnit?.unitInfo}</td>
-                <td>{detail.totalMaterialUsed.toLocaleString()}</td>
+                <td>{Math.round(avarageUnitPrice)}</td>
+                <td>{detail.totalDeliverQty.toLocaleString()}</td>
+                <td>{detail.totalDeliverAmount.toLocaleString()}</td>
               </tr>
             );
           })}
 
           <tr>
             <td
-              colSpan={3}
+              colSpan={2}
               style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -273,9 +225,20 @@ const RawMaterialConsumptionSummaryView = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalMaterialUsed != null
-                ? grandTotalMaterialUsed?.toLocaleString()
-                : 0}
+              {grandTotalDeliveredQty != null
+                ? grandTotalDeliveredQty?.toLocaleString()
+                : 0} 
+            </td>
+            <td
+              style={{
+                textAlign: "center",
+                verticalAlign: "middle",
+                border: "1px solid black",
+              }}
+            >
+              {grandTotalAmount != null
+                ? grandTotalAmount?.toLocaleString()
+                : 0} 
             </td>
           </tr>
         </tbody>
@@ -284,4 +247,4 @@ const RawMaterialConsumptionSummaryView = ({
   );
 };
 
-export default RawMaterialConsumptionSummaryView;
+export default SalesSummaryReport;

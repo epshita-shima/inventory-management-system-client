@@ -24,21 +24,16 @@ import InsertSupplierInformation from "./components/SupplierProfile/Insert/Inser
 import SupplierInfoTableData from "./components/SupplierProfile/Index/SupplierInfoTableData/SupplierInfoTableData";
 import InsertClientInformation from "./components/ClientInformation/Insert/InsertClientInformation";
 import ClientInfoTableData from "./components/ClientInformation/Index/ClientInfoTableData";
-import InsertPurchaseOrder from "./components/PurchaseManagement/PurchaseOrder/Insert/InsertPurchaseOrder";
 import PurchaseOrderListTable from "./components/PurchaseManagement/PurchaseOrder/Index/PurchaseOrderListTable";
 import CommonPurchaseOrderInfo from "./components/PurchaseManagement/PurchaseOrder/Common/CommonPurchaseOrderInfo";
 import PurchaseOrderApproveForm from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseOrderApproveForm";
 import InsertGRNInfo from "./components/GoodsReceiveNoteInformation/Insert/InsertGRNInfo";
 import GRNInfoTable from "./components/GoodsReceiveNoteInformation/Index/GRNInfoTable";
-import InsertProduction from "./components/Production/Insert/InsertProduction";
 import ProductionCommonPart from "./components/Production/Common/ProductionCommonPart";
 import ProductionListTable from "./components/Production/Index/ProductionListTable";
 import PaymentModeDataList from "./components/PaymentModeInformation/Index/PaymentModeDataList";
 import InsertPaymentOption from "./components/PaymentModeInformation/Insert/InsertPaymentOption";
-
-import InsertPaymentMethodInformation from "./components/PaymentMethodInformation/Insert/InsertPaymentMethodInformation";
 import PaymentMethodSingleEntry from "./components/PaymentMethodInformation/Common/PaymentMethodSingleEntry";
-import PaymentReceiveDataTableList from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable/PaymentReceiveDataTableList";
 import PaymentReceiveDataTable from "./components/PaymentMethodInformation/Index/PaymentReceiveDataTable";
 import SalesManagementCommonPart from "./components/SalesManagement/ProformaInvoice/Common/SalesManagementCommonPart";
 import InvoiceInformationList from "./components/SalesManagement/ProformaInvoice/Index/InvoiceInformationListTable/InvoiceInformationList";
@@ -50,17 +45,16 @@ import FinishGoodsDeliveryList from "./components/FinishGoodsDelivery/DeliveryLi
 import FinishGoodsDeliveryCommonPart from "./components/FinishGoodsDelivery/Common/FinishGoodsDeliveryCommonPart";
 import DeliverReturnCommonPart from "./components/DeliverReturnInformation/Common/DeliverReturnCommonPart";
 import DeliveredReturnList from "./components/DeliverReturnInformation/Index/DeliveredReturnList";
-import OrderDetailsReport from "./components/SalesReport/OrderDetailsReport/OrderDetailsReport";
-import ProductionReportTable from './components/ProductionReport/ProductionReportSection/ProductionReportTable';
-import RawMaterialConsumptionTable from "./components/ProductionReport/RawMaterialConsumptionSection/RawMaterialConsumptionTable/RawMaterialConsumptionTable";
+import OrderDetailsReport from "./components/ReportManagement/SalesReport/OrderDetailsReport/OrderDetailsReport";
+import ProductionReportTable from "./components/ReportManagement/ProductionReport/ProductionReportSection/ProductionReportTable";
+import RawMaterialConsumptionTable from "./components/ReportManagement/RawMaterialConsumptionSection/RawMaterialConsumptionTable/RawMaterialConsumptionTable";
+import CombineReportTable from "./components/ReportManagement/CombineReport/CombineReportTable";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
-
   const getMenulistData = localStorage.getItem("user");
-
   const menuListData = JSON.parse(getMenulistData);
 
   return (
@@ -347,10 +341,22 @@ function App() {
                 path="sales-report"
                 element={<OrderDetailsReport></OrderDetailsReport>}
               ></Route>
-              <Route  path="finish-goods"
-                element={<ProductionReportTable></ProductionReportTable>}></Route>
-              <Route  path="raw-material-consumption"
-                element={<RawMaterialConsumptionTable></RawMaterialConsumptionTable>}></Route>
+              <Route
+                path="finish-goods"
+                element={<ProductionReportTable></ProductionReportTable>}
+              ></Route>
+              <Route
+                path="raw-material-consumption"
+                element={
+                  <RawMaterialConsumptionTable></RawMaterialConsumptionTable>
+                }
+              ></Route>
+              <Route
+                path="combine-report"
+                element={
+                 <CombineReportTable></CombineReportTable>
+                }
+              ></Route>
             </Route>
           </Routes>
         </div>

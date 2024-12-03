@@ -3,9 +3,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
-import { downloadReturnDeliveredPDF } from "../../ReportProperties/PDF/HeaderFooter";
-import { downloadReturnDetailsInfoPDF } from "../../ReportProperties/PDF/handleReturnDetailsInfo";
-import handleReturnDetailsExcel from "../../ReportProperties/Excel/handleReturnDetailsExcel";
+import { downloadReturnDeliveredPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import { downloadReturnDetailsInfoPDF } from "../../../ReportProperties/PDF/handleReturnDetailsInfo";
+import handleReturnDetailsExcel from "../../../ReportProperties/Excel/handleReturnDetailsExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const SalesReturnDetailsReport = ({
   permission,
@@ -30,11 +31,6 @@ const SalesReturnDetailsReport = ({
     }))
   );
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const grandTotalRetuenQty = filteredDatas?.reduce((totalQty, detail) => {
     const detailReturnQty = detail.detailsData.reduce(

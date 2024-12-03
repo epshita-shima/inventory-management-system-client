@@ -1,69 +1,95 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, {  useMemo} from "react";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import DataTable from "react-data-table-component";
-import React, { useMemo } from "react";
-import { downloadSalesSummaryPDF } from "../../ReportProperties/PDF/handleSalesSummaryPDF";
-import handleSalesReturnSummaryExcel from "../../ReportProperties/Excel/handleSalesSummaryExcel";
-import handleSalesSummaryExcel from "../../ReportProperties/Excel/handleSalesSummaryExcel";
+import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
+import handleOrderSummaryExcel from "../../../ReportProperties/Excel/handleOrderSummaryExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
-const SalesSummaryReport = ({
+const OrderSummaryReport = ({
   permission,
-  piInformation,
-  doInformation,
-  clientInformation,
-  filteredDatas,
   isTableDispaly,
+  filteredDatas,
   companyinfo,
 }) => {
-  const reportTitle = "SALES SUMMARY";
-  const [filterText, setFilterText] = React.useState("");
+  const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
+  const reportTitle = "ORDER SUMMARYF";
+  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
 
   console.log(filteredDatas);
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
-  const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverAmount,0)
-  const grandTotalDeliveredQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverQty,0)
-  
+  const grandTotalQuantity = filteredDatas?.reduce(
+    (sum, details) => sum + details.grandQuantity,
+    0
+  );
+  const grandTotalAmount = filteredDatas?.reduce(
+    (sum, details) => sum + details.grandAmount,
+    0
+  );
+  // const { grandQuantity, grandAmount } = filteredDatas?.reduce(
+  //   (acc, detail) => {
+  //     // Accumulate quantity and totalAmount for each matched item in detailsData
+  //     detail.detailsData.forEach((item) => {
+  //       acc.grandQuantity += item.quantity || 0;
+  //       acc.grandAmount += item.totalAmount || 0;
+  //     });
+  //     return acc;
+  //   },
+  //   { grandQuantity: 0, grandAmount: 0 } // Initial accumulator values
+  // );
+
+  // const summaryData = [
+  //   {
+  //     grandQuantity,
+  //     grandAmount,
+  //     averageRate: grandQuantity ? Math.round(grandAmount / grandQuantity) : 0,
+  //   },
+  // ];
+
   const columns = [
     {
       name: "Sl.",
-      selector: (row, index) => index + 1,
+      selector: (invoiceDetails, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
-      name: "Delivery Date",
-      selector: (row) => row.deliverDate,
+      name: "Date",
+      selector: (row) => new Date(row.date).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
     },
-
     {
-      name: "Avg Unit Price",
+      name: "Payment Type",
       selector: (row) => {
-        const avgUnitPrice = row.totalDeliverAmount / row.totalDeliverQty;
-        return Math.round(avgUnitPrice);
+        const paymnetInfo = paymentTypeInfo?.find(
+          (type) => type._id == row.paymentId
+        );
+        return paymnetInfo ? paymnetInfo.paymentMode : "N/A";
       },
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Delivered Quantity",
-      selector: (row) => row.totalDeliverQty,
+      name: "Total Quantity",
+      selector: (row) => row.grandQuantity,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Rate in Avarage",
+      selector: (row) => row.averageRate,
       sortable: true,
       center: true,
       filterable: true,
     },
     {
       name: "Total Amount",
-      selector: (row) => row.totalDeliverAmount,
+      selector: (row) => row.grandAmount,
       sortable: true,
       center: true,
       filterable: true,
@@ -90,14 +116,17 @@ const SalesSummaryReport = ({
         borderRight: "1px solid gray",
       },
     },
+    headRow: {
+      style: {
+        paddingTop: "0px",
+      },
+    },
+    header: {
+      style: {
+        marginTop: "8px",
+      },
+    },
   };
-
-  const filteredItems = filteredDatas?.filter(
-    (item) =>
-      JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
-      -1
-  );
-
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
@@ -121,10 +150,7 @@ const SalesSummaryReport = ({
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadSalesSummaryPDF(
-                            { companyinfo },
-                            reportTitle
-                          );
+                          downloadSalesSummaryPDF({ companyinfo }, reportTitle);
                         }
                       }}
                     >
@@ -136,8 +162,9 @@ const SalesSummaryReport = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        handleSalesSummaryExcel(
+                        handleOrderSummaryExcel(
                           filteredDatas,
+                          paymentTypeInfo,
                           companyinfo,
                           reportTitle
                         );
@@ -154,52 +181,56 @@ const SalesSummaryReport = ({
       </div>
     );
   }, [companyinfo, filteredDatas, reportTitle]);
-
   return (
-    <div>
+    <div
+    // className="row px-5 mx-2"
+    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+    >
       {isTableDispaly && (
-        <div
-          className=" "
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-        >
-          <DataTable
-            title={
-              <h2
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  color: "#000",
-                }}
-              >
-                Sales Summary Report
-              </h2>
-            }
-            columns={columns}
-            data={filteredItems}
-            defaultSortField="name"
-            customStyles={customStyles}
-            subHeaderComponent={subHeaderComponent}
-            striped
-            pagination
-            subHeader
-          />
+        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
+          <div className="shadow-lg">
+            <DataTable
+              title={
+                <h2
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "#000",
+                  }}
+                >
+                  Order Summary Report
+                </h2>
+              }
+              columns={columns}
+              data={filteredDatas}
+              defaultSortField="name"
+              customStyles={customStyles}
+              subHeaderComponent={subHeaderComponent}
+              striped
+              pagination
+              subHeader
+            />
+          </div>
         </div>
       )}
 
       <table id="my-sales-summary-table" className="d-none">
         <thead>
           <tr>
-            <th>Delivery Date</th>
+            <th>PI Date</th>
+            <th>Payment Type</th>
             <th>Avg Unit Price</th>
-            <th>Delivered Qty</th>
+            <th>Quantity</th>
             <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           {filteredDatas?.map((detail, detailIndex) => {
-            const formattedDate = formatDate(detail.deliverDate);
-            const avarageUnitPrice =
-              detail.totalDeliverAmount / detail.totalDeliverQty;
+            const formattedDate = formatDate(detail.date);
+            const avarageUnitPrice = detail.grandAmount / detail.grandQuantity;
+            const paymentType = paymentTypeInfo?.find(
+              (x) => x._id == detail.paymentId
+            );
             return (
               <tr key={detail._id}>
                 <td
@@ -210,16 +241,17 @@ const SalesSummaryReport = ({
                 >
                   {formattedDate}
                 </td>
+                <td>{paymentType?.paymentMode}</td>
                 <td>{Math.round(avarageUnitPrice)}</td>
-                <td>{detail.totalDeliverQty.toLocaleString()}</td>
-                <td>{detail.totalDeliverAmount.toLocaleString()}</td>
+                <td>{detail.grandQuantity.toLocaleString()}</td>
+                <td>{detail.grandAmount.toLocaleString()}</td>
               </tr>
             );
           })}
 
           <tr>
             <td
-              colSpan={2}
+              colSpan={3}
               style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -236,9 +268,9 @@ const SalesSummaryReport = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalDeliveredQty != null
-                ? grandTotalDeliveredQty?.toLocaleString()
-                : 0} 
+              {grandTotalQuantity != null
+                ? grandTotalQuantity?.toLocaleString()
+                : 0}
             </td>
             <td
               style={{
@@ -249,7 +281,7 @@ const SalesSummaryReport = ({
             >
               {grandTotalAmount != null
                 ? grandTotalAmount?.toLocaleString()
-                : 0} 
+                : 0}
             </td>
           </tr>
         </tbody>
@@ -258,4 +290,4 @@ const SalesSummaryReport = ({
   );
 };
 
-export default SalesSummaryReport;
+export default OrderSummaryReport;

@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import { toWords } from "number-to-words";
+import { formatDate } from "../../Uitilites/DateUtilities";
 
 const downloadInvoicePDF = async (
   data,
@@ -36,11 +37,6 @@ const downloadInvoicePDF = async (
   const contactEmail = companyEmail.split(",")[0].split(": ")[1].trim();
   const factoryConvertAddress = factoryAddress.replace("Factory Address:", "");
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const formattedExpireDate = formatDate(data.expireDate);
   const formattedDelivaryDate = formatDate(data.piDate);

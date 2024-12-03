@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import ProductionReportView from './ProductionReportView';
-
-import { useNavigate } from 'react-router-dom';
+import CombineReportView from './CombineReportView';
 import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
+import { useNavigate } from 'react-router-dom';
 
-const ProductionReportTable = () => {
+const CombineReportTable = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
@@ -26,7 +25,7 @@ const ProductionReportTable = () => {
         if (currentUser) {
           currentUser?.menulist?.forEach((menu) => {
             const userListSubMenu = menu?.items?.find(
-              (subItem) => subItem?.label === "Production Report"
+              (subItem) => subItem?.label === "Combine Report"
             );
             if (userListSubMenu) {
               userList = userListSubMenu;
@@ -34,7 +33,7 @@ const ProductionReportTable = () => {
               menu?.items?.forEach((subMenu) => {
                 if (subMenu?.label === subMenu?.label) {
                   const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "Finish Goods"
+                    (subItem) => subItem?.label === "Combine Report"
                   );
                   if (userListSubMenu) {
                     userList = userListSubMenu;
@@ -77,9 +76,9 @@ const ProductionReportTable = () => {
   }
   return (
       <div>
-        <ProductionReportView  permission={permission}></ProductionReportView>
+        <CombineReportView  permission={permission}></CombineReportView>
       </div>
     );
 }
 
-export default ProductionReportTable
+export default CombineReportTable

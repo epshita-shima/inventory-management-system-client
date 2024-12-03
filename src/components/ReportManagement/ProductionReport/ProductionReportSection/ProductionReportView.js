@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import CommonProductionReportParameter from "../CommonProductionReportParameter/CommonProductionReportParameter";
-import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../redux/features/productionreport/productionreportApi";
+// import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../redux/features/productionreport/productionreportApi";
 import DatewiseProductionDetails from "../DatewiseProductionDetails/DatewiseProductionDetails";
 import DatewiseProductionSummary from "../DatewiseProductionSummary/DatewiseProductionSummary";
-import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllProductionInformationQuery } from "../../../redux/features/productioninformation/productionApi";
-import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
-import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
-import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+// import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+// import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
+import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
+import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
+import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
 
 const ProductionReportView = ({ permission }) => {
   const [

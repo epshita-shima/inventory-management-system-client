@@ -3,9 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
-import { downloadProductionPDFPERBatch } from "../../ReportProperties/PDF/HeaderFooter";
-import { downloadProductionDatewiseDetailsInfoPDF } from "../../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
-import handleProductionDatewiseExcel from './../../ReportProperties/Excel/handleProductionDatewiseExcel';
+import { downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
+// import { downloadProductionPDFPERBatch } from "../../ReportProperties/PDF/HeaderFooter";
+import { downloadProductionDatewiseDetailsInfoPDF } from "../../../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
+// import handleProductionDatewiseExcel from './../../ReportProperties/Excel/handleProductionDatewiseExcel';
+import handleProductionDatewiseExcel from './../../../ReportProperties/Excel/handleProductionDatewiseExcel';
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const DatewiseProductionDetails = ({
   permission,
@@ -27,11 +30,7 @@ const DatewiseProductionDetails = ({
     }))
   );
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
+
 
   const grandTotalProductionQuantity = filteredDatas?.reduce((totalQuantity, item) => 
     totalQuantity + item.productionQty,0);

@@ -6,19 +6,19 @@ import {
   clientInfoDropdown,
   finishGoodsWithSizeItemDropdown,
   invoiceListDropdown,
-} from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
+} from "../../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import {
   useGetAllInvoiceInformationQuery,
-} from "../../../redux/features/invoiceinformation/invoiceinfoApi";
+} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import SalesSummaryReport from "./SalesSummaryReport";
-import { useGetAllDelieryOrderInformationQuery } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import { useGetAllDelieryOrderInformationQuery } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import SalesDetailsReport from "./SalesDetailsReport";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
-import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import SalesReturnSummaryReport from "./SalesReturnSummaryReport";
 import SalesReturnDetailsReport from "./SalesReturnDetailsReport";
-import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import {
   useLazyGetCombineReportQuery,
   useLazyGetOrderDetailsReportQuery,
@@ -27,8 +27,8 @@ import {
   useLazyGetReturnSummaryReportQuery,
   useLazyGetSalesDetailsReportQuery,
   useLazyGetSalesSummaryReportQuery,
-} from "../../../redux/features/salesreport/allreportApi";
-import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+} from "../../../../redux/features/salesreport/allreportApi";
+import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import CombineReport from "./CombineReport";
 
 const ReportView = ({ permission }) => {

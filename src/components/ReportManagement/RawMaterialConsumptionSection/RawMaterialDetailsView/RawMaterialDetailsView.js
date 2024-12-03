@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { downloadRawMaterailConsumptionDetailsPDF } from "../../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
 import handleRawMaterialConsumptionDetails from "../../../ReportProperties/Excel/handleRawMaterialConsumptionDetails";
+import { formatDate } from "../../../Uitilites/DateUtilities";
 const RawMaterialDetailsView = ({
   permission,
   isTableDispaly,
@@ -41,11 +42,6 @@ const RawMaterialDetailsView = ({
     }))
   );
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const grandTotalProductionQuantity = filteredDatas?.reduce(
     (totalMaterialUsed, item) => {

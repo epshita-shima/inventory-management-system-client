@@ -2,8 +2,9 @@
 import React, {  useMemo } from "react";
 
 import DataTable from "react-data-table-component";
-import { downloadProductionDatewiseSummaryPDF } from "../../ReportProperties/PDF/handlePRoductionDatewiseSummaryPDF";
-import handleProductionDatewiseSummaryExcel from './../../ReportProperties/Excel/handleProductionDatewiseSummaryExcel';
+import { downloadProductionDatewiseSummaryPDF } from "../../../ReportProperties/PDF/handlePRoductionDatewiseSummaryPDF";
+import handleProductionDatewiseSummaryExcel from '.././../../ReportProperties/Excel/handleProductionDatewiseSummaryExcel';
+import { formatDate } from "../../../Uitilites/DateUtilities";
 
 const DatewiseProductionSummary = ({
   permission,
@@ -28,11 +29,6 @@ const DatewiseProductionSummary = ({
       reportTitle = 'PRODUCTION INFORMATION-(Date-wise Summary)';
   }
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
   const grandTotalProductionQuantity = filteredDatas?.reduce((totalQuantity, item) => 
     totalQuantity + item.totalProductionQty,0);
 

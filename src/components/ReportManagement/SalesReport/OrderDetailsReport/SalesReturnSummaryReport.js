@@ -1,110 +1,63 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
-
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
-
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DataTable from "react-data-table-component";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
-import { downloadSalesSummaryPDF } from "../../ReportProperties/PDF/handleSalesSummaryPDF";
-import handleOrderSummaryExcel from "../../ReportProperties/Excel/handleOrderSummaryExcel";
+import React, { useMemo } from 'react'
+import { downloadSalesSummaryPDF } from '../../../ReportProperties/PDF/handleSalesSummaryPDF';
+import handleSalesReturnSummaryExcel from '../../../ReportProperties/Excel/handleSalesReturnSummaryExcel';
+import { formatDate } from '../../../Uitilites/DateUtilities';
 
-const OrderSummaryReport = ({
-  permission,
-  isTableDispaly,
-  filteredDatas,
-  companyinfo,
-}) => {
-  const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
-  const [filterText, setFilterText] = React.useState("");
-  const reportTitle = "ORDER SUMMARYF";
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInformation,clientInformation,companyInformation,isTableDispaly,companyinfo}) => {
+console.log(filteredDatas) 
+const reportTitle="RETURN SUMMARY"
 
-  console.log(filteredDatas);
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-  const grandTotalQuantity = filteredDatas?.reduce(
-    (sum, details) => sum + details.grandQuantity,
-    0
-  );
-  const grandTotalAmount = filteredDatas?.reduce(
-    (sum, details) => sum + details.grandAmount,
-    0
-  );
-  // const { grandQuantity, grandAmount } = filteredDatas?.reduce(
-  //   (acc, detail) => {
-  //     // Accumulate quantity and totalAmount for each matched item in detailsData
-  //     detail.detailsData.forEach((item) => {
-  //       acc.grandQuantity += item.quantity || 0;
-  //       acc.grandAmount += item.totalAmount || 0;
-  //     });
-  //     return acc;
-  //   },
-  //   { grandQuantity: 0, grandAmount: 0 } // Initial accumulator values
-  // );
-
-  // const summaryData = [
-  //   {
-  //     grandQuantity,
-  //     grandAmount,
-  //     averageRate: grandQuantity ? Math.round(grandAmount / grandQuantity) : 0,
-  //   },
-  // ];
+const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnAmount,0)
+const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnQty,0)
 
   const columns = [
     {
       name: "Sl.",
-      selector: (invoiceDetails, index) => index + 1,
+      selector: (row, index) => index + 1,
       center: true,
       width: "60px",
     },
+
     {
-      name: "Date",
-      selector: (row) => new Date(row.date).toLocaleDateString("en-CA"),
+      name: "Return Date",
+      selector: (row) => new Date(row.returnDate).toLocaleDateString('en-CA'),
       sortable: true,
       center: true,
       filterable: true,
     },
+
     {
-      name: "Payment Type",
+      name: "Total Return Qty",
+      selector: (row) =>  row.totalReturnQty,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    
+    {
+      name: "Avg Unit Price",
       selector: (row) => {
-        const paymnetInfo = paymentTypeInfo?.find(
-          (type) => type._id == row.paymentId
-        );
-        return paymnetInfo ? paymnetInfo.paymentMode : "N/A";
+       const unitPrice=row.totalReturnAmount /  row.totalReturnQty
+       
+        return  Math.round(unitPrice);
       },
       sortable: true,
       center: true,
       filterable: true,
     },
     {
-      name: "Total Quantity",
-      selector: (row) => row.grandQuantity,
+      name: "Total Return Amount",
+      selector: (row) =>row.totalReturnAmount,
       sortable: true,
       center: true,
       filterable: true,
     },
-    {
-      name: "Rate in Avarage",
-      selector: (row) => row.averageRate,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Total Amount",
-      selector: (row) => row.grandAmount,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-  ];
 
+  ];
   const customStyles = {
     rows: {
       style: {
@@ -127,15 +80,16 @@ const OrderSummaryReport = ({
     },
     headRow: {
       style: {
-        paddingTop: "0px",
+        paddingTop: "0px", 
       },
     },
     header: {
       style: {
-        marginTop: "8px",
+        marginTop: "8px",     
       },
     },
   };
+
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
@@ -159,7 +113,10 @@ const OrderSummaryReport = ({
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadSalesSummaryPDF({ companyinfo }, reportTitle);
+                          downloadSalesSummaryPDF(
+                            { companyinfo },
+                            reportTitle
+                          );
                         }
                       }}
                     >
@@ -171,9 +128,9 @@ const OrderSummaryReport = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        handleOrderSummaryExcel(
+                        handleSalesReturnSummaryExcel(
                           filteredDatas,
-                          paymentTypeInfo,
+                          
                           companyinfo,
                           reportTitle
                         );
@@ -191,13 +148,12 @@ const OrderSummaryReport = ({
     );
   }, [companyinfo, filteredDatas, reportTitle]);
   return (
-    <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
-      {isTableDispaly && (
-        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
-          <div className="shadow-lg">
+    <div>
+       {isTableDispaly && (
+          <div
+            className=" "
+            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+          >
             <DataTable
               title={
                 <h2
@@ -207,7 +163,7 @@ const OrderSummaryReport = ({
                     color: "#000",
                   }}
                 >
-                  Order Summary Report
+                 Return Summary Report
                 </h2>
               }
               columns={columns}
@@ -220,26 +176,21 @@ const OrderSummaryReport = ({
               subHeader
             />
           </div>
-        </div>
-      )}
-
-      <table id="my-sales-summary-table" className="d-none">
+        )}
+<table id="my-sales-summary-table" className="d-none">
         <thead>
           <tr>
-            <th>PI Date</th>
-            <th>Payment Type</th>
+            <th>Return Date</th>
             <th>Avg Unit Price</th>
-            <th>Quantity</th>
+            <th>Delivered Qty</th>
             <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           {filteredDatas?.map((detail, detailIndex) => {
-            const formattedDate = formatDate(detail.date);
-            const avarageUnitPrice = detail.grandAmount / detail.grandQuantity;
-            const paymentType = paymentTypeInfo?.find(
-              (x) => x._id == detail.paymentId
-            );
+            const formattedDate = formatDate(detail.returnDate);
+            const avarageUnitPrice =
+              detail.totalReturnAmount / detail.totalReturnQty;
             return (
               <tr key={detail._id}>
                 <td
@@ -250,17 +201,16 @@ const OrderSummaryReport = ({
                 >
                   {formattedDate}
                 </td>
-                <td>{paymentType?.paymentMode}</td>
                 <td>{Math.round(avarageUnitPrice)}</td>
-                <td>{detail.grandQuantity.toLocaleString()}</td>
-                <td>{detail.grandAmount.toLocaleString()}</td>
+                <td>{detail.totalReturnQty.toLocaleString()}</td>
+                <td>{detail.totalReturnAmount.toLocaleString()}</td>
               </tr>
             );
           })}
 
           <tr>
             <td
-              colSpan={3}
+              colSpan={2}
               style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -277,9 +227,9 @@ const OrderSummaryReport = ({
                 border: "1px solid black",
               }}
             >
-              {grandTotalQuantity != null
-                ? grandTotalQuantity?.toLocaleString()
-                : 0}
+              {grandTotalReturnQty != null
+                ? grandTotalReturnQty?.toLocaleString()
+                : 0} 
             </td>
             <td
               style={{
@@ -290,13 +240,15 @@ const OrderSummaryReport = ({
             >
               {grandTotalAmount != null
                 ? grandTotalAmount?.toLocaleString()
-                : 0}
+                : 0} 
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-  );
-};
 
-export default OrderSummaryReport;
+      </div>
+    
+  )
+}
+
+export default SalesReturnSummaryReport
