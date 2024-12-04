@@ -4,8 +4,10 @@ import CombineDataTableReport from "./CombineDataTableReport";
 import { useLazyGetManagementCombineReportQuery } from "../../../redux/features/combinereport/combinereportApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 
-const CombineReportView = () => {
+const CombineReportView = ({ permission}) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -16,6 +18,8 @@ const CombineReportView = () => {
   });
 const {data:rawMaterialInfo}=useGetAllRMItemInformationQuery(undefined)
 const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined)
+const {data:finishGoodsInfo}=useGetAllItemInformationQuery(undefined)
+const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
   const [
     triggerCombineReport,
     { data: combineReportData },
@@ -35,7 +39,6 @@ const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined)
     await triggerCombineReport(updatedFilters);
   };
 
-  console.log(combineReportData)
   return (
     <div
       className="row px-5 mx-2"
@@ -57,6 +60,9 @@ const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined)
       combineReportData={combineReportData}
       rawMaterialInfo={rawMaterialInfo}
       itemUnitInformation={itemUnitInformation}
+      finishGoodsInfo={finishGoodsInfo}
+      itemSizeInfo={itemSizeInfo}
+      permission={ permission}
       ></CombineDataTableReport>
       {/* } */}
     </div>

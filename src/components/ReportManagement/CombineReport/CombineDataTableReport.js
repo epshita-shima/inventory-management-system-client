@@ -1,83 +1,44 @@
 import React from "react";
 import "./CombineReportDataTable.css";
 import DataTable from "react-data-table-component";
+import { getPurchaseColumns } from "../../Uitilites/purchaseColumn";
+import { getSalesColumns } from "../../Uitilites/salesColumns";
+import { getProductionColumns } from "../../Uitilites/productionColumn";
+import { getOrderColumns } from "../../Uitilites/orderColumn";
+import { getReturnColumns } from "../../Uitilites/returnColumn";
 const CombineDataTableReport = ({
   combineReportData,
   rawMaterialInfo,
   itemUnitInformation,
+  finishGoodsInfo,
+  itemSizeInfo,
+  permission
 }) => {
-  const tranformPurchaseData = combineReportData?.purchaseData?.flatMap(
-    (piDetails) =>
-      piDetails.detailsData.map((detail) => ({
-        ...piDetails,
-        detailsData: detail,
-      }))
+  const purchaseColumns = getPurchaseColumns(
+    rawMaterialInfo,
+    itemUnitInformation
   );
-
-  const purchaseColumns = [
-    {
-      name: "Sl.",
-      selector: (row, index) => index + 1,
-      center: true,
-      width: "60px",
-    },
-
-    {
-      name: "Item Name",
-      selector: (row) => {
-        const itemName = rawMaterialInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
-        );
-
-        return itemName ? ` ${itemName?.itemName}` : "N/A";
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Unit",
-      selector: (row) => {
-        const itemName = rawMaterialInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
-        );
-        const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
-        );
-        return itemName ? ` ${itemUnit?.unitInfo}` : "N/A";
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Purchase Qty",
-      selector: (row) => row.detailsData.quantity,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Purcchase Rate in Avg",
-      selector: (row) => {
-        const calAvgRate = row.detailsData.amount / row.detailsData.quantity;
-        return Math.round(calAvgRate);
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Purchase Amount",
-      selector: (row) => row.detailsData.amount,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-  ];
+  const salesColumns = getSalesColumns(
+    finishGoodsInfo,
+    itemSizeInfo,
+    itemUnitInformation,
+    permission
+  );
+  const productionColumns = getProductionColumns(
+    finishGoodsInfo,
+    itemSizeInfo,
+    itemUnitInformation
+  );
+  const orderColumns = getOrderColumns(
+    finishGoodsInfo,
+    itemSizeInfo,
+    itemUnitInformation
+  );
+  const returnColumns = getReturnColumns(
+    finishGoodsInfo,
+    itemSizeInfo,
+    itemUnitInformation
+  );
 
   const customStyles = {
     table: {
@@ -90,7 +51,7 @@ const CombineDataTableReport = ({
     rows: {
       style: {
         textAlign: "center",
-        padding:"0"
+        padding: "0",
       },
     },
     headCells: {
@@ -126,13 +87,13 @@ const CombineDataTableReport = ({
   return (
     <div
       // className="container-fluid"
-      style={{ height: "calc(75vh - 120px)", overflowY: "scroll" }}
+      // style={{ height: "calc(75vh - 120px)", overflowY: "scroll" }}
     >
       {/* <h2 className="text-center">Management Dashboard</h2> */}
       <div className="accordion" id="managementAccordion">
         {/* Purchase Management */}
         <div className="accordion-item ">
-          <h2 className="accordion-header" id="headingPurchase">
+          <h2 className="accordion-header centered-header" id="headingPurchase">
             <button
               className="accordion-button accordion-fontsize"
               type="button"
@@ -153,8 +114,8 @@ const CombineDataTableReport = ({
             <div className="accordion-body">
               <DataTable
                 columns={purchaseColumns}
-                data={tranformPurchaseData}
-                defaultSortField="name"
+                data={combineReportData?.groupedPurchaseResult}
+                defaultSortField="itemName"
                 customStyles={customStyles}
                 striped
                 pagination
@@ -185,8 +146,15 @@ const CombineDataTableReport = ({
             data-bs-parent="#managementAccordion"
           >
             <div className="accordion-body">
-              Monitor production processes, manage workflows, and track
-              inventory usage.
+              <DataTable
+                columns={productionColumns}
+                data={combineReportData?.groupedProductionResult}
+                defaultSortField="itemName"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+              />
             </div>
           </div>
         </div>
@@ -212,8 +180,15 @@ const CombineDataTableReport = ({
             data-bs-parent="#managementAccordion"
           >
             <div className="accordion-body">
-              Oversee sales activities, customer interactions, and revenue
-              tracking.
+              <DataTable
+                columns={salesColumns}
+                data={combineReportData?.groupedSalesResult}
+                defaultSortField="itemName"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+              />
             </div>
           </div>
         </div>
@@ -239,7 +214,15 @@ const CombineDataTableReport = ({
             data-bs-parent="#managementAccordion"
           >
             <div className="accordion-body">
-              Manage customer orders, shipping, and delivery schedules.
+              <DataTable
+                columns={orderColumns}
+                data={combineReportData?.groupedOrderResult}
+                defaultSortField="itemName"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+              />
             </div>
           </div>
         </div>
@@ -265,7 +248,15 @@ const CombineDataTableReport = ({
             data-bs-parent="#managementAccordion"
           >
             <div className="accordion-body">
-              Track returns, handle refunds, and manage reverse logistics.
+              <DataTable
+                columns={returnColumns}
+                data={combineReportData?.groupedReturnResult}
+                defaultSortField="itemName"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+              />
             </div>
           </div>
         </div>

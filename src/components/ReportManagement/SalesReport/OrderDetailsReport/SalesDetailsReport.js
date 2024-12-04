@@ -409,7 +409,7 @@ const SalesDetailsReport = ({
                     const itemNames = finishGoodsItemInfo?.find(
                       (item) => item._id === detail.itemId
                     );
-                    console.log(itemNames);
+                   
                     const itemSize = itemSizeInfo.find(
                       (size) => size._id === itemNames.sizeId
                     );
