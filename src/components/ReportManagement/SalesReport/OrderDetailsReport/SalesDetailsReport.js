@@ -4,9 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
 import React, { useEffect, useMemo, useState } from "react";
 import { downloadDeliveryOrderPDF } from "../../../ReportProperties/PDF/HeaderFooter";
-import downloadSalesDetailsPDF from "../../../ReportProperties/PDF/handleDeliverDetailsReport";
+// import downloadSalesDetailsPDF from "../../../ReportProperties/PDF/handleDeliverDetailsReport";
 import handleSalesDetailsExcel from "../../../ReportProperties/Excel/handleSalesDetailsExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import SalesDetailsTable from "../../../Uitilites/ReportTable/SalesDetailsTable";
+import { groupSalesDataByDetails } from "../../../Uitilites/salesDetailsDataGrouping";
+import { calculateGrandTotalSalesAmount, calculateGrandTotalSalesQty } from "../../../Uitilites/CalculationUtilities/calculation";
+import { downloadSalesDetailsPDF } from "../../../ReportProperties/PDF/handleDeliverDetailsReport";
 
 const SalesDetailsReport = ({
   permission,
@@ -28,70 +32,33 @@ const SalesDetailsReport = ({
       detailsData: detail,
     }))
   );
-  
 
-  const grandTotalDeliverQty = filteredDatas?.reduce((totalQty, item) => {
-    const detailsQty = item.detailsData.reduce(
-      (sum, detail) => sum + Number(detail.deliverQty),
-      0
-    );
-    return totalQty + detailsQty;
-  }, 0);
+  // const grandTotalDeliverQty = filteredDatas?.reduce((totalQty, item) => {
+  //   const detailsQty = item.detailsData.reduce(
+  //     (sum, detail) => sum + Number(detail.deliverQty),
+  //     0
+  //   );
+  //   return totalQty + detailsQty;
+  // }, 0);
 
-  const grandTotalDeliverAmount = filteredDatas?.reduce((totalQty, detail) => {
-    const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
-      const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
-      const unitPrice = piNumber?.detailsData.find(
-        (item) => item.itemId === detail.itemId
-      );
-      return sum + (Number(detail.deliverQty) * Number(unitPrice?.unitPrice));
-    }, 0);
-    return totalQty + detailReturnQty;
-  }, 0);
+  // const grandTotalDeliverAmount = filteredDatas?.reduce((totalQty, detail) => {
+  //   const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
+  //     const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
+  //     const unitPrice = piNumber?.detailsData.find(
+  //       (item) => item.itemId === detail.itemId
+  //     );
+  //     return sum + Number(detail.deliverQty) * Number(unitPrice?.unitPrice);
+  //   }, 0);
+  //   return totalQty + detailReturnQty;
+  // }, 0);
+const grandTotalDeliverQty=calculateGrandTotalSalesQty(filteredDatas);
+const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piInformation)
 
   useEffect(() => {
-    const groupData = (data) => {
-      return data?.reduce((acc, row) => {
-        // Use only `finishGoodsDeliveryDate` and `piNo` for grouping
-        const key = `${new Date(row.finishGoodsDeliveryDate).toLocaleDateString(
-          "en-CA"
-        )}-${row.transferFromClientId}-${row.transferToCompanyId}-${row.piId}`;
-
-        if (!acc[key]) {
-          // Initialize with row data and an empty detailsData array
-          acc[key] = {
-            ...row,
-            detailsData: [],
-          };
-        }
-
-        row.detailsData.forEach((detail) => {
-          // Check if the item already exists in the detailsData array
-          const existingDetail = acc[key].detailsData.find(
-            (d) => d.itemId === detail.itemId
-          );
-          console.log(existingDetail);
-          if (existingDetail) {
-            // If it exists, add to the existing deliverQty
-            existingDetail.deliverQty += Number(detail.deliverQty);
-          } else {
-            // If it doesn’t exist, add the detail to detailsData
-            acc[key].detailsData.push({
-              ...detail,
-              deliverQty: Number(detail.deliverQty),
-            });
-          }
-        });
-
-        return acc;
-      }, {});
-    };
-
     const processData = async () => {
-      const data = await groupData(filteredDatas);
+      const data = await groupSalesDataByDetails(filteredDatas);
       setGroupedData(data);
     };
-
     processData();
   }, [filteredDatas]);
 
@@ -272,8 +239,8 @@ const SalesDetailsReport = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
-        {
-          filteredDatas?.length > 0 && ( <div className="d-flex justify-content-end align-items-center">
+        {filteredDatas?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
               <div class="dropdown">
                 <button
@@ -322,12 +289,19 @@ const SalesDetailsReport = ({
                 </ul>
               </div>
             </div>
-          </div>)
-        }
-       
+          </div>
+        )}
       </div>
     );
-  }, [clientInformation, companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, piInformation, transformedPIData]);
+  }, [
+    clientInformation,
+    companyinfo,
+    filteredDatas,
+    finishGoodsItemInfo,
+    itemSizeInfo,
+    piInformation,
+    transformedPIData,
+  ]);
 
   return (
     <div>
@@ -360,209 +334,16 @@ const SalesDetailsReport = ({
         </div>
       ) : null}
 
-      <table id="my-deliver-details-table" className="d-none">
-        <thead>
-          <tr>
-            <th>Deliver Date</th>
-            <th>Client Name</th>
-            <th>PI Number</th>
-            <th>Item Name</th>
-            <th>Curency</th>
-            <th>Deliver Qty</th>
-            <th>Unit Price</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groupedData &&
-          typeof groupedData === "object" &&
-          Object.keys(groupedData).length > 0 ? (
-            Object.keys(groupedData)?.map((key) => {
-              const group = groupedData[key];
-              console.log(group);
-              const formattedDate = formatDate(group.finishGoodsDeliveryDate);
-              const rowSpan = group?.detailsData.length;
-
-              const piNumber = piInformation.find(
-                (pi) => pi._id === group.piId
-              );
-
-              const dateWiseTotalQuantity = group.detailsData.reduce(
-                (cur, acc) => cur + acc.deliverQty,
-                0
-              );
-
-              const dateWiseTotalAmount = group.detailsData.reduce(
-                (total, detail) => {
-                  const item = piNumber.detailsData.find(
-                    (item) => item.itemId === detail.itemId
-                  );
-                  const itemTotal = detail.deliverQty * (item?.unitPrice || 0);
-                  return total + itemTotal;
-                },
-                0
-              );
-              console.log("dateWiseTotalAmount", dateWiseTotalAmount);
-              return (
-                <>
-                  {group?.detailsData.map((detail, detailIndex) => {
-                    const itemNames = finishGoodsItemInfo?.find(
-                      (item) => item._id === detail.itemId
-                    );
-                   
-                    const itemSize = itemSizeInfo.find(
-                      (size) => size._id === itemNames.sizeId
-                    );
-
-                    const unitPrice = piNumber?.detailsData.find(
-                      (item) => item.itemId == detail.itemId
-                    );
-                    const clientName = clientInformation
-                    ?.filter((client) => client._id === group.clientId)
-                    .map((filteredItem) => filteredItem.clientName)
-                    .join(", ");
-                  const currency = piInformation
-                    ?.filter((piItem) => piItem._id === group.piId)
-                    .map((filteredItem) => filteredItem.currency)
-                    .join(",");
-                    console.log(currency)
-                    const calCulateAmount =
-                      unitPrice.unitPrice * detail.deliverQty;
-                    const calculateAvgPrice =
-                      calCulateAmount / detail.deliverQty;
-                    console.log(
-                      "calculateAvgPrice",
-                      calCulateAmount,
-                      detail.deliverQty,
-                      calculateAvgPrice
-                    );
-                    return (
-                      <tr key={detail._id}>
-                        {detailIndex === 0 && (
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                            {formattedDate}
-                          </td>
-                        )}
-                        {detailIndex === 0 && (
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                            {clientName}
-                          </td>
-                        )}
-                        {detailIndex === 0 && (
-                          <td
-                            rowSpan={rowSpan}
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                           {piNumber.invoiceNo}
-                          </td>
-                        )}
-                  
-                        <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
-                        <td>{currency}</td>
-                        <td>{detail.deliverQty.toLocaleString()}</td>
-                        <td>{calculateAvgPrice.toLocaleString()}</td>
-                        <td>{calCulateAmount.toLocaleString()}</td>
-                      </tr>
-                    );
-                  })}
-
-                  <tr>
-                    <td
-                      colSpan={5}
-                      style={{
-                        textAlign: "right",
-                        fontWeight: "bold",
-                        padding: "8px",
-                        border: "1px solid black",
-                      }}
-                    >
-                      Datewise Total
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "center",
-                        verticalAlign: "middle",
-                        border: "1px solid black",
-                      }}
-                    >
-                      {dateWiseTotalQuantity.toLocaleString()}
-                    </td>
-                    <td></td>
-                    <td
-                      style={{
-                        textAlign: "center",
-                        verticalAlign: "middle",
-                        border: "1px solid black",
-                      }}
-                    >
-                      {dateWiseTotalAmount.toLocaleString()}
-                    </td>
-                  </tr>
-                </>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
-                No data available
-              </td>
-            </tr>
-          )}
-
-          <tr>
-            <td
-              colSpan={5}
-              style={{
-                textAlign: "right",
-                fontWeight: "bold",
-                padding: "8px",
-                border: "1px solid black",
-              }}
-            >
-              Grand Total
-            </td>
-
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalDeliverQty != null
-                ? grandTotalDeliverQty.toLocaleString()
-                : 0}
-            </td>
-            <td></td>
-            <td
-              style={{
-                textAlign: "center",
-                verticalAlign: "middle",
-                border: "1px solid black",
-              }}
-            >
-              {grandTotalDeliverAmount != null
-                ? grandTotalDeliverAmount.toLocaleString()
-                : 0}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <SalesDetailsTable
+        groupedData={groupedData}
+        formatDate={formatDate}
+        piInformation={piInformation}
+        finishGoodsItemInfo={finishGoodsItemInfo}
+        itemSizeInfo={itemSizeInfo}
+        clientInformation={clientInformation}
+        grandTotalDeliverQty={grandTotalDeliverQty}
+        grandTotalDeliverAmount={grandTotalDeliverAmount}
+      />
     </div>
   );
 };

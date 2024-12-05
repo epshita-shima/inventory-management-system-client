@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from "react";
 import "./CombineReportDataTable.css";
 import DataTable from "react-data-table-component";
 import { getPurchaseColumns } from "../../Uitilites/purchaseColumn";
@@ -6,23 +7,164 @@ import { getSalesColumns } from "../../Uitilites/salesColumns";
 import { getProductionColumns } from "../../Uitilites/productionColumn";
 import { getOrderColumns } from "../../Uitilites/orderColumn";
 import { getReturnColumns } from "../../Uitilites/returnColumn";
+import SalesDetailsTable from "../../Uitilites/ReportTable/SalesDetailsTable";
+import {
+  calculateGrandTotalSalesAmount,
+  calculateGrandTotalSalesQty,
+} from "../../Uitilites/CalculationUtilities/calculation";
+import { formatDate } from "../../Uitilites/DateUtilities";
+import { groupSalesDataByDetails } from "../../Uitilites/salesDetailsDataGrouping";
+import downloadSalesDetailsPDF, {
+  downloadGoupSalesDetailsPDF,
+} from "../../ReportProperties/PDF/handleDeliverDetailsReport";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 const CombineDataTableReport = ({
   combineReportData,
   rawMaterialInfo,
   itemUnitInformation,
   finishGoodsInfo,
   itemSizeInfo,
-  permission
+  permission,
+  salesDetailsData,
+  companyinfo,
+  piInformation,
+  clientInformation,
 }) => {
+  const reportTitle = "DELIVERY ORDER INFORMATION";
+  const [salesDetailsGroupData, setSalesDetailsGroupData] = useState({});
+  console.log(salesDetailsGroupData);
+
+  const salesColumns = [
+    {
+      name: "Sl.",
+      selector: (row, index) => index + 1,
+      center: true,
+      width: "60px",
+    },
+
+    {
+      name: "Item Name",
+      selector: (row) => {
+        const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
+        const itemSize = itemSizeInfo?.find(
+          (size) => size._id == itemName?.sizeId
+        );
+        return itemName
+          ? `${itemName?.itemName} (${itemSize.sizeInfo})`
+          : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "Unit",
+      selector: (row) => {
+        const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
+        const itemUnit = itemUnitInformation?.find(
+          (size) => size._id == itemName?.unitId
+        );
+        return itemName ? `${itemUnit?.unitInfo}` : "N/A";
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "Delivered Qty",
+      selector: (row) => row.totalSalesQuantity,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "SalesRate in Avg",
+      selector: (row) => Math.round(row.salesRateinAvg),
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+
+    {
+      name: "Sales Amount",
+      selector: (row) => row.totalSalesAmount,
+      sortable: true,
+      center: true,
+      filterable: true,
+    },
+    {
+      name: "Action",
+      button: true,
+      width: "100px",
+      grow: 2,
+      cell: (row) => (
+        <div className="d-flex justify-content-between align-content-center">
+          {permission?.isPDF ? (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Report View"
+              style={{
+                color: "orange",
+                border: "2px solid orange",
+                padding: "3px",
+                borderRadius: "5px",
+              }}
+              onClick={() => {
+                const filteredData = salesDetailsData
+                  ?.map((salesData) => {
+                    const matchedDetails = salesData.detailsData?.filter(
+                      (details) => details.itemId === row?.itemId
+                    );
+
+                    if (matchedDetails.length > 0) {
+                      return {
+                        ...salesData,
+                        detailsData: matchedDetails,
+                      };
+                    }
+
+                    return null;
+                  })
+                  .filter((item) => item !== null);
+
+                const groupData = groupSalesDataByDetails(filteredData);
+// const convertGroupData=Object.values(groupData)
+                if (
+                  companyinfo?.length !== 0 &&
+                  salesDetailsGroupData.length !== 0
+                ) {
+                  downloadGoupSalesDetailsPDF(
+                    groupData,
+                    filteredData,
+                    piInformation,
+                    finishGoodsInfo,
+                    itemSizeInfo,
+                    clientInformation,
+                    { companyinfo },
+                    reportTitle
+                  );
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+            </a>
+          ) : (
+            ""
+          )}
+        </div>
+      ),
+    },
+  ];
   const purchaseColumns = getPurchaseColumns(
     rawMaterialInfo,
     itemUnitInformation
-  );
-  const salesColumns = getSalesColumns(
-    finishGoodsInfo,
-    itemSizeInfo,
-    itemUnitInformation,
-    permission
   );
   const productionColumns = getProductionColumns(
     finishGoodsInfo,
@@ -84,12 +226,21 @@ const CombineDataTableReport = ({
     },
   };
 
+  // useEffect(()=>{
+  //   if(salesDetailsGroupData.length !==0){
+  //     const grandTotalDeliverQty = calculateGrandTotalSalesQty(
+  //       salesDetailsGroupData
+  //     );
+  //     const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(
+  //       salesDetailsGroupData,
+  //       piInformation
+  //     );
+  //   }
+
+  // },[salesDetailsGroupData,piInformation])
+
   return (
-    <div
-      // className="container-fluid"
-      // style={{ height: "calc(75vh - 120px)", overflowY: "scroll" }}
-    >
-      {/* <h2 className="text-center">Management Dashboard</h2> */}
+    <div>
       <div className="accordion" id="managementAccordion">
         {/* Purchase Management */}
         <div className="accordion-item ">
@@ -189,6 +340,18 @@ const CombineDataTableReport = ({
                 pagination
                 subHeader
               />
+              {salesDetailsGroupData.length != 0 && (
+                <SalesDetailsTable
+                  groupedData={salesDetailsGroupData}
+                  formatDate={formatDate}
+                  piInformation={piInformation}
+                  finishGoodsItemInfo={finishGoodsInfo}
+                  itemSizeInfo={itemSizeInfo}
+                  clientInformation={clientInformation}
+                  // grandTotalDeliverQty={grandTotalDeliverQty}
+                  // grandTotalDeliverAmount={grandTotalDeliverAmount}
+                />
+              )}
             </div>
           </div>
         </div>

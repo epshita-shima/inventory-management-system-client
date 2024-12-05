@@ -6,8 +6,12 @@ import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminf
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useLazyGetSalesDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
+import {useGetCompanyInfoQuery} from "../../../redux/features/companyinfo/compayApi";
+import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 
-const CombineReportView = ({ permission}) => {
+const CombineReportView = ({ permission }) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -16,14 +20,17 @@ const CombineReportView = ({ permission}) => {
     fromDate: new Date(fromDate).toLocaleDateString("en-CA"),
     toDate: new Date(toDate).toLocaleDateString("en-CA"),
   });
-const {data:rawMaterialInfo}=useGetAllRMItemInformationQuery(undefined)
-const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined)
-const {data:finishGoodsInfo}=useGetAllItemInformationQuery(undefined)
-const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
-  const [
-    triggerCombineReport,
-    { data: combineReportData },
-  ] = useLazyGetManagementCombineReportQuery();
+  const { data: rawMaterialInfo } = useGetAllRMItemInformationQuery(undefined);
+  const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
+  const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
+  const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
+  const { data: clientInformation } =
+  useGetAllClientInformationQuery(undefined);
+
+  const [triggerCombineReport, { data: combineReportData }] =
+    useLazyGetManagementCombineReportQuery();
 
   useEffect(() => {
     if (executeQuery) {
@@ -32,12 +39,15 @@ const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
       setExecuteQuery(false);
     }
   }, [executeQuery]);
-
+  const [triggerSalesDetailsReport, { data: salesDetailsData }] =
+    useLazyGetSalesDetailsReportQuery();
   const handleApplyFilters = async (updatedFilters) => {
-    console.log(updatedFilters)
+    console.log(updatedFilters);
     setExecuteQuery(true);
     await triggerCombineReport(updatedFilters);
+    await triggerSalesDetailsReport(updatedFilters);
   };
+  console.log(salesDetailsData);
 
   return (
     <div
@@ -56,13 +66,17 @@ const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
         />
       }
       {/* {isTableDispaly &&  */}
-      <CombineDataTableReport 
-      combineReportData={combineReportData}
-      rawMaterialInfo={rawMaterialInfo}
-      itemUnitInformation={itemUnitInformation}
-      finishGoodsInfo={finishGoodsInfo}
-      itemSizeInfo={itemSizeInfo}
-      permission={ permission}
+      <CombineDataTableReport
+        combineReportData={combineReportData}
+        rawMaterialInfo={rawMaterialInfo}
+        itemUnitInformation={itemUnitInformation}
+        finishGoodsInfo={finishGoodsInfo}
+        itemSizeInfo={itemSizeInfo}
+        permission={permission}
+        salesDetailsData={salesDetailsData}
+        companyinfo={companyinfo}
+        piInformation={piInformation}
+        clientInformation={clientInformation}
       ></CombineDataTableReport>
       {/* } */}
     </div>
