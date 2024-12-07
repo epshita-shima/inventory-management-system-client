@@ -8,9 +8,10 @@ const handleOrderDetailsExcel = (
   itemSizeInfo,
   clientInformation,
   companyinfo,
-  reportTitle
+  reportOrderTitle
 ) => {
-  const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
+  console.log(reportOrderTitle)
+  const fileName = reportOrderTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
 
@@ -82,7 +83,7 @@ const handleOrderDetailsExcel = (
   };
 
   worksheet.mergeCells(`A3:${String.fromCharCode(65 + headerLength - 1)}3`);
-  worksheet.getCell("A3").value = `${reportTitle}`;
+  worksheet.getCell("A3").value = `${reportOrderTitle}`;
   worksheet.getCell("A3").alignment = { horizontal: "center" };
   worksheet.getCell("A3").font = {
     family: 2,

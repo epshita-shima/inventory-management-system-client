@@ -1,4 +1,7 @@
-export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformation) => [
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import handleOrderDetailsExcel from './../ReportProperties/Excel/handleOrderDetailsExcel';
+import { groupOrderDateByDetails, groupSalesDataByDetails } from './salesDetailsDataGrouping';
+export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformation,permission,orderDetailsData,piInformation,clientInformation,companyinfo,reportOrderTitle) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -52,5 +55,119 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
     sortable: true,
     center: true,
     filterable: true,
+  },
+  {
+    name: "Action",
+    button: true,
+    width: "150px",
+    grow: 2,
+    cell: (row) => (
+      <div className="d-flex justify-content-between align-content-center">
+        {permission?.isPDF && (
+          <div className="table-head-icon d-flex">
+            <div class="dropdown">
+              <button
+                class="btn btn-download dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Download
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={async() => {
+
+                      const filteredData = orderDetailsData
+                        ?.map((salesData) => {
+                          const matchedDetails =
+                            salesData.detailsData?.filter(
+                              (details) => details.itemId === row?.itemId
+                            );
+
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...salesData,
+                              detailsData: matchedDetails,
+                            };
+                          }
+
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+
+                      const groupData = groupOrderDateByDetails(filteredData);
+                      const convertGroupData=Object.values(groupData)
+                      if (companyinfo?.length !== 0) {
+                        // downloadGoupSalesDetailsPDF(
+                        //   convertGroupData,
+                        //   filteredData,
+                        //   piInformation,
+                        //   finishGoodsInfo,
+                        //   itemSizeInfo,
+                        //   clientInformation,
+                        //   { companyinfo },
+                        //   reportSalesTitle
+                        // );
+                      }
+                    }}
+                  >
+                    PDF
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      const filteredData = orderDetailsData
+                        ?.map((salesData) => {
+                          const matchedDetails =
+                            salesData.detailsData?.filter(
+                              (details) => details.itemId === row?.itemId
+                            );
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...salesData,
+                              detailsData: matchedDetails,
+                            };
+                          }
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+
+                      const transformedPIData = filteredData?.flatMap(
+                        (piDetails) =>
+                          piDetails.detailsData.map((detail) => ({
+                            ...piDetails,
+                            detailsData: detail,
+                          }))
+                      );
+
+                      handleOrderDetailsExcel(
+                        transformedPIData,
+                        filteredData,
+                        finishGoodsInfo,
+                        itemSizeInfo,
+                        clientInformation,
+                        companyinfo,
+                        reportOrderTitle
+                      );
+                    }}
+                  >
+                    Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+     
+        )}
+      </div>
+    ),
   },
 ];

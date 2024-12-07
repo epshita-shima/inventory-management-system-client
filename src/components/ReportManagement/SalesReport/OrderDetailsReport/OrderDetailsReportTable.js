@@ -28,7 +28,7 @@ const OrderDetailsReportTable = ({
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   
-  const reportTitle = "PRO FORMA INVOICE";
+  const reportOrderTitle = "PRO FORMA INVOICE";
   const base64Logo = reportImage;
   const signature = authorizesSingatureImage;
 
@@ -193,7 +193,7 @@ const OrderDetailsReportTable = ({
                   base64Logo,
                   signature,
                   { companyinfo },
-                  reportTitle
+                  reportOrderTitle
                 );
               }}
             >
@@ -270,7 +270,7 @@ const OrderDetailsReportTable = ({
                         if (companyinfo?.length !== 0 || undefined) {
                           downloadOrderDetailsAllDataPDF(
                             { companyinfo },
-                            reportTitle
+                            reportOrderTitle
                           );
                         }
                       }}
@@ -290,7 +290,7 @@ const OrderDetailsReportTable = ({
                           itemSizeInfo,
                           customerInfo,
                           companyinfo,
-                          reportTitle
+                          reportOrderTitle
                           );
                       }}
                     >
@@ -358,16 +358,12 @@ const OrderDetailsReportTable = ({
           Object.keys(groupedData).length > 0 ? (
             Object.keys(groupedData)?.map((key) => {
               const group = groupedData[key];
-              console.log(group);
               const formattedDate = formatDate(group[0].piDate);
               const rowSpan = group.reduce(
                 (total, item) => total + item.detailsData.length,
                 0
               );
-              const rowSpan2 = group.reduce(
-                (total, item) => total + item.detailsData.length,
-                0
-              );
+          
               const dateWiseTotalQuantity = group.reduce(
                 (totalQty, item) =>
                   totalQty +
@@ -386,7 +382,7 @@ const OrderDetailsReportTable = ({
                   ),
                 0
               );
-              console.log(dateWiseTotalQuantity);
+           
               return (
                 <>
                   {group?.map((row, rowIndex) => {
@@ -403,11 +399,7 @@ const OrderDetailsReportTable = ({
                         ?.filter((client) => client._id === row.customerID)
                         .map((filteredItem) => filteredItem.clientName)
                         .join(", ");
-                      const currency = filteredDatas
-                        ?.filter((piItem) => piItem._id === row._id)
-                        .map((filteredItem) => filteredItem.currencyId)
-                        .join(",");
-
+                   
                       return (
                         <tr key={detail._id}>
                           {rowIndex === 0 && detailIndex === 0 && (

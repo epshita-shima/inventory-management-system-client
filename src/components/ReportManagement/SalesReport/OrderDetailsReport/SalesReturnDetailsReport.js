@@ -7,6 +7,9 @@ import { downloadReturnDeliveredPDF } from "../../../ReportProperties/PDF/Header
 import { downloadReturnDetailsInfoPDF } from "../../../ReportProperties/PDF/handleReturnDetailsInfo";
 import handleReturnDetailsExcel from "../../../ReportProperties/Excel/handleReturnDetailsExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import { groupReturnDateByDetails } from "../../../Uitilites/salesDetailsDataGrouping";
+import { calculateGrandTotalReturnAmount, calculateGrandTotalReturnQty } from "../../../Uitilites/CalculationUtilities/calculation";
+
 
 const SalesReturnDetailsReport = ({
   permission,
@@ -31,71 +34,13 @@ const SalesReturnDetailsReport = ({
     }))
   );
 
-
-  const grandTotalRetuenQty = filteredDatas?.reduce((totalQty, detail) => {
-    const detailReturnQty = detail.detailsData.reduce(
-      (sum, item) => sum + Number(item.returnQty),
-      0
-    );
-    return totalQty + Number(detailReturnQty);
-  }, 0);
-
-
-
-  const grandTotalRetuenAmount = filteredDatas?.reduce((totalQty, detail) => {
-    const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
-      const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
-      const unitPrice = piNumber?.detailsData.find(
-        (item) => item.itemId == detail.itemId
-      );
-      return sum + detail.returnQty * unitPrice?.unitPrice;
-    }, 0);
-    return totalQty + detailReturnQty;
-  }, 0);
-
+const grandTotalRetuenQty=calculateGrandTotalReturnQty(filteredDatas)
+const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInformation)
   useEffect(() => {
-    const groupData = (data) => {
-      return data?.reduce((acc, row) => {
-        // Use only `returnDate` and `piNo` for grouping
-        const key = `${new Date(row.returnDate).toLocaleDateString("en-CA")}-${
-          row.transferFromClientId
-        }-${row.transferToCompanyId}-${row.piId}`;
-
-        if (!acc[key]) {
-          // Initialize with row data and an empty detailsData array
-          acc[key] = {
-            ...row,
-            detailsData: [],
-          };
-        }
-
-        row.detailsData.forEach((detail) => {
-          // Check if the item already exists in the detailsData array
-          const existingDetail = acc[key].detailsData.find(
-            (d) => d.itemId === detail.itemId
-          );
-          console.log(existingDetail);
-          if (existingDetail) {
-            // If it exists, add to the existing returnQty
-            existingDetail.returnQty += Number(detail.returnQty);
-          } else {
-            // If it doesn’t exist, add the detail to detailsData
-            acc[key].detailsData.push({
-              ...detail,
-              returnQty: Number(detail.returnQty),
-            });
-          }
-        });
-
-        return acc;
-      }, {});
-    };
-
     const processData = async () => {
-      const data = await groupData(filteredDatas);
+      const data = await groupReturnDateByDetails(filteredDatas);
       setGroupedData(data);
     };
-
     processData();
   }, [filteredDatas]);
 
@@ -406,7 +351,6 @@ const SalesReturnDetailsReport = ({
                     const itemNames = finishGoodsItemInfo?.find(
                       (item) => item._id === detail.itemId
                     );
-                    console.log(itemNames);
                     const itemSize = itemSizeInfo.find(
                       (size) => size._id === itemNames.sizeId
                     );

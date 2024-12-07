@@ -6,7 +6,7 @@ import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminf
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useLazyGetSalesDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
+import { useLazyGetOrderDetailsReportQuery, useLazyGetReturnDetailsReportQuery, useLazyGetSalesDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
 import {useGetCompanyInfoQuery} from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
@@ -31,6 +31,10 @@ const CombineReportView = ({ permission }) => {
 
   const [triggerCombineReport, { data: combineReportData }] =
     useLazyGetManagementCombineReportQuery();
+    const [triggerReturnDetailsReport, { data: returnDetailsData }] =
+    useLazyGetReturnDetailsReportQuery();
+    const [triggerOrderDetailsReport, { data: orderDetailsData }] =
+    useLazyGetOrderDetailsReportQuery();
 
   useEffect(() => {
     if (executeQuery) {
@@ -39,6 +43,7 @@ const CombineReportView = ({ permission }) => {
       setExecuteQuery(false);
     }
   }, [executeQuery]);
+
   const [triggerSalesDetailsReport, { data: salesDetailsData }] =
     useLazyGetSalesDetailsReportQuery();
   const handleApplyFilters = async (updatedFilters) => {
@@ -46,6 +51,8 @@ const CombineReportView = ({ permission }) => {
     setExecuteQuery(true);
     await triggerCombineReport(updatedFilters);
     await triggerSalesDetailsReport(updatedFilters);
+    await triggerReturnDetailsReport(updatedFilters);
+    await triggerOrderDetailsReport(updatedFilters)
   };
   console.log(salesDetailsData);
 
@@ -77,6 +84,9 @@ const CombineReportView = ({ permission }) => {
         companyinfo={companyinfo}
         piInformation={piInformation}
         clientInformation={clientInformation}
+        filters={filters}
+        returnDetailsData={returnDetailsData}
+        orderDetailsData={orderDetailsData}
       ></CombineDataTableReport>
       {/* } */}
     </div>

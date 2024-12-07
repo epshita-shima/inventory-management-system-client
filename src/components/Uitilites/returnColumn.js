@@ -1,4 +1,19 @@
-export const getReturnColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformation) => [
+import handleReturnDetailsExcel from "../ReportProperties/Excel/handleReturnDetailsExcel";
+import { downloadGoupReturnDetailsPDF } from "../ReportProperties/PDF/handleReturnDetailsInfo";
+import { groupReturnDateByDetails } from "./salesDetailsDataGrouping";
+
+/* eslint-disable jsx-a11y/anchor-is-valid */
+export const getReturnColumns = (
+  finishGoodsInfo,
+  itemSizeInfo,
+  itemUnitInformation,
+  permission,
+  returnDetailsData,
+  companyinfo,
+  piInformation,
+  clientInformation,
+  reportReturnTitle
+) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -10,7 +25,9 @@ export const getReturnColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformati
     name: "Item Name",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemSize = itemSizeInfo?.find((size) => size._id == itemName?.sizeId);
+      const itemSize = itemSizeInfo?.find(
+        (size) => size._id == itemName?.sizeId
+      );
       return itemName ? `${itemName?.itemName} (${itemSize.sizeInfo})` : "N/A";
     },
     sortable: true,
@@ -22,7 +39,9 @@ export const getReturnColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformati
     name: "Unit",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemUnit = itemUnitInformation?.find((size) => size._id == itemName?.unitId);
+      const itemUnit = itemUnitInformation?.find(
+        (size) => size._id == itemName?.unitId
+      );
       return itemName ? `${itemUnit?.unitInfo}` : "N/A";
     },
     sortable: true,
@@ -52,5 +71,122 @@ export const getReturnColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformati
     sortable: true,
     center: true,
     filterable: true,
+  },
+  {
+    name: "Action",
+    button: true,
+    width: "150px",
+    grow: 2,
+    cell: (row) => (
+      <div className="d-flex justify-content-between align-content-center">
+        {permission?.isPDF && (
+          <div className="table-head-icon d-flex">
+            <div class="dropdown">
+              <button
+                class="btn btn-download dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Download
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={async () => {
+                      const filteredData = returnDetailsData
+                        ?.map((returnData) => {
+                          console.log(returnData)
+                          const matchedDetails = returnData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
+                          console.log(matchedDetails);
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...returnData,
+                              detailsData: matchedDetails,
+                            };
+                          }
+
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+
+                      if (!filteredData || filteredData.length === 0) {
+                        console.error("No filtered data available");
+                        return;
+                      }
+
+                      const groupData = groupReturnDateByDetails(filteredData);
+                      const convertGroupData = Object.values(groupData);
+
+                      if (companyinfo?.length !== 0) {
+                        downloadGoupReturnDetailsPDF(
+                          convertGroupData,
+                          filteredData,
+                          piInformation,
+                          finishGoodsInfo,
+                          itemSizeInfo,
+                          clientInformation,
+                          {companyinfo},
+                          reportReturnTitle
+                        );
+                      }
+                    }}
+                  >
+                    PDF
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onClick={() => {
+                      const filteredData = returnDetailsData
+                        ?.map((returnData) => {
+                          const matchedDetails =
+                            returnData.detailsData?.filter(
+                              (details) => details.itemId === row?.itemId
+                            );
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...returnData,
+                              detailsData: matchedDetails,
+                            };
+                          }
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+                      const transformedData = filteredData?.flatMap(
+                        (piDetails) =>
+                          piDetails.detailsData.map((detail) => ({
+                            ...piDetails,
+                            detailsData: detail,
+                          }))
+                      );
+                      handleReturnDetailsExcel(
+                        transformedData,
+                        filteredData,
+                        piInformation,
+                        finishGoodsInfo,
+                        itemSizeInfo,
+                        clientInformation,
+                        companyinfo,
+                        reportReturnTitle
+                      );
+                    }}
+                  >
+                    Excel
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+    ),
   },
 ];

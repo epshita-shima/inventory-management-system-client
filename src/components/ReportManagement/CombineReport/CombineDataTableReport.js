@@ -7,18 +7,7 @@ import { getSalesColumns } from "../../Uitilites/salesColumns";
 import { getProductionColumns } from "../../Uitilites/productionColumn";
 import { getOrderColumns } from "../../Uitilites/orderColumn";
 import { getReturnColumns } from "../../Uitilites/returnColumn";
-import SalesDetailsTable from "../../Uitilites/ReportTable/SalesDetailsTable";
-import {
-  calculateGrandTotalSalesAmount,
-  calculateGrandTotalSalesQty,
-} from "../../Uitilites/CalculationUtilities/calculation";
-import { formatDate } from "../../Uitilites/DateUtilities";
-import { groupSalesDataByDetails } from "../../Uitilites/salesDetailsDataGrouping";
-import downloadSalesDetailsPDF, {
-  downloadGoupSalesDetailsPDF,
-} from "../../ReportProperties/PDF/handleDeliverDetailsReport";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+
 const CombineDataTableReport = ({
   combineReportData,
   rawMaterialInfo,
@@ -30,163 +19,67 @@ const CombineDataTableReport = ({
   companyinfo,
   piInformation,
   clientInformation,
+  returnDetailsData,
+  orderDetailsData,
 }) => {
-  const reportTitle = "DELIVERY ORDER INFORMATION";
-  const [salesDetailsGroupData, setSalesDetailsGroupData] = useState({});
-  console.log(salesDetailsGroupData);
+  const reportSalesTitle = "DELIVERY ORDER INFORMATION";
+  const reportReturnTitle = "RETURN INFORMATION";
+  const reportOrderTitle = "ORDER INFORMATION";
 
-  const salesColumns = [
-    {
-      name: "Sl.",
-      selector: (row, index) => index + 1,
-      center: true,
-      width: "60px",
-    },
+  const salesColumns = getSalesColumns(
+    finishGoodsInfo,
+    itemSizeInfo,
+    itemUnitInformation,
+    permission,
+    salesDetailsData,
+    companyinfo,
+    piInformation,
+    reportSalesTitle,
+    clientInformation
+  );
 
-    {
-      name: "Item Name",
-      selector: (row) => {
-        const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-        const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName?.sizeId
-        );
-        return itemName
-          ? `${itemName?.itemName} (${itemSize.sizeInfo})`
-          : "N/A";
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Unit",
-      selector: (row) => {
-        const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-        const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
-        );
-        return itemName ? `${itemUnit?.unitInfo}` : "N/A";
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Delivered Qty",
-      selector: (row) => row.totalSalesQuantity,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "SalesRate in Avg",
-      selector: (row) => Math.round(row.salesRateinAvg),
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-
-    {
-      name: "Sales Amount",
-      selector: (row) => row.totalSalesAmount,
-      sortable: true,
-      center: true,
-      filterable: true,
-    },
-    {
-      name: "Action",
-      button: true,
-      width: "100px",
-      grow: 2,
-      cell: (row) => (
-        <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Report View"
-              style={{
-                color: "orange",
-                border: "2px solid orange",
-                padding: "3px",
-                borderRadius: "5px",
-              }}
-              onClick={() => {
-                const filteredData = salesDetailsData
-                  ?.map((salesData) => {
-                    const matchedDetails = salesData.detailsData?.filter(
-                      (details) => details.itemId === row?.itemId
-                    );
-
-                    if (matchedDetails.length > 0) {
-                      return {
-                        ...salesData,
-                        detailsData: matchedDetails,
-                      };
-                    }
-
-                    return null;
-                  })
-                  .filter((item) => item !== null);
-
-                const groupData = groupSalesDataByDetails(filteredData);
-// const convertGroupData=Object.values(groupData)
-                if (
-                  companyinfo?.length !== 0 &&
-                  salesDetailsGroupData.length !== 0
-                ) {
-                  downloadGoupSalesDetailsPDF(
-                    groupData,
-                    filteredData,
-                    piInformation,
-                    finishGoodsInfo,
-                    itemSizeInfo,
-                    clientInformation,
-                    { companyinfo },
-                    reportTitle
-                  );
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
-        </div>
-      ),
-    },
-  ];
   const purchaseColumns = getPurchaseColumns(
     rawMaterialInfo,
-    itemUnitInformation
+    itemUnitInformation,
+    permission
   );
+
   const productionColumns = getProductionColumns(
     finishGoodsInfo,
     itemSizeInfo,
-    itemUnitInformation
+    itemUnitInformation,
+    permission
   );
+
   const orderColumns = getOrderColumns(
     finishGoodsInfo,
     itemSizeInfo,
-    itemUnitInformation
+    itemUnitInformation,
+    permission,
+    orderDetailsData,
+    piInformation,
+    clientInformation,
+    companyinfo,
+    reportOrderTitle
   );
+
   const returnColumns = getReturnColumns(
     finishGoodsInfo,
     itemSizeInfo,
-    itemUnitInformation
+    itemUnitInformation,
+    permission,
+    returnDetailsData,
+    companyinfo,
+    piInformation,
+    clientInformation,
+    reportReturnTitle
   );
 
   const customStyles = {
     table: {
       style: {
-        margin: "0", // Remove table margin
-        padding: "0", // Remove table padding
+        margin: "0",
+        padding: "0",
         borderSpacing: "0",
       },
     },
@@ -198,8 +91,8 @@ const CombineDataTableReport = ({
     },
     headCells: {
       style: {
-        margin: "0", // Ensure no margin
-        padding: "8px", // Add padding for aesthetics
+        margin: "0",
+        padding: "8px",
         backgroundColor: "#B8FEB3",
         color: "#000",
         fontWeight: "bold",
@@ -221,23 +114,10 @@ const CombineDataTableReport = ({
     header: {
       style: {
         margin: "0",
-        padding: "0", // Adjust padding for header
+        padding: "0",
       },
     },
   };
-
-  // useEffect(()=>{
-  //   if(salesDetailsGroupData.length !==0){
-  //     const grandTotalDeliverQty = calculateGrandTotalSalesQty(
-  //       salesDetailsGroupData
-  //     );
-  //     const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(
-  //       salesDetailsGroupData,
-  //       piInformation
-  //     );
-  //   }
-
-  // },[salesDetailsGroupData,piInformation])
 
   return (
     <div>
@@ -340,18 +220,6 @@ const CombineDataTableReport = ({
                 pagination
                 subHeader
               />
-              {salesDetailsGroupData.length != 0 && (
-                <SalesDetailsTable
-                  groupedData={salesDetailsGroupData}
-                  formatDate={formatDate}
-                  piInformation={piInformation}
-                  finishGoodsItemInfo={finishGoodsInfo}
-                  itemSizeInfo={itemSizeInfo}
-                  clientInformation={clientInformation}
-                  // grandTotalDeliverQty={grandTotalDeliverQty}
-                  // grandTotalDeliverAmount={grandTotalDeliverAmount}
-                />
-              )}
             </div>
           </div>
         </div>

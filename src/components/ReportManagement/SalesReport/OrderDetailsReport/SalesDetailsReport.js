@@ -23,7 +23,6 @@ const SalesDetailsReport = ({
   finishGoodsItemInfo,
   itemSizeInfo,
 }) => {
-  const [filterText, setFilterText] = React.useState("");
   const [groupedData, setGroupedData] = useState({});
   const reportTitle = "DELIVERY ORDER INFORMATION";
   const transformedPIData = filteredDatas?.flatMap((piDetails) =>
@@ -52,7 +51,7 @@ const SalesDetailsReport = ({
   //   return totalQty + detailReturnQty;
   // }, 0);
 const grandTotalDeliverQty=calculateGrandTotalSalesQty(filteredDatas);
-const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piInformation)
+const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piInformation);
 
   useEffect(() => {
     const processData = async () => {
