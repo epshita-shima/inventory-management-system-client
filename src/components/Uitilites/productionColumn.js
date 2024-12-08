@@ -1,5 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-export const getProductionColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformation,permission) => [
+import './dropdownTableCustomDesign.css'
+export const getProductionColumns = (
+  finishGoodsInfo,
+  itemSizeInfo,
+  itemUnitInformation,
+  permission,
+  triggerProductionReport,
+  filters
+) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -11,7 +19,9 @@ export const getProductionColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInfor
     name: "Item Name",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemSize = itemSizeInfo?.find((size) => size._id == itemName?.sizeId);
+      const itemSize = itemSizeInfo?.find(
+        (size) => size._id == itemName?.sizeId
+      );
       return itemName ? `${itemName?.itemName} (${itemSize.sizeInfo})` : "N/A";
     },
     sortable: true,
@@ -23,7 +33,9 @@ export const getProductionColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInfor
     name: "Unit",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemUnit = itemUnitInformation?.find((size) => size._id == itemName?.unitId);
+      const itemUnit = itemUnitInformation?.find(
+        (size) => size._id == itemName?.unitId
+      );
       return itemName ? `${itemUnit?.unitInfo}` : "N/A";
     },
     sortable: true,
@@ -38,39 +50,44 @@ export const getProductionColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInfor
     center: true,
     filterable: true,
   },
+
   {
     name: "Action",
     button: true,
     width: "150px",
     grow: 2,
     cell: (row) => (
-      <div className="d-flex justify-content-between align-content-center position-relative">
+      <div className="d-flex justify-content-between align-content-center ">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
             <div className="dropdown">
               <button
                 className="btn btn-download dropdown-toggle"
                 type="button"
-                id="dropdownMenuButton1"
+                id={`dropdownMenuButton1-${row.id}`}
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 Download
               </button>
               <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-                style={{
-                  zIndex: 1050,
-                  position: "absolute",
-                }}
+                className="dropdown-menu dropdown-menu-end custom-dropdown-menu" // Align dropdown menu properly
+                aria-labelledby={`dropdownMenuButton1-${row.id}`}
               >
                 <li>
                   <a
                     className="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      // Your PDF logic here
+                      try {
+                        const result=  await triggerProductionReport(filters)
+                        console.log(result.data)
+                        
+                      } catch (error) {
+                        
+                      }
+                   
+
                     }}
                   >
                     PDF
@@ -93,6 +110,5 @@ export const getProductionColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInfor
         )}
       </div>
     ),
-  }
-  
+  },
 ];

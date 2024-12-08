@@ -46,3 +46,26 @@ export const calculateGrandTotalReturnAmount = (data, piInformation) => {
     return totalQty + detailReturnQty;
   }, 0);
 };
+
+export const calculateGrandTotalPIQty = (data) => {
+  return data?.reduce((totalQty, detail) => {
+     const detailPIQty = detail.detailsData.reduce(
+       (sum, item) => sum + Number(item.quantity),
+       0
+     );
+ 
+     return totalQty + Number(detailPIQty);
+   }, 0);
+ };
+ 
+ export const calculateGrandTotalPIAmount = (data) => {
+  return data?.reduce((totalAmount, detail) => {
+     const detailPIAmount = detail.detailsData.reduce(
+       (sum, item) => sum + Number(item.totalAmount),
+       0
+     );
+ 
+     return totalAmount + Number(detailPIAmount);
+   }, 0);
+ };
+

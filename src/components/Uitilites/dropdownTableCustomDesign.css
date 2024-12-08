@@ -1,0 +1,7 @@
+.custom-dropdown-menu {
+  z-index: 9999 !important;
+  position: absolute !important;
+  inset: 0px 0px auto auto !important;
+  margin: 0px !important;
+  transform: translate(0px, -26px) !important;
+}

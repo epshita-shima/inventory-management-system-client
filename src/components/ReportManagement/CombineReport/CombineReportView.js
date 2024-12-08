@@ -33,8 +33,8 @@ const CombineReportView = ({ permission }) => {
     useLazyGetManagementCombineReportQuery();
     const [triggerReturnDetailsReport, { data: returnDetailsData }] =
     useLazyGetReturnDetailsReportQuery();
-    const [triggerOrderDetailsReport, { data: orderDetailsData }] =
-    useLazyGetOrderDetailsReportQuery();
+
+
 
   useEffect(() => {
     if (executeQuery) {
@@ -52,7 +52,6 @@ const CombineReportView = ({ permission }) => {
     await triggerCombineReport(updatedFilters);
     await triggerSalesDetailsReport(updatedFilters);
     await triggerReturnDetailsReport(updatedFilters);
-    await triggerOrderDetailsReport(updatedFilters)
   };
   console.log(salesDetailsData);
 
@@ -84,9 +83,8 @@ const CombineReportView = ({ permission }) => {
         companyinfo={companyinfo}
         piInformation={piInformation}
         clientInformation={clientInformation}
-        filters={filters}
         returnDetailsData={returnDetailsData}
-        orderDetailsData={orderDetailsData}
+        filters={filters}
       ></CombineDataTableReport>
       {/* } */}
     </div>

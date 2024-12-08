@@ -1,7 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import handleOrderDetailsExcel from './../ReportProperties/Excel/handleOrderDetailsExcel';
-import { groupOrderDateByDetails, groupSalesDataByDetails } from './salesDetailsDataGrouping';
-export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformation,permission,orderDetailsData,piInformation,clientInformation,companyinfo,reportOrderTitle) => [
+import { downloadGoupOrderDetailsPDF } from "../ReportProperties/PDF/handleOrderDetailsAllReport";
+import handleOrderDetailsExcel from "./../ReportProperties/Excel/handleOrderDetailsExcel";
+import {
+  groupOrderDateByDetails,
+  groupSalesDataByDetails,
+} from "./salesDetailsDataGrouping";
+export const getOrderColumns = (
+  finishGoodsInfo,
+  itemSizeInfo,
+  itemUnitInformation,
+  permission,
+  triggerOrderDetailsReport,
+  piInformation,
+  clientInformation,
+  companyinfo,
+  reportOrderTitle,
+  filters
+) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -13,7 +28,9 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
     name: "Item Name",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemSize = itemSizeInfo?.find((size) => size._id == itemName?.sizeId);
+      const itemSize = itemSizeInfo?.find(
+        (size) => size._id == itemName?.sizeId
+      );
       return itemName ? `${itemName?.itemName} (${itemSize.sizeInfo})` : "N/A";
     },
     sortable: true,
@@ -25,7 +42,9 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
     name: "Unit",
     selector: (row) => {
       const itemName = finishGoodsInfo?.find((x) => row?.itemId == x._id);
-      const itemUnit = itemUnitInformation?.find((size) => size._id == itemName?.unitId);
+      const itemUnit = itemUnitInformation?.find(
+        (size) => size._id == itemName?.unitId
+      );
       return itemName ? `${itemUnit?.unitInfo}` : "N/A";
     },
     sortable: true,
@@ -80,15 +99,16 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={async() => {
-
-                      const filteredData = orderDetailsData
+                    onClick={async () => {
+                      console.log(filters);
+                      const result = await triggerOrderDetailsReport(filters);
+                      console.log(result.data);
+                      const filteredData = result?.data
                         ?.map((salesData) => {
-                          const matchedDetails =
-                            salesData.detailsData?.filter(
-                              (details) => details.itemId === row?.itemId
-                            );
-
+                          const matchedDetails = salesData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
+                          console.log({matchedDetails});
                           if (matchedDetails.length > 0) {
                             return {
                               ...salesData,
@@ -99,20 +119,19 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
                           return null;
                         })
                         .filter((item) => item !== null);
-
+                      console.log({filteredData});
                       const groupData = groupOrderDateByDetails(filteredData);
-                      const convertGroupData=Object.values(groupData)
+                      const convertGroupData = Object.values(groupData);
                       if (companyinfo?.length !== 0) {
-                        // downloadGoupSalesDetailsPDF(
-                        //   convertGroupData,
-                        //   filteredData,
-                        //   piInformation,
-                        //   finishGoodsInfo,
-                        //   itemSizeInfo,
-                        //   clientInformation,
-                        //   { companyinfo },
-                        //   reportSalesTitle
-                        // );
+                        downloadGoupOrderDetailsPDF(
+                          convertGroupData,
+                          filteredData,
+                          finishGoodsInfo,
+                          itemSizeInfo,
+                          clientInformation,
+                          {companyinfo},
+                          reportOrderTitle
+                        );
                       }
                     }}
                   >
@@ -120,16 +139,15 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
                   </a>
                 </li>
                 <li>
-                  <a
+                  {/* <a
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
                       const filteredData = orderDetailsData
                         ?.map((salesData) => {
-                          const matchedDetails =
-                            salesData.detailsData?.filter(
-                              (details) => details.itemId === row?.itemId
-                            );
+                          const matchedDetails = salesData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
                           if (matchedDetails.length > 0) {
                             return {
                               ...salesData,
@@ -160,12 +178,11 @@ export const getOrderColumns = ( finishGoodsInfo,itemSizeInfo,itemUnitInformatio
                     }}
                   >
                     Excel
-                  </a>
+                  </a> */}
                 </li>
               </ul>
             </div>
           </div>
-     
         )}
       </div>
     ),

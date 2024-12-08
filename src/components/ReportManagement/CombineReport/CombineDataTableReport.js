@@ -7,6 +7,8 @@ import { getSalesColumns } from "../../Uitilites/salesColumns";
 import { getProductionColumns } from "../../Uitilites/productionColumn";
 import { getOrderColumns } from "../../Uitilites/orderColumn";
 import { getReturnColumns } from "../../Uitilites/returnColumn";
+import { useLazyGetProductionDatewiseDetailsReportQuery } from "../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetOrderDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
 
 const CombineDataTableReport = ({
   combineReportData,
@@ -20,11 +22,16 @@ const CombineDataTableReport = ({
   piInformation,
   clientInformation,
   returnDetailsData,
-  orderDetailsData,
+  filters
 }) => {
+  console.log(filters)
   const reportSalesTitle = "DELIVERY ORDER INFORMATION";
   const reportReturnTitle = "RETURN INFORMATION";
   const reportOrderTitle = "ORDER INFORMATION";
+  const [triggerProductionReport, { data: productionDetailsData }] =
+  useLazyGetProductionDatewiseDetailsReportQuery();
+  const [triggerOrderDetailsReport, { data: orderDetailsData }] =
+  useLazyGetOrderDetailsReportQuery();
 
   const salesColumns = getSalesColumns(
     finishGoodsInfo,
@@ -48,19 +55,22 @@ const CombineDataTableReport = ({
     finishGoodsInfo,
     itemSizeInfo,
     itemUnitInformation,
-    permission
-  );
+    permission,
+    triggerProductionReport,
+    filters
+  ); 
 
   const orderColumns = getOrderColumns(
     finishGoodsInfo,
     itemSizeInfo,
     itemUnitInformation,
     permission,
-    orderDetailsData,
+    triggerOrderDetailsReport,
     piInformation,
     clientInformation,
     companyinfo,
-    reportOrderTitle
+    reportOrderTitle,
+    filters
   );
 
   const returnColumns = getReturnColumns(
@@ -81,12 +91,14 @@ const CombineDataTableReport = ({
         margin: "0",
         padding: "0",
         borderSpacing: "0",
+        overflow: 'visible'
       },
     },
     rows: {
       style: {
         textAlign: "center",
         padding: "0",
+        overflow: 'visible',
       },
     },
     headCells: {

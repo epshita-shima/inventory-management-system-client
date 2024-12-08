@@ -25,7 +25,10 @@
   padding: 0; 
 }
 
-
+.table-container {
+  position: relative;
+  overflow: visible !important;
+}
 .hMFeQo {
   position: relative;
   display: flex;

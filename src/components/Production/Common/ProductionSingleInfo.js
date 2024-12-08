@@ -520,6 +520,7 @@ const ProductionSingleInfo = ({
                 },
               })}
               onChange={(e) => {
+                console.log(e)
                 if (id) {
                   const expectQty =
                     updateProductionData?.totalBatch * e.productionQtyPerBatch;
