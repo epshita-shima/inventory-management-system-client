@@ -9,6 +9,7 @@ const supplierDropdown = (options) => {
   });
   return result;
 };
+
 const rawMaterialItemDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -20,6 +21,7 @@ const rawMaterialItemDropdown = (options) => {
   });
   return result;
 };
+
 const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
   let result = [];
   options?.forEach((option) => {
@@ -56,6 +58,7 @@ const finishGoodsDropdown = (options) => {
   });
   return result;
 };
+
 const paymentInfoDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -69,6 +72,7 @@ const paymentInfoDropdown = (options) => {
   return result;
 
 };
+
 const bankInformationDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -80,6 +84,7 @@ const bankInformationDropdown = (options) => {
   });
   return result;
 };
+
 const clientInfoDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -93,6 +98,7 @@ const clientInfoDropdown = (options) => {
   });
   return result;
 };
+
 const userInfoDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -104,6 +110,7 @@ const userInfoDropdown = (options) => {
   });
   return result;
 };
+
 const invoiceListDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -115,6 +122,7 @@ const invoiceListDropdown = (options) => {
   });
   return result;
 };
+
 const unitInformationDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -126,6 +134,7 @@ const unitInformationDropdown = (options) => {
   });
   return result;
 };
+
 const paymnetInformationDropdown = (options) => {
   let result = [];
   options?.forEach((option) => {
@@ -137,6 +146,7 @@ const paymnetInformationDropdown = (options) => {
   });
   return result;
 };
+
 const deliveryOrderDropdown = (options) => {
   console.log(options)
   let result = [];
@@ -149,6 +159,7 @@ const deliveryOrderDropdown = (options) => {
   });
   return result;
 };
+
 const productionBatchDropdown = (options) => {
   console.log(options)
   let result = [];
@@ -161,6 +172,18 @@ const productionBatchDropdown = (options) => {
   });
   return result;
 };
+
+const poInfoDropdown=(options)=>{
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label:
+        option.poNo
+    });
+  });
+  return result;
+}
 
 export {
   supplierDropdown,
@@ -176,5 +199,6 @@ export {
   paymnetInformationDropdown,
   deliveryOrderDropdown,
   rawMaterialWithUnitDropdown,
-  productionBatchDropdown
+  productionBatchDropdown,
+  poInfoDropdown
 };

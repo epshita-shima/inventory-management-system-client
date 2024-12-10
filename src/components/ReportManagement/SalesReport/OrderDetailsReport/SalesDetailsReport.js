@@ -8,7 +8,7 @@ import { downloadDeliveryOrderPDF } from "../../../ReportProperties/PDF/HeaderFo
 import handleSalesDetailsExcel from "../../../ReportProperties/Excel/handleSalesDetailsExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
 import SalesDetailsTable from "../../../Uitilites/ReportTable/SalesDetailsTable";
-import { groupSalesDataByDetails } from "../../../Uitilites/salesDetailsDataGrouping";
+import { groupSalesDataByDetails } from "../../../Uitilites/reportDataGrouping";
 import { calculateGrandTotalSalesAmount, calculateGrandTotalSalesQty } from "../../../Uitilites/CalculationUtilities/calculation";
 import { downloadSalesDetailsPDF } from "../../../ReportProperties/PDF/handleDeliverDetailsReport";
 

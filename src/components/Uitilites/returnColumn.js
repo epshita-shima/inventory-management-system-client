@@ -1,6 +1,6 @@
 import handleReturnDetailsExcel from "../ReportProperties/Excel/handleReturnDetailsExcel";
 import { downloadGoupReturnDetailsPDF } from "../ReportProperties/PDF/handleReturnDetailsInfo";
-import { groupReturnDateByDetails } from "./salesDetailsDataGrouping";
+import { groupReturnDateByDetails } from "./reportDataGrouping";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export const getReturnColumns = (
@@ -8,7 +8,8 @@ export const getReturnColumns = (
   itemSizeInfo,
   itemUnitInformation,
   permission,
-  returnDetailsData,
+  triggerReturnDetailsReport,
+  filters,
   companyinfo,
   piInformation,
   clientInformation,
@@ -97,7 +98,10 @@ export const getReturnColumns = (
                     class="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      const filteredData = returnDetailsData
+                      console.log(filters)
+                      const result= await triggerReturnDetailsReport(filters)
+                      console.log(result)
+                      const filteredData = result.data
                         ?.map((returnData) => {
                           console.log(returnData)
                           const matchedDetails = returnData.detailsData?.filter(
@@ -144,8 +148,9 @@ export const getReturnColumns = (
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={() => {
-                      const filteredData = returnDetailsData
+                    onClick={async() => {
+                      const result=await triggerReturnDetailsReport(filters)
+                      const filteredData = result.data
                         ?.map((returnData) => {
                           const matchedDetails =
                             returnData.detailsData?.filter(

@@ -95,63 +95,75 @@ const downloadGoupOrderDetailsPDF = (
   const grandTotalPIAmount = calculateGrandTotalPIAmount(filteredData);
 
   Object.keys(groupedData).forEach((key) => {
-    console.log(key)
-    
     const groups = groupedData[key];
     const rowSpan = groups.reduce(
       (total, item) => total + item.detailsData.length,
       0
     );
-    console.log(rowSpan)
+
+    const dateWiseTotalQuantity = groups.reduce(
+      (totalQty, item) =>
+        totalQty +
+        item.detailsData.reduce(
+          (itemTotal, detail) => itemTotal + detail.quantity,
+          0
+        ),
+      0
+    );
+
+    const dateWiseTotalAmount = groups.reduce(
+      (totalQty, item) =>
+        totalQty +
+        item.detailsData.reduce(
+          (itemTotal, detail) => itemTotal + detail.totalAmount,
+          0
+        ),
+      0
+    );
 
     if (Array.isArray(groups)) {
       groups.forEach((group, index) => {
-      
-        const formattedDate = formatDate(group.piDate);
- 
-        const dateWiseTotalQuantity = group?.detailsData.reduce(
-          (cur, acc) => cur + acc.quantity,
-          0
-        );
-    
-        const dateWiseTotalAmount = group.detailsData.reduce(
-          (total, detail) => total + detail.totalAmount,
-          0
-        );
-
-        // Iterate through the detailsData of the group
         group.detailsData.forEach((detail, detailIndex) => {
-         console.log(group.detailsData.length)
-          const transferFrom = clientInformation
-            ?.filter((client) => client._id === group.customerID)
-            .map((filteredItem) => filteredItem.clientName)
-            .join(", ");
-    
+          console.log(group.detailsData.length);
+          const formattedDate = detailIndex === 0 ? formatDate(group.piDate) : "";
+          const clientName = clientInformation?.filter((client) => client._id === group.customerID)
+          .map((filteredItem) => filteredItem.clientName)
+          .join(", ");
+      
           const itemNames = finishGoodsItemInfo.find(
             (item) => item._id === detail.itemId
           );
           const itemSize = itemSizeInfo.find(
             (size) => size._id === itemNames.sizeId
           );
+          const row = [
+            formattedDate,
+            clientName, 
+            group.invoiceNo, 
+            `${itemNames.itemName} (${itemSize.sizeInfo})`, 
+            detail.quantity.toLocaleString(), 
+            detail.unitPrice.toLocaleString(), 
+            detail.totalAmount.toLocaleString(), 
+          ];
     
-          // Add table rows for each detail
-          finalRows.push([
-            {
-              content:index === 0 ? formattedDate : "", // Set formattedDate only for the first row
-              rowSpan: index === 0 ? rowSpan : 0, // Apply rowSpan only to the first row
-            },
-            // detailIndex === 0 ? formattedDate : "",
-            transferFrom ,
-            group.invoiceNo ,
-            `${itemNames.itemName} (${itemSize.sizeInfo})`,
-            detail.quantity.toLocaleString(),
-            detail.unitPrice,
-            detail.totalAmount.toLocaleString(),
-          ]);
-    
-          // After all details for this group, add the date-wise total row
-      
-          if (index === rowSpan-1) {
+          finalRows.push(row);
+        
+          if (detailIndex === 0 && index === 0) {
+            finalRows[finalRows.length - 1][0] = {
+              content: formattedDate,
+              rowSpan: rowSpan,
+            };
+          }
+          else{
+            finalRows[finalRows.length - 1][0] = clientName;
+            finalRows[finalRows.length - 1][1] = group.invoiceNo;
+            finalRows[finalRows.length - 1][2] =  `${itemNames.itemName} (${itemSize.sizeInfo})`;
+            finalRows[finalRows.length - 1][3] = detail.quantity.toLocaleString();
+            finalRows[finalRows.length - 1][4] = detail.unitPrice.toLocaleString();
+            finalRows[finalRows.length - 1][5] = detail.totalAmount.toLocaleString();
+          }
+
+          if (index === rowSpan - 1) {
             finalRows.push([
               {
                 content: "Datewise Total",
@@ -163,7 +175,7 @@ const downloadGoupOrderDetailsPDF = (
                   fontStyle: "bold",
                 },
               },
-    
+
               {
                 content: dateWiseTotalQuantity.toLocaleString(),
                 styles: {
@@ -192,8 +204,8 @@ const downloadGoupOrderDetailsPDF = (
               },
             ]);
           }
+        });
       });
-    });
     } else {
       console.log("Group is not an array. Check its structure!");
     }
@@ -238,6 +250,7 @@ const downloadGoupOrderDetailsPDF = (
       },
     },
   ]);
+ 
   doc.autoTable({
     // html: "#my-deliver-details-table",
     head: [
@@ -289,31 +302,19 @@ const downloadGoupOrderDetailsPDF = (
       const colIndex = data.column.index;
       const totalCols = data.table.body[0].raw.length;
       const rawRow = data.row.raw;
-      console.log(rawRow);
       const cellContent = data.cell.raw;
-      console.log(cellContent);
-      // Extract text content from HTML string
       const textContent = cellContent?.innerText || cellContent?.textContent;
-      console.log(textContent);
       if (rowIndex === totalRows - 1) {
         data.cell.styles.fontStyle = "bold";
         data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
         data.cell.styles.textColor = [255, 255, 255];
       }
-      // if (textContent?.trim().toLowerCase() === "datewise total") {
-      //   Object.values(data.row.cells).forEach((cell) => {
-      //     cell.styles = cell.styles || {};
-      //     cell.styles.fontStyle = "bold";
-      //     cell.styles.fillColor = [138, 138, 138]; // Gray line color
-      //     cell.styles.textColor = [255, 255, 255];
-      //   });
-      //   data.cell.styles.halign = "right";
-      // }
+  
       if (rawRow.isTotalRow) {
         Object.values(data.row.cells).forEach((cell) => {
           cell.styles = cell.styles || {};
           cell.styles.fontStyle = "bold";
-          cell.styles.fillColor = [138, 138, 138]; // Gray line color
+          cell.styles.fillColor = [138, 138, 138];
           cell.styles.textColor = [255, 255, 255];
         });
         data.cell.styles.halign = "right";

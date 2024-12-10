@@ -69,3 +69,8 @@ export const calculateGrandTotalPIQty = (data) => {
    }, 0);
  };
 
+export const calculateProductionQuantity=(data)=>{
+  return data?.reduce((totalQuantity, item) => 
+    totalQuantity + item.productionQty,0);
+
+}

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo, useState } from "react";
 import "./OrderDetailsReportTable.css";
@@ -13,6 +14,11 @@ import { useGetAllPaymentInformationQuery } from "../../../../redux/features/pay
 import { downloadOrderDetailsAllDataPDF } from "../../../ReportProperties/PDF/handleOrderDetailsAllReport";
 import handleOrderDetailsExcel from "../../../ReportProperties/Excel/handleOrderDetailsExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import { groupOrderDateByDetails } from "../../../Uitilites/reportDataGrouping";
+import {
+  calculateGrandTotalPIAmount,
+  calculateGrandTotalPIQty,
+} from "../../../Uitilites/CalculationUtilities/calculation";
 
 const OrderDetailsReportTable = ({
   permission,
@@ -20,14 +26,14 @@ const OrderDetailsReportTable = ({
   isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
-  companyinfo
+  companyinfo,
 }) => {
   const [filterText, setFilterText] = React.useState("");
   const [groupedData, setGroupedData] = useState({});
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-  
+
   const reportOrderTitle = "PRO FORMA INVOICE";
   const base64Logo = reportImage;
   const signature = authorizesSingatureImage;
@@ -39,41 +45,14 @@ const OrderDetailsReportTable = ({
     }))
   );
 
-
-  const grandTotalQuantity = filteredDatas?.reduce((totalQuantity, item) => {
-    const detailsTotal = item.detailsData.reduce(
-      (sum, detail) => sum + detail.quantity,
-      0
-    );
-    return totalQuantity + detailsTotal;
-  }, 0);
-
-  const grandTotalAmount = filteredDatas?.reduce((totalAmount, item) => {
-    const detailsTotal = item.detailsData.reduce(
-      (sum, detail) => sum + detail.totalAmount,
-      0
-    );
-    return totalAmount + detailsTotal;
-  }, 0);
+  const grandTotalQuantity = calculateGrandTotalPIQty(filteredDatas);
+  const grandTotalAmount = calculateGrandTotalPIAmount(filteredDatas);
 
   useEffect(() => {
-    const groupData = async (data) => {
-      return data?.reduce((acc, row) => {
-        const key = `${row.piDate}`;
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        acc[key].push(row);
-        return acc;
-      }, {});
-    };
-
-    // Process and set grouped data
     const processData = async () => {
-      const data = await groupData(filteredDatas);
+      const data = await groupOrderDateByDetails(filteredDatas);
       setGroupedData(data);
     };
-
     processData();
   }, [filteredDatas]);
 
@@ -248,8 +227,8 @@ const OrderDetailsReportTable = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center">
-        {
-          filteredDatas?.length > 0 && (<div className="d-flex justify-content-end align-items-center">
+        {filteredDatas?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
               <div class="dropdown">
                 <button
@@ -291,7 +270,7 @@ const OrderDetailsReportTable = ({
                           customerInfo,
                           companyinfo,
                           reportOrderTitle
-                          );
+                        );
                       }}
                     >
                       Excel
@@ -300,12 +279,18 @@ const OrderDetailsReportTable = ({
                 </ul>
               </div>
             </div>
-          </div>)
-        }
-        
+          </div>
+        )}
       </div>
     );
-  }, [companyinfo, customerInfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, transformedPIData]);
+  }, [
+    companyinfo,
+    customerInfo,
+    filteredDatas,
+    finishGoodsItemInfo,
+    itemSizeInfo,
+    transformedPIData,
+  ]);
 
   return (
     <div
@@ -426,7 +411,7 @@ const OrderDetailsReportTable = ({
                     });
                   })}
 
-                  {/* Datewise Total Row */}
+               
                   <tr>
                     <td
                       colSpan={4}
@@ -506,6 +491,8 @@ const OrderDetailsReportTable = ({
           </tr>
         </tbody>
       </table>
+
+     
     </div>
   );
 };

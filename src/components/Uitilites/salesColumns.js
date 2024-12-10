@@ -1,6 +1,6 @@
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { groupSalesDataByDetails } from "./salesDetailsDataGrouping";
+import { groupSalesDataByDetails } from "./reportDataGrouping";
 import downloadSalesDetailsPDF, { downloadGoupSalesDetailsPDF } from "../ReportProperties/PDF/handleDeliverDetailsReport";
 import SalesDetailsTable from "./ReportTable/SalesDetailsTable";
 import { useState } from "react";
@@ -13,7 +13,8 @@ export const getSalesColumns = (
   itemSizeInfo,
   itemUnitInformation,
   permission,
-  salesDetailsData,
+  triggerSalesDetailsReport,
+  filters,
   companyinfo,
   piInformation,
   reportSalesTitle,
@@ -104,8 +105,8 @@ export const getSalesColumns = (
                     class="dropdown-item"
                     href="#"
                     onClick={async() => {
-
-                      const filteredData = salesDetailsData
+const result=await triggerSalesDetailsReport(filters)
+                      const filteredData = result.data
                         ?.map((salesData) => {
                           const matchedDetails =
                             salesData.detailsData?.filter(
@@ -146,8 +147,9 @@ export const getSalesColumns = (
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={() => {
-                      const filteredData = salesDetailsData
+                    onClick={async() => {
+                      const result=await triggerSalesDetailsReport(filters)
+                      const filteredData = result.data
                         ?.map((salesData) => {
                           const matchedDetails =
                             salesData.detailsData?.filter(

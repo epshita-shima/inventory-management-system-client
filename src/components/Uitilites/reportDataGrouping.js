@@ -71,6 +71,22 @@ export const groupReturnDateByDetails=(data)=>{
     return acc;
   }, {});
 }
+
+export const groupProductionDateByDetails=(data)=>{
+  return data?.reduce((acc, row) => {
+    const key = new Date(row.productionDate).toLocaleDateString("en-CA");
+    if (!acc[key]) {
+      acc[key] = {
+        mainData: [],
+      };
+    }
+
+    acc[key].mainData.push({ ...row });
+
+    return acc;
+  }, {});
+}
+
 export const groupOrderDateByDetails=(data)=>{
   return data?.reduce((acc, row) => {
     const key = `${row.piDate}`;

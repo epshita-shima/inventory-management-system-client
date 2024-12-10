@@ -4,7 +4,7 @@ import handleOrderDetailsExcel from "./../ReportProperties/Excel/handleOrderDeta
 import {
   groupOrderDateByDetails,
   groupSalesDataByDetails,
-} from "./salesDetailsDataGrouping";
+} from "./reportDataGrouping";
 export const getOrderColumns = (
   finishGoodsInfo,
   itemSizeInfo,

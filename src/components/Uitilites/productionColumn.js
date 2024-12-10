@@ -1,12 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import handleProductionDatewiseExcel from '../ReportProperties/Excel/handleProductionDatewiseExcel';
+import { downloadProductionGroupedDetailsPDF } from '../ReportProperties/PDF/handleProductionDatewiseDetailsPDF';
 import './dropdownTableCustomDesign.css'
+import { groupProductionDateByDetails } from './reportDataGrouping';
 export const getProductionColumns = (
   finishGoodsInfo,
   itemSizeInfo,
   itemUnitInformation,
   permission,
   triggerProductionReport,
-  filters
+  filters,
+  companyinfo,
+  reportOrderTitle
 ) => [
   {
     name: "Sl.",
@@ -79,12 +84,26 @@ export const getProductionColumns = (
                     className="dropdown-item"
                     href="#"
                     onClick={async () => {
+                      console.log(row)
                       try {
                         const result=  await triggerProductionReport(filters)
                         console.log(result.data)
+                        const filteredData = result?.data.filter((x) => {
+                          console.log('Production Item Name:', x.productionItemName, 'Row itemId:', row.itemId);
+                          return x.productionItemName === row.itemId;
+                        });
+                        console.log(filteredData)
+                        const groupData = groupProductionDateByDetails(filteredData);
+                        const convertGroupData = Object.values(groupData);
+                        if (companyinfo?.length !== 0) {
+                          downloadProductionGroupedDetailsPDF(
+                            convertGroupData,filteredData,finishGoodsInfo, itemSizeInfo,itemUnitInformation,
+                            {companyinfo},
+                            reportOrderTitle
+                          );
+                        }
                         
                       } catch (error) {
-                        
                       }
                    
 
@@ -97,8 +116,28 @@ export const getProductionColumns = (
                   <a
                     className="dropdown-item"
                     href="#"
-                    onClick={() => {
-                      // Your Excel logic here
+                    onClick={async() => {
+                      const result=  await triggerProductionReport(filters)
+                      console.log(result.data)
+                      const filteredData = result?.data.filter((x) => {
+                        console.log('Production Item Name:', x.productionItemName, 'Row itemId:', row.itemId);
+                        return x.productionItemName === row.itemId;
+                      });
+                      console.log(filteredData)
+                      const transformedProductionData = filteredData?.flatMap((piDetails) =>
+                        piDetails.detailsData.map((detail) => ({
+                          ...piDetails,
+                          detailsData: detail,
+                        }))
+                      );
+                      handleProductionDatewiseExcel(
+                        transformedProductionData,
+                        filteredData,
+                        finishGoodsInfo,
+                        itemSizeInfo,
+                        companyinfo,
+                        reportOrderTitle
+                      );
                     }}
                   >
                     Excel

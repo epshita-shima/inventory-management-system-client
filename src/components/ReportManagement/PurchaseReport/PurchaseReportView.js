@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
-import CommonParameterForCombineReport from "./CommonParameterForCombineReport";
-import CombineDataTableReport from "./CombineDataTableReport";
-import { useLazyGetManagementCombineReportQuery } from "../../../redux/features/combinereport/combinereportApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import {useGetCompanyInfoQuery} from "../../../redux/features/companyinfo/compayApi";
+import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
+import CommonPurchaseParameter from "./CommonPurchaseParameter";
+import PurchaseReportDataTable from "./PurchaseReportDataTable";
+import {
+  poInfoDropdown,
+  rawMaterialWithUnitDropdown,
+  supplierDropdown,
+} from "../../Common/CommonDropdown/CommonDropdown";
+import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
+import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 
-const CombineReportView = ({ permission }) => {
+const PurchaseReportView = ({ permission }) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -26,11 +32,17 @@ const CombineReportView = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
   const { data: clientInformation } =
-  useGetAllClientInformationQuery(undefined);
+    useGetAllClientInformationQuery(undefined);
+  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const { data: purchaseInfoData } =
+    useGetAllPurchaseOrderInformationQuery(undefined);
+  const itemsOptions = rawMaterialWithUnitDropdown(
+    rawMaterialInfo,
+    itemUnitInformation
+  );
+  const supplierOptions = supplierDropdown(supplierInfo);
+  const purchaseOptions = poInfoDropdown(purchaseInfoData);
 
-  const [triggerCombineReport, { data: combineReportData }] =
-    useLazyGetManagementCombineReportQuery();
-   
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -38,21 +50,35 @@ const CombineReportView = ({ permission }) => {
     }
   }, [executeQuery]);
 
-
   const handleApplyFilters = async (updatedFilters) => {
     console.log(updatedFilters);
     setExecuteQuery(true);
-    await triggerCombineReport(updatedFilters);
+    // await triggerCombineReport(updatedFilters);
   };
-
 
   return (
     <div
       className="row px-5 mx-2"
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
+      <h2>Hello</h2>
       {
-        <CommonParameterForCombineReport
+        <CommonPurchaseParameter
+        fromDate={fromDate}
+        setFromDate={setFromDate}
+        toDate={toDate}
+        setToDate={setToDate}
+        handleApplyFilters={handleApplyFilters}
+        filters={filters}
+        setFilters={setFilters}
+        setIsTableDisplay={setIsTableDisplay}
+        itemsOptions={itemsOptions}
+        supplierOptions={supplierOptions}
+        purchaseOptions={purchaseOptions}
+        ></CommonPurchaseParameter>
+      }
+      {/* {
+        <CommonPurchaseParameter
           fromDate={fromDate}
           setFromDate={setFromDate}
           toDate={toDate}
@@ -61,11 +87,13 @@ const CombineReportView = ({ permission }) => {
           filters={filters}
           setFilters={setFilters}
           setIsTableDisplay={setIsTableDisplay}
+          itemsOptions={itemsOptions}
+          supplierOptions={supplierOptions}
+          purchaseOptions={purchaseOptions}
         />
-      }
-      {isTableDispaly && 
-      <CombineDataTableReport
-        combineReportData={combineReportData}
+      } */}
+      {/* {isTableDispaly && 
+      <PurchaseReportDataTable
         rawMaterialInfo={rawMaterialInfo}
         itemUnitInformation={itemUnitInformation}
         finishGoodsInfo={finishGoodsInfo}
@@ -75,10 +103,10 @@ const CombineReportView = ({ permission }) => {
         piInformation={piInformation}
         clientInformation={clientInformation}
         filters={filters}
-      ></CombineDataTableReport>
-      }
+      ></PurchaseReportDataTable>
+      } */}
     </div>
   );
 };
 
-export default CombineReportView;
+export default PurchaseReportView;

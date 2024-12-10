@@ -27,7 +27,6 @@ const CommonParameterForCombineReport = ({
             selected={fromDate}
             required
             onChange={(fromDate) => {
-              console.log(fromDate);
               if (fromDate > new Date()) {
                 swal({
                   title: "Select Valid Date",
@@ -109,9 +108,7 @@ const CommonParameterForCombineReport = ({
                 ...prevFilters,
                 fromDate: new Date().toLocaleDateString("en-CA"),
                 toDate: new Date().toLocaleDateString("en-CA"),
-                productionItemName: "",
-                batchNo: "",
-                reportStatus: "",
+               
               }));
               setFromDate(new Date().toLocaleDateString("en-CA"));
               setToDate(new Date().toLocaleDateString("en-CA"));

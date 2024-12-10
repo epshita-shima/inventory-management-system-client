@@ -49,6 +49,7 @@ import OrderDetailsReport from "./components/ReportManagement/SalesReport/OrderD
 import ProductionReportTable from "./components/ReportManagement/ProductionReport/ProductionReportSection/ProductionReportTable";
 import RawMaterialConsumptionTable from "./components/ReportManagement/RawMaterialConsumptionSection/RawMaterialConsumptionTable/RawMaterialConsumptionTable";
 import CombineReportTable from "./components/ReportManagement/CombineReport/CombineReportTable";
+import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
@@ -355,6 +356,12 @@ function App() {
                 path="combine-report"
                 element={
                  <CombineReportTable></CombineReportTable>
+                }
+              ></Route>
+              <Route
+                path="purchase-report"
+                element={
+                 <PurchaseReportTable></PurchaseReportTable>
                 }
               ></Route>
             </Route>

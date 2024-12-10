@@ -7,7 +7,7 @@ import { downloadReturnDeliveredPDF } from "../../../ReportProperties/PDF/Header
 import { downloadReturnDetailsInfoPDF } from "../../../ReportProperties/PDF/handleReturnDetailsInfo";
 import handleReturnDetailsExcel from "../../../ReportProperties/Excel/handleReturnDetailsExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
-import { groupReturnDateByDetails } from "../../../Uitilites/salesDetailsDataGrouping";
+import { groupReturnDateByDetails } from "../../../Uitilites/reportDataGrouping";
 import { calculateGrandTotalReturnAmount, calculateGrandTotalReturnQty } from "../../../Uitilites/CalculationUtilities/calculation";
 
 

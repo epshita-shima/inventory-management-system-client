@@ -4,11 +4,11 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
 import { downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
-// import { downloadProductionPDFPERBatch } from "../../ReportProperties/PDF/HeaderFooter";
 import { downloadProductionDatewiseDetailsInfoPDF } from "../../../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
-// import handleProductionDatewiseExcel from './../../ReportProperties/Excel/handleProductionDatewiseExcel';
 import handleProductionDatewiseExcel from './../../../ReportProperties/Excel/handleProductionDatewiseExcel';
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import { groupProductionDateByDetails } from "../../../Uitilites/reportDataGrouping";
+import { calculateProductionQuantity } from "../../../Uitilites/CalculationUtilities/calculation";
 
 const DatewiseProductionDetails = ({
   permission,
@@ -30,33 +30,13 @@ const DatewiseProductionDetails = ({
     }))
   );
 
-
-
-  const grandTotalProductionQuantity = filteredDatas?.reduce((totalQuantity, item) => 
-    totalQuantity + item.productionQty,0);
+  const grandTotalProductionQuantity = calculateProductionQuantity(filteredDatas)
 
   useEffect(() => {
-    const groupData = (data) => {
-      return data?.reduce((acc, row) => {
-        const key = new Date(row.productionDate).toLocaleDateString("en-CA");
-
-        if (!acc[key]) {
-          acc[key] = {
-            mainData: [],
-          };
-        }
-
-        acc[key].mainData.push({ ...row });
-
-        return acc;
-      }, {});
-    };
-
     const processData = async () => {
-      const data = await groupData(filteredDatas);
+      const data = await groupProductionDateByDetails(filteredDatas);
       setGroupedData(data);
     };
-
     processData();
   }, [filteredDatas]);
 

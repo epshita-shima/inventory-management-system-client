@@ -165,7 +165,7 @@ const GRNInfoList = ({ permission }) => {
       filterable: true,
     },
     {
-      name: "supplierName",
+      name: "Supplier Name",
       selector: (filteredData) => {
         const supplier = supplierInfo?.find(
           (x) => x._id === filteredData?.supplierId

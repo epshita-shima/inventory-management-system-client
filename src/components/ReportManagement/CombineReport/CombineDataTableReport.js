@@ -8,7 +8,7 @@ import { getProductionColumns } from "../../Uitilites/productionColumn";
 import { getOrderColumns } from "../../Uitilites/orderColumn";
 import { getReturnColumns } from "../../Uitilites/returnColumn";
 import { useLazyGetProductionDatewiseDetailsReportQuery } from "../../../redux/features/productionreport/productionreportApi";
-import { useLazyGetOrderDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
+import { useLazyGetOrderDetailsReportQuery, useLazyGetReturnDetailsReportQuery, useLazyGetSalesDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
 
 const CombineDataTableReport = ({
   combineReportData,
@@ -17,28 +17,33 @@ const CombineDataTableReport = ({
   finishGoodsInfo,
   itemSizeInfo,
   permission,
-  salesDetailsData,
   companyinfo,
   piInformation,
   clientInformation,
-  returnDetailsData,
   filters
 }) => {
-  console.log(filters)
+  console.log(combineReportData?.groupedProductionResult)
   const reportSalesTitle = "DELIVERY ORDER INFORMATION";
   const reportReturnTitle = "RETURN INFORMATION";
   const reportOrderTitle = "ORDER INFORMATION";
-  const [triggerProductionReport, { data: productionDetailsData }] =
+  const reportProductionTitle = "ORDER INFORMATION";
+  
+  const [triggerProductionReport] =
   useLazyGetProductionDatewiseDetailsReportQuery();
-  const [triggerOrderDetailsReport, { data: orderDetailsData }] =
+  const [triggerOrderDetailsReport] =
   useLazyGetOrderDetailsReportQuery();
+  const [triggerReturnDetailsReport] =
+  useLazyGetReturnDetailsReportQuery();
+  const [triggerSalesDetailsReport] =
+  useLazyGetSalesDetailsReportQuery();
 
   const salesColumns = getSalesColumns(
     finishGoodsInfo,
     itemSizeInfo,
     itemUnitInformation,
     permission,
-    salesDetailsData,
+    triggerSalesDetailsReport,
+    filters,
     companyinfo,
     piInformation,
     reportSalesTitle,
@@ -57,7 +62,9 @@ const CombineDataTableReport = ({
     itemUnitInformation,
     permission,
     triggerProductionReport,
-    filters
+    filters,
+    companyinfo,
+    reportProductionTitle
   ); 
 
   const orderColumns = getOrderColumns(
@@ -78,7 +85,8 @@ const CombineDataTableReport = ({
     itemSizeInfo,
     itemUnitInformation,
     permission,
-    returnDetailsData,
+    triggerReturnDetailsReport,
+    filters,
     companyinfo,
     piInformation,
     clientInformation,

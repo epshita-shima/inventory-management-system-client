@@ -37,8 +37,6 @@ const downloadRawMaterailConsumptionDetailsPDF = async (
       didParseCell: function (data) {
         const rowIndex = data.row.index;
         const totalRows = data.table.body.length;
-        const colIndex = data.column.index;
-        const totalCols = data.table.body[0].raw.length;
         const cellContent = data.cell.raw;
         // Extract text content from HTML string
         const textContent = cellContent?.innerText || cellContent?.textContent;
