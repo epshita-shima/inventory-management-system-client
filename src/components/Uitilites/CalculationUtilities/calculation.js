@@ -74,3 +74,17 @@ export const calculateProductionQuantity=(data)=>{
     totalQuantity + item.productionQty,0);
 
 }
+
+export const calculatePurchaseQuantity=(data)=>{
+  return data.reduce((totalQuantity,details)=>{
+    const detailsQty=details.detailsData.reduce((sum,item)=>sum+item.quantity,0)
+    return totalQuantity + detailsQty
+  },0)
+}
+
+export const calculatePurchaseAmount=(data)=>{
+  return data.reduce((totalAmount,details)=>{
+    const detailsAmount=details.detailsData.reduce((sum,item)=>sum+item.amount,0)
+    return totalAmount + detailsAmount
+  },0)
+}

@@ -10,6 +10,7 @@ const PurchaseReportTable = () => {
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
   console.log(permission);
+
   useEffect(() => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");

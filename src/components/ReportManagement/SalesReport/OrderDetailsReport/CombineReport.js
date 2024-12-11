@@ -379,7 +379,7 @@ const CombineReport = ({
 
   return (
     <div>
-      {isTableDispaly ? (
+      {isTableDispaly && (
         <div
           className=" "
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
@@ -406,7 +406,7 @@ const CombineReport = ({
             subHeader
           />
         </div>
-      ) : null}
+      )}
 
       <table id="my-combine-report-table" className="d-none">
         <thead>

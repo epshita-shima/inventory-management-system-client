@@ -35,7 +35,7 @@ export const groupSalesDataByDetails = (data) => {
   }, {});
 };
 
-export const groupReturnDateByDetails=(data)=>{
+export const groupReturnDateByDetails = (data) => {
   return data?.reduce((acc, row) => {
     // Use only `returnDate` and `piNo` for grouping
     const key = `${new Date(row.returnDate).toLocaleDateString("en-CA")}-${
@@ -70,9 +70,9 @@ export const groupReturnDateByDetails=(data)=>{
 
     return acc;
   }, {});
-}
+};
 
-export const groupProductionDateByDetails=(data)=>{
+export const groupProductionDateByDetails = (data) => {
   return data?.reduce((acc, row) => {
     const key = new Date(row.productionDate).toLocaleDateString("en-CA");
     if (!acc[key]) {
@@ -80,14 +80,13 @@ export const groupProductionDateByDetails=(data)=>{
         mainData: [],
       };
     }
-
     acc[key].mainData.push({ ...row });
 
     return acc;
   }, {});
-}
+};
 
-export const groupOrderDateByDetails=(data)=>{
+export const groupOrderDateByDetails = (data) => {
   return data?.reduce((acc, row) => {
     const key = `${row.piDate}`;
     if (!acc[key]) {
@@ -96,5 +95,15 @@ export const groupOrderDateByDetails=(data)=>{
     acc[key].push(row);
     return acc;
   }, {});
-}
+};
 
+export const groupPurchaseDateByDetails = (data) => {
+  return data?.reduce((acc, row) => {
+    const key = `${row.receiveDate}`;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(row);
+    return acc;
+  }, {});
+};

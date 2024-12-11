@@ -15,15 +15,29 @@ import {
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
+import {
+  useLazyGetPurchaseDetailsReportQuery,
+  useLazyGetPurchaseSummaryReportQuery,
+} from "../../../redux/features/purchasereport/purchasereportApi";
+import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
+import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
+import PurchaseSummaryDataTable from "./PurchaseSummaryDataTable";
 
 const PurchaseReportView = ({ permission }) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
+  const [isPurchaseDetails, setIsPurchaseDetails] = useState(false);
+  const [isPurchaseSummary, setIsPurchaseSummary] = useState(false);
+
   const [filters, setFilters] = useState({
     fromDate: new Date(fromDate).toLocaleDateString("en-CA"),
     toDate: new Date(toDate).toLocaleDateString("en-CA"),
+    itemId: "",
+    supplierId: "",
+    poId: "",
+    reportStatus: "",
   });
   const { data: rawMaterialInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
@@ -31,17 +45,24 @@ const PurchaseReportView = ({ permission }) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
-  const { data: clientInformation } =
-    useGetAllClientInformationQuery(undefined);
-  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const { data: supplierInformation } =
+    useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseInfoData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
+  const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const itemsOptions = rawMaterialWithUnitDropdown(
     rawMaterialInfo,
     itemUnitInformation
   );
-  const supplierOptions = supplierDropdown(supplierInfo);
+  const supplierOptions = supplierDropdown(supplierInformation);
   const purchaseOptions = poInfoDropdown(purchaseInfoData);
+
+  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData }] =
+    useLazyGetPurchaseDetailsReportQuery();
+
+  const [triggerPurchaseSummaryReport, { data: purchaseSummaryData }] =
+    useLazyGetPurchaseSummaryReportQuery();
 
   useEffect(() => {
     if (executeQuery) {
@@ -53,31 +74,20 @@ const PurchaseReportView = ({ permission }) => {
   const handleApplyFilters = async (updatedFilters) => {
     console.log(updatedFilters);
     setExecuteQuery(true);
-    // await triggerCombineReport(updatedFilters);
+    if (updatedFilters.reportStatus === "purchasedetailsreport") {
+      await triggerPurchaseDetailsReport(updatedFilters);
+    } else {
+      await triggerPurchaseSummaryReport(updatedFilters);
+    }
   };
+console.log(purchaseSummaryData)
 
   return (
     <div
       className="row px-5 mx-2"
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
-      <h2>Hello</h2>
       {
-        <CommonPurchaseParameter
-        fromDate={fromDate}
-        setFromDate={setFromDate}
-        toDate={toDate}
-        setToDate={setToDate}
-        handleApplyFilters={handleApplyFilters}
-        filters={filters}
-        setFilters={setFilters}
-        setIsTableDisplay={setIsTableDisplay}
-        itemsOptions={itemsOptions}
-        supplierOptions={supplierOptions}
-        purchaseOptions={purchaseOptions}
-        ></CommonPurchaseParameter>
-      }
-      {/* {
         <CommonPurchaseParameter
           fromDate={fromDate}
           setFromDate={setFromDate}
@@ -86,25 +96,39 @@ const PurchaseReportView = ({ permission }) => {
           handleApplyFilters={handleApplyFilters}
           filters={filters}
           setFilters={setFilters}
+          setIsPurchaseDetails={setIsPurchaseDetails}
+          setIsPurchaseSummary={setIsPurchaseSummary}
           setIsTableDisplay={setIsTableDisplay}
           itemsOptions={itemsOptions}
           supplierOptions={supplierOptions}
           purchaseOptions={purchaseOptions}
-        />
-      } */}
-      {/* {isTableDispaly && 
-      <PurchaseReportDataTable
-        rawMaterialInfo={rawMaterialInfo}
-        itemUnitInformation={itemUnitInformation}
-        finishGoodsInfo={finishGoodsInfo}
-        itemSizeInfo={itemSizeInfo}
-        permission={permission}
-        companyinfo={companyinfo}
-        piInformation={piInformation}
-        clientInformation={clientInformation}
-        filters={filters}
-      ></PurchaseReportDataTable>
-      } */}
+        ></CommonPurchaseParameter>
+      }
+
+      {isPurchaseDetails && (
+        <PurchaseReportDataTable
+          rawMaterialInfo={rawMaterialInfo}
+          itemUnitInformation={itemUnitInformation}
+          finishGoodsInfo={finishGoodsInfo}
+          itemSizeInfo={itemSizeInfo}
+          permission={permission}
+          filteredDatas={purchaseDetailsData}
+          companyinfo={companyinfo}
+          piInformation={piInformation}
+          supplierInformation={supplierInformation}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          filters={filters}
+        ></PurchaseReportDataTable>
+      )}
+      {isPurchaseSummary && (
+        <PurchaseSummaryDataTable
+          filteredDatas={purchaseSummaryData}
+          isTableDispaly={isTableDispaly}
+          paymentTypeInfo={paymentData}
+          companyinfo={companyinfo}
+        ></PurchaseSummaryDataTable>
+      )}
     </div>
   );
 };

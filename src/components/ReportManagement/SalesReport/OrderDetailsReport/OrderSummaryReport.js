@@ -180,7 +180,7 @@ const OrderSummaryReport = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, reportTitle]);
+  }, [companyinfo, filteredDatas, paymentTypeInfo]);
   return (
     <div
     // className="row px-5 mx-2"
