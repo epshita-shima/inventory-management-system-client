@@ -34,18 +34,16 @@ const downloadProductionDatewiseSummaryPDF = async (
         3: { cellWidth: "auto" }, 
         4: { cellWidth: "auto" } 
       },
+      
       didParseCell: function (data) {
         const rowIndex = data.row.index;
         const totalRows = data.table.body.length;
-        const colIndex = data.column.index;
-        const totalCols = data.table.body[0].raw.length;
         const cellContent = data.cell.raw;
-        // Extract text content from HTML string
+
         const textContent = cellContent?.innerText || cellContent?.textContent;
-        console.log(textContent);
         if (rowIndex === totalRows - 1) {
           data.cell.styles.fontStyle = "bold";
-          data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
+          data.cell.styles.fillColor = [138, 138, 138]; 
           data.cell.styles.textColor = [255, 255, 255];
         }
 
@@ -53,7 +51,7 @@ const downloadProductionDatewiseSummaryPDF = async (
           Object.values(data.row.cells).forEach((cell) => {
             cell.styles = cell.styles || {};
             cell.styles.fontStyle = "bold";
-            cell.styles.fillColor = [138, 138, 138]; // Gray line color
+            cell.styles.fillColor = [138, 138, 138];
             cell.styles.textColor = [255, 255, 255];
           });
           data.cell.styles.halign = "right";

@@ -6,11 +6,12 @@ const SalesDetailsTable = ({
   piInformation,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation,
   clientInformation,
   grandTotalDeliverQty,
   grandTotalDeliverAmount,
 }) => {
-  console.log(groupedData)
+  
   return (
     <table id="my-deliver-details-table" className="d-none">
       <thead>
@@ -19,9 +20,10 @@ const SalesDetailsTable = ({
           <th>Client Name</th>
           <th>PI Number</th>
           <th>Item Name</th>
+          <th>Unit</th>
           <th>Currency</th>
           <th>Deliver Qty</th>
-          <th>Unit Price</th>
+          <th>Avarage Rate</th>
           <th>Amount</th>
         </tr>
       </thead>
@@ -63,6 +65,9 @@ const SalesDetailsTable = ({
 
                   const itemSize = itemSizeInfo.find(
                     (size) => size._id === itemNames.sizeId
+                  );
+                  const itemUnit = itemUnitInformation?.find(
+                    (unit) => unit._id === itemNames.unitId
                   );
 
                   const unitPrice = piNumber?.detailsData.find(
@@ -122,6 +127,8 @@ const SalesDetailsTable = ({
                       )}
 
                       <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
+                      <td>{`${itemUnit?.unitInfo}`}</td>
+
                       <td>{currency}</td>
                       <td>{detail.deliverQty.toLocaleString()}</td>
                       <td>{calculateAvgPrice.toLocaleString()}</td>
@@ -132,7 +139,7 @@ const SalesDetailsTable = ({
 
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     style={{
                       textAlign: "right",
                       fontWeight: "bold",
@@ -167,7 +174,7 @@ const SalesDetailsTable = ({
           })
         ) : (
           <tr>
-            <td colSpan="7" style={{ textAlign: "center" }}>
+            <td colSpan="6" style={{ textAlign: "center" }}>
               No data available
             </td>
           </tr>
@@ -175,7 +182,7 @@ const SalesDetailsTable = ({
 
         <tr>
           <td
-            colSpan={5}
+            colSpan={6}
             style={{
               textAlign: "right",
               fontWeight: "bold",

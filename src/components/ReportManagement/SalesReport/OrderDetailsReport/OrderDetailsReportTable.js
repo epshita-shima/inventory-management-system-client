@@ -26,6 +26,7 @@ const OrderDetailsReportTable = ({
   isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation,
   companyinfo,
 }) => {
   const [filterText, setFilterText] = React.useState("");
@@ -120,7 +121,7 @@ const OrderDetailsReportTable = ({
       width: "150px",
     },
     {
-      name: "Unit Price",
+      name: "PI Rate",
       selector: (invoiceDetails) => invoiceDetails?.detailsData.unitPrice,
       sortable: true,
       center: true,
@@ -226,7 +227,7 @@ const OrderDetailsReportTable = ({
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -267,6 +268,7 @@ const OrderDetailsReportTable = ({
                           filteredDatas,
                           finishGoodsItemInfo,
                           itemSizeInfo,
+                          itemUnitInformation,
                           customerInfo,
                           companyinfo,
                           reportOrderTitle
@@ -283,19 +285,10 @@ const OrderDetailsReportTable = ({
         )}
       </div>
     );
-  }, [
-    companyinfo,
-    customerInfo,
-    filteredDatas,
-    finishGoodsItemInfo,
-    itemSizeInfo,
-    transformedPIData,
-  ]);
+  }, [companyinfo, customerInfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, itemUnitInformation, transformedPIData]);
 
   return (
     <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       {isTableDispaly && (
         <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
@@ -332,6 +325,7 @@ const OrderDetailsReportTable = ({
             <th>Client Name</th>
             <th>Invoice No</th>
             <th>Item Name</th>
+            <th>Unit</th>
             <th>Quantity</th>
             <th>Rate</th>
             <th>Total Amount</th>
@@ -379,6 +373,9 @@ const OrderDetailsReportTable = ({
                       const itemSize = itemSizeInfo.find(
                         (size) => size._id === itemNames.sizeId
                       );
+                      const itemUnit = itemUnitInformation.find(
+                        (unit) => unit._id === itemNames.unitId
+                      );
                       const clientName = customerInfo
                         ?.filter((client) => client._id === row.customerID)
                         .map((filteredItem) => filteredItem.clientName)
@@ -401,8 +398,8 @@ const OrderDetailsReportTable = ({
                           <td>{clientName}</td>
 
                           <td>{row.invoiceNo}</td>
-
                           <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
+                          <td>{`${itemUnit.unitInfo}`}</td>
                           <td>{detail.quantity}</td>
                           <td>{detail.unitPrice}</td>
                           <td>{detail.totalAmount.toLocaleString()}</td>
@@ -414,7 +411,7 @@ const OrderDetailsReportTable = ({
                
                   <tr>
                     <td
-                      colSpan={4}
+                      colSpan={5}
                       style={{
                         textAlign: "right",
                         fontWeight: "bold",
@@ -449,7 +446,7 @@ const OrderDetailsReportTable = ({
             })
           ) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
+              <td colSpan="5" style={{ textAlign: "center" }}>
                 No data available
               </td>
             </tr>
@@ -457,7 +454,7 @@ const OrderDetailsReportTable = ({
 
           <tr>
             <td
-              colSpan={4}
+              colSpan={5}
               style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -491,8 +488,6 @@ const OrderDetailsReportTable = ({
           </tr>
         </tbody>
       </table>
-
-     
     </div>
   );
 };

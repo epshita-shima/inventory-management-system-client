@@ -80,6 +80,7 @@ const downloadGoupSalesDetailsPDF = (
   piInformation,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation,
   clientInformation,
   companyinfo,
   reportTitle
@@ -112,7 +113,7 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
     // Iterate through the detailsData of the group
     group.detailsData.forEach((detail, detailIndex) => {
       const itemNames = finishGoodsItemInfo.find((item) => item._id === detail.itemId);
-      const itemSize = itemSizeInfo.find((size) => size._id === itemNames.sizeId);
+      const itemUnit = itemUnitInformation.find((unit) => unit._id === itemNames.unitId);
       const unitPrice = piNumber?.detailsData.find((item) => item.itemId == detail.itemId);
       const clientName = clientInformation
         ?.filter((client) => client._id === group.clientId)
@@ -131,8 +132,10 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
         detailIndex === 0 ? formattedDate : '',
         detailIndex === 0 ? clientName : '',
         detailIndex === 0 ? piNumber.invoiceNo : '',
-        `${itemNames.itemName} (${itemSize.sizeInfo})`,
+        // `${itemNames.itemName} (${itemSize.sizeInfo})`,
+       
         currency,
+        `${itemUnit?.unitInfo}`,
         detail.deliverQty.toLocaleString(),
         calculateAvgPrice.toLocaleString(),
         calCulateAmount.toLocaleString()
@@ -224,7 +227,7 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
   doc.autoTable({
     // html: "#my-deliver-details-table",
     head: [
-      ['Deliver Date', 'Client Name', 'PI Number', 'Item Name', 'Currency', 'Deliver Qty', 'Unit Price', 'Amount']
+      ['Deliver Date', 'Client Name', 'PI Number', 'Currency','Unit', 'Deliver Qty', 'Unit Price', 'Amount']
     ],
     body: finalRows,
     startY: 50,

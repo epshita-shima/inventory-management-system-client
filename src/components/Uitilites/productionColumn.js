@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import handleProductionDatewiseExcel from '../ReportProperties/Excel/handleProductionDatewiseExcel';
-import { downloadProductionGroupedDetailsPDF } from '../ReportProperties/PDF/handleProductionDatewiseDetailsPDF';
-import './dropdownTableCustomDesign.css'
-import { groupProductionDateByDetails } from './reportDataGrouping';
+import handleProductionDatewiseExcel from "../ReportProperties/Excel/handleProductionDatewiseExcel";
+import { downloadProductionGroupedDetailsPDF } from "../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
+import "./dropdownTableCustomDesign.css";
+import { groupProductionDateByDetails } from "./reportDataGrouping";
 export const getProductionColumns = (
   finishGoodsInfo,
   itemSizeInfo,
@@ -84,29 +84,42 @@ export const getProductionColumns = (
                     className="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      console.log(row)
+                      console.log(row);
                       try {
-                        const result=  await triggerProductionReport(filters)
-                        console.log(result.data)
+                        const result = await triggerProductionReport(filters);
+                        console.log(result.data);
                         const filteredData = result?.data.filter((x) => {
-                          console.log('Production Item Name:', x.productionItemName, 'Row itemId:', row.itemId);
+                          console.log(
+                            "Production Item Name:",
+                            x.productionItemName,
+                            "Row itemId:",
+                            row.itemId
+                          );
                           return x.productionItemName === row.itemId;
                         });
-                        console.log(filteredData)
-                        const groupData = groupProductionDateByDetails(filteredData);
+                        console.log(filteredData);
+                        const groupData =
+                          groupProductionDateByDetails(filteredData);
                         const convertGroupData = Object.values(groupData);
+                        const itemNames = finishGoodsInfo.find(
+                          (item) => item._id === row.itemId
+                        );
+                        const itemSize = itemSizeInfo.find(
+                          (size) => size._id === itemNames.sizeId
+                        );
+                        const reportTitle = `PRODUCTION INFORMATION-${itemNames.itemName}(${itemSize.sizeInfo})`;
                         if (companyinfo?.length !== 0) {
                           downloadProductionGroupedDetailsPDF(
-                            convertGroupData,filteredData,finishGoodsInfo, itemSizeInfo,itemUnitInformation,
-                            {companyinfo},
-                            reportOrderTitle
+                            convertGroupData,
+                            filteredData,
+                            finishGoodsInfo,
+                            itemSizeInfo,
+                            itemUnitInformation,
+                            { companyinfo },
+                            reportTitle
                           );
                         }
-                        
-                      } catch (error) {
-                      }
-                   
-
+                      } catch (error) {}
                     }}
                   >
                     PDF
@@ -116,19 +129,25 @@ export const getProductionColumns = (
                   <a
                     className="dropdown-item"
                     href="#"
-                    onClick={async() => {
-                      const result=  await triggerProductionReport(filters)
-                      console.log(result.data)
+                    onClick={async () => {
+                      const result = await triggerProductionReport(filters);
+                      console.log(result.data);
                       const filteredData = result?.data.filter((x) => {
-                        console.log('Production Item Name:', x.productionItemName, 'Row itemId:', row.itemId);
+                        console.log(
+                          "Production Item Name:",
+                          x.productionItemName,
+                          "Row itemId:",
+                          row.itemId
+                        );
                         return x.productionItemName === row.itemId;
                       });
-                      console.log(filteredData)
-                      const transformedProductionData = filteredData?.flatMap((piDetails) =>
-                        piDetails.detailsData.map((detail) => ({
-                          ...piDetails,
-                          detailsData: detail,
-                        }))
+                      console.log(filteredData);
+                      const transformedProductionData = filteredData?.flatMap(
+                        (piDetails) =>
+                          piDetails.detailsData.map((detail) => ({
+                            ...piDetails,
+                            detailsData: detail,
+                          }))
                       );
                       handleProductionDatewiseExcel(
                         transformedProductionData,

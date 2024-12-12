@@ -83,6 +83,7 @@ const downloadGoupOrderDetailsPDF = (
   filteredData,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation,
   clientInformation,
   companyinfo,
   reportOrderTitle
@@ -136,11 +137,14 @@ const downloadGoupOrderDetailsPDF = (
           const itemSize = itemSizeInfo.find(
             (size) => size._id === itemNames.sizeId
           );
+          const itemUnit = itemUnitInformation.find(
+            (size) => size._id === itemNames.unitId
+          );
           const row = [
             formattedDate,
             clientName, 
             group.invoiceNo, 
-            `${itemNames.itemName} (${itemSize.sizeInfo})`, 
+            `${itemUnit.unitInfo}`, 
             detail.quantity.toLocaleString(), 
             detail.unitPrice.toLocaleString(), 
             detail.totalAmount.toLocaleString(), 
@@ -157,7 +161,7 @@ const downloadGoupOrderDetailsPDF = (
           else{
             finalRows[finalRows.length - 1][0] = clientName;
             finalRows[finalRows.length - 1][1] = group.invoiceNo;
-            finalRows[finalRows.length - 1][2] =  `${itemNames.itemName} (${itemSize.sizeInfo})`;
+            finalRows[finalRows.length - 1][2] =  `${itemUnit.unitInfo}`;
             finalRows[finalRows.length - 1][3] = detail.quantity.toLocaleString();
             finalRows[finalRows.length - 1][4] = detail.unitPrice.toLocaleString();
             finalRows[finalRows.length - 1][5] = detail.totalAmount.toLocaleString();
@@ -258,7 +262,7 @@ const downloadGoupOrderDetailsPDF = (
         "PI Date",
         "Client Name",
         "Invoice No",
-        "Item Name",
+        "Unit",
         "Quantity",
         "Rate",
         "Amount",

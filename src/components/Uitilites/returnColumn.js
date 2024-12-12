@@ -98,12 +98,11 @@ export const getReturnColumns = (
                     class="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      console.log(filters)
-                      const result= await triggerReturnDetailsReport(filters)
-                      console.log(result)
+                      const result = await triggerReturnDetailsReport(filters);
+
                       const filteredData = result.data
                         ?.map((returnData) => {
-                          console.log(returnData)
+                          console.log(returnData);
                           const matchedDetails = returnData.detailsData?.filter(
                             (details) => details.itemId === row?.itemId
                           );
@@ -126,7 +125,13 @@ export const getReturnColumns = (
 
                       const groupData = groupReturnDateByDetails(filteredData);
                       const convertGroupData = Object.values(groupData);
-
+                      const itemNames = finishGoodsInfo.find(
+                        (item) => item._id === row.itemId
+                      );
+                      const itemSize = itemSizeInfo.find(
+                        (size) => size._id === itemNames.sizeId
+                      );
+                      const reportTitle = `RETURN INFORMATION-${itemNames.itemName}(${itemSize.sizeInfo})`;
                       if (companyinfo?.length !== 0) {
                         downloadGoupReturnDetailsPDF(
                           convertGroupData,
@@ -134,9 +139,10 @@ export const getReturnColumns = (
                           piInformation,
                           finishGoodsInfo,
                           itemSizeInfo,
+                          itemUnitInformation,
                           clientInformation,
-                          {companyinfo},
-                          reportReturnTitle
+                          { companyinfo },
+                          reportTitle
                         );
                       }
                     }}
@@ -148,14 +154,13 @@ export const getReturnColumns = (
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={async() => {
-                      const result=await triggerReturnDetailsReport(filters)
+                    onClick={async () => {
+                      const result = await triggerReturnDetailsReport(filters);
                       const filteredData = result.data
                         ?.map((returnData) => {
-                          const matchedDetails =
-                            returnData.detailsData?.filter(
-                              (details) => details.itemId === row?.itemId
-                            );
+                          const matchedDetails = returnData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
                           if (matchedDetails.length > 0) {
                             return {
                               ...returnData,

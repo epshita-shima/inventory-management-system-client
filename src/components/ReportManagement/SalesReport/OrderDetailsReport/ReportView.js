@@ -159,6 +159,7 @@ const ReportView = ({ permission }) => {
             filteredDatas={orderDetailsData}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
+            itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}
           />
         )}
@@ -184,6 +185,7 @@ const ReportView = ({ permission }) => {
             doInformation={doInformation}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
+            itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}
           />
         )}

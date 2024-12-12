@@ -1,6 +1,10 @@
 import jsPDF from "jspdf";
 import { addFooter } from "./footerUtility";
-import { calculateGrandTotalReturnAmount, calculateGrandTotalReturnQty, calculateGrandTotalSalesQty } from "../../Uitilites/CalculationUtilities/calculation";
+import {
+  calculateGrandTotalReturnAmount,
+  calculateGrandTotalReturnQty,
+  calculateGrandTotalSalesQty,
+} from "../../Uitilites/CalculationUtilities/calculation";
 import { formatDate } from "../../Uitilites/DateUtilities";
 
 const downloadReturnDetailsInfoPDF = async (companyinfo, reportTitle) => {
@@ -81,69 +85,80 @@ const downloadGoupReturnDetailsPDF = (
   piInformation,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation,
   clientInformation,
   companyinfo,
   reportTitle
 ) => {
   const doc = new jsPDF();
   const finalRows = [];
-  const grandTotalReturnQty=calculateGrandTotalReturnQty(filteredData);
-  const grandTotalReturnAmount=calculateGrandTotalReturnAmount(filteredData,piInformation);
+  const grandTotalReturnQty = calculateGrandTotalReturnQty(filteredData);
+  const grandTotalReturnAmount = calculateGrandTotalReturnAmount(
+    filteredData,
+    piInformation
+  );
 
   Object.keys(groupedData).forEach((key) => {
     const group = groupedData[key];
     const formattedDate = formatDate(group.returnDate);
     const rowSpan = group?.detailsData.length;
-  
+
     const piNumber = piInformation.find((pi) => pi._id === group.piId);
-  
+
     const dateWiseTotalQuantity = group.detailsData.reduce(
       (cur, acc) => cur + acc.returnQty,
       0
     );
-  
-    const dateWiseTotalAmount = group.detailsData.reduce(
-      (total, detail) => {
-        const item = piNumber.detailsData.find((item) => item.itemId === detail.itemId);
-        const itemTotal = detail.returnQty * (item?.unitPrice || 0);
-        return total + itemTotal;
-      },
-      0
-    );
-  
+
+    const dateWiseTotalAmount = group.detailsData.reduce((total, detail) => {
+      const item = piNumber.detailsData.find(
+        (item) => item.itemId === detail.itemId
+      );
+      const itemTotal = detail.returnQty * (item?.unitPrice || 0);
+      return total + itemTotal;
+    }, 0);
+
     // Iterate through the detailsData of the group
     group.detailsData.forEach((detail, detailIndex) => {
-      const transferFrom =clientInformation
-      ?.filter((client) => client._id === group.clientId)
-      .map((filteredItem) => filteredItem.clientName)
-      .join(", ");
+      const transferFrom = clientInformation
+        ?.filter((client) => client._id === group.clientId)
+        .map((filteredItem) => filteredItem.clientName)
+        .join(", ");
 
- 
-    const transferTo = companyinfo?.companyinfo
-      ?.filter(
-        (comapany) => comapany._id === group.transferToCompanyId
-      ).map((filteredItem) => filteredItem.companyName)
-      .join(", ");
+      const transferTo = companyinfo?.companyinfo
+        ?.filter((comapany) => comapany._id === group.transferToCompanyId)
+        .map((filteredItem) => filteredItem.companyName)
+        .join(", ");
 
-      const itemNames = finishGoodsItemInfo.find((item) => item._id === detail.itemId);
-      const itemSize = itemSizeInfo.find((size) => size._id === itemNames.sizeId);
-      const unitPrice = piNumber?.detailsData.find((item) => item.itemId == detail.itemId);
-  
+      const itemNames = finishGoodsItemInfo.find(
+        (item) => item._id === detail.itemId
+      );
+      const itemSize = itemSizeInfo.find(
+        (size) => size._id === itemNames.sizeId
+      );
+      const itemUnit = itemUnitInformation.find(
+        (unit) => unit._id === itemNames.unitId
+      );
+      const unitPrice = piNumber?.detailsData.find(
+        (item) => item.itemId == detail.itemId
+      );
+
       const calCulateAmount = unitPrice.unitPrice * detail.returnQty;
       const calculateAvgPrice = calCulateAmount / detail.returnQty;
-  
+
       // Add table rows for each detail
       finalRows.push([
-        detailIndex === 0 ? formattedDate : '',
-        detailIndex === 0 ? transferFrom : '',
-        detailIndex === 0 ? transferTo : '',
-        detailIndex === 0 ? piNumber.invoiceNo : '',
-        `${itemNames.itemName} (${itemSize.sizeInfo})`,
+        detailIndex === 0 ? formattedDate : "",
+        detailIndex === 0 ? transferFrom : "",
+        detailIndex === 0 ? transferTo : "",
+        detailIndex === 0 ? piNumber.invoiceNo : "",
+        // `${itemNames.itemName} (${itemSize.sizeInfo})`,
+        `${itemUnit?.unitInfo}`,
         detail.returnQty.toLocaleString(),
         calculateAvgPrice.toLocaleString(),
-        calCulateAmount.toLocaleString()
+        calCulateAmount.toLocaleString(),
       ]);
-  
+
       // After all details for this group, add the date-wise total row
       if (detailIndex === group.detailsData.length - 1) {
         finalRows.push([
@@ -157,7 +172,7 @@ const downloadGoupReturnDetailsPDF = (
               fontStyle: "bold",
             },
           },
-      
+
           {
             content: dateWiseTotalQuantity.toLocaleString(),
             styles: {
@@ -168,7 +183,7 @@ const downloadGoupReturnDetailsPDF = (
             },
           },
           {
-            content: '', // Empty cell for price
+            content: "", // Empty cell for price
             styles: {
               fillColor: [138, 138, 138],
               textColor: [255, 255, 255],
@@ -186,7 +201,6 @@ const downloadGoupReturnDetailsPDF = (
           },
         ]);
       }
-     
     });
   });
   finalRows.push([
@@ -210,7 +224,7 @@ const downloadGoupReturnDetailsPDF = (
       },
     },
     {
-      content: '', // Empty cell for price
+      content: "", // Empty cell for price
       styles: {
         fillColor: [138, 138, 138],
         textColor: [255, 255, 255],
@@ -230,7 +244,16 @@ const downloadGoupReturnDetailsPDF = (
   doc.autoTable({
     // html: "#my-deliver-details-table",
     head: [
-      ['Return Date', 'Transfer Form', 'Transfer To','PI Number', 'Item Name',  'Return Qty', 'Unit Price', 'Amount']
+      [
+        "Return Date",
+        "Transfer Form",
+        "Transfer To",
+        "PI Number",
+        "Unit",
+        "Return Qty",
+        "Unit Price",
+        "Amount",
+      ],
     ],
     body: finalRows,
     startY: 50,
@@ -270,9 +293,9 @@ const downloadGoupReturnDetailsPDF = (
       const colIndex = data.column.index;
       const totalCols = data.table.body[0].raw.length;
       const rawRow = data.row.raw;
-      console.log(rawRow)
+      console.log(rawRow);
       const cellContent = data.cell.raw;
-      console.log(cellContent)
+      console.log(cellContent);
       // Extract text content from HTML string
       const textContent = cellContent?.innerText || cellContent?.textContent;
       console.log(textContent);
@@ -308,8 +331,7 @@ const downloadGoupReturnDetailsPDF = (
     },
   });
 
-
   addFooter(doc, companyinfo, reportTitle);
   doc.save(`${reportTitle}.pdf`);
 };
-export { downloadReturnDetailsInfoPDF,downloadGoupReturnDetailsPDF };
+export { downloadReturnDetailsInfoPDF, downloadGoupReturnDetailsPDF };

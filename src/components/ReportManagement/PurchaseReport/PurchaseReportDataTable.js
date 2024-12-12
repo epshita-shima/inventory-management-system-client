@@ -7,6 +7,7 @@ import { groupPurchaseDateByDetails } from './../../Uitilites/reportDataGrouping
 import { downloadGoupPurchaseDetailsPDF } from "../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF";
 import handlePurchaseDatewiseReportExcel from "../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel";
 import { downloadPOPDF } from "../../ReportProperties/PDF/handlePurchaseOrderReport";
+import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 const PurchaseReportDataTable = ({
   rawMaterialInfo,
   filteredDatas,
@@ -17,11 +18,12 @@ const PurchaseReportDataTable = ({
   bankInformation,
   paymentData,
   filters,
+  isTableDispaly
 }) => {
   const [groupedData, setGroupedData] = useState({});
   const reportPurchaseTitle = "PURCHASE ORDER INFORMATION";
   const reportPOTitle="PO INFORMATION"
-
+const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
   const transformedData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
       ...piDetails,
@@ -143,8 +145,8 @@ const PurchaseReportDataTable = ({
                 borderRadius: "5px",
               }}
               onClick={() => {
-                const filterReportData = filteredDatas.find(
-                  (item) => item._id === poDetails._id
+                const filterReportData = poInformation.find(
+                  (item) => item._id === poDetails.pOSingleId
                 );
                 console.log(filterReportData);
                 downloadPOPDF(
@@ -152,7 +154,7 @@ const PurchaseReportDataTable = ({
                   rawMaterialInfo,
                   bankInformation,
                   paymentData,
-                  companyinfo,
+                  {companyinfo},
                   reportPOTitle
                 )
               }}
@@ -270,7 +272,7 @@ const PurchaseReportDataTable = ({
     // className="row px-5 mx-2"
     // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
-      {/* {isTableDispaly && ( */}
+     {isTableDispaly && (
       <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
         <div className="shadow-lg">
           <DataTable
@@ -296,7 +298,7 @@ const PurchaseReportDataTable = ({
           />
         </div>
       </div>
-      {/* )} */}
+      )} 
     </div>
   );
 };

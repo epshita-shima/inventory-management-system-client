@@ -22,6 +22,7 @@ const SalesDetailsReport = ({
   isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
+  itemUnitInformation
 }) => {
   const [groupedData, setGroupedData] = useState({});
   const reportTitle = "DELIVERY ORDER INFORMATION";
@@ -141,7 +142,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       width: "200px",
     },
     {
-      name: "Unit Price",
+      name: "Avarage Rate",
       selector: (row) => {
         const piData = piInformation?.find((x) => x._id === row?.piId);
         const itemDetails = piData?.detailsData.find(
@@ -237,7 +238,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -276,6 +277,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
                           piInformation,
                           finishGoodsItemInfo,
                           itemSizeInfo,
+                          itemUnitInformation,
                           clientInformation,
                           companyinfo,
                           reportTitle
@@ -292,15 +294,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
         )}
       </div>
     );
-  }, [
-    clientInformation,
-    companyinfo,
-    filteredDatas,
-    finishGoodsItemInfo,
-    itemSizeInfo,
-    piInformation,
-    transformedPIData,
-  ]);
+  }, [clientInformation, companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, itemUnitInformation, piInformation, transformedPIData]);
 
   return (
     <div>
@@ -338,7 +332,8 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
         formatDate={formatDate}
         piInformation={piInformation}
         finishGoodsItemInfo={finishGoodsItemInfo}
-        itemSizeInfo={itemSizeInfo}
+        itemSizeInfo={itemSizeInfo} 
+        itemUnitInformation={itemUnitInformation}
         clientInformation={clientInformation}
         grandTotalDeliverQty={grandTotalDeliverQty}
         grandTotalDeliverAmount={grandTotalDeliverAmount}

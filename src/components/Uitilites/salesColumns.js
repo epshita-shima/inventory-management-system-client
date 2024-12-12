@@ -125,7 +125,13 @@ const result=await triggerSalesDetailsReport(filters)
                         .filter((item) => item !== null);
 
                       const groupData = groupSalesDataByDetails(filteredData);
-                      // const convertGroupData=Object.values(groupData)
+                      const itemNames = finishGoodsInfo.find(
+                        (item) => item._id === row.itemId
+                      );
+                      const itemSize = itemSizeInfo.find(
+                        (size) => size._id === itemNames.sizeId
+                      );
+                      const reportTitle = `SALES INFORMATION-${itemNames.itemName}(${itemSize.sizeInfo})`;
                       if (companyinfo?.length !== 0) {
                         downloadGoupSalesDetailsPDF(
                           groupData,
@@ -133,9 +139,10 @@ const result=await triggerSalesDetailsReport(filters)
                           piInformation,
                           finishGoodsInfo,
                           itemSizeInfo,
+                          itemUnitInformation,
                           clientInformation,
                           { companyinfo },
-                          reportSalesTitle
+                          reportTitle
                         );
                       }
                     }}
@@ -178,6 +185,7 @@ const result=await triggerSalesDetailsReport(filters)
                         piInformation,
                         finishGoodsInfo,
                         itemSizeInfo,
+                        itemUnitInformation,
                         clientInformation,
                         companyinfo,
                         reportSalesTitle

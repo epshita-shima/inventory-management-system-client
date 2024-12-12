@@ -113,7 +113,7 @@ const downloadProductionGroupedDetailsPDF = async (
         finalRows.push([
           { content: formattedDate, rowSpan: rowSpan },
           detail.batchNo,
-          `${itemNames.itemName} (${itemSize.sizeInfo})`,
+          // `${itemNames.itemName} (${itemSize.sizeInfo})`,
           itemUnit.unitInfo,
           detail.productionQty,
         ]);
@@ -121,7 +121,7 @@ const downloadProductionGroupedDetailsPDF = async (
         // Subsequent rows without the first column data
         finalRows.push([
           detail.batchNo,
-          `${itemNames.itemName} (${itemSize.sizeInfo})`,
+          // `${itemNames.itemName} (${itemSize.sizeInfo})`,
           itemUnit.unitInfo,
           detail.productionQty,
         ]);
@@ -131,7 +131,7 @@ const downloadProductionGroupedDetailsPDF = async (
         finalRows.push([
           {
             content: "Datewise Total",
-            colSpan: 4,
+            colSpan: 3,
             styles: {
               halign: "right",
               fillColor: [138, 138, 138],
@@ -157,7 +157,7 @@ const downloadProductionGroupedDetailsPDF = async (
   finalRows.push([
     {
       content: "Grand Total",
-      colSpan: 4,
+      colSpan: 3,
       styles: {
         halign: "right",
         fillColor: [138, 138, 138],
@@ -178,7 +178,7 @@ const downloadProductionGroupedDetailsPDF = async (
   console.log(finalRows);
   doc.autoTable({
     // html: "#my-deliver-details-table",
-    head: [["Production Date", "Batch", "Item Name", "Unit", "Production Qty"]],
+    head: [["Production Date", "Batch",  "Unit", "Production Qty"]],
     body: finalRows,
     startY: 50,
     margin: { top: 50, bottom: 32, left: 10, right: 10 },

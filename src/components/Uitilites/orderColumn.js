@@ -100,9 +100,7 @@ export const getOrderColumns = (
                     class="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      console.log(filters);
                       const result = await triggerOrderDetailsReport(filters);
-                      console.log(result.data);
                       const filteredData = result?.data
                         ?.map((salesData) => {
                           const matchedDetails = salesData.detailsData?.filter(
@@ -122,15 +120,23 @@ export const getOrderColumns = (
                       console.log({filteredData});
                       const groupData = groupOrderDateByDetails(filteredData);
                       const convertGroupData = Object.values(groupData);
+                      const itemNames = finishGoodsInfo.find(
+                        (item) => item._id === row.itemId
+                      );
+                      const itemSize = itemSizeInfo.find(
+                        (size) => size._id === itemNames.sizeId
+                      );
+                      const reportTitle = `ORDER INFORMATION-${itemNames.itemName}(${itemSize.sizeInfo})`;
                       if (companyinfo?.length !== 0) {
                         downloadGoupOrderDetailsPDF(
                           convertGroupData,
                           filteredData,
                           finishGoodsInfo,
                           itemSizeInfo,
+                          itemUnitInformation,
                           clientInformation,
                           {companyinfo},
-                          reportOrderTitle
+                          reportTitle
                         );
                       }
                     }}
@@ -139,11 +145,12 @@ export const getOrderColumns = (
                   </a>
                 </li>
                 <li>
-                  {/* <a
+                 <a
                     class="dropdown-item"
                     href="#"
-                    onClick={() => {
-                      const filteredData = orderDetailsData
+                    onClick={async() => {
+                      const result = await triggerOrderDetailsReport(filters);
+                      const filteredData = result.data
                         ?.map((salesData) => {
                           const matchedDetails = salesData.detailsData?.filter(
                             (details) => details.itemId === row?.itemId
@@ -171,6 +178,7 @@ export const getOrderColumns = (
                         filteredData,
                         finishGoodsInfo,
                         itemSizeInfo,
+                        itemUnitInformation,
                         clientInformation,
                         companyinfo,
                         reportOrderTitle
@@ -178,7 +186,7 @@ export const getOrderColumns = (
                     }}
                   >
                     Excel
-                  </a> */}
+                  </a> 
                 </li>
               </ul>
             </div>

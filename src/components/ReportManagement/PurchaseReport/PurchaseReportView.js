@@ -72,15 +72,21 @@ const PurchaseReportView = ({ permission }) => {
   }, [executeQuery]);
 
   const handleApplyFilters = async (updatedFilters) => {
-    console.log(updatedFilters);
     setExecuteQuery(true);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      reportStatus: "",
+    }));
+
     if (updatedFilters.reportStatus === "purchasedetailsreport") {
       await triggerPurchaseDetailsReport(updatedFilters);
-    } else {
+    }
+    if (updatedFilters.reportStatus === "purchasesummaryreport") {
       await triggerPurchaseSummaryReport(updatedFilters);
     }
   };
-console.log(purchaseSummaryData)
+
+  console.log(purchaseSummaryData);
 
   return (
     <div
@@ -119,6 +125,7 @@ console.log(purchaseSummaryData)
           bankInformation={bankInformation}
           paymentData={paymentData}
           filters={filters}
+          isTableDispaly={isTableDispaly}
         ></PurchaseReportDataTable>
       )}
       {isPurchaseSummary && (

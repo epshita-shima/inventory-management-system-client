@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useMemo } from 'react'
 import DataTable from "react-data-table-component";
+import { downloadGoupPurchaseSummaryPDF } from '../../ReportProperties/PDF/handlePurchaseDatewiseSummary';
+import handlePurchaseDatewiseSummaryExcel from '../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel';
 const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,companyinfo}) => {
 
-  
+  const reportPurchaseTitle="PURCHASE SUMMARY INFORMATION"
   const columns = [
     {
       name: "Sl.",
@@ -96,9 +98,9 @@ const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        // if (companyinfo?.length !== 0 || undefined) {
-                        //   downloadSalesSummaryPDF({ companyinfo }, reportTitle);
-                        // }
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadGoupPurchaseSummaryPDF(filteredDatas,{ companyinfo }, reportPurchaseTitle);
+                        }
                       }}
                     >
                       PDF
@@ -109,12 +111,11 @@ const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        // handleOrderSummaryExcel(
-                        //   filteredDatas,
-                        //   paymentTypeInfo,
-                        //   companyinfo,
-                        //   reportTitle
-                        // );
+                        handlePurchaseDatewiseSummaryExcel(
+                            filteredDatas,
+                          companyinfo,
+                          reportPurchaseTitle
+                        )
                       }}
                     >
                       Excel
@@ -127,7 +128,7 @@ const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, paymentTypeInfo]);
+  }, [companyinfo, filteredDatas]);
 
   return (
     <div>

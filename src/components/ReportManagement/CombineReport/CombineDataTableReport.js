@@ -9,6 +9,7 @@ import { getOrderColumns } from "../../Uitilites/orderColumn";
 import { getReturnColumns } from "../../Uitilites/returnColumn";
 import { useLazyGetProductionDatewiseDetailsReportQuery } from "../../../redux/features/productionreport/productionreportApi";
 import { useLazyGetOrderDetailsReportQuery, useLazyGetReturnDetailsReportQuery, useLazyGetSalesDetailsReportQuery } from "../../../redux/features/salesreport/allreportApi";
+import { useLazyGetPurchaseDetailsReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
 
 const CombineDataTableReport = ({
   combineReportData,
@@ -20,16 +21,20 @@ const CombineDataTableReport = ({
   companyinfo,
   piInformation,
   clientInformation,
+  supplierInformation,
   filters
 }) => {
   console.log(combineReportData?.groupedProductionResult)
   const reportSalesTitle = "DELIVERY ORDER INFORMATION";
   const reportReturnTitle = "RETURN INFORMATION";
   const reportOrderTitle = "ORDER INFORMATION";
-  const reportProductionTitle = "ORDER INFORMATION";
-  
+  const reportProductionTitle = "PRODUCTION INFORMATION";
+  const reportPurchaseTitle="PURCHASE DETAILS INFORMATION";
+
   const [triggerProductionReport] =
   useLazyGetProductionDatewiseDetailsReportQuery();
+  const [triggerPurchaseReport] =
+  useLazyGetPurchaseDetailsReportQuery();
   const [triggerOrderDetailsReport] =
   useLazyGetOrderDetailsReportQuery();
   const [triggerReturnDetailsReport] =
@@ -51,9 +56,14 @@ const CombineDataTableReport = ({
   );
 
   const purchaseColumns = getPurchaseColumns(
+    triggerPurchaseReport,
+    reportPurchaseTitle,
     rawMaterialInfo,
     itemUnitInformation,
-    permission
+    permission,
+    filters,
+    companyinfo,
+    supplierInformation
   );
 
   const productionColumns = getProductionColumns(
@@ -140,7 +150,7 @@ const CombineDataTableReport = ({
   };
 
   return (
-    <div>
+    <div className="mt-4"  style={{ height: "calc(70vh - 70px)", overflowY: "auto" }}>
       <div className="accordion" id="managementAccordion">
         {/* Purchase Management */}
         <div className="accordion-item ">
@@ -209,7 +219,40 @@ const CombineDataTableReport = ({
             </div>
           </div>
         </div>
-
+   {/* Order Management */}
+   <div className="accordion-item">
+          <h2 className="accordion-header" id="headingOrder">
+            <button
+              className="accordion-button collapsed accordion-fontsize"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOrder"
+              aria-expanded="false"
+              aria-controls="collapseOrder"
+            >
+              Order Information
+            </button>
+          </h2>
+          <div
+            id="collapseOrder"
+            className="accordion-collapse collapse"
+            aria-labelledby="headingOrder"
+            data-bs-parent="#managementAccordion"
+          >
+            <div className="accordion-body">
+              <DataTable
+                columns={orderColumns}
+                data={combineReportData?.groupedOrderResult}
+                defaultSortField="itemName"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+              />
+            </div>
+          </div>
+        </div>
+        
         {/* Sales Management */}
         <div className="accordion-item">
           <h2 className="accordion-header" id="headingSales">
@@ -244,39 +287,7 @@ const CombineDataTableReport = ({
           </div>
         </div>
 
-        {/* Order Management */}
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingOrder">
-            <button
-              className="accordion-button collapsed accordion-fontsize"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseOrder"
-              aria-expanded="false"
-              aria-controls="collapseOrder"
-            >
-              Order Information
-            </button>
-          </h2>
-          <div
-            id="collapseOrder"
-            className="accordion-collapse collapse"
-            aria-labelledby="headingOrder"
-            data-bs-parent="#managementAccordion"
-          >
-            <div className="accordion-body">
-              <DataTable
-                columns={orderColumns}
-                data={combineReportData?.groupedOrderResult}
-                defaultSortField="itemName"
-                customStyles={customStyles}
-                striped
-                pagination
-                subHeader
-              />
-            </div>
-          </div>
-        </div>
+     
 
         {/* Return Management */}
         <div className="accordion-item">

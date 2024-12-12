@@ -1,5 +1,18 @@
+import { downloadGoupPurchaseDetailsPDF, downloadGoupPurchaseItemWisePDF } from "../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF";
+import { groupPurchaseDateByDetails } from "./reportDataGrouping";
+import handlePurchaseDatewiseReportExcel from './../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
+
 /* eslint-disable jsx-a11y/anchor-is-valid */
-export const getPurchaseColumns = (rawMaterialInfo, itemUnitInformation,permission) => [
+export const getPurchaseColumns = (
+  triggerPurchaseReport,
+  reportPurchaseTitle,
+  rawMaterialInfo,
+  itemUnitInformation,
+  permission,
+  filters,
+  companyinfo,
+  supplierInformation
+) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -19,7 +32,9 @@ export const getPurchaseColumns = (rawMaterialInfo, itemUnitInformation,permissi
     name: "Unit",
     selector: (row) => {
       const itemName = rawMaterialInfo?.find((x) => row?.itemId == x._id);
-      const itemUnit = itemUnitInformation?.find((size) => size._id == itemName?.unitId);
+      const itemUnit = itemUnitInformation?.find(
+        (size) => size._id == itemName?.unitId
+      );
       return itemName ? `${itemUnit?.unitInfo}` : "N/A";
     },
     sortable: true,
@@ -74,40 +89,46 @@ export const getPurchaseColumns = (rawMaterialInfo, itemUnitInformation,permissi
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={async() => {
+                    onClick={async () => {
+                      const result = await triggerPurchaseReport(filters);
+                      const filteredData = result.data
+                        ?.map((purchaseData) => {
+                          const matchedDetails =
+                            purchaseData.detailsData?.filter(
+                              (details) => details.itemId === row?.itemId
+                            );
 
-                      // const filteredData = salesDetailsData
-                      //   ?.map((salesData) => {
-                      //     const matchedDetails =
-                      //       salesData.detailsData?.filter(
-                      //         (details) => details.itemId === row?.itemId
-                      //       );
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...purchaseData,
+                              detailsData: matchedDetails,
+                            };
+                          }
 
-                      //     if (matchedDetails.length > 0) {
-                      //       return {
-                      //         ...salesData,
-                      //         detailsData: matchedDetails,
-                      //       };
-                      //     }
-
-                      //     return null;
-                      //   })
-                      //   .filter((item) => item !== null);
-
-                      // const groupData = groupSalesDataByDetails(filteredData);
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+                        const itemNames = rawMaterialInfo.find(
+                          (item) => item._id === row.itemId
+                        );
+                        const itemUnit = itemUnitInformation.find(
+                          (size) => size._id === itemNames.unitId
+                        );
+                        const reportTitle = `PURCHASE INFORMATION-${row.itemName}(${itemUnit?.unitInfo})`;
+                      const groupData =
+                        groupPurchaseDateByDetails(filteredData);
                       // const convertGroupData=Object.values(groupData)
-                      // if (companyinfo?.length !== 0) {
-                      //   downloadGoupSalesDetailsPDF(
-                      //     groupData,
-                      //     filteredData,
-                      //     piInformation,
-                      //     finishGoodsInfo,
-                      //     itemSizeInfo,
-                      //     clientInformation,
-                      //     { companyinfo },
-                      //     reportSalesTitle
-                      //   );
-                      // }
+                      if (companyinfo?.length !== 0) {
+                        downloadGoupPurchaseItemWisePDF(
+                          groupData,
+                          filteredData,
+                          rawMaterialInfo,
+                          itemUnitInformation,
+                          supplierInformation,
+                          {companyinfo},
+                          reportTitle
+                        );
+                      }
                     }}
                   >
                     PDF
@@ -117,40 +138,39 @@ export const getPurchaseColumns = (rawMaterialInfo, itemUnitInformation,permissi
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={() => {
-                      // const filteredData = salesDetailsData
-                      //   ?.map((salesData) => {
-                      //     const matchedDetails =
-                      //       salesData.detailsData?.filter(
-                      //         (details) => details.itemId === row?.itemId
-                      //       );
-                      //     if (matchedDetails.length > 0) {
-                      //       return {
-                      //         ...salesData,
-                      //         detailsData: matchedDetails,
-                      //       };
-                      //     }
-                      //     return null;
-                      //   })
-                      //   .filter((item) => item !== null);
-
-                      // const transformedPIData = filteredData?.flatMap(
-                      //   (piDetails) =>
-                      //     piDetails.detailsData.map((detail) => ({
-                      //       ...piDetails,
-                      //       detailsData: detail,
-                      //     }))
-                      // );
-                      // handleSalesDetailsExcel(
-                      //   transformedPIData,
-                      //   filteredData,
-                      //   piInformation,
-                      //   finishGoodsInfo,
-                      //   itemSizeInfo,
-                      //   clientInformation,
-                      //   companyinfo,
-                      //   reportSalesTitle
-                      // );
+                    onClick={async() => {
+                      const result=await triggerPurchaseReport(filters)
+                      const filteredData = result.data
+                        ?.map((purchaseData) => {
+                          const matchedDetails =
+                            purchaseData.detailsData?.filter(
+                              (details) => details.itemId === row?.itemId
+                            );
+                          if (matchedDetails.length > 0) {
+                            return {
+                              ...purchaseData,
+                              detailsData: matchedDetails,
+                            };
+                          }
+                          return null;
+                        })
+                        .filter((item) => item !== null);
+                      const transformedPIData = filteredData?.flatMap(
+                        (piDetails) =>
+                          piDetails.detailsData.map((detail) => ({
+                            ...piDetails,
+                            detailsData: detail,
+                          }))
+                      );
+                      handlePurchaseDatewiseReportExcel(
+                        transformedPIData,
+                        filteredData,
+                        rawMaterialInfo,
+                        itemUnitInformation,
+                        supplierInformation,
+                        companyinfo,
+                        reportPurchaseTitle
+                      );
                     }}
                   >
                     Excel
@@ -159,7 +179,6 @@ export const getPurchaseColumns = (rawMaterialInfo, itemUnitInformation,permissi
               </ul>
             </div>
           </div>
-     
         )}
       </div>
     ),

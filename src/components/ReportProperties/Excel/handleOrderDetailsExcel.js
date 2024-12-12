@@ -6,6 +6,7 @@ const handleOrderDetailsExcel = (
   mainData,
   finishGoodsInfo,
   itemSizeInfo,
+  itemUnitInformation,
   clientInformation,
   companyinfo,
   reportOrderTitle
@@ -20,6 +21,7 @@ const handleOrderDetailsExcel = (
     "clientName",
     "invoiceNo",
     "itemName",
+    "unit",
     "quantity",
     "unitPrice",
     "totalAmount",
@@ -30,6 +32,7 @@ const handleOrderDetailsExcel = (
     { header: "Client Name", key: "clientName", width: 15 },
     { header: "Invoice No", key: "invoiceNo", width: 20 },
     { header: "Item Name", key: "itemName", width: 20 },
+    { header: "Unit", key: "unit", width: 20 },
     { header: "Quantity", key: "quantity", width: 20 },
     { header: "Unit Price", key: "unitPrice", width: 20 },
     { header: "Total Amount", key: "totalAmount", width: 20 },
@@ -119,6 +122,9 @@ const handleOrderDetailsExcel = (
     const itemSize = itemSizeInfo.find(
       (size) => size._id === itemName[0]?.sizeId
     );
+    const itemUnit =  itemUnitInformation.find(
+      (size) => size._id === itemName[0]?.unitId
+    );
     const clientName = clientInformation
       ?.filter((client) => client._id === item.customerID)
       .map((filteredItem) => filteredItem.clientName)
@@ -129,6 +135,7 @@ const handleOrderDetailsExcel = (
       clientName: clientName,
       invoiceNo: item.invoiceNo,
       itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
+      unit:`${itemUnit.unitInfo}`,
       quantity: item.detailsData.quantity,
       unitPrice: item.detailsData.unitPrice,
       totalAmount: item.detailsData.totalAmount,
@@ -167,7 +174,8 @@ const handleOrderDetailsExcel = (
     piDate: "",
     clientName: "",
     invoiceNo: "",
-    itemName: "Grand Total",
+    itemName: "",
+    unit:'Grand Total',
     quantity: totalQuantity,
     unitPrice: "",
     totalAmount: totalAmount,

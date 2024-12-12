@@ -19,6 +19,7 @@ const handlePurchaseDatewiseReportExcel = (
     "supplierName",
     "supplierPoNo",
     "itemName",
+    "unit",
     "quantity",
     "unitPrice",
     "amount",
@@ -29,6 +30,7 @@ const handlePurchaseDatewiseReportExcel = (
     { header: "Supplier Name", key: "supplierName", width: 15 },
     { header: "Po No", key: "supplierPoNo", width: 20 },
     { header: "Item Name", key: "itemName", width: 20 },
+    { header: "Unit", key: "unit", width: 20 },
     { header: "Quantity", key: "quantity", width: 20 },
     { header: "Unit Price", key: "unitPrice", width: 20 },
     { header: "Amount", key: "amount", width: 20 },
@@ -127,7 +129,8 @@ const handlePurchaseDatewiseReportExcel = (
       receiveDate: new Date(item.receiveDate).toLocaleDateString("en-CA"),
       supplierName: supplierName,
       supplierPoNo: item.supplierPoNo,
-      itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
+      itemName: `${itemName[0]?.itemName || ""}`,
+      unit: `${itemSize?.unitInfo || ""}`,
       quantity: item.detailsData.quantity,
       unitPrice: item.detailsData.unitPrice,
       amount: item.detailsData.amount,
@@ -166,11 +169,13 @@ const handlePurchaseDatewiseReportExcel = (
     receiveDate: "",
     supplierName: "",
     supplierPoNo: "",
-    itemName: "Grand Total",
+    itemName: "",
+    unit:'Grand Total',
     quantity: totalQuantity,
     unitPrice: "",
     amount: totalAmount,
   };
+
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
   footerRow.eachCell((cell) => {
     cell.border = {
