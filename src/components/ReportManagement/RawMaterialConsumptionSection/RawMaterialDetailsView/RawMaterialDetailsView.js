@@ -222,7 +222,7 @@ const RawMaterialDetailsView = ({
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -294,17 +294,17 @@ const RawMaterialDetailsView = ({
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
-            title={
-              <h2
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  color: "#000",
-                }}
-              >
-                Datewise Details Report
-              </h2>
-            }
+            // title={
+            //   <h2
+            //     style={{
+            //       fontSize: "24px",
+            //       fontWeight: "bold",
+            //       color: "#000",
+            //     }}
+            //   >
+            //     Datewise Details Report
+            //   </h2>
+            // }
             subHeaderComponent={subHeaderComponent}
             columns={columns}
             data={transformedProductionData}

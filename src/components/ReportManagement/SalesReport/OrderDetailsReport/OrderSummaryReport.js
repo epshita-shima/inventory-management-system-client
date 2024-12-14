@@ -127,9 +127,10 @@ const OrderSummaryReport = ({
       },
     },
   };
+
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -181,6 +182,7 @@ const OrderSummaryReport = ({
       </div>
     );
   }, [companyinfo, filteredDatas, paymentTypeInfo]);
+  
   return (
     <div
     // className="row px-5 mx-2"
