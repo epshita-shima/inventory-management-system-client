@@ -9,7 +9,7 @@ import Select from "react-select";
 import { useLazyGetFilteredPaymentReceiveInfoQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import {
   clientInfoDropdown,

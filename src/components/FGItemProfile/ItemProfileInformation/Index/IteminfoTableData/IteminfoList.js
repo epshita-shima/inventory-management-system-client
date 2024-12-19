@@ -7,7 +7,7 @@ import { faDownload, faPenToSquare, faRefresh, faTrash } from "@fortawesome/free
 import swal from "sweetalert";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useDeleteItemInfoMutation } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { useDeleteItemInfoMutation } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import ListHeading from "../../../../Common/ListHeading/ListHeading";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { downloadPDF } from "../../../../ReportProperties/PDF/HeaderFooter";

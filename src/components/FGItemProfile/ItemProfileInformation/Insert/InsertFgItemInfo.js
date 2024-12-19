@@ -16,7 +16,7 @@ import InsertItemSizeInfoModal from "../../../SizeInformation/Insert/InsertItemS
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import InsertUnitInfoModal from "./../../../UnitInformation/Insert/InsertUnitInfoModal";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useNavigate } from "react-router-dom";
 const InsertFgItemInfo = () => {
   const ArrayHelperRef = useRef();

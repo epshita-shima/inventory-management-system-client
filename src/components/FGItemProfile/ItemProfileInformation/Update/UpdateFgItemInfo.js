@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   useGetSingleItemQuery,
   useUpdateItemInfoMutation,
-} from "../../../../redux/features/iteminformation/iteminfoApi";
+} from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useNavigate, useParams } from "react-router-dom";
 import InsertItemSizeInfoModal from "../../../SizeInformation/Insert/InsertItemSizeInfoModal";
 import InsertUnitInfoModal from "../../../UnitInformation/Insert/InsertUnitInfoModal";

@@ -14,7 +14,7 @@ import { useUpdateMultipleUserStatusMutation } from "../../../../redux/features/
 import MenuIdCollection from "../../MenuIdCollection/MenuIdCollection";
 import { useUpdateRawMaterialStatusMutation } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useUpdateCFTInfoStatusMutation } from "../../../../redux/features/cftinformation/cftInfosApi";
-import { useUpdateFinishGoodStatusMutation } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useUpdateFinishGoodStatusMutation } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useUpdateSupplierInfoStatusMutation } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useUpdateClientInfoStatusMutation } from "../../../../redux/features/clientinformation/clientInfoApi";
 import FilterComponent from "../../ListDataSearchBoxDesign/FilterComponent";

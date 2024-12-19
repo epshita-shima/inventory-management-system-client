@@ -18,7 +18,7 @@ import {
 } from "../../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { downloadDeliveryOrderPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";

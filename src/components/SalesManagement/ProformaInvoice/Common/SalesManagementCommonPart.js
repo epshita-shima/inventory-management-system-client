@@ -10,17 +10,14 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
 import InsertSalesManagement from "../Insert/InsertSalesManagement";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import {
   finishGoodsWithSizeItemDropdown,
   paymentInfoDropdown,
   userInfoDropdown,
 } from "../../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../../redux/api/apiSlice";
+
 import {
   useGetSingleInvoiceQuery,
   useInsertInvoiceInformationMutation,
@@ -33,6 +30,7 @@ import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
 import InvoiceClientEntryModal from "../../../Common/CommonModal/InvoiceClientEntryModal";
 import InvoiceFinishGoodsItemsEntryModal from "../../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
 import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();

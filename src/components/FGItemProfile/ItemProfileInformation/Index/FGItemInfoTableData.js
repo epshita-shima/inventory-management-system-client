@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import IteminfoList from './IteminfoTableData/IteminfoList';
 import { useNavigate } from 'react-router-dom';
-import { useGetAllItemInformationQuery } from '../../../../redux/features/iteminformation/iteminfoApi';
+import { useGetAllItemInformationQuery } from '../../../../redux/features/iteminformation/finishgoodsinfoApi';
 import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 
 

@@ -18,7 +18,7 @@ import {
 import swal from "sweetalert";
 import reportImage from "../../../../assets/images/reportlogo.png";
 import authorizesSingatureImage from "../../../../assets/images/Image_20240831165135.png";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";

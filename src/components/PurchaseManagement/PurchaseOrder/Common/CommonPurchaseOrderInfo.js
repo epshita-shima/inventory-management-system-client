@@ -3,10 +3,7 @@ import { useGetAllSupplierInformationQuery } from "../../../../redux/features/su
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../../redux/api/apiSlice";
+
 import {
   useGetSinglePurchaseOrderInformationQuery,
   useInsertPurchaseOrderInformationMutation,
@@ -33,6 +30,7 @@ import PurchaseOrderSingleInfo from "./PurchaseOrderSingleInfo";
 import "../Insert/InsertPurchaseOrder.css";
 import UpdatePurchaseOrderInfo from "../Update/UpdatePurchaseOrderInfo";
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
 
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();

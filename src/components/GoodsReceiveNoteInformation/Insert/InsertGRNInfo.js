@@ -21,10 +21,8 @@ import {
   useGetAllGRNInformationQuery,
 } from "../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../redux/api/apiSlice";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();

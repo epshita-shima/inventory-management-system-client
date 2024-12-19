@@ -15,16 +15,13 @@ import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleAp
 import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
 
 import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../redux/api/apiSlice";
-import {
   useCreateUserMutation,
 } from "../../../redux/features/user/userApi";
 import swal from "sweetalert";
 import TreeView from "./TreeView";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 
 const UserCreation = () => {
   const { id } = useParams();

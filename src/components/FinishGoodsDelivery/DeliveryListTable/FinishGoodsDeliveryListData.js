@@ -15,7 +15,7 @@ import { useGetAllClientInformationQuery } from "../../../redux/features/clienti
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useUpdateDeliveryOrderApproveStatusMutation } from "../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";

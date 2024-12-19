@@ -17,7 +17,7 @@ import {
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import InsertPaymentMethodInformation from "../Insert/InsertPaymentMethodInformation";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import {
   useGetAllPaymentReceiveInformationQuery,

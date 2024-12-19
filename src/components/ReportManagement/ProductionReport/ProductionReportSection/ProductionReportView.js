@@ -6,7 +6,7 @@ import DatewiseProductionSummary from "../DatewiseProductionSummary/DatewiseProd
 // import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 // import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";

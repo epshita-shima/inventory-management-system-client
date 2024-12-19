@@ -7,7 +7,7 @@ import {
   finishGoodsWithSizeItemDropdown,
   rawMaterialItemDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import "./ProductionDatePicker.css";
 import swal from "sweetalert";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";

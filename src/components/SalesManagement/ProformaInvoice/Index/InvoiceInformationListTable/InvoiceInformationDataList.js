@@ -20,7 +20,7 @@ import {
   useGetAllInvoiceInformationQuery,
 } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";

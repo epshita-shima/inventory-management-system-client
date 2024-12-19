@@ -4,7 +4,7 @@ import CombineDataTableReport from "./CombineDataTableReport";
 import { useLazyGetManagementCombineReportQuery } from "../../../redux/features/combinereport/combinereportApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";

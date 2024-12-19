@@ -27,7 +27,7 @@ import {
 import ProductionListHeading from "../../../Common/ListHeading/ProductionListHeading";
 import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");

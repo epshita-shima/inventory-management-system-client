@@ -23,13 +23,10 @@ import swal from "sweetalert";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllPaymentReceiveInformationQuery } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import InsertDetailsDOInformation from "../Insert/InsertDetailsDOInformation";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../../redux/api/apiSlice";
 import { useInsertDeliveryOrderInformationMutation } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
 
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();

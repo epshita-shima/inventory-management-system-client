@@ -14,7 +14,7 @@ import {
 import SalesSummaryReport from "./SalesSummaryReport";
 import { useGetAllDelieryOrderInformationQuery } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import SalesDetailsReport from "./SalesDetailsReport";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import SalesReturnSummaryReport from "./SalesReturnSummaryReport";
 import SalesReturnDetailsReport from "./SalesReturnDetailsReport";

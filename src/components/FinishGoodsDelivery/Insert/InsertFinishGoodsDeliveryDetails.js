@@ -1,6 +1,6 @@
 import { Field } from "formik";
 import React from "react";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 
 const InsertFinishGoodsDeliveryDetails = ({ deliveryOrderInformation }) => {

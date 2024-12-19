@@ -9,10 +9,7 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import ProductionSingleInfo from "./ProductionSingleInfo";
 import InsertProduction from "../Insert/InsertProduction";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../redux/api/apiSlice";
+
 import {
   useGetSingleProductionInformationQuery,
   useInsertProductionInformationMutation,
@@ -23,6 +20,7 @@ import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminf
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
 import UpdateProduction from "../Update/UpdateProduction";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 
 const ProductionCommonPart = () => {
   const { id } = useParams();

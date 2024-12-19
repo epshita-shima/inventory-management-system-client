@@ -7,7 +7,7 @@ import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { downloadHeadingProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 const ProductionTotalModal = ({ totalProduction,permission}) => {
   const [filterText, setFilterText] = useState("");

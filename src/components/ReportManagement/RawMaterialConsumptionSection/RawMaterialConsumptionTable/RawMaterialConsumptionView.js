@@ -6,7 +6,7 @@ import { useGetAllRMItemInformationQuery } from "../../../../redux/features/item
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { rawMaterialItemDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import { useLazyGetRawMaterialDetailsConsumptionReportQuery, useLazyGetRawMaterialSummaryConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import RawMaterialConsumptionSummaryView from './../RawMaterialSummaryView/RawMaterialConsumptionSummaryView';
 
