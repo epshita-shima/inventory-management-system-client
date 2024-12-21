@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const supplierInfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllSupplierInformation: builder.query({
-      query: () => "/supplierinfo",
+      query: () => "/api/v1/supplierinfo",
       providesTags: ["insertsupplierinfo", "updateisupplierinfo","deletesupplierinfo","changessuppliertatus"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -11,7 +11,7 @@ const supplierInfoApi = api.injectEndpoints({
 
     insertSupplierInformation: builder.mutation({
       query: (payload) => ({
-        url: "/supplierinfo",
+        url: "/api/v1/supplierinfo",
         method: "POST",
         body: payload,
       }),
@@ -25,7 +25,7 @@ const supplierInfoApi = api.injectEndpoints({
     getSingleSupplierInfo: builder.query({
       query: (id) => {
         if (id) {
-          return `/supplierinfo/${id}`;
+          return `/api/v1/supplierinfo/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -34,7 +34,7 @@ const supplierInfoApi = api.injectEndpoints({
 
     updateSupplierDetailsInfo: builder.mutation({
       query: (payload) => ({
-        url: `/supplierinfo/${payload._id}`,
+        url: `/api/v1/supplierinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -47,7 +47,7 @@ const supplierInfoApi = api.injectEndpoints({
     
     updateSupplierInfoStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/supplierinfo",
+        url: "/api/v1/supplierinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -60,7 +60,7 @@ const supplierInfoApi = api.injectEndpoints({
 
     deleteSupplierInfo: builder.mutation({
       query: (id) => ({
-        url: `/supplierinfo/${id}`,
+        url: `/api/v1/supplierinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletesupplierinfo"],

@@ -4,7 +4,7 @@ const allreportApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getOrderDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/order-details",
+        url: "/api/v1/report/order-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -13,7 +13,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getOrderSummaryReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/order-summary",
+        url: "/api/v1/report/order-summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -22,7 +22,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getSalesDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/sales-details",
+        url: "/api/v1/report/sales-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -31,7 +31,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getSalesSummaryReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/sales-summary",
+        url: "/api/v1/report/sales-summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -40,7 +40,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getReturnDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/return-details",
+        url: "/api/v1/report/return-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -49,7 +49,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getReturnSummaryReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/return-summary",
+        url: "/api/v1/report/return-summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -58,7 +58,7 @@ const allreportApi = api.injectEndpoints({
     }),
     getCombineReport: builder.query({
       query: (queryParams) => ({
-        url: "/report/combine",
+        url: "/api/v1/report/combine",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,

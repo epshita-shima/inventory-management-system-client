@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const itemSizeInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllItemSize: builder.query({
-        query: () => "/itemsize",
+        query: () => "/api/v1/itemsize",
         providesTags: ["insertitemsize"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const itemSizeInfoApi= api.injectEndpoints({
       
     insertItemSize: builder.mutation({
       query: (payload) => ({
-        url: "/itemsize",
+        url: "/api/v1/itemsize",
         method: "POST",
         body: payload,
       }),

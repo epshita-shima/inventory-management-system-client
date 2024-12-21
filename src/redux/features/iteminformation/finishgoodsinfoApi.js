@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const iteminfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllItemInformation: builder.query({
-      query: () => "/finishgoodsinfo",
+      query: () => "/api/v1/finishgoodsinfo",
       providesTags: ["insertiteminfo", "updateiteminfo","changesitemtatus","deleteiteminfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -11,7 +11,7 @@ const iteminfoApi = api.injectEndpoints({
 
     insertItemInformation: builder.mutation({
       query: (payload) => ({
-        url: "/finishgoodsinfo",
+        url: "/api/v1/finishgoodsinfo",
         method: "POST",
         body: payload,
       }),
@@ -25,7 +25,7 @@ const iteminfoApi = api.injectEndpoints({
     getSingleItem: builder.query({
       query: (id) => {
         if (id) {
-          return `/finishgoodsinfo/${id}`;
+          return `/api/v1/finishgoodsinfo/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -34,7 +34,7 @@ const iteminfoApi = api.injectEndpoints({
 
     updateItemInfo: builder.mutation({
       query: (payload) => ({
-        url: `/finishgoodsinfo/${payload._id}`,
+        url: `/api/v1/finishgoodsinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -47,7 +47,7 @@ const iteminfoApi = api.injectEndpoints({
 
     updateFinishGoodStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/finishgoodsinfo",
+        url: "/api/v1/finishgoodsinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -60,7 +60,7 @@ const iteminfoApi = api.injectEndpoints({
     
     deleteItemInfo: builder.mutation({
       query: (id) => ({
-        url: `/finishgoodsinfo/${id}`,
+        url: `/api/v1/finishgoodsinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteiteminfo"],

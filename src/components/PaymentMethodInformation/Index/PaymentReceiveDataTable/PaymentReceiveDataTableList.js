@@ -667,27 +667,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   }, []);
 
   console.log(result)
-//group by piNumber and all items are single
-
-  // const groupedDataByPINumber = filteredDatas?.reduce((acc, curr) => {
-  //   const key = `${curr.clientId}-${curr.piNumber}`;
-  //   if (!acc[key]) {
-  //     acc[key] = {
-  //       clientId: curr.clientId,
-  //       piNumber: curr.piNumber,
-  //       makeBy: curr.makeBy,
-  //       updateBy: curr.updateBy,
-  //       makeDate: curr.makeDate,
-  //       updateDate: curr.updateDate,
-  //       detailsData: [...curr.detailsData],
-  //     };
-  //   } else {
-  //     acc[key].detailsData = acc[key].detailsData.concat(curr.detailsData);
-  //   }
-  //   return acc;
-  // }, {});
-
-  // console.log(groupedDataByPINumber);
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -697,17 +676,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       }
     };
     return (
-      <div className="d-flex justify-content-end align-items-center w-100">
+      <div className="d-flex justify-content-end align-items-center w-100 mb-2">
         {filteredDatas?.length > 0 ? (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex align-items-center me-2">
-              {/* <div>
-                <FontAwesomeIcon
-                  icon={faRefresh}
-                  onClick={() => refetch()}
-                ></FontAwesomeIcon>
-                &nbsp;
-              </div> */}
               <div class="dropdown">
                 <button
                   class="btn btn-download dropdown-toggle"

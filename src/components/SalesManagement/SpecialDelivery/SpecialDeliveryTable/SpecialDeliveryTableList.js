@@ -456,7 +456,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {userWaysListData?.length > 0 ? (
           <>
             <div className="d-flex justify-content-end align-items-center">

@@ -178,7 +178,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                       height: "25px",
                                     }}
                                     onClick={() => {
-                                      //   navigate('/main-view/list-page');
+                                        navigate('/main-view/list-information');
                                     }}
                                   >
                                     <FontAwesomeIcon

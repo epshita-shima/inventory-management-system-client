@@ -3,11 +3,11 @@ import { api } from "../../api/apiSlice";
 const useroleApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getUserRole: builder.query({
-      query: () => "/userrole",
+      query: () => "/api/v1/userrole",
     }),
     addNewUserRole: builder.mutation({
       query: (payload) => ({
-        url: "/userrole",
+        url: "/api/v1/userrole",
         method: "POST",
         body: payload,
       }),

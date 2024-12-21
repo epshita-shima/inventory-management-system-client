@@ -90,7 +90,6 @@ const DeliverReturnSinglePart = ({
               })}
               onChange={(e) => {
                 setFieldValue("piId", e.value);
-                console.log(e.value);
                 const filteredDeliveryData =
                   deliveryOrderDataInformation?.filter(
                     (order) => order.piId == e.value

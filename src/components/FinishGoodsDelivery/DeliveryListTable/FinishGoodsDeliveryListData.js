@@ -28,14 +28,13 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [executeQuery, setExecuteQuery] = useState(false);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
-  const [selectedData, setSelectedData] = useState([]);
   const [filters, setFilters] = useState({
     clientId: "",
     approveStatus: "",
   });
   const { data: clientInformation } =
     useGetAllClientInformationQuery(undefined);
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredFinishGoodsDeliveryInfoQuery();
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: invoiceInformation } =
@@ -256,7 +255,7 @@ console.log(filteredDatas)
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length && (
           <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent

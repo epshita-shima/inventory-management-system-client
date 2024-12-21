@@ -28,6 +28,7 @@ import ProductionListHeading from "../../../Common/ListHeading/ProductionListHea
 import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -37,6 +38,7 @@ const ProductionInfoList = ({ permission }) => {
   const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
+  const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
   const [deleteProductionInfo] = useDeleteProductionInformationMutation();
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -189,6 +191,7 @@ const ProductionInfoList = ({ permission }) => {
                 downloadProductionPDFPERBatch(
                   filteredData,
                   finishGoods,
+                  itemSizeInfo,
                   rawItemInfo,
                   { companyinfo },
                   reportTitle
@@ -324,7 +327,7 @@ const ProductionInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">

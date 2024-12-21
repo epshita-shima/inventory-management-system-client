@@ -100,7 +100,7 @@ const SalesManagementCommonPart = () => {
     sizeInfo
   );
   const userInfoOptions = userInfoDropdown(userList);
-  console.log(userInfoOptions);
+ 
   const areFieldsEmpty = () => {
     return updateSingleInvoiceData?.detailsData?.some(
       (field) => !field.description || !field.quantity || !field.unitPrice
@@ -130,7 +130,6 @@ const SalesManagementCommonPart = () => {
     }
   }, [serialNo, id, getSingleInvoiceData, serialRefetch]);
 
-  console.log(serialValue);
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     const serialData = {
@@ -154,13 +153,18 @@ const SalesManagementCommonPart = () => {
       } else {
         const response = await insertInvoiceInfo(values);
         console.log(response)
+        const errorMessages = response?.error?.data?.errorMessages;
+        const formattedErrorMessages = Array.isArray(errorMessages)
+  ? errorMessages?.map((msg) => msg.message || msg).join("\n")
+  : "An unknown error occurred";
+
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);
           serialRefetch();
           swal("Done", "Data Save Successfully", "success");
           resetForm();
         } else if (response?.error?.status === 400) {
-          swal("Not Possible!", response?.error?.data?.message, "error");
+          swal("Not Possible!", formattedErrorMessages, "error");
         }
       }
     } catch (err) {

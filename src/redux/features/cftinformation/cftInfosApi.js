@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const cftInfosApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllCFTInfos: builder.query({
-      query: () => "/cftinfo",
+      query: () => "/api/v1/cftinfo",
       providesTags: [
         "insertcftinfos",
         "updatecftinfo",
@@ -36,7 +36,7 @@ const cftInfosApi = api.injectEndpoints({
         });
 
         return {
-          url: "/cftinfo",
+          url: "/api/v1/cftinfo",
           method: "POST",
           body: formData,
         };
@@ -51,7 +51,7 @@ const cftInfosApi = api.injectEndpoints({
     getSingleCFTInfo: builder.query({
       query: (id) => {
         if (id) {
-          return `/cftinfo/${id}`;
+          return `/api/v1/cftinfo/${id}`;
         } else {
           throw new Error("CFT info id is required");
         }
@@ -97,7 +97,7 @@ const cftInfosApi = api.injectEndpoints({
           console.log(`${key}: ${value}`);
         }
         return {
-          url: `/cftinfo/${data.id}`,
+          url: `/api/v1/cftinfo/${data.id}`,
           method: "PUT",
           body: formData,
         };
@@ -111,7 +111,7 @@ const cftInfosApi = api.injectEndpoints({
 
     updateCFTInfoStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/cftinfo",
+        url: "/api/v1/cftinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -124,7 +124,7 @@ const cftInfosApi = api.injectEndpoints({
 
     deleteCFTInfo: builder.mutation({
       query: (id) => ({
-        url: `/cftinfo/${id}`,
+        url: `/api/v1/cftinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletecftinfo"],

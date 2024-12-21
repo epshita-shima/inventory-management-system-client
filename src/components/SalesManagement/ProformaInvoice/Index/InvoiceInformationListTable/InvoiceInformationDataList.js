@@ -12,7 +12,6 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-// import reportImage from "../../../../assets/images/reportlogo.png";
 import reportImage from "../../../../../assets/images/reportlogo.png";
 import authorizesSingatureImage from "../../../../../assets/images/Image_20240831165135.png";
 import {
@@ -390,7 +389,7 @@ const InvoiceInformationDataList = ({ permission }) => {
       }
     };
     return (
-      <div className="d-flex justify-content-end align-items-center w-100">
+      <div className="d-flex justify-content-end align-items-center w-100 mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex align-items-center me-2">
             <div>

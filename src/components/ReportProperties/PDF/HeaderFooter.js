@@ -566,6 +566,9 @@ const downloadPaymentReceivedPDF = (
     const adjustmentItemsQuantity = rows.map((row) => {
       return row.paymentStatus === "adjustment" ? row.quantity : 0;
     });
+
+    const netQuantity= cashItemQuantity-adjustmentItemsQuantity
+const netAmount=cashItemAmount-adjustmentItemsAmount
     const adjustDates = rows
       .filter((row) => row.paymentStatus === "adjustment")
       .map((row) => row.paymentReceiveDate);
@@ -603,11 +606,13 @@ const downloadPaymentReceivedPDF = (
       chequeNo ? chequeNo : "N/A",
       depositeSlipNo ? depositeSlipNo : "N/A",
       formattedCashPaymentDates ? formattedCashPaymentDates : "N/A",
-      cashItemQuantity == 0 ? "-" : cashItemQuantity,
-      cashItemAmount == 0 ? "-" : cashItemAmount,
+      cashItemQuantity == 0 ? "-" : cashItemQuantity.toLocaleString(),
+      cashItemAmount == 0 ? "-" : cashItemAmount.toLocaleString(),
       formattedDates ? formattedDates : "N/A",
-      adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity,
-      adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount,
+      adjustmentItemsQuantity == 0 ? "-" : adjustmentItemsQuantity.toLocaleString(),
+      adjustmentItemsAmount == 0 ? "-" : adjustmentItemsAmount.toLocaleString(),
+      netQuantity == 0 ? "-" : netQuantity.toLocaleString(),
+      netAmount == 0 ? "-" : netAmount.toLocaleString(),
     ];
   });
 
@@ -617,11 +622,13 @@ const downloadPaymentReceivedPDF = (
       colSpan: 6,
       styles: { halign: "right", fontStyle: "bold" },
     },
-    totalCashItemsQuantity.toLocaleString(),
-    totalCashItemsAmount.toLocaleString(),
+    totalCashItemsQuantity===0 ? "-" :totalCashItemsQuantity.toLocaleString(),
+    totalCashItemsAmount===0 ? "-" : totalCashItemsAmount.toLocaleString(),
     "",
-    totaladjustmentItemsQuantity.toLocaleString(),
-    totaladjustmentItemsAmount.toLocaleString(),
+    totaladjustmentItemsQuantity===0? "-" : totaladjustmentItemsQuantity.toLocaleString(),
+    totaladjustmentItemsAmount===0? "-" : totaladjustmentItemsAmount.toLocaleString(),
+    totalNetQuantity===0? "-": totalNetQuantity.toLocaleString(),
+    totalNetAmount===0 ?"-": totalNetAmount.toLocaleString()
   ]);
 
   doc.autoTable({
@@ -638,6 +645,8 @@ const downloadPaymentReceivedPDF = (
         "Adjust Payment Date",
         "Adjust Quantity",
         "Adjust Amount",
+        "Net Quantity",
+        "Net Amount",
       ],
     ],
 
@@ -654,7 +663,7 @@ const downloadPaymentReceivedPDF = (
       lineColor: [0, 0, 0],
       textColor: [0, 0, 0],
       font: "times",
-      fontSize: 9,
+      fontSize: 7,
       overflow: "linebreak",
       cellWidth: "wrap",
     },
@@ -669,7 +678,7 @@ const downloadPaymentReceivedPDF = (
       if (data.row.index === lastRowIndex) {
         // Right-align and make the font bold for the last row
         // data.cell.styles.halign = "right";
-        data.cell.styles.fontSize = 10;
+        data.cell.styles.fontSize = 8;
         data.cell.styles.fontStyle = "bold";
       }
     },

@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const paymentreceiveApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllPaymentReceiveInformation: builder.query({
-      query: () => "/payment-receive",
+      query: () => "/api/v1/payment-receive",
       providesTags: [
         "insertpaymentreceiveinfo",
         "updatepaymentreceiveinfo",
@@ -15,7 +15,7 @@ const paymentreceiveApi = api.injectEndpoints({
     }),
     getFilteredPaymentReceiveInfo: builder.query({
       query: (queryParams) => ({
-        url: "payment-receive/filtered",
+        url: "/api/v1/payment-receive/filtered",
         params: queryParams,
         providesTags: [
           "insertpaymentreceiveinfo",
@@ -29,7 +29,7 @@ const paymentreceiveApi = api.injectEndpoints({
     }),
     insertPaymentReceiveInformation: builder.mutation({
       query: (payload) => ({
-        url: "/payment-receive",
+        url: "/api/v1/payment-receive",
         method: "POST",
         body: payload,
       }),
@@ -43,7 +43,7 @@ const paymentreceiveApi = api.injectEndpoints({
     getSinglePaymentReceive: builder.query({
       query: (id) => {
         if (id) {
-          return `/payment-receive/${id}`;
+          return `/api/v1/payment-receive/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -52,7 +52,7 @@ const paymentreceiveApi = api.injectEndpoints({
 
     updatePaymentReceiveInfo: builder.mutation({
       query: (payload) => ({
-        url: `/payment-receive/${payload._id}`,
+        url: `/api/v1/payment-receive/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -64,7 +64,7 @@ const paymentreceiveApi = api.injectEndpoints({
     }),
     updatePreviousPaymentReceiveInfo: builder.mutation({
       query: (payload) => ({
-        url: `/payment-receive`,
+        url: `/api/v1/payment-receive`,
         method: "PUT",
         body: payload,
       }),
@@ -77,7 +77,7 @@ const paymentreceiveApi = api.injectEndpoints({
 
     deletepaymentreceiveInfo: builder.mutation({
       query: (payload) => ({
-        url: `/payment-receive`,
+        url: `/api/v1/payment-receive`,
         method: "DELETE",
         body:payload
       }),
