@@ -14,21 +14,22 @@ import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryMo
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
 
-import {
-  useCreateUserMutation,
-} from "../../../redux/features/user/userApi";
+import { useCreateUserMutation } from "../../../redux/features/user/userApi";
 import swal from "sweetalert";
 import TreeView from "./TreeView";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+import {
+  useCreateSerialNoMutation,
+  useGetSerialNoQuery,
+} from "../../../redux/features/serialgenerate/serialApi";
 
 const UserCreation = () => {
   const { id } = useParams();
   var [isUpdate] = useState(id ? true : false);
   const [clickedCheckboxes, setClickedCheckboxes] = useState([]);
   const [singleUserData, setSingleUserData] = useState([]);
-  const [serialValue, setSerialValue]=useState([])
+  const [serialValue, setSerialValue] = useState([]);
 
   const {
     data: userRoleData,
@@ -40,6 +41,7 @@ const UserCreation = () => {
     isError: menuItemsIsError,
     isLoading: menuItemsIsLoading,
   } = useGetAllMenuItemsQuery();
+
   const { data: serialNo } = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
   const [createNewUser] = useCreateUserMutation();
@@ -48,15 +50,14 @@ const UserCreation = () => {
   const getUserParse = JSON.parse(getUser);
   const makebyUser = getUserParse[0].username;
 
-  useEffect(()=>{
-    if( serialNo && serialNo.length > 0){
+  useEffect(() => {
+    if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
         return current.serialNo > max.serialNo ? current : max;
-      })
-      setSerialValue(maxSerialNoObject)
+      });
+      setSerialValue(maxSerialNoObject);
     }
-  },[serialNo])
-
+  }, [serialNo]);
 
   const [password, setPassword] = useState("LC00");
   const [validated, setValidated] = useState(false);
@@ -71,33 +72,38 @@ const UserCreation = () => {
     isactive: true,
     menulist: [],
   });
-  
-  useEffect(()=>{
-    if(localStorage.length>0){
-    }
-    else{
-      navigate('/')
-    }
-  },[navigate])
 
+  useEffect(() => {
+    if (localStorage.length > 0) {
+    } else {
+      navigate("/");
+    }
+  }, [navigate]);
 
-  if(menuItemsIsLoading){
-  return <div className="d-flex justify-content-center align-items-center">
-    <button class="btn" style={{backgroundColor:'#2DDC1B',color:'white'}} type="button" disabled>
-  <span
-    class="spinner-grow spinner-grow-sm"
-    role="status"
-    aria-hidden="true"
-  ></span>
-  Loading...
-</button>
-  </div>
+  if (menuItemsIsLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <button
+          class="btn"
+          style={{ backgroundColor: "#2DDC1B", color: "white" }}
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    );
   }
   function mergePermissions(mainData, permissionsData) {
     // Helper function to merge permissions for items items recursively
-    console.log(permissionsData)
+    console.log(permissionsData);
     function mergeDropdownPermissions(mainDropdown, permissionsDropdown) {
-      if (!mainDropdown || !permissionsDropdown.length===0) {
+      if (!mainDropdown || !permissionsDropdown.length === 0) {
         return [];
       }
       return mainDropdown.map((mainItem) => {
@@ -123,108 +129,115 @@ const UserCreation = () => {
     }
 
     return mainData?.map((mainItem) => {
-      console.log(mainItem)
+      console.log(mainItem);
       const permissionsItem = permissionsData?.find(
-        (permItem) =>((permItem.parentIds).reduce((acc, key) => {
-           // You can set any default value here
-          return key===mainItem._id;
-      }, {}))
+        (permItem) =>
+          permItem.parentIds.reduce((acc, key) => {
+            // You can set any default value here
+            return key === mainItem._id;
+          }, {})
         //  permItem && permItem.parentIds === mainItem._id
       );
-      console.log(permissionsItem)
+      console.log(permissionsItem);
       if (permissionsItem && mainItem.items && permissionsItem.items) {
         // Merge permissions for the current main item's items items
         return {
           ...mainItem,
-          items: mergeDropdownPermissions(
-            mainItem.items,
-            permissionsItem
-          ),
+          items: mergeDropdownPermissions(mainItem.items, permissionsItem),
         };
       }
       return mainItem;
     });
   }
 
-  const mergedData = mergePermissions(menuItems,  formData?.menulist );
+  const mergedData = mergePermissions(menuItems, formData?.menulist);
 
   if (menuItemsIsLoading) {
     return <p>Loading...</p>;
   }
- 
-  const mergedArray = mergedData?.map(dataItem => {
+
+  const mergedArray = mergedData?.map((dataItem) => {
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {
-        return items?.map(item => {
-            const clickedCheckbox = clickedCheckboxes.find(checkbox => checkbox.childId === item._id);
-            const isChecked = clickedCheckbox ? clickedCheckbox.isChecked : false;
-            const isInserted = clickedCheckbox ? clickedCheckbox.isInserted : false;
-            const isUpdated = clickedCheckbox ? clickedCheckbox.isUpdated : false;
-            const isPDF = clickedCheckbox ? clickedCheckbox.isPDF : false;
-            const del = clickedCheckbox ? clickedCheckbox.isRemoved : false;
-            const parentIds = clickedCheckbox ? clickedCheckbox.parentIds : [];
-            const trackId = clickedCheckbox ? clickedCheckbox.childId : item._id;
+      return items?.map((item) => {
+        const clickedCheckbox = clickedCheckboxes.find(
+          (checkbox) => checkbox.childId === item._id
+        );
+        const isChecked = clickedCheckbox ? clickedCheckbox.isChecked : false;
+        const isInserted = clickedCheckbox ? clickedCheckbox.isInserted : false;
+        const isUpdated = clickedCheckbox ? clickedCheckbox.isUpdated : false;
+        const isPDF = clickedCheckbox ? clickedCheckbox.isPDF : false;
+        const del = clickedCheckbox ? clickedCheckbox.isRemoved : false;
+        const parentIds = clickedCheckbox ? clickedCheckbox.parentIds : [];
+        const trackId = clickedCheckbox ? clickedCheckbox.childId : item._id;
 
-            // Recursively merge checkboxes into nested items
-            const mergedItems = mergeCheckboxIntoDropdown(item?.items, clickedCheckboxes);
+        // Recursively merge checkboxes into nested items
+        const mergedItems = mergeCheckboxIntoDropdown(
+          item?.items,
+          clickedCheckboxes
+        );
 
-            // Check if any child item is checked
-            const anyChildChecked = mergedItems?.some(child => child.isChecked);
+        // Check if any child item is checked
+        const anyChildChecked = mergedItems?.some((child) => child.isChecked);
 
-            // If any child item is checked, set parent isChecked to true dynamically
-            const parentIsChecked = anyChildChecked || isChecked;
+        // If any child item is checked, set parent isChecked to true dynamically
+        const parentIsChecked = anyChildChecked || isChecked;
 
-            return {
-                ...item,
-                trackId,
-                isChecked: parentIsChecked,
-                isInserted,
-                isUpdated,
-                isPDF,
-                isRemoved: del,
-                parentIds,
-                items: mergedItems // Assign the merged items
-            };
-        });
+        return {
+          ...item,
+          trackId,
+          isChecked: parentIsChecked,
+          isInserted,
+          isUpdated,
+          isPDF,
+          isRemoved: del,
+          parentIds,
+          items: mergedItems, // Assign the merged items
+        };
+      });
     };
 
     // Filter clicked checkboxes for the current dataItem
-    const clickedCheckboxe = clickedCheckboxes.filter(checkbox => checkbox.parentIds.includes(dataItem._id));
+    const clickedCheckboxe = clickedCheckboxes.filter((checkbox) =>
+      checkbox.parentIds.includes(dataItem._id)
+    );
 
     // Check if any immediate child item is checked
-    const anyImmediateChildChecked = clickedCheckboxe.some(checkbox => checkbox.isChecked);
+    const anyImmediateChildChecked = clickedCheckboxe.some(
+      (checkbox) => checkbox.isChecked
+    );
 
     // Set the isChecked field for the top parent
     const topParentIsChecked = anyImmediateChildChecked || dataItem.isChecked;
 
     return {
-        ...dataItem,
-        isChecked: topParentIsChecked,
-        items: mergeCheckboxIntoDropdown(dataItem?.items || [], clickedCheckboxe) // Use empty array if items is undefined
+      ...dataItem,
+      isChecked: topParentIsChecked,
+      items: mergeCheckboxIntoDropdown(dataItem?.items || [], clickedCheckboxe), // Use empty array if items is undefined
     };
-});
-  
-const checkedData=mergedArray?.filter(x=>x.isChecked==true)
+  });
 
-  const handleCreateUser =async (e) => {
+  const checkedData = mergedArray?.filter((x) => x.isChecked == true);
+
+  const handleCreateUser = async (e) => {
     e.preventDefault();
-  
+
     const dataWithoutMenulistId = {
       ...formData,
       username: formData.firstname + "-0" + serialValue?.serialNo,
-      menulist: checkedData?.map(item => {
-        console.log(item)
+      menulist: checkedData?.map((item) => {
+        console.log(item);
         const { _id, items, ...itemWithoutId } = item;
 
-        const dropdownWithoutIds = items?.map(d => {
+        const dropdownWithoutIds = items?.map((d) => {
           const { _id, ...dropdownItemWithoutId } = d;
           return dropdownItemWithoutId;
         });
 
         return {
           ...itemWithoutId,
-          items: dropdownWithoutIds
+          items: dropdownWithoutIds,
         };
-      })
+      }),
     };
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -235,60 +248,61 @@ const checkedData=mergedArray?.filter(x=>x.isChecked==true)
     const serialData = {
       serialNo: serialNo?.serialNo,
       type: "user",
-      year:new Date().toLocaleDateString("en-CA"),
+      year: new Date().toLocaleDateString("en-CA"),
       makeby: makebyUser,
       updateby: "",
     };
     // Check if any field is empty
-    const isEmpty = Object.values(dataWithoutMenulistId ).some(
+    const isEmpty = Object.values(dataWithoutMenulistId).some(
       (value) => value === "" || value?.length === 0
     );
-  
+
     if (isEmpty) {
       swal("Not possible", "Please fill up form correctly", "warning");
       return;
     } else {
-     const responseSerial= await createSerialNo(serialData);
-     console.log(responseSerial)
-     const responseUser=await createNewUser(dataWithoutMenulistId);
-     console.log(responseUser)
-     if (responseSerial.data.status === 201 && responseUser.data.status === 200) {
-      swal("Done", "Data Save Successfully", "success");
-      navigate("/main-view/user-setting");
-    } else {
-      swal("Error", "An error occurred while creating the user", "error");
-    }
+      const responseSerial = await createSerialNo(serialData);
+      console.log(responseSerial);
+      const responseUser = await createNewUser(dataWithoutMenulistId);
+      console.log(responseUser);
+      if (
+        responseSerial.data.status === 201 &&
+        responseUser.data.status === 200
+      ) {
+        swal("Done", "Data Save Successfully", "success");
+        navigate("/main-view/user-setting");
+      } else {
+        swal("Error", "An error occurred while creating the user", "error");
+      }
       // swal("Done", "Data Save Successfully", "success");
       // navigate("/main-view/user-list");
     }
     // Handle form submission, for example, send data to backend
-    console.log("Form submitted:", JSON.stringify(dataWithoutMenulistId ));
+    console.log("Form submitted:", JSON.stringify(dataWithoutMenulistId));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-   
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const options = userRoleData?.map(({ _id, userrolename }) => ({
     value: _id,
     label: userrolename,
   }));
-  
 
   return (
-    <div className="container-fluid p-0 m-0 usercreation-table" 
-    style={{
-      overflowY:"scroll",
-      height:'500px'
-    }}
+    <div
+      className="container-fluid p-0 m-0 usercreation-table"
+      style={{
+        overflowY: "scroll",
+        height: "500px",
+      }}
     >
-
       <div class="container">
         <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">
@@ -313,17 +327,25 @@ const checkedData=mergedArray?.filter(x=>x.isChecked==true)
               </span>
             </p>
 
-            <button 
-              style={{backgroundColor:'#E55566',outline:"none",border:'none',color:'white',height:'25px'}}
-              onClick={()=>{
-                navigate('/main-view/user-setting')
+            <button
+              style={{
+                backgroundColor: "#E55566",
+                outline: "none",
+                border: "none",
+                color: "white",
+                height: "25px",
               }}
-              ><FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon> Back to menulist</button>
-           
+              onClick={() => {
+                navigate("/main-view/user-setting");
+              }}
+            >
+              <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon>{" "}
+              Back to menulist
+            </button>
+
             {/* <p style={{ fontSize: "20px", color: "red" }}>
               <FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>
             </p> */}
-            
           </div>
           <div className="mt-5">
             <Form validated={validated} onSubmit={handleCreateUser}>
@@ -453,10 +475,10 @@ const checkedData=mergedArray?.filter(x=>x.isChecked==true)
                         if (isUpdate) {
                           setSingleUserData({
                             ...singleUserData,
-                            "roleId": e.value,
+                            roleId: e.value,
                           });
                         } else {
-                          setFormData({ ...formData, "roleId": e.value });
+                          setFormData({ ...formData, roleId: e.value });
                         }
                       }}
                     ></Select>

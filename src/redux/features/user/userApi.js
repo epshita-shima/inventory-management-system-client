@@ -62,6 +62,7 @@ const userApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+    
     updateMultipleUserField: builder.mutation({
       query: (dataToUpdate) => ({
         url: "/api/v1/users/updatestatus/updateMultiple",
@@ -70,6 +71,7 @@ const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ["updatedata"],
     }),
+
     deleteUser: builder.mutation({
       query: (id) => ({
         url: `/api/v1/users/delete/${id}`,

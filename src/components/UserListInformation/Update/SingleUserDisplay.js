@@ -17,6 +17,7 @@ import {
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
 import TreeSingleUserView from "./TreeSingleUserView";
+import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
 
 const SingleUserDisplay = () => {
   const { id } = useParams();
@@ -30,13 +31,17 @@ const SingleUserDisplay = () => {
     isError: userRoleIsError,
     isLoading: userRoleIsLoading,
   } = useGetUserRoleQuery();
-
+  const {
+    data: menuItems,
+    isError: menuItemsIsError,
+    isLoading: menuItemsIsLoading,
+  } = useGetAllMenuItemsQuery();
   const navigate = useNavigate();
-  console.log(singleUser)
+  console.log(JSON.stringify(singleUser));
+  console.log(menuItems);
   useEffect(() => {
     setSingleUserData(singleUser);
   }, [singleUser]);
-
 
   const [validated, setValidated] = useState(false);
   const parentIds = [];
@@ -145,25 +150,22 @@ const SingleUserDisplay = () => {
 
   return (
     <div
-      className="container-fluid p-0 m-0"
-      style={{
-        alignItems: "center",
-        position: "absolute",
-        top: "10%",
-        overflow: "hidden",
-      }}
+    className="container-fluid p-0 m-0 usercreation-table"
+    style={{
+      overflowY: "scroll",
+      height: "500px",
+    }}
     >
-    
       <div class="container">
         <div className="shadow-lg mt-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">
             <p>
               <FontAwesomeIcon
-                style={{ fontSize: "20px", color: "#00B987" }}
+                style={{ fontSize: "20px", color: "#2DDC1B" }}
                 icon={faUserAlt}
               />
               <FontAwesomeIcon
-                style={{ fontSize: "14px", color: "#00B987" }}
+                style={{ fontSize: "14px", color: "#2DDC1B" }}
                 icon={faPlus}
               />
               &nbsp;
@@ -174,7 +176,7 @@ const SingleUserDisplay = () => {
                   letterSpacing: ".5px",
                 }}
               >
-                {isUpdate ? "Update user" : "Add user(s)"}
+                Update user
               </span>
             </p>
             <p style={{ fontSize: "20px", color: "red" }}>
@@ -183,7 +185,7 @@ const SingleUserDisplay = () => {
           </div>
           <div className="mt-5">
             <Form validated={validated} onSubmit={handleUpdateUser}>
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-sm-block d-md-flex d-lg-flex justify-content-between align-items-centerd-flex justify-content-between align-items-center">
                 <div className="w-100">
                   <div>
                     <Form.Group controlId="formInput">
@@ -208,7 +210,7 @@ const SingleUserDisplay = () => {
                   </div>
                 </div>
 
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <div>
                     <Form.Group controlId="formInput">
                       <Form.Control
@@ -229,7 +231,7 @@ const SingleUserDisplay = () => {
                     </Form.Group>
                   </div>
                 </div>
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <Form.Group controlId="formInput">
                     <Form.Control
                       type="text"
@@ -245,7 +247,7 @@ const SingleUserDisplay = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <Form.Group controlId="formInput">
                     <Form.Control
                       type="text"
@@ -260,7 +262,7 @@ const SingleUserDisplay = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <div className="d-flex justify-content-between align-items-center w-100 ms-2">
+                <div className="d-flex justify-content-between align-items-center w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <div className="w-100">
                     <Select
                       class="form-select"
@@ -273,15 +275,15 @@ const SingleUserDisplay = () => {
                           ...baseStyles,
                           borderColor: state.isFocused ? "#fff" : "#fff",
                           border: "none",
-                          borderBottom: "1px solid #00B987",
+                          borderBottom: "1px solid #2DDC1B",
                         }),
                       }}
                       theme={(theme) => ({
                         ...theme,
                         colors: {
                           ...theme.colors,
-                          primary25: "#CBF3F0",
-                          primary: "#00B987",
+                          primary25: "#B8FEB3",
+                          primary: "#2DDC1B",
                         },
                       })}
                       value={options?.find(
@@ -292,6 +294,7 @@ const SingleUserDisplay = () => {
                       onChange={(e) => {
                         setSingleUserData({
                           ...singleUserData,
+                          // eslint-disable-next-line no-useless-computed-key
                           ["roleId"]: e.value,
                         });
                       }}
@@ -306,7 +309,7 @@ const SingleUserDisplay = () => {
                   <div className=" ms-2">
                     <FontAwesomeIcon
                       className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
-                      style={{ background: "#00B987" }}
+                      style={{ background: "#2DDC1B" }}
                       icon={faPlus}
                       data-toggle="modal"
                       data-target="#exampleModal"
@@ -321,6 +324,7 @@ const SingleUserDisplay = () => {
             {
               <TreeSingleUserView
                 singleUserData={singleUserData?.menulist}
+                // singleUserData={menuItems}
                 setSingleUserData={setSingleUserData}
                 parentIds={parentIds}
                 updateMenuItem={updateMenuItem}
@@ -335,8 +339,8 @@ const SingleUserDisplay = () => {
             <button
               className="btn text-uppercase rounded-4"
               style={{
-                border: "1px solid #00B987",
-                color: "#00B987",
+                border: "1px solid#2DDC1B",
+                color: "#2DDC1B",
                 fontWeight: "700",
                 outline: "none",
               }}
@@ -347,7 +351,7 @@ const SingleUserDisplay = () => {
             <button
               className="btn text-uppercase rounded-4"
               style={{
-                background: "#00B987",
+                background: "#2DDC1B",
                 color: "#fff",
                 fontWeight: "700",
                 outline: "none",

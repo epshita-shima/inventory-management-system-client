@@ -79,7 +79,7 @@ const UserRoleEntryModal = () => {
                     aria-describedby="basic-addon2"
                     value={userRoleName}
                     onChange={(e) => setUserRoleName(e.target.value)}
-                    style={{ border: "1px solid #00B987" }}
+                    style={{ border: "1px solid #2DDC1B" ,borderRadius:'5px'}}
                   />
                 </InputGroup>
               </Form>
@@ -90,18 +90,19 @@ const UserRoleEntryModal = () => {
               className="btn text-uppercase rounded-4"
               data-dismiss="modal"
               style={{
-                border: "1px solid #00B987",
-                color: "#00B987",
+                border: "1px solid #2DDC1B",
+                color: "#2DDC1B",
                 fontWeight: "700",
                 outline: "none",
               }}
+              onClick={()=>setUserRoleName('')}
             >
               Cancle
             </button>
             <button
               className="btn text-uppercase rounded-4"
               style={{
-                background: "#00B987",
+                background: "#2DDC1B",
                 color: "#fff",
                 fontWeight: "700",
                 outline: "none",

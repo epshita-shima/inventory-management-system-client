@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import "./UserActivationModal.css";
 import { useGetSingleUserQuery, useUpdateUserMutation } from "../../../../redux/features/user/userApi";
 import swal from "sweetalert";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 const UserActivationModal = ({userId}) => {
   console.log(userId)
   const { data: singleUser } = useGetSingleUserQuery(userId);
   const [updateData] = useUpdateUserMutation();
   const [ updateUserStatus,setUpdateUserStatus]=useState([])
-  console.log(updateUserStatus)
-  console.log(singleUser)
+
   return (
     <div
       class="modal fade"
@@ -97,18 +97,21 @@ const UserActivationModal = ({userId}) => {
                       <td className="align-middle ">
                         <input
                           type="checkbox"
-                   
+                          checked={updateUserStatus?.isactive}
                           aria-label="Checkbox for following text input"
                           onClick={async(e)=>{
                             const {checked}=e.target
-                            const updatedUserData = { ...singleUser, isactive:false };
-                            setUpdateUserStatus(updatedUserData)
-                            // 
-                            // console.log('Data updated successfully:', response);
+                            // const updatedUserData = { ...singleUser, isactive:checked};
+                            // console.log(updatedUserData)
+                            // setUpdateUserStatus(updatedUserData)
+                            setUpdateUserStatus((prevData) => ({
+                              ...prevData,
+                              isactive: checked,
+                              updateBy: getMakebyUser(),
+                              updateDate: new Date(),
+                            }));
                           }}
                         />
-
-                        {/* <FontAwesomeIcon style={{color:'#2DDC1B'}} icon={faEyeSlash}/> */}
                       </td>
                     </tr>
                   </tbody>

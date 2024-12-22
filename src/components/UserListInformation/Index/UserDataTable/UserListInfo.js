@@ -27,9 +27,9 @@ import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
 import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
-import handleCheckboxClick from './../../../Common/ListHeadingModal/Function/handleCheckboxClick';
+import handleCheckboxClick from "./../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import './UserListInfo.js';
+import "./UserListInfo.js";
 
 const UserListInfo = ({
   setChangePassword,
@@ -39,24 +39,23 @@ const UserListInfo = ({
   permission,
 }) => {
   const [userId, setUserId] = useState(null);
-  const { data: user } = useGetAllUserQuery(undefined);
+  const { data: user,refetch } = useGetAllUserQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [activeUserModal, setActiveDataModal] = useState(false);
   const [inActiveUserModal, setInActiveUserModal] = useState(false);
   const [deleteUser, { isLoading, isSuccess, isError }] =
     useDeleteUserMutation();
   const navigate = useNavigate();
-  const activeUser = user?.filter((user) => user.isactive == true);
-  const inActiveUser = user?.filter((user) => user.isactive == false);
+  const activeUser = user?.filter((user) => user.isactive === true);
+  const inActiveUser = user?.filter((user) => user.isactive === false);
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
   const [extractedAllData, setExtractedAllData] = useState([]);
-  const [demoData, setDemoData] = useState(null);
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All User";
-  console.log(extractedData)
+  console.log(activeUser);
 
   useEffect(() => {
     const activeUsers = user?.filter((user) => user.isactive == true);
@@ -65,50 +64,30 @@ const UserListInfo = ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
 
     const extractedFields = activeUsers?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
 
     const extractedInactiveFields = inActiveUser?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
-    
-    setExtractedAllData(extractedFieldsForAllData)
+
+    setExtractedAllData(extractedFieldsForAllData);
     setExtractedData(extractedFields);
     setExtractedInActiveData(extractedInactiveFields);
   }, [user]);
 
-  useEffect(() => {
-    // Fetch the JSON data
-    const fetchData = async () => {
-      try {
-        const response = await fetch("jsonData.json"); // Adjust the path to your JSON file
-        const data = await response.json();
-        setDemoData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  Font.register({
-    family: "Oswald",
-    src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-  });
-
   const handleActiveStatus = (id) => {
-    setUserId(id);
+    setUserId(id._id);
   };
 
   const generateColumns = (data, fields) => {
@@ -136,8 +115,8 @@ const UserListInfo = ({
                 <input
                   type="checkbox"
                   aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
-                  onChange={(e) => handleCheckboxClick(row,setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
+                  checked={row.status}
+                  onChange={(e) => handleCheckboxClick(row, setSelectedData)}
                 />
               </a>
             </div>
@@ -199,7 +178,11 @@ const UserListInfo = ({
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {user?.isactive == true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {user?.isactive === true ? (
+              <p className="text-success fw-bold">Active</p>
+            ) : (
+              <p className="text-danger fw-bold">InActive</p>
+            )}
           </a>
         </div>
       ),
@@ -230,7 +213,8 @@ const UserListInfo = ({
               data-target="#exampleModalLong"
               icon={faEye}
               onClick={() => {
-                handleActiveStatus(activeUser?._id);
+                console.log(user);
+                handleActiveStatus(user);
               }}
             ></FontAwesomeIcon>
           </a>
@@ -363,11 +347,13 @@ const UserListInfo = ({
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex ">
+          <div className="table-head-icon d-flex">
             <div>
-              <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp;
+              <FontAwesomeIcon icon={faRefresh}
+              onClick={()=>refetch()}
+              ></FontAwesomeIcon> &nbsp;
             </div>
             <div class="dropdown">
               <button
@@ -398,7 +384,11 @@ const UserListInfo = ({
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleDownload(extractedAllData, companyinfo, reportTitle);
+                      handleDownload(
+                        extractedAllData,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -423,7 +413,7 @@ const UserListInfo = ({
     resetPaginationToggle,
     companyinfo,
     reportTitle,
-    extractedAllData
+    extractedAllData,
   ]);
 
   return (
@@ -435,7 +425,7 @@ const UserListInfo = ({
         setInActiveDataModal={setInActiveUserModal}
         inActiveUser={inActiveUser}
       ></ListHeading>
-      <div class=" mt-5">
+      <div class="mt-5">
         <div class="row">
           <div
             className="col userlist-table main-table-view"
@@ -549,16 +539,17 @@ const UserListInfo = ({
         ""
       )}
       {inActiveUserModal ? (
-<ActiveListDataModal
-   listData={inActiveUser}
-   inActiveDataModal={inActiveUserModal}
-   setInActiveDataModal={setInActiveUserModal}
-   extractedInActiveData={extractedInActiveData}
-   generateColumns={generateColumns}
-     companyinfo={companyinfo}
-     selectedData={selectedData}
-     setSelectedData={setSelectedData}
-></ActiveListDataModal>
+        <ActiveListDataModal
+          listData={inActiveUser}
+          inActiveDataModal={inActiveUserModal}
+          setInActiveDataModal={setInActiveUserModal}
+          extractedInActiveData={extractedInActiveData}
+          generateColumns={generateColumns}
+          companyinfo={companyinfo}
+          selectedData={selectedData}
+          setSelectedData={setSelectedData}
+        ></ActiveListDataModal>
+      ) : (
         // <UserActiveListModal
         //   user={inActiveUser}
         //   inActiveUserModal={inActiveUserModal}
@@ -566,7 +557,6 @@ const UserListInfo = ({
         //   extractedInActiveData={extractedInActiveData}
         //   companyinfo={companyinfo}
         // ></UserActiveListModal>
-      ) : (
         ""
       )}
     </div>

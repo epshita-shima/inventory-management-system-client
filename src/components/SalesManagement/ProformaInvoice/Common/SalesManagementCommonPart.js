@@ -30,7 +30,10 @@ import UpdateInvoiceDetails from "../Update/UpdateInvoiceDetails";
 import InvoiceClientEntryModal from "../../../Common/CommonModal/InvoiceClientEntryModal";
 import InvoiceFinishGoodsItemsEntryModal from "../../../Common/CommonModal/InvoiceFinishGoodsItemsEntryModal";
 import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
-import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
+import {
+  useCreateSerialNoMutation,
+  useGetSerialNoQuery,
+} from "../../../../redux/features/serialgenerate/serialApi";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
@@ -100,7 +103,7 @@ const SalesManagementCommonPart = () => {
     sizeInfo
   );
   const userInfoOptions = userInfoDropdown(userList);
- 
+
   const areFieldsEmpty = () => {
     return updateSingleInvoiceData?.detailsData?.some(
       (field) => !field.description || !field.quantity || !field.unitPrice
@@ -152,11 +155,11 @@ const SalesManagementCommonPart = () => {
         }
       } else {
         const response = await insertInvoiceInfo(values);
-        console.log(response)
+        console.log(response);
         const errorMessages = response?.error?.data?.errorMessages;
         const formattedErrorMessages = Array.isArray(errorMessages)
-  ? errorMessages?.map((msg) => msg.message || msg).join("\n")
-  : "An unknown error occurred";
+          ? errorMessages?.map((msg) => msg.message || msg).join("\n")
+          : "An unknown error occurred";
 
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);

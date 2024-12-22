@@ -15,7 +15,7 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 const UserListModal = ({ user }) => {
   const [extractedData, setExtractedData] = useState([]);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-var reportTitle="All User list"
+  var reportTitle="All User list"
   useEffect(() => {
     const extractedFields = user?.map((item) => ({
       firstname: item.firstname,
