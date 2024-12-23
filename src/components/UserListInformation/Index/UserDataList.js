@@ -57,7 +57,7 @@ const UserDataList = ({
 
     // Find the user object matching the provided userId
     const currentUser = userData?.find((user) => user._id === userId);
-console.log(currentUser)
+
     if (currentUser) {
       // Loop through the menus of the current user
       currentUser?.menulist?.forEach((menu) => {
@@ -83,16 +83,13 @@ console.log(currentUser)
     }
 
     return userList;
-  };
+  }
 
-  // Call the function to get the user list for the current user
   const permission = extractUserListForCurrentUser(
     permissionResult,
     userIdFromLocalStorage
   );
 
-  // Output the user list for the current user
-  console.log(permission);
 
   return (
     <div>

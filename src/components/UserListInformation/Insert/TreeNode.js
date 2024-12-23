@@ -6,7 +6,6 @@ const TreeNode = ({
   clickedCheckboxes,
   setClickedCheckboxes,
   parentIds,
-  singleUserData,
   isUpdate,
  data
 }) => {
@@ -15,7 +14,7 @@ console.log(parentIds)
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
-console.log(clickedCheckboxes)
+
   // function convertToNestedObject(clickedCheckboxes, parentNode) {
   //   const nestedObject =[ {
   //     _id: parentNode._id,
@@ -151,7 +150,6 @@ console.log(clickedCheckboxes)
                         setClickedCheckboxes={setClickedCheckboxes}
                         parentIds={[...parentIds, node._id]}
                         isUpdate={isUpdate}
-                        singleUserData={singleUserData}
                       />
                     ) : (
                       <>

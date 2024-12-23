@@ -42,6 +42,7 @@ const TreeSingleUserNode = ({
       isInserted: checked,
       parentIds: parentId,
     };
+    console.log(updatedChild)
     updateMenuItem(updatedChild);
   };
   const handleCheckboxClickUpdate = (subNode, parentId, checked) => {

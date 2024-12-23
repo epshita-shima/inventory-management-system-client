@@ -408,13 +408,7 @@ const UserListInfo = ({
         </div>
       </div>
     );
-  }, [
-    filterText,
-    resetPaginationToggle,
-    companyinfo,
-    reportTitle,
-    extractedAllData,
-  ]);
+  }, [filterText, resetPaginationToggle, refetch, companyinfo, reportTitle, extractedAllData]);
 
   return (
     <div className="row px-4 mx-4">

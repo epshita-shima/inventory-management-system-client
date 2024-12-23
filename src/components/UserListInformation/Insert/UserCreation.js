@@ -28,7 +28,7 @@ const UserCreation = () => {
   const { id } = useParams();
   var [isUpdate] = useState(id ? true : false);
   const [clickedCheckboxes, setClickedCheckboxes] = useState([]);
-  const [singleUserData, setSingleUserData] = useState([]);
+
   const [serialValue, setSerialValue] = useState([]);
 
   const {
@@ -175,11 +175,8 @@ const UserCreation = () => {
           item?.items,
           clickedCheckboxes
         );
-
-        // Check if any child item is checked
+console.log(mergedItems)
         const anyChildChecked = mergedItems?.some((child) => child.isChecked);
-
-        // If any child item is checked, set parent isChecked to true dynamically
         const parentIsChecked = anyChildChecked || isChecked;
 
         return {
@@ -191,7 +188,7 @@ const UserCreation = () => {
           isPDF,
           isRemoved: del,
           parentIds,
-          items: mergedItems, // Assign the merged items
+          items: mergedItems,
         };
       });
     };
@@ -208,7 +205,7 @@ const UserCreation = () => {
 
     // Set the isChecked field for the top parent
     const topParentIsChecked = anyImmediateChildChecked || dataItem.isChecked;
-
+      console.log(dataItem)
     return {
       ...dataItem,
       isChecked: topParentIsChecked,
@@ -225,16 +222,19 @@ const UserCreation = () => {
       ...formData,
       username: formData.firstname + "-0" + serialValue?.serialNo,
       menulist: checkedData?.map((item) => {
-        console.log(item);
         const { _id, items, ...itemWithoutId } = item;
 
         const dropdownWithoutIds = items?.map((d) => {
           const { _id, ...dropdownItemWithoutId } = d;
-          return dropdownItemWithoutId;
+          return {
+            ...dropdownItemWithoutId,
+            id: _id,
+          };
         });
 
         return {
           ...itemWithoutId,
+          id:_id,
           items: dropdownWithoutIds,
         };
       }),
@@ -323,7 +323,7 @@ const UserCreation = () => {
                   letterSpacing: ".5px",
                 }}
               >
-                {isUpdate ? "Update user" : "Add user(s)"}
+                 Add user(s)
               </span>
             </p>
 
@@ -359,9 +359,7 @@ const UserCreation = () => {
                         placeholder="User's first name"
                         className="input-with-bottom-border"
                         value={
-                          isUpdate
-                            ? singleUserData?.firstname
-                            : formData.firstname
+                          formData.firstname
                         }
                         onChange={(e) => handleChange(e)}
                         isInvalid={validated && formData.firstname === ""}
@@ -387,10 +385,7 @@ const UserCreation = () => {
                         name="lastname"
                         placeholder="User's last name"
                         className="input-with-bottom-border"
-                        value={
-                          isUpdate
-                            ? singleUserData?.lastname
-                            : formData.lastname
+                        value={formData.lastname
                         }
                         onChange={handleChange}
                         isInvalid={validated && formData.lastname === ""}
@@ -412,7 +407,7 @@ const UserCreation = () => {
                       placeholder="Mobile no"
                       className="input-with-bottom-border"
                       value={
-                        isUpdate ? singleUserData?.mobileNo : formData.mobileNo
+                      formData.mobileNo
                       }
                       onChange={handleChange}
                       isInvalid={validated && formData.lastname === ""}
@@ -429,7 +424,7 @@ const UserCreation = () => {
                       type="text"
                       placeholder="Password"
                       className="input-with-bottom-border"
-                      value={isUpdate ? singleUserData?.password : password}
+                      value={ password}
                       style={{ background: "transparent" }}
                       isInvalid={validated && formData.password === ""}
                     />
@@ -463,23 +458,13 @@ const UserCreation = () => {
                         },
                       })}
                       value={
-                        isUpdate
-                          ? options?.find(
-                              (x) => x.value == singleUserData?.roleId
-                            )
-                          : options?.find((x) => x.value == formData.roleId)
+                         options?.find((x) => x.value == formData.roleId)
                       }
                       // style={{ border: "1px solid #2DDC1B" }}
                       // value={typeOption.find((x)=>x.value==itemInformation.itemType)}
                       onChange={(e) => {
-                        if (isUpdate) {
-                          setSingleUserData({
-                            ...singleUserData,
-                            roleId: e.value,
-                          });
-                        } else {
                           setFormData({ ...formData, roleId: e.value });
-                        }
+                        
                       }}
                     ></Select>
 
@@ -507,7 +492,6 @@ const UserCreation = () => {
             {
               <TreeView
                 isUpdate={isUpdate}
-                singleUserData={singleUserData?.menulist}
                 data={mergedData}
                 // userUPdateData={userUPdateData}
                 clickedCheckboxes={clickedCheckboxes}

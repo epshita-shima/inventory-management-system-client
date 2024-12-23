@@ -37,14 +37,57 @@ const SingleUserDisplay = () => {
     isLoading: menuItemsIsLoading,
   } = useGetAllMenuItemsQuery();
   const navigate = useNavigate();
-  console.log(JSON.stringify(singleUser));
-  console.log(menuItems);
+
+  console.log(singleUserData);
   useEffect(() => {
-    setSingleUserData(singleUser);
-  }, [singleUser]);
+    const menulist = Array.isArray(singleUser?.menulist) ? singleUser.menulist : [];
+    const menuItemsList = Array.isArray(menuItems) ? menuItems : [];
+    
+    // Create a map to track existing items by id
+    const singleDataMap = new Map(menulist.map(item => [item.id, item]));
+    
+    // Combine menulist and menuItems, avoiding duplicates
+    const result = [
+      ...menulist,
+      ...menuItemsList.filter(menu => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
+    ];
+    
+    console.log(result)
+    if (Array.isArray(result)) {
+      const updatedSingleUser = {
+        ...singleUser,
+        menulist: result,
+      };
+  
+      setSingleUserData(updatedSingleUser);
+    } else {
+      console.error('Result is not an array');
+    }
+
+  }, [singleUser, menuItems]);
 
   const [validated, setValidated] = useState(false);
   const parentIds = [];
+  //   function synchronizeMenus(singleUserData, menuItem) {
+
+  // console.log(updatedMenuDataList)
+  //     const removedMenus = singleUserData?.menulist.filter(
+  //         menu => !menuItem.some(m => m._id === menu._id)
+  //     );
+
+  //     // Mark removed menus
+  //     removedMenus?.forEach(menu => {
+  //         menu.isRemoved = true;
+  //     });
+
+  //     return {
+  //         ...singleUserData,
+  //         menulist: [...updatedMenuDataList, ...removedMenus]
+  //     };
+  // }
+
+  // const synchronizedData = synchronizeMenus(singleUser, menuItems);
+  // console.log(JSON.stringify(synchronizedData));
 
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -95,6 +138,7 @@ const SingleUserDisplay = () => {
       return child; // Return unchanged child
     });
   };
+
   const updateMenuItem = (menuItemID, updatedValues) => {
     console.log(menuItemID, updatedValues);
     const updatedMenuList = [...singleUserData.menulist];
@@ -106,6 +150,8 @@ const SingleUserDisplay = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
+    const checkedData = singleUserData?.menulist?.filter((x) => x.isChecked == true);
+    console.log(checkedData)
     console.log(JSON.stringify(singleUserData));
     // try {
     //   await updateUser(singleUserData);
@@ -150,11 +196,11 @@ const SingleUserDisplay = () => {
 
   return (
     <div
-    className="container-fluid p-0 m-0 usercreation-table"
-    style={{
-      overflowY: "scroll",
-      height: "500px",
-    }}
+      className="container-fluid p-0 m-0 usercreation-table"
+      style={{
+        overflowY: "scroll",
+        height: "500px",
+      }}
     >
       <div class="container">
         <div className="shadow-lg mt-5 p-5 rounded-4">

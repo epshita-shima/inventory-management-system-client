@@ -5,8 +5,7 @@ const TreeView = ({
   clickedCheckboxes,
   setClickedCheckboxes,
   parentIds,
-  isUpdate,
-  singleUserData,
+  isUpdate
 }) => { 
   return (
     <div>
@@ -18,7 +17,6 @@ const TreeView = ({
           setClickedCheckboxes={setClickedCheckboxes}
           parentIds={parentIds}
           isUpdate={isUpdate}
-          singleUserData={singleUserData}
           data={data}
         />
       ))}
