@@ -98,7 +98,7 @@ const SingleUserDisplay = () => {
 
   const updateDropdownList = (updatedChild, menuList) => {
     return menuList?.map((item) => {
-      console.log(item.trackId === updatedChild.parentIds);
+      console.log(item.trackId ,updatedChild);
       if (item.trackId === updatedChild.parentIds) {
         // If the current item matches the parent ID of the updated child
         console.log("cant find parent");
@@ -141,8 +141,10 @@ const SingleUserDisplay = () => {
 
   const updateMenuItem = (menuItemID, updatedValues) => {
     console.log(menuItemID, updatedValues);
+    console.log(singleUserData.menulist)
     const updatedMenuList = [...singleUserData.menulist];
     const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
+    console.log(updatedMenuLists)
     setSingleUserData((prevList) => {
       return { ...prevList, menulist: updatedMenuLists };
     });

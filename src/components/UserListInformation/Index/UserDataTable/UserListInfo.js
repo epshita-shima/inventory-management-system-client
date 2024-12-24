@@ -352,7 +352,9 @@ const UserListInfo = ({
           <div className="table-head-icon d-flex">
             <div>
               <FontAwesomeIcon icon={faRefresh}
-              onClick={()=>refetch()}
+              onClick={()=>{
+                console.log('clik')
+                refetch()}}
               ></FontAwesomeIcon> &nbsp;
             </div>
             <div class="dropdown">

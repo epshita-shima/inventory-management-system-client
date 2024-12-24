@@ -155,29 +155,33 @@ const UserCreation = () => {
   if (menuItemsIsLoading) {
     return <p>Loading...</p>;
   }
-
+console.log(mergedData)
   const mergedArray = mergedData?.map((dataItem) => {
+    console.log(dataItem._id)
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {
+     
       return items?.map((item) => {
         const clickedCheckbox = clickedCheckboxes.find(
           (checkbox) => checkbox.childId === item._id
         );
+        console.log(item)
         const isChecked = clickedCheckbox ? clickedCheckbox.isChecked : false;
         const isInserted = clickedCheckbox ? clickedCheckbox.isInserted : false;
         const isUpdated = clickedCheckbox ? clickedCheckbox.isUpdated : false;
         const isPDF = clickedCheckbox ? clickedCheckbox.isPDF : false;
         const del = clickedCheckbox ? clickedCheckbox.isRemoved : false;
         const parentIds = clickedCheckbox ? clickedCheckbox.parentIds : [];
-        const trackId = clickedCheckbox ? clickedCheckbox.childId : item._id;
-
+        const trackId = parentIds[1] || parentIds[0] || dataItem._id;
+        console.log('trackId',trackId)
+        console.log('clickedCheckbox',clickedCheckbox)
         // Recursively merge checkboxes into nested items
         const mergedItems = mergeCheckboxIntoDropdown(
           item?.items,
           clickedCheckboxes
         );
-console.log(mergedItems)
+        console.log(mergedItems)
         const anyChildChecked = mergedItems?.some((child) => child.isChecked);
-        const parentIsChecked = anyChildChecked || isChecked;
+        const parentIsChecked = anyChildChecked || isChecked || false;
 
         return {
           ...item,
@@ -197,12 +201,13 @@ console.log(mergedItems)
     const clickedCheckboxe = clickedCheckboxes.filter((checkbox) =>
       checkbox.parentIds.includes(dataItem._id)
     );
-
+console.log('clickedCheckboxe',clickedCheckboxe)
+console.log('dataItem',dataItem)
     // Check if any immediate child item is checked
     const anyImmediateChildChecked = clickedCheckboxe.some(
       (checkbox) => checkbox.isChecked
     );
-
+console.log(anyImmediateChildChecked)
     // Set the isChecked field for the top parent
     const topParentIsChecked = anyImmediateChildChecked || dataItem.isChecked;
       console.log(dataItem)
@@ -213,7 +218,14 @@ console.log(mergedItems)
     };
   });
 
-  const checkedData = mergedArray?.filter((x) => x.isChecked == true);
+  const filterCheckedItems = (data) =>
+    data
+      ?.filter(item => item.isChecked)
+      .map(item => ({ ...item, items: filterCheckedItems(item.items || []) }));
+  
+  const filteredData = filterCheckedItems(mergedArray);
+
+console.log(JSON.stringify(filteredData));
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -221,7 +233,7 @@ console.log(mergedItems)
     const dataWithoutMenulistId = {
       ...formData,
       username: formData.firstname + "-0" + serialValue?.serialNo,
-      menulist: checkedData?.map((item) => {
+      menulist: filteredData?.map((item) => {
         const { _id, items, ...itemWithoutId } = item;
 
         const dropdownWithoutIds = items?.map((d) => {
@@ -267,13 +279,14 @@ console.log(mergedItems)
       console.log(responseUser);
       if (
         responseSerial.data.status === 201 &&
-        responseUser.data.status === 200
+        responseUser.data?.status === 200
       ) {
         swal("Done", "Data Save Successfully", "success");
         navigate("/main-view/user-setting");
       } else {
         swal("Error", "An error occurred while creating the user", "error");
       }
+      
       // swal("Done", "Data Save Successfully", "success");
       // navigate("/main-view/user-list");
     }
