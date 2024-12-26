@@ -16,16 +16,16 @@ const downloadInvoicePDF = async (
 ) => {
   console.log(data);
   const customerFilterData = customerInfo.filter(
-    (x) => x._id === data.customerID
+    (x) => x._id === data?.customerID
   );
-  const calculateTotalQuantity = data.detailsData.reduce((subTotal, item) => {
+  const calculateTotalQuantity = data?.detailsData.reduce((subTotal, item) => {
     return subTotal + item.quantity;
   }, 0);
-  const calculateTotalAmount = data.detailsData.reduce((subTotal, item) => {
+  const calculateTotalAmount = data?.detailsData.reduce((subTotal, item) => {
     return subTotal + item.totalAmount;
   }, 0);
   const matchesPaymentType = paymentData?.find(
-    (payment) => payment._id === data.paymentId
+    (payment) => payment._id === data?.paymentId
   );
   console.log(matchesPaymentType);
   const numberInWords = toWords(parseInt(calculateTotalAmount));

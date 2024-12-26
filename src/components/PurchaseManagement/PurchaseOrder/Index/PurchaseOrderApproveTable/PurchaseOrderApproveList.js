@@ -206,7 +206,7 @@ const PurchaseOrderApproveList = ({
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         {/* <div>
             <FontAwesomeIcon
               style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}

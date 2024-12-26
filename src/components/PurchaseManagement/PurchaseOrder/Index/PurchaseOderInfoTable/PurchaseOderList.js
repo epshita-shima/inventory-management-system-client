@@ -373,7 +373,7 @@ const PurchaseOderList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div>
           <FontAwesomeIcon
             style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
@@ -431,7 +431,6 @@ const PurchaseOderList = ({ permission }) => {
       ></ListHeading>
       <div
         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
-       
       >
         <div className="shadow-lg">
           <DataTable

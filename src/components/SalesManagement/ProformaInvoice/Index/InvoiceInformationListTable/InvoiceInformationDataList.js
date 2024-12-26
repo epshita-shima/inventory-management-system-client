@@ -486,7 +486,7 @@ const InvoiceInformationDataList = ({ permission }) => {
         signature={signature}
       ></InvoiceListHeading>
       <div
-        className="px-2 mx-4"
+        className="px-2"
         style={{ height: "calc(80vh - 120px)", overflowY: "auto" }}
       >
         <div className="col  mt-sm-4 mt-md-4 mt-lg-0">

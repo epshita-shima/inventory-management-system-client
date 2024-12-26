@@ -223,7 +223,7 @@ const ListHeading = ({
                 if (
                   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
-                  setActiveDataModal(true);
+                  // setActiveDataModal(true);
                 }
               }}
             >
@@ -271,7 +271,7 @@ const ListHeading = ({
                 if (
                   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
-                  setInActiveDataModal(true);
+                  // setInActiveDataModal(true);
                 }
               }}
             >

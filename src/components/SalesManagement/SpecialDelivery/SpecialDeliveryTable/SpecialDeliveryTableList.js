@@ -67,7 +67,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
   const approveBy = getUserParse[0].username;
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredInvoiceInfoQuery();
   const [userWaysListData, setUserWaysListData] = useState([]);
   const invoiceListOption = invoiceListDropdown(invoiceList);
@@ -77,34 +77,24 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const [formValues, setFormValues] = useState(
     getInitialFormValues(customerID, piNumber, makebyUser, new Date())
   );
+  console.log(filteredDatas);
 
   useEffect(() => {
-    if (executeQuery) {
-      setIsTableDisplay(true);
-      trigger(filters)
-        .unwrap()
-        .then((response) => {
-          console.log("Data fetched:", response);
-        })
-        .catch((err) => {
-          console.error("Error fetching data:", err);
-        })
-        .finally(() => {
-          setExecuteQuery(false);
-        });
-    }
     setUserWaysListData(filteredDatas);
-    const paymentType = paymentInfo?.find((x) =>
-      filteredDatas?.some((item) => item.paymentId === x._id)
-    );
+  }, [filteredDatas]);
 
-    setPaymentStatusMood(paymentType);
-  }, [executeQuery, trigger, filters, filteredDatas, paymentInfo]);
-
-  const handleApplyFilters = () => {
-    setExecuteQuery(true); // Trigger the useEffect to fetch data
+  const handleApplyFilters = async () => {
+    setExecuteQuery(true);
+    setIsTableDisplay(true);
+    await trigger(filters);
   };
-
+  const transformedProductionData = filteredDatas?.flatMap((piDetails) =>
+    piDetails.detailsData.map((detail) => ({
+      ...piDetails,
+      detailsData: detail,
+    }))
+  );
+  console.log(filteredDatas?.length);
   const handleCheckboxClick = (dataItem) => {
     const updatedDataItem = {
       ...dataItem,
@@ -137,7 +127,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
   };
 
   const handleSpecialApprove = async () => {
-    if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f"){
+    if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f") {
       // const response = await approveStatus(selectedData);
       // if (response?.data?.status === 200) {
       //   const response = await insertPaymentReceive(formValues);
@@ -150,7 +140,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
       // }
     } else {
       const response = await approveStatus(selectedData);
-
       if (response?.data?.status === 200) {
         swal("Done", "PI Payment  Done", "success");
       } else if (response?.error?.status === 400) {
@@ -160,30 +149,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
   };
 
   const clientInfoOptions = clientInfoDropdown(clientInformation);
-
-  const groupByClient = (data) => {
-    const groupedDataMap = new Map();
-
-    data?.forEach((payment) => {
-      payment.detailsData.forEach((detail) => {
-        // Create a unique key based on clientId, piNumber, and itemId
-        const key = `${payment.customerID}_${payment.invoiceNo}_${detail.itemId}`;
-        // If the key doesn't exist, create a new entry
-        groupedDataMap.set(key, {
-          ...payment,
-          detailsData: {
-            ...detail,
-          },
-          isGroup: false,
-        });
-      });
-    });
-
-    // Convert the map back to an array
-    const groupedData = Array.from(groupedDataMap.values());
-    console.log(groupedData)
-    return groupedData;
-  };
 
   const handlePaymentMethodChange = (e, index) => {
     if (e.target.checked) {
@@ -399,8 +364,12 @@ const SpecialDeliveryTableList = ({ permission }) => {
               marginLeft: "5px",
             }}
             onClick={() => {
+              const filterPIInfo = filteredDatas.find(
+                (piinfo) => piinfo._id === row._id
+              );
+              console.log(filterPIInfo);
               downloadInvoicePDF(
-                userWaysListData,
+                filterPIInfo,
                 finishGoodsData,
                 customerInfo,
                 unitInfo,
@@ -442,11 +411,11 @@ const SpecialDeliveryTableList = ({ permission }) => {
     },
   };
 
-  const filteredItems = groupByClient(filteredDatas)?.filter(
-    (item) =>
-      JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
-      -1
-  );
+  // const filteredItems = groupByClient(filteredDatas)?.filter(
+  //   (item) =>
+  //     JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
+  //     -1
+  // );
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -707,32 +676,35 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            <div className="ms-2">
-              {paymentStatusMood?.paymentMode == "Cash" ? (
-                ""
-              ) : (
-                <button
-                  className="border-0 "
-                  style={{
-                    backgroundColor:
-                      selectedData.length > 0 ? "#2DDC1B" : "#808080",
-                    color: "white",
-                    padding: "5px 10px",
-                    fontSize: "14px",
-                    borderRadius: "5px",
-                    width: "100px",
-                    height: "38px",
-                    marginTop: "15px",
-                    disabled: selectedData.length > 0 ? false : true,
-                  }}
-                  onClick={() => {
-                    handleSpecialApprove();
-                  }}
-                >
-                  Approve
-                </button>
-              )}
-            </div>
+            {(filteredDatas?.length !== 0 ||
+              filteredDatas?.length !== undefined) && (
+              <div className="ms-2">
+                {paymentStatusMood?.paymentMode === "Cash" ? (
+                  ""
+                ) : (
+                  <button
+                    className="border-0 "
+                    style={{
+                      backgroundColor:
+                        selectedData.length > 0 ? "#2DDC1B" : "#808080",
+                      color: "white",
+                      padding: "5px 10px",
+                      fontSize: "14px",
+                      borderRadius: "5px",
+                      width: "100px",
+                      height: "38px",
+                      marginTop: "15px",
+                      disabled: selectedData.length > 0 ? false : true,
+                    }}
+                    onClick={() => {
+                      handleSpecialApprove();
+                    }}
+                  >
+                    Approve
+                  </button>
+                )}
+              </div>
+            )}
           </div>
           <div></div>
         </div>
@@ -744,7 +716,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
           >
             <DataTable
               columns={columns}
-              data={filteredItems}
+              data={transformedProductionData}
               defaultSortField="name"
               customStyles={customStyles}
               striped
