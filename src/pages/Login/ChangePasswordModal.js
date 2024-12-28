@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import {
   useUpdateUserPasswordMutation,
 } from "../../redux/features/user/userApi";
 import { useNavigate } from 'react-router-dom';
+import swal from "sweetalert";
 import './ChangePasswordModal.css'
+
 const ChangePasswordModal = ({
   menuListData,
   singleUserData,
@@ -27,7 +29,7 @@ const ChangePasswordModal = ({
   console.log('Change:', change);
   useEffect(() => {
     setSingleUserData(menuListData);
-  }, [setSingleUserData]);
+  }, [ setSingleUserData]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;
@@ -45,10 +47,24 @@ const ChangePasswordModal = ({
     });
   };
 
-  const handleSaveChangePassword = (e) => {
+  const handleSaveChangePassword = async(e) => {
     e.preventDefault();
-    updateUserPassword(singleUserData[0]);
-    console.log(JSON.stringify(singleUserData));
+    try {
+      const response = await updateUserPassword(singleUserData[0]);
+  if(response.data.status==='success'){
+
+    swal("Done", `${response.data.message}`, "success");
+    navigate("/main-view/user-setting");
+  } else {
+    swal(
+      "Not Possible!",
+      "An problem occurred while updating the data",
+      "error"
+    );
+  }   
+  } catch (error) {
+      console.error("Error updating password:", error); // Handle any errors
+  }
   };
 
   return (

@@ -115,8 +115,10 @@ const UserListInfo = ({
                 <input
                   type="checkbox"
                   aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status}
-                  onChange={(e) => handleCheckboxClick(row, setSelectedData)}
+                  checked={row.isactive}
+                  onChange={(e) =>{ 
+                    console.log(row)
+                    handleCheckboxClick(row, setSelectedData)}}
                 />
               </a>
             </div>

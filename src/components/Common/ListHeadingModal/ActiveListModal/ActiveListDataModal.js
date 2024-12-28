@@ -554,8 +554,8 @@ console.log(selectedData)
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLongTitle">
               {activeDataModal
-                ? "All Active listData"
-                : "All Inactive listData"}
+                ? "All Active ListData"
+                : "All Inactive ListData"}
             </h5>
             <button
               type="button"
