@@ -7,6 +7,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../redux/features/user/userApi";
 import swal from "sweetalert";
+import bcrypt from "bcryptjs";
 import './LoginWithUsername.css'
 
 const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
@@ -30,28 +31,50 @@ console.log(singleUserData)
 if(isUserLoading){
   <p>loding ....</p>
 }
-  useEffect(() => {
-    const userData = user?.filter(
-      (item) => item.username === username && item.password === password
-    );
-    console.log(userData)
-    setSingleUserData(userData)
-    if(userData?.length > 0){
-      setIsButtonDisabled(false)
+
+useEffect(() => {
+  const validateUser = async () => {
+    // Find the user
+    const userData = user?.find((item) => item.username === username);
+
+    if (!userData) {
+      console.log("User not found");
+      return;
     }
-    else{
-      setIsButtonDisabled(true)
+
+    if (!password) {
+      console.error("Password is undefined or empty.");
+      return;
     }
-  }, [user, password, username,setSingleUserData,setIsButtonDisabled]);
+
+    try {
+      // Compare the plain password with the hashed password
+      const isPasswordMatch = await bcrypt.compare(password, userData.password);
+console.log(userData)
+      if (isPasswordMatch) {
+        setSingleUserData(userData);
+        setIsButtonDisabled(false);
+      } else {
+        setIsButtonDisabled(true);
+      }
+    } catch (error) {
+      console.error("Error comparing passwords:", error);
+    }
+  };
+
+  validateUser();
+}, [user, password, username, setSingleUserData]);
   
+console.log(singleUserData)
   const handleLogin = (e) => {
     e.preventDefault();
-    if(singleUserData.length > 0){
+    console.log(singleUserData)
+    if(singleUserData && Object.keys(singleUserData).length > 0){
       navigate('/main-view')
       localStorage.setItem('user',JSON.stringify(singleUserData))
     }
     else{
-      swal("Not Possible!", "Try Again!", "warning")
+      swal("Not Possible!", "Invalid Password!", "warning")
     }
   
   };

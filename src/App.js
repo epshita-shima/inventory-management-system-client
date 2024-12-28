@@ -55,6 +55,7 @@ function App() {
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
+  const [userIdForChangePassowrd,setUserIdForChangePassowrd]=useState('')
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
 
@@ -78,6 +79,7 @@ function App() {
                 <MainView
                   setChangePassword={setChangePassword}
                   setResetPassword={setResetPassword}
+                  setUserIdForChangePassowrd={setUserIdForChangePassowrd}
                 ></MainView>
               }
             >
@@ -109,6 +111,7 @@ function App() {
                   <UserDataList
                     setChangePassword={setChangePassword}
                     setResetPassword={setResetPassword}
+                    setUserIdForChangePassowrd={setUserIdForChangePassowrd}
                     resetPassword={resetPassword}
                     changePassword={changePassword}
                   ></UserDataList>

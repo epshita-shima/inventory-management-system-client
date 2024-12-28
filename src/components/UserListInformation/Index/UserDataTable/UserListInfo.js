@@ -34,6 +34,7 @@ import "./UserListInfo.js";
 const UserListInfo = ({
   setChangePassword,
   setResetPassword,
+  setUserIdForChangePassowrd,
   resetPassword,
   changePassword,
   permission,
@@ -56,7 +57,8 @@ const UserListInfo = ({
   const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All User";
   console.log(activeUser);
-
+  const getMenulistData = localStorage.getItem("user");
+  const menuListData = JSON.parse(getMenulistData);
   useEffect(() => {
     const activeUsers = user?.filter((user) => user.isactive == true);
     const inActiveUser = user?.filter((user) => user.isactive == false);
@@ -262,10 +264,16 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-                setResetPassword(true);
+if(menuListData[0]._id===user._id){
+  setResetPassword(true);
                 setChangePassword(false);
                 const url = `/main-view/change-password?reset=true&change=false`;
                 window.open(url, "_blank");
+}
+else{
+  setUserIdForChangePassowrd(user._id)
+}
+              
               }}
             ></FontAwesomeIcon>
           </a>

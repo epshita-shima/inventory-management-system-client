@@ -9,15 +9,16 @@ import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
-const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
+const Home = ({ singleUserData, setChangePassword, setResetPassword,setUserIdForChangePassowrd }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
 const {data:menus}=useGetAllMenuItemsQuery(undefined)
 console.log(menus)
   const getMenulistData = localStorage?.getItem("user");
 
   const menuListData = JSON.parse(getMenulistData);
+  console.log(menuListData)
   if (menuListData !== null) {
-    var menuListSingleData = menuListData[0]?.menulist;
+    var menuListSingleData = menuListData?.menulist;
   }
 
   const [setAllMenuData]=useUpdateMultipleUserFieldMutation()
@@ -73,6 +74,7 @@ console.log(menus)
     // setShowComponent(true); // Set showComponent state to true to render MyComponent
     setChangePassword(true);
     setResetPassword(false);
+    setUserIdForChangePassowrd()
     const url = `change-password?reset=false&change=true`;
     window.open(url, "_blank");
   };
@@ -82,8 +84,8 @@ console.log(menus)
     await refetch().then(({ data }) => {
       const userData = data?.filter(
         (item) =>
-          item?.username === menuListData[0]?.username &&
-          item.password === menuListData[0]?.password
+          item?.username === menuListData?.username &&
+          item.password === menuListData?.password
       );
  
       if (userData[0]?.roleId === "65d48768a106fcb4f5c28071") {
@@ -216,7 +218,7 @@ console.log(menus)
              
               <span className="d-none d-md-block">
                 {menuListData !== null
-                  ? `Hello, ${menuListData[0]?.firstname} ${menuListData[0]?.lastname}`
+                  ? `Hello, ${menuListData?.firstname} ${menuListData?.lastname}`
                   : ""}
               </span>
             </div>
@@ -254,7 +256,7 @@ console.log(menus)
                   }}
                 >
                   {menuListData !== null
-                    ? `Hello, ${menuListData[0]?.firstname} ${menuListData[0]?.lastname}`
+                    ? `Hello, ${menuListData?.firstname} ${menuListData?.lastname}`
                     : ""}
                 </Dropdown.Toggle>
 

@@ -10,6 +10,7 @@ const UserDataList = ({
   setResetPassword,
   resetPassword,
   changePassword,
+  setUserIdForChangePassowrd
 }) => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
@@ -96,6 +97,7 @@ const UserDataList = ({
       <UserListInfo
         setChangePassword={setChangePassword}
         setResetPassword={setResetPassword}
+        setUserIdForChangePassowrd={setUserIdForChangePassowrd}
         resetPassword={resetPassword}
         changePassword={changePassword}
         permission={permission}

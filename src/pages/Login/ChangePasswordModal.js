@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import {
-  useUpdateUserPasswordMutation,
-} from "../../redux/features/user/userApi";
-import { useNavigate } from 'react-router-dom';
+import { useUpdateUserPasswordMutation } from "../../redux/features/user/userApi";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
-import './ChangePasswordModal.css'
+import "./ChangePasswordModal.css";
 
 const ChangePasswordModal = ({
   menuListData,
@@ -19,17 +17,17 @@ const ChangePasswordModal = ({
     confirmPassword: "",
   });
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [updateUserPassword] = useUpdateUserPasswordMutation();
   const queryParams = new URLSearchParams(window.location.search);
-  const reset = queryParams.get('reset');
-  const change = queryParams.get('change');
-  
-  console.log('Reset:', reset); // true
-  console.log('Change:', change);
+  const reset = queryParams.get("reset");
+  const change = queryParams.get("change");
+
+  console.log("Reset:", reset); // true
+  console.log("Change:", change);
   useEffect(() => {
     setSingleUserData(menuListData);
-  }, [ setSingleUserData]);
+  }, [setSingleUserData]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;
@@ -47,24 +45,23 @@ const ChangePasswordModal = ({
     });
   };
 
-  const handleSaveChangePassword = async(e) => {
+  const handleSaveChangePassword = async (e) => {
     e.preventDefault();
     try {
       const response = await updateUserPassword(singleUserData[0]);
-  if(response.data.status==='success'){
-
-    swal("Done", `${response.data.message}`, "success");
-    navigate("/main-view/user-setting");
-  } else {
-    swal(
-      "Not Possible!",
-      "An problem occurred while updating the data",
-      "error"
-    );
-  }   
-  } catch (error) {
+      if (response.data.status === "success") {
+        swal("Done", `${response.data.message}`, "success");
+        navigate("/main-view/user-setting");
+      } else {
+        swal(
+          "Not Possible!",
+          "An problem occurred while updating the data",
+          "error"
+        );
+      }
+    } catch (error) {
       console.error("Error updating password:", error); // Handle any errors
-  }
+    }
   };
 
   return (
@@ -87,8 +84,8 @@ const ChangePasswordModal = ({
             fontWeight: "bold",
           }}
         >
-          {reset==='true' ? "Reset Password" : ""}
-          {change==='true' ? "Change Password" : ""}
+          {reset === "true" ? "Reset Password" : ""}
+          {change === "true" ? "Change Password" : ""}
         </h4>
         <div
           style={{
@@ -135,8 +132,8 @@ const ChangePasswordModal = ({
                     fontWeight: "bold",
                     fontSize: "15px",
                   }}
-                  onClick={()=>{
-                    navigate('/main-view//main-view/user-list')
+                  onClick={() => {
+                    navigate("/main-view/user-list");
                   }}
                 >
                   Cancel
@@ -145,7 +142,11 @@ const ChangePasswordModal = ({
                   variant="primary"
                   type="submit"
                   className="btn-disabled"
-                  disabled={formData.newPassword !== formData.confirmPassword || formData.newPassword =='' || formData.confirmPassword ==''}
+                  disabled={
+                    formData.newPassword !== formData.confirmPassword ||
+                    formData.newPassword == "" ||
+                    formData.confirmPassword == ""
+                  }
                   style={{
                     backgroundColor: "#2DDC1B",
                     border: "none",
