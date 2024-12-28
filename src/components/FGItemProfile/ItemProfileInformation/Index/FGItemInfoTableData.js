@@ -60,32 +60,13 @@ const FGItemInfoTableData = () => {
         navigate("/");
       }
     }, [user, navigate]);
-
-    if (isFGItemloading) {
-      return (
-        <div className="d-flex justify-content-center align-items-center">
-          <button
-            class="btn"
-            style={{ backgroundColor: "#2DDC1B", color: "white" }}
-            type="button"
-            disabled
-          >
-            <span
-              class="spinner-grow spinner-grow-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Loading...
-          </button>
-        </div>
-      );
-    }
     
     return (
       <div>
         <IteminfoList
           permission={permission}
           finishGoodInItemInfoData={finishGoodInItemInfoData}
+          isFGItemloading={isFGItemloading}
           click={clickhandler}
           refetch={refetch}
         />

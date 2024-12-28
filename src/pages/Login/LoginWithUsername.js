@@ -17,7 +17,7 @@ const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
   const [message, setMessage] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const inputRef = useRef(null);
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn); // Select isLoggedIn state
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn); 
   const navigate = useNavigate();
   console.log(user)
   const formRef = useRef(null);
@@ -32,7 +32,7 @@ if(isUserLoading){
 }
   useEffect(() => {
     const userData = user?.filter(
-      (item) => item.username == username && item.password == password
+      (item) => item.username === username && item.password === password
     );
     console.log(userData)
     setSingleUserData(userData)

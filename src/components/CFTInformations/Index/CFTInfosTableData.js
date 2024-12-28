@@ -11,7 +11,7 @@ const CFTInfosTableData = () => {
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
   const {
     data: cftInfosData,
-    isCFTInfoloading,
+    isLoading:isCFTInfoloading,
     refetch,
   } = useGetAllCFTInfosQuery(undefined);
   const [permission, setPermission] = useState();

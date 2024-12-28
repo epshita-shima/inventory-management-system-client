@@ -12,11 +12,13 @@ import DataTable from "react-data-table-component";
 
 import './MenuList.css'
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 const MenuList = ({permission}) => {
 const [deleteMenu]=useDeleteMenuDataMutation()
 const [filterText, setFilterText] = React.useState("");
 const [resetPaginationToggle, setResetPaginationToggle] =React.useState(false);
 const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undefined);
+
 
   const flattenOptions = (options) => {
     const flattenRecursive = (options, parentLabel) => {
@@ -188,8 +190,12 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
     );
   }, [filterText, resetPaginationToggle,refetch]);
 
+
   return (
       <div className="row p-5 mx-4">
+        {
+          <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer>
+        }
         <div
           className="col userlist-table"
           style={{ height: 'calc(90vh - 120px)', overflowY: 'scroll' }}

@@ -152,10 +152,6 @@ const UserCreation = () => {
 
   const mergedData = mergePermissions(menuItems, formData?.menulist);
 
-  if (menuItemsIsLoading) {
-    return <p>Loading...</p>;
-  }
-console.log(mergedData)
   const mergedArray = mergedData?.map((dataItem) => {
     console.log(dataItem._id)
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {

@@ -405,7 +405,7 @@ console.log(selectedData)
 
     return (
       <div className="d-flex align-items-center">
-        <div className="d-flex justify-content-end align-items-center">
+        <div className="d-flex justify-content-end align-items-center mb-2">
           <div className="table-head-icon">
             {/* <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp; */}
             {activeDataModal ? (

@@ -44,7 +44,7 @@ const InsertRmItemInfo = () => {
 
   const categoryInfoConvertedOptions =
     categoryInfoConvertSelectOption(categoryInfoData);
-  console.log(categoryInfoConvertedOptions);
+
   const itemUnitConvertSelectOption = (options) => {
     let result = [];
     options?.forEach((option) => {

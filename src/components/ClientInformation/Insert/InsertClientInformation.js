@@ -14,6 +14,7 @@ import {
 } from "../../../redux/features/clientinformation/clientInfoApi";
 import swal from "sweetalert";
 import "./InsertClientInformation.css";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
@@ -21,7 +22,7 @@ const InsertClientInformation = () => {
   const navigate = useNavigate();
   const [insertClientInfo] = useInsertClientInformationMutation();
   const [updateClientInfo] = useUpdateClientDetailsInfoMutation();
-  const { data: singleClientInfo } = useGetSingleClientInfoQuery(id);
+  const { data: singleClientInfo,isLoading:isClientInfoLoading } = useGetSingleClientInfoQuery(id);
   const [clientData, setClientData] = useState([]);
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
@@ -102,6 +103,9 @@ const InsertClientInformation = () => {
       //   height: "90%"
       // }}
     >
+      {
+        id && (<LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>)
+      }
       <div className="">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">

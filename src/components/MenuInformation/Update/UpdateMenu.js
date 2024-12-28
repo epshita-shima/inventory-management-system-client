@@ -12,6 +12,7 @@ import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { ErrorMessage, Form, Field, FieldArray, Formik } from "formik";
 import "./UpdateMenu.css";
 import swal from "sweetalert";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const UpdateMenu = () => {
   const ArrayHelperRef = useRef();
@@ -24,7 +25,7 @@ const UpdateMenu = () => {
   const [updateSingleMenus] = useUpdateNestedMenuMutation();
   const [updateSingleMenu] = useUpdateSingleProtionMenuMutation();
   const [isToggled, setIsToggled] = useState(false);
-  const { data: menuItems } = useGetAllMenuItemsQuery();
+  const { data: menuItems,isMenuloading } = useGetAllMenuItemsQuery();
 
   const parentMenuFunction = (options) => {
     const parentMenuRecursive = (options, parentLabel) => {
@@ -46,7 +47,6 @@ const UpdateMenu = () => {
     };
     return parentMenuRecursive(options);
   };
-
   const parentMenuOptions = parentMenuFunction(menuItems);
 
   const menuTypeOptions = [
@@ -157,6 +157,9 @@ console.log(masterMenuData)
         height: "500px",
       }}
     >
+      {
+        <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer>
+      }
       <div class="container overflow-hidden">
         <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">

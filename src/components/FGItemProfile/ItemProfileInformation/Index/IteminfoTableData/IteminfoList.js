@@ -16,8 +16,9 @@ import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/ha
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import './IteminfoList.css'
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
-const IteminfoList = ({ permission, finishGoodInItemInfoData ,refetch}) => {
+const IteminfoList = ({ permission, finishGoodInItemInfoData ,isFGItemloading,refetch}) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -325,7 +326,7 @@ const [selectedData, setSelectedData] = useState([]);
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
       
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
@@ -392,6 +393,7 @@ const [selectedData, setSelectedData] = useState([]);
 
   return (
     <div className="row px-5 mx-4">
+      <LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer>
       <ListHeading 
       finishGoodInItemInfoData={finishGoodInItemInfoData}
       finishGoodActiveStatus={finishGoodActiveStatus}

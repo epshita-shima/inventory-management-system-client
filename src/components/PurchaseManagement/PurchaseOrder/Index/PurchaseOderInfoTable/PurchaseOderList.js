@@ -23,6 +23,7 @@ import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/i
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import './PurchaseOderList.css'
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const PurchaseOderList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -36,7 +37,7 @@ const PurchaseOderList = ({ permission }) => {
   );
   const {
     data: purchaseInfoData,
-    isPurchaseloading,
+   isLoading: isPurchaseloading,
     refetch,
   } = useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
@@ -397,29 +398,10 @@ const PurchaseOderList = ({ permission }) => {
     );
   }, [filterText, resetPaginationToggle, grnRefetch,refetch]);
 
-  if (isPurchaseloading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <button
-          class="btn"
-          style={{ backgroundColor: "#2DDC1B", color: "white" }}
-          type="button"
-          disabled
-        >
-          <span
-            class="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Loading...
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="row px-5 mx-4"
      style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
+      <LoadingSpineer isLoading={isPurchaseloading}> </LoadingSpineer>
       <ListHeading
         purchaseInCash={purchaseInCash}
         purchaseInLCAtSight={purchaseInLCAtSight}

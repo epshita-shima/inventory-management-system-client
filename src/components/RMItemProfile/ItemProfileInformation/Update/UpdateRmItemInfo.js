@@ -19,6 +19,7 @@ import {
 } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryInfo/categoryInfoApi";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Insert/InsertCategoryInformationModal";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const UpdateRmItemInfo = () => {
   const [startDate, setStartDate] = useState(
@@ -26,7 +27,7 @@ const UpdateRmItemInfo = () => {
   );
   const { id } = useParams();
   const [singleItemInfoData, setSingleItemInfoData] = useState();
-  const { data: singleRMItemData } = useGetSingleRMItemQuery(id);
+  const { data: singleRMItemData ,isLoading:isLoadingUpdateRaw} = useGetSingleRMItemQuery(id);
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
   const [updateRMItemInfoData] = useUpdateRMItemInfoMutation();
@@ -54,7 +55,7 @@ const UpdateRmItemInfo = () => {
 
   const categoryInfoConvertedOptions =
     categoryInfoConvertSelectOption(categoryInfoData);
-  console.log(categoryInfoConvertedOptions);
+
 
   const itemUnitConvertSelectOption = (options) => {
     let result = [];
@@ -99,6 +100,9 @@ const UpdateRmItemInfo = () => {
         height: "500px",
       }}
     >
+      {
+        <LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>
+      }
       <div class="overflow-hidden">
         <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">

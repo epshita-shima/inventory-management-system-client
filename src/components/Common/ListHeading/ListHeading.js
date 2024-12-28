@@ -223,8 +223,9 @@ const ListHeading = ({
                 if (
                   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
-                  // setActiveDataModal(true);
+                  setActiveDataModal(true);
                 }
+             
               }}
             >
               <p
@@ -271,8 +272,9 @@ const ListHeading = ({
                 if (
                   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
-                  // setInActiveDataModal(true);
+                  setInActiveDataModal(true);
                 }
+              
               }}
             >
               <p

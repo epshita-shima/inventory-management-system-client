@@ -24,13 +24,14 @@ import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListM
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import "./RMItemInfoList.css"
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 const RMItemInfoList = ({ permission }) => {
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const {
     data: rmItemInfoData,
-    isRmItemLoading,
+    isLoading:isRmItemLoading,
     refetch,
   } = useGetAllRMItemInformationQuery(undefined);
   const [filterText, setFilterText] = useState("");
@@ -365,7 +366,7 @@ const RMItemInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
@@ -436,9 +437,28 @@ const RMItemInfoList = ({ permission }) => {
     reportTitle,
     refetch,
   ]);
-
+  // if (isRmItemLoading) {
+  //   return (
+  //     <div className="d-flex justify-content-center align-items-center">
+  //       <button
+  //         class="btn"
+  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
+  //         type="button"
+  //         disabled
+  //       >
+  //         <span
+  //           class="spinner-grow spinner-grow-sm"
+  //           role="status"
+  //           aria-hidden="true"
+  //         ></span>
+  //         Loading...
+  //       </button>
+  //     </div>
+  //   );
+  // }
   return (
     <div className="row px-5 mx-4">
+      <LoadingSpineer isLoading={isRmItemLoading}></LoadingSpineer>
       <ListHeading
         rmItemInfoData={rmItemInfoData}
         rmItemActiveStatus={rmItemActiveStatus}

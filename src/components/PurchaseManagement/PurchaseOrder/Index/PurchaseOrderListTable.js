@@ -84,7 +84,7 @@ const PurchaseOrderListTable = () => {
         permission={permission}
         click={clickhandler}
       ></PurchaseOderList>
-      {permission?.isInserted ? (
+      {permission?.isInserted && (
         <div
           className={`position-absolute`}
           style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
@@ -108,9 +108,7 @@ const PurchaseOrderListTable = () => {
             </a>
           </div>
         </div>
-      ) : (
-        ""
-      )}
+      ) }
     </div>
   );
 };

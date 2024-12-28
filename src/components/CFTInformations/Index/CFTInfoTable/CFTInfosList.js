@@ -26,8 +26,9 @@ import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
-const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
+const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   console.log(cftInfosData);
   const [filterText, setFilterText] = useState("");
@@ -411,7 +412,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2 ">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
@@ -545,6 +546,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
 
   return (
     <div className="row px-5 mx-4">
+      <LoadingSpineer isLoading={isCFTInfoloading}></LoadingSpineer>
       <ListHeading
         cftInfosData={cftInfosData}
         cftInfoActiveStatus={cftInfoActiveStatus}
