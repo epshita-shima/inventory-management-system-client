@@ -144,8 +144,8 @@ const ChangePasswordModal = ({
                   className="btn-disabled"
                   disabled={
                     formData.newPassword !== formData.confirmPassword ||
-                    formData.newPassword == "" ||
-                    formData.confirmPassword == ""
+                    formData.newPassword === "" ||
+                    formData.confirmPassword === ""
                   }
                   style={{
                     backgroundColor: "#2DDC1B",

@@ -85,7 +85,7 @@ function App() {
             >
               <Route index element={<Dashboard></Dashboard>}></Route>
               <Route
-                path="change-password"
+                path="/main-view/change-password"
                 element={
                   <ChangePasswordModal
                     menuListData={menuListData}

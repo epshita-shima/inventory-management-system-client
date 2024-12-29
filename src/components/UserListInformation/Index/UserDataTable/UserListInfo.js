@@ -40,7 +40,7 @@ const UserListInfo = ({
   permission,
 }) => {
   const [userId, setUserId] = useState(null);
-  const { data: user,refetch } = useGetAllUserQuery(undefined);
+  const { data: user, refetch } = useGetAllUserQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [activeUserModal, setActiveDataModal] = useState(false);
   const [inActiveUserModal, setInActiveUserModal] = useState(false);
@@ -48,13 +48,13 @@ const UserListInfo = ({
     useDeleteUserMutation();
   const navigate = useNavigate();
 
-  console.log(user)
+  console.log(user);
 
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
   const [extractedAllData, setExtractedAllData] = useState([]);
-  const [activeUser,setActiveUser]=useState([])
-  const [inActiveUser,setinActiveUser]=useState([])
+  const [activeUser, setActiveUser] = useState([]);
+  const [inActiveUser, setinActiveUser] = useState([]);
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
@@ -86,8 +86,8 @@ const UserListInfo = ({
       isactive: item.isactive ? "Active" : "InActive",
     }));
 
-    setActiveUser(activeUsers)
-    setinActiveUser(inActiveUser)
+    setActiveUser(activeUsers);
+    setinActiveUser(inActiveUser);
     setExtractedAllData(extractedFieldsForAllData);
     setExtractedData(extractedFields);
     setExtractedInActiveData(extractedInactiveFields);
@@ -122,10 +122,11 @@ const UserListInfo = ({
                 <input
                   type="checkbox"
                   aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.isactive}
-                  onChange={(e) =>{ 
-                    console.log(row)
-                    handleCheckboxClick(row, setSelectedData)}}
+                  
+                  onChange={(e) => {
+                    console.log(row);
+                    handleCheckboxClick(row, setSelectedData);
+                  }}
                 />
               </a>
             </div>
@@ -242,6 +243,7 @@ const UserListInfo = ({
                 marginLeft: "10px",
               }}
               onClick={() => {
+                console.log(user);
                 window.open(`user-update/${user?._id}`);
                 // handleActiveStatus(activeUser?._id);
               }}
@@ -269,16 +271,14 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-if(menuListData[0]._id===user._id){
-  setResetPassword(true);
-                setChangePassword(false);
-                const url = `/main-view/change-password?reset=true&change=false`;
-                window.open(url, "_blank");
-}
-else{
-  setUserIdForChangePassowrd(user._id)
-}
-              
+                if (menuListData._id === user._id) {
+                  setResetPassword(true);
+                  setChangePassword(false);
+                  const url = `/main-view/change-password?reset=true&change=false`;
+                  window.open(url, "_blank");
+                } else {
+                  setUserIdForChangePassowrd(user._id);
+                }
               }}
             ></FontAwesomeIcon>
           </a>
@@ -366,11 +366,14 @@ else{
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div>
-              <FontAwesomeIcon icon={faRefresh}
-              onClick={()=>{
-                console.log('clik')
-                refetch()}}
-              ></FontAwesomeIcon> &nbsp;
+              <FontAwesomeIcon
+                icon={faRefresh}
+                onClick={() => {
+                  console.log("clik");
+                  refetch();
+                }}
+              ></FontAwesomeIcon>{" "}
+              &nbsp;
             </div>
             <div class="dropdown">
               <button
@@ -425,7 +428,14 @@ else{
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch, companyinfo, reportTitle, extractedAllData]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    refetch,
+    companyinfo,
+    reportTitle,
+    extractedAllData,
+  ]);
 
   return (
     <div className="row px-4 mx-4">

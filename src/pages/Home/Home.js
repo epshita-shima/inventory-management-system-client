@@ -9,7 +9,7 @@ import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
-const Home = ({ singleUserData, setChangePassword, setResetPassword,setUserIdForChangePassowrd }) => {
+const Home = ({ singleUserData, setChangePassword, setResetPassword}) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
 const {data:menus}=useGetAllMenuItemsQuery(undefined)
 console.log(menus)
@@ -53,32 +53,27 @@ console.log(menus)
   };
   // Define the menu items
   const filteredMenuItems = menuListSingleData?.map((menu) => {
-    // Function to recursively filter items and isUpdated parent isChecked status
     const filterItems = (items) => {
       return items.filter((item) => {
         if (item.items && item.items.length > 0) {
-          // Recursively filter nested items and isUpdated parent isChecked status
           item.items = filterItems(item.items);
-          item.isChecked = item.items.some((child) => child.isChecked); // Update parent isChecked status
+          item.isChecked = item.items.some((child) => child.isChecked);
         }
         return item.isChecked === true;
       });
     };
 
     const filteredItems = filterItems(menu.items);
-
     return { ...menu, items: filteredItems };
   });
-  console.log(filteredMenuItems);
+ 
   const handleClick = () => {
     // setShowComponent(true); // Set showComponent state to true to render MyComponent
     setChangePassword(true);
     setResetPassword(false);
-    setUserIdForChangePassowrd()
-    const url = `change-password?reset=false&change=true`;
+    const url = `/main-view/change-password?reset=false&change=true`;
     window.open(url, "_blank");
   };
-
 
   const handleRefreshData = async () => {
     await refetch().then(({ data }) => {
