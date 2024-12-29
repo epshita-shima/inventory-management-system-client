@@ -18,6 +18,7 @@ import InsertUnitInfoModal from "./../../../UnitInformation/Insert/InsertUnitInf
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useNavigate } from "react-router-dom";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 const InsertFgItemInfo = () => {
   const ArrayHelperRef = useRef();
   const [startDate, setStartDate] = useState(
@@ -29,9 +30,7 @@ const InsertFgItemInfo = () => {
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
   const [insertIteminfo] = useInsertItemInformationMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const itemSizeConvertSelectOption = (options) => {
     let result = [];

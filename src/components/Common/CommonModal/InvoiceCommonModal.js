@@ -11,15 +11,14 @@ import Select from "react-select";
 import { useInsertPaymentInformationMutation } from "../../../redux/features/paymnetinformation/paymentInfoApi";
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
+import getMakebyUser from "../CommonMakeUser/CommonMakingUser";
 
 const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const [insertPaymentInfo, { isLoading }] =
     useInsertPaymentInformationMutation();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+    const makebyUser = getMakebyUser();
 
   const paymentTypeOptions = [
     { value: "cash", label: "Cash" },

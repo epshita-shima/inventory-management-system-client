@@ -28,14 +28,13 @@ import {
 import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymentDetailsModal";
 import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
 import getInitialFormValues from "../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const { data: clientInfo } = useGetAllClientInformationQuery();
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);

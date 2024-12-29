@@ -47,21 +47,24 @@ const UserListInfo = ({
   const [deleteUser, { isLoading, isSuccess, isError }] =
     useDeleteUserMutation();
   const navigate = useNavigate();
-  const activeUser = user?.filter((user) => user.isactive === true);
-  const inActiveUser = user?.filter((user) => user.isactive === false);
+
+  console.log(user)
+
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
   const [extractedAllData, setExtractedAllData] = useState([]);
+  const [activeUser,setActiveUser]=useState([])
+  const [inActiveUser,setinActiveUser]=useState([])
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All User";
-  console.log(activeUser);
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
+
   useEffect(() => {
-    const activeUsers = user?.filter((user) => user.isactive == true);
-    const inActiveUser = user?.filter((user) => user.isactive == false);
+    const activeUsers = user?.filter((user) => user.isactive === true);
+    const inActiveUser = user?.filter((user) => user.isactive === false);
     const extractedFieldsForAllData = user?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
@@ -83,6 +86,8 @@ const UserListInfo = ({
       isactive: item.isactive ? "Active" : "InActive",
     }));
 
+    setActiveUser(activeUsers)
+    setinActiveUser(inActiveUser)
     setExtractedAllData(extractedFieldsForAllData);
     setExtractedData(extractedFields);
     setExtractedInActiveData(extractedInactiveFields);

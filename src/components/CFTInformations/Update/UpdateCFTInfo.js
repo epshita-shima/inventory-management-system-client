@@ -38,7 +38,7 @@ const UpdateCFTInfo = () => {
   const navigate = useNavigate();
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
-  const updatebyUser = getUserParse[0].username;
+  const updatebyUser = getUserParse.username;
 
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   useEffect(() => {

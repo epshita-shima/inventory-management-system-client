@@ -49,14 +49,14 @@ const ActiveListDataModal = ({
  
   const getUserFromLocal = localStorage.getItem("user");
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
-  const getMenuListFromLOcalUser = getUserFromLocalConvert[0]?.menulist;
+  const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
   // const [columns,setColumns]=useState([])
 
 console.log(selectedData)
 
   const traverse = (items) => {
     const urls = [];
-    items.forEach((item) => {
+    items?.forEach((item) => {
       if (item.url && item.url !== "#") {
         urls.push({
           menuId: item._id,
@@ -547,7 +547,7 @@ console.log(selectedData)
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true"
-      style={{ overflow: "hidden" }}
+      style={{ overflow: "hidden"}}
     >
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">

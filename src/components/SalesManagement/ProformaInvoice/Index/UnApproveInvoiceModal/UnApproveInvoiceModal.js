@@ -21,6 +21,7 @@ import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoice
 import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import './UnApproveInvoiceModal.css'
 import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
+import getMakebyUser from "../../../../Common/CommonMakeUser/CommonMakingUser";
 
 const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsData,unitInfo,
   sizeInfo,
@@ -34,9 +35,7 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
   const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const [filterUnapporovePiData, setfilterUnapporovePiData] = useState([]);
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const [piApproveDate, setPiApproveDate] = useState(new Date());
   const [updatePIStatus] = useUpdateInvoiceStatusMutation();
   const [approveStatus, setApproveStatus] = useState([]);

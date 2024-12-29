@@ -20,6 +20,7 @@ import {
 import "./InsertCFTInfo.css";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 const InsertCFTInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -29,9 +30,7 @@ const InsertCFTInfo = () => {
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [insertCFTInfos, { isLoading }] = useInsertCFTInfoMutation();
   const { data: allCFTInfoData } = useGetAllCFTInfosQuery(undefined);
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   const initialValues = {

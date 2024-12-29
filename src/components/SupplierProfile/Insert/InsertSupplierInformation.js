@@ -16,14 +16,13 @@ import {
 } from "../../../redux/features/supplierInformation/supplierInfoApi";
 import swal from "sweetalert";
 import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 const InsertSupplierInformation = () => {
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const { id } = useParams();
   const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
-  const updatebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const [insertSupplierInfo] = useInsertSupplierInformationMutation();
   const { data: singleSupplierInfo } = useGetSingleSupplierInfoQuery(id);
   const [updateSupplierInfo] = useUpdateSupplierDetailsInfoMutation();
@@ -242,7 +241,7 @@ const InsertSupplierInformation = () => {
                                                       ...prevData,
                                                       supplierName:
                                                         e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -296,7 +295,7 @@ const InsertSupplierInformation = () => {
                                                       ...prevData,
                                                       supplierShortName:
                                                         e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -347,7 +346,7 @@ const InsertSupplierInformation = () => {
                                                     (prevData) => ({
                                                       ...prevData,
                                                       email: e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -402,7 +401,7 @@ const InsertSupplierInformation = () => {
                                                     (prevData) => ({
                                                       ...prevData,
                                                       mobileNo: e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -458,7 +457,7 @@ const InsertSupplierInformation = () => {
                                                       ...prevData,
                                                       contactPerson:
                                                         e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -514,7 +513,7 @@ const InsertSupplierInformation = () => {
                                                     (prevData) => ({
                                                       ...prevData,
                                                       binNo: e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -569,7 +568,7 @@ const InsertSupplierInformation = () => {
                                                       ...prevData,
                                                       tradeLicenceNo:
                                                         e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -623,7 +622,7 @@ const InsertSupplierInformation = () => {
                                                     (prevData) => ({
                                                       ...prevData,
                                                       tinNo: e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );
@@ -678,7 +677,7 @@ const InsertSupplierInformation = () => {
                                                     (prevData) => ({
                                                       ...prevData,
                                                       address: e.target.value,
-                                                      updateBy: updatebyUser,
+                                                      updateBy: makebyUser,
                                                       updateDate: new Date(),
                                                     })
                                                   );

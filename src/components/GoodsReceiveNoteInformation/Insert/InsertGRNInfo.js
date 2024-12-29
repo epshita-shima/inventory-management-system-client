@@ -22,14 +22,13 @@ import {
 } from "../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseOrderInfo, isLoading } =
     useGetAllPurchaseOrderInformationQuery(undefined);

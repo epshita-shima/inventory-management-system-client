@@ -34,14 +34,15 @@ import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
 } from "../../../../redux/features/serialgenerate/serialApi";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
-  const superAdminId = getUserParse[0].roleId;
+  const makebyUser = getMakebyUser();
+  const superAdminId = getUserParse.roleId;
   const navigate = useNavigate();
   const [piDate, setPiDate] = useState(new Date());
   const [expireDate, setExpireDate] = useState(new Date());

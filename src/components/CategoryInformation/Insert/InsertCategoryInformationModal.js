@@ -5,12 +5,11 @@ import React, { useRef, useState } from 'react';
 import * as Yup from "yup";
 import swal from 'sweetalert';
 import { useInsertCategoryInfoMutation } from '../../../redux/features/categoryInfo/categoryInfoApi';
+import getMakebyUser from '../../Common/CommonMakeUser/CommonMakingUser';
 
 const InsertCategoryInformationModal = () => {
     const ArrayHelperRef = useRef();
-    const getUser = localStorage.getItem("user");
-    const getUserParse = JSON.parse(getUser);
-    const makebyUser = getUserParse[0].username;
+const makebyUser = getMakebyUser();;
     const [existingUserRoles, setExistingUserRoles] = useState([]);
    const [insertCategoryInfo]=useInsertCategoryInfoMutation()
     const [categoryInfoData, setCategoryInfoData] = useState("");

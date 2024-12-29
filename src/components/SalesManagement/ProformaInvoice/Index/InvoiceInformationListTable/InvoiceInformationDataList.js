@@ -31,6 +31,7 @@ import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/H
 import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
+import getMakebyUser from "../../../../Common/CommonMakeUser/CommonMakingUser";
 
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
@@ -59,8 +60,8 @@ const InvoiceInformationDataList = ({ permission }) => {
   const { data: userRoles } = useGetUserRoleQuery(undefined);
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
-  const userRoleId = getUserParse[0].roleId;
-  const makebyUser = getUserParse[0].username;
+  const userRoleId = getUserParse.roleId;
+  const makebyUser = getMakebyUser();
 
   useEffect(() => {
     const matchUserRole = userRoles?.find((x) => x._id == userRoleId);

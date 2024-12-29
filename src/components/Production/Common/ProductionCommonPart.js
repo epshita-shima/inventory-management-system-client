@@ -21,6 +21,7 @@ import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropd
 import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
 import UpdateProduction from "../Update/UpdateProduction";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const ProductionCommonPart = () => {
   const { id } = useParams();
@@ -41,9 +42,7 @@ const ProductionCommonPart = () => {
   const [serialValue, setSerialValue] = useState([]);
   const [createSerialNo] = useCreateSerialNoMutation();
   const [insertProductionData] = useInsertProductionInformationMutation();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const initialValues = {
     productionDate: new Date().toLocaleDateString("en-CA"),
     batchNo: "",

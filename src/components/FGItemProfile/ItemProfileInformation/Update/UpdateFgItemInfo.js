@@ -20,6 +20,7 @@ import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { InputGroup, Form } from "react-bootstrap";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const UpdateFgItemInfo = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -31,9 +32,7 @@ const UpdateFgItemInfo = () => {
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
   const [updateItemInfo] = useUpdateItemInfoMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const updatebyUser = getUserParse[0].username;
+ const updatebyUser = getMakebyUser();
   console.log(id);
   console.log(singleItemInfoData);
   useEffect(() => {

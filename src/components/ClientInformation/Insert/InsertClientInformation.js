@@ -15,6 +15,7 @@ import {
 import swal from "sweetalert";
 import "./InsertClientInformation.css";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
@@ -22,12 +23,10 @@ const InsertClientInformation = () => {
   const navigate = useNavigate();
   const [insertClientInfo] = useInsertClientInformationMutation();
   const [updateClientInfo] = useUpdateClientDetailsInfoMutation();
-  const { data: singleClientInfo,isLoading:isClientInfoLoading } = useGetSingleClientInfoQuery(id);
+  const { data: singleClientInfo, isLoading: isClientInfoLoading } =
+    useGetSingleClientInfoQuery(id);
   const [clientData, setClientData] = useState([]);
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
-  const updatebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const initialValues = {
     detailsData: [
@@ -65,7 +64,6 @@ const InsertClientInformation = () => {
     try {
       if (id) {
         const response = await updateClientInfo(clientData);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           navigate("/main-view/client-list");
@@ -103,9 +101,7 @@ const InsertClientInformation = () => {
       //   height: "90%"
       // }}
     >
-      {
-        id && (<LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>)
-      }
+      {id && <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>}
       <div className="">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
@@ -238,7 +234,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   clientName: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -290,7 +286,7 @@ const InsertClientInformation = () => {
                                                   ...prevData,
                                                   clientShortName:
                                                     e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -339,7 +335,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   email: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -392,7 +388,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   mobileNo: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -444,7 +440,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   contactPerson: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -498,7 +494,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   binNo: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -550,7 +546,7 @@ const InsertClientInformation = () => {
                                                   ...prevData,
                                                   tradeLicenceNo:
                                                     e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -602,7 +598,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   tinNo: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -654,7 +650,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   address: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {
@@ -705,7 +701,7 @@ const InsertClientInformation = () => {
                                                 setClientData((prevData) => ({
                                                   ...prevData,
                                                   remarks: e.target.value,
-                                                  updateBy: updatebyUser,
+                                                  updateBy: makebyUser,
                                                   updateDate: new Date(),
                                                 }));
                                               } else {

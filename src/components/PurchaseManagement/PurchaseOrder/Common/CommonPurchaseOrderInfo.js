@@ -35,6 +35,7 @@ import {
   useGetSerialNoQuery,
 } from "../../../../redux/features/serialgenerate/serialApi";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
@@ -65,9 +66,7 @@ const CommonPurchaseOrderInfo = () => {
   const [createSerialNo] = useCreateSerialNoMutation();
   const [insertPurchaseOrderInfo] = useInsertPurchaseOrderInformationMutation();
   const [updatePurchaseOrderInfo] = useUpdatePurchaseOrderInformationMutation();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const supplierOptions = supplierDropdown(supplierInfo);
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);

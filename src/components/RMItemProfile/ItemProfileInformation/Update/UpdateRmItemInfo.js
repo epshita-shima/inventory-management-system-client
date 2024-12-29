@@ -20,6 +20,7 @@ import {
 import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryInfo/categoryInfoApi";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Insert/InsertCategoryInformationModal";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const UpdateRmItemInfo = () => {
   const [startDate, setStartDate] = useState(
@@ -32,9 +33,7 @@ const UpdateRmItemInfo = () => {
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
   const [updateRMItemInfoData] = useUpdateRMItemInfoMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const updatebyUser = getUserParse[0].username;
+  const updatebyUser = getMakebyUser();
   console.log(id);
   console.log(singleItemInfoData);
 

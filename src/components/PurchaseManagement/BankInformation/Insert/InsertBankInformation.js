@@ -6,13 +6,12 @@ import * as Yup from "yup";
 import { useInsertBankInformationMutation } from "../../../../redux/features/bankinformation/bankInfoAPi";
 import swal from "sweetalert";
 import './InsertBankInformation.css'
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertBankInformation = () => {
   const ArrayHelperRef = useRef();
   const [insertBankingInfo, { isLoading }] = useInsertBankInformationMutation();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const initialValues = {
     detailsData: [

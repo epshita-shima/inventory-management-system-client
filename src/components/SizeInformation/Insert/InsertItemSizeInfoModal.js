@@ -6,12 +6,11 @@ import { Form, InputGroup } from "react-bootstrap";
 import swal from "sweetalert";
 import * as Yup from "yup";
 import { useInsertItemSizeMutation } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertItemSizeInfoModal = () => {
   const ArrayHelperRef = useRef();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const [existingUserRoles, setExistingUserRoles] = useState([]);
   const [insertItemsize] = useInsertItemSizeMutation();
   const [sizeInfoData, setSizeInfoData] = useState("");

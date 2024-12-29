@@ -23,6 +23,7 @@ import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
 } from "../../../redux/features/serialgenerate/serialApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const UserCreation = () => {
   const { id } = useParams();
@@ -46,9 +47,7 @@ const UserCreation = () => {
   const [createSerialNo] = useCreateSerialNoMutation();
   const [createNewUser] = useCreateUserMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {

@@ -24,7 +24,6 @@ const GRNInfoTable = () => {
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
 
-        // Find the user object matching the provided userId
         const currentUser = userData?.find((user) => user._id === userId);
         console.log(currentUser);
         if (currentUser) {

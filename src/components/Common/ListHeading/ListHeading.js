@@ -41,13 +41,13 @@ const ListHeading = ({
   const pathname = new URL(currentUrl).pathname;
   const getUserFromLocal = localStorage.getItem("user");
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
-  const getMenuListFromLOcalUser = getUserFromLocalConvert[0]?.menulist;
+  const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
 
-  console.log(purchaseInLCAtSight)
+  console.log(user)
 
   const traverse = (items) => {
     const urls = [];
-    items.forEach((item) => {
+    items?.forEach((item) => {
       if (item.url && item.url !== "#") {
         urls.push({
           menuId: item._id,
@@ -67,8 +67,6 @@ const ListHeading = ({
 
   useEffect(() => {
     const searchItem = mainData?.filter((x) => x.url === pathname);
-    // const wordsURL = pathname.split("/");
-    // const repStr = wordsURL[2].replaceAll("-", " ");
     let grandTotal, totalActive, totalInActive;
 
     if (searchItem) {
