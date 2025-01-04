@@ -27,14 +27,14 @@ import { supplierDropdown } from "../../../Common/CommonDropdown/CommonDropdown"
 import makeAnimated from "react-select/animated";
 import handleGRNDownload from "../../../ReportProperties/Excel/handleGRNExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const GRNInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const {
-    refetch,
-  } = useGetAllGRNInformationQuery(undefined);
-  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const { refetch } = useGetAllGRNInformationQuery(undefined);
+  const { data: supplierInfo, isLoading: isLoadingSupplier } =
+    useGetAllSupplierInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: purchaseInfoData } =
@@ -60,7 +60,7 @@ const GRNInfoList = ({ permission }) => {
   const [filters, setFilters] = useState({
     supplierPONo: "",
     supplierId: "",
-    fromDate:new Date().toLocaleDateString("en-CA"),
+    fromDate: new Date().toLocaleDateString("en-CA"),
     toDate: new Date().toLocaleDateString("en-CA"),
     selectMonth: [],
   });
@@ -68,7 +68,7 @@ const GRNInfoList = ({ permission }) => {
   const [trigger, { data: filteredDatas, error, isFetching }] =
     useLazyGetFilteredGRNQuery();
 
- console.log(JSON.stringify(filteredData))
+  console.log(JSON.stringify(filteredData));
 
   useEffect(() => {
     const createPODropdown = (options) => {
@@ -130,7 +130,6 @@ const GRNInfoList = ({ permission }) => {
       setIsFetchAfterDeleteData(false);
     }
   }, [isFetchAfterDeleteData]);
-
 
   const handleApplyFilters = async () => {
     setExecuteQuery(true);
@@ -338,7 +337,6 @@ const GRNInfoList = ({ permission }) => {
       -1
   );
 
-
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -348,8 +346,7 @@ const GRNInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
-      
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">
@@ -391,13 +388,13 @@ const GRNInfoList = ({ permission }) => {
                     href="#"
                     onClick={() => {
                       handleGRNDownload(
-                          filteredData,
-                          rawItemInfo,
-                          supplierInfo,
-                          purchaseInfoData,
-                          companyinfo,
-                          reportTitle
-                        );
+                        filteredData,
+                        rawItemInfo,
+                        supplierInfo,
+                        purchaseInfoData,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -429,8 +426,6 @@ const GRNInfoList = ({ permission }) => {
     companyinfo,
     reportTitle,
   ]);
-
-
 
   const generateMonths = (year) => {
     const getYear = year.getFullYear();
@@ -465,10 +460,11 @@ const GRNInfoList = ({ permission }) => {
   const formattedDate = generateMonths(new Date());
 
   return (
-    <div className="row px-5 mx-4 ">
-      <div
-        className="col userlist-table mt-4"
-      >
+    <div
+      className={`row px-5 mx-4 ${isLoadingSupplier ? "d-none" : "d-block"}`}
+    >
+      <div className="col userlist-table mt-4">
+        <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>
         <div>
           <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
           <hr />
@@ -524,7 +520,10 @@ const GRNInfoList = ({ permission }) => {
                 </div>
               </div>
             </div>
-            <div className="width-lg-23 width-md-23" style={{ marginLeft: "18px" }}>
+            <div
+              className="width-lg-23 width-md-23"
+              style={{ marginLeft: "18px" }}
+            >
               <div className="w-100">
                 <label htmlFor="">Supplier PO No</label>
                 <br />
@@ -623,7 +622,10 @@ const GRNInfoList = ({ permission }) => {
                 }}
               />
             </div>
-            <div className="width-lg-16 margin-md" style={{  marginLeft: "20px" }}>
+            <div
+              className="width-lg-16 margin-md"
+              style={{ marginLeft: "20px" }}
+            >
               <div className="w-100">
                 <label htmlFor="">Select Month</label>
                 <br />
@@ -708,7 +710,7 @@ const GRNInfoList = ({ permission }) => {
             <button
               className="border-0 "
               style={{
-                backgroundColor: "#2DDC1B",
+                backgroundColor: isFetching ? "gray" : "#2DDC1B",
                 color: "white",
                 padding: "5px 10px",
                 fontSize: "14px",
@@ -717,6 +719,7 @@ const GRNInfoList = ({ permission }) => {
                 height: "38px",
                 marginTop: "25px",
               }}
+              disabled={isFetching ? true : false}
               onClick={handleApplyFilters}
             >
               Show
@@ -758,8 +761,9 @@ const GRNInfoList = ({ permission }) => {
         </div>
 
         {isTableDispaly ? (
-          <div className=" " 
-          style={{ height: 'calc(65vh - 120px)', overflowY: 'scroll' }}
+          <div
+            className={`${filteredItems?.length === 0 ? "d-none" : "d-block"}`}
+            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
           >
             <DataTable
               columns={columns}
@@ -791,9 +795,9 @@ const GRNInfoList = ({ permission }) => {
           </tr>
         </thead>
         <tbody>
-           {Object.keys(groupedData)?.map((key) => {
+          {Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
-            console.log(key)
+            console.log(key);
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
@@ -866,7 +870,7 @@ const GRNInfoList = ({ permission }) => {
                     </tr>
                   );
                 })}
-               
+
                 <tr>
                   <td
                     colSpan={7}
@@ -901,7 +905,7 @@ const GRNInfoList = ({ permission }) => {
                 </tr>
               </>
             );
-          })} 
+          })}
 
           <tr>
             <td

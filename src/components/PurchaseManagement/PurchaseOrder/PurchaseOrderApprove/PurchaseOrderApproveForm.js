@@ -33,7 +33,7 @@ const PurchaseOrderApproveForm = () => {
     new Date().toLocaleDateString("en-CA")
   );
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
-  const { data: purchaseInfoData, refetch } =
+  const { data: purchaseInfoData,isLoading:isPurchaseOrderLoading, refetch } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: grnInfoData, refetch: grnRefetch } =
     useGetAllGRNInformationQuery(undefined);
@@ -146,6 +146,7 @@ const PurchaseOrderApproveForm = () => {
           purchaseOrderList={purchaseOrderList}
           purchaseInfoData={purchaseInfoData}
           setPurchaseOrderList={setPurchaseOrderList}
+          isLoading={isPurchaseOrderLoading}
         ></ListHeading>
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
@@ -275,6 +276,7 @@ const PurchaseOrderApproveForm = () => {
               <PurchaseOrderStatusListTable
                 showPurchaseApproveListData={showPurchaseApproveListData}
                 purchaseFilterApproveAllData={purchaseFilterApproveAllData}
+                isPurchaseOrderLoading={isPurchaseOrderLoading}
               ></PurchaseOrderStatusListTable>
             )}
             {showPurchaseUnApproveListData && (
@@ -288,6 +290,7 @@ const PurchaseOrderApproveForm = () => {
                   setPurchaseFilterUnApproveAllData
                 }
                 refetch={refetch}
+                isPurchaseOrderLoading={isPurchaseOrderLoading}
               ></PurchaseOrderStatusListTable>
             )}
           </div>

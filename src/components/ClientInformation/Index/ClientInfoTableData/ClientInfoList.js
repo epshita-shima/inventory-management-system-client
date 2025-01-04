@@ -114,8 +114,8 @@ const ClientInfoList = ({ permission }) => {
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
                   onChange={(e) => {
                     handleCheckboxClick(row, setSelectedData);
                   }}

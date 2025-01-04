@@ -14,8 +14,8 @@ const PurchaseOrderStatusListTable = ({
   handleApproveData,
   fromDate,
   toDate,
-  refetch
-
+  refetch,
+  isPurchaseOrderLoading,
 }) => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
@@ -97,6 +97,7 @@ const PurchaseOrderStatusListTable = ({
           click={clickhandler}
           showPurchaseApproveListData={showPurchaseApproveListData}
           purchaseFilterApproveAllData={purchaseFilterApproveAllData}
+          isPurchaseOrderLoading={isPurchaseOrderLoading}
         ></PurchaseOrderApproveList>
       )}
       {showPurchaseUnApproveListData && (
@@ -110,6 +111,7 @@ const PurchaseOrderStatusListTable = ({
           setPurchaseFilterUnApproveAllData={setPurchaseFilterUnApproveAllData}
           handleApproveData={handleApproveData}
           refetch={refetch}
+          isPurchaseOrderLoading={isPurchaseOrderLoading}
         ></PurchaseOrderUnapproveList>
       )}
    

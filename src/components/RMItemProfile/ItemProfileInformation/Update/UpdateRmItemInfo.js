@@ -31,11 +31,9 @@ const UpdateRmItemInfo = () => {
   const { data: singleRMItemData ,isLoading:isLoadingUpdateRaw} = useGetSingleRMItemQuery(id);
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
-  const [updateRMItemInfoData] = useUpdateRMItemInfoMutation();
+  const [updateRMItemInfoData,{isLoading}] = useUpdateRMItemInfoMutation();
   const navigate = useNavigate();
   const updatebyUser = getMakebyUser();
-  console.log(id);
-  console.log(singleItemInfoData);
 
   useEffect(() => {
     setSingleItemInfoData(singleRMItemData);
@@ -406,7 +404,7 @@ const UpdateRmItemInfo = () => {
                     width: "20%",
                   }}
                 >
-                  Update
+                 {isLoading ?'Updating' : 'Update' } 
                 </button>
               </div>
             </Form>

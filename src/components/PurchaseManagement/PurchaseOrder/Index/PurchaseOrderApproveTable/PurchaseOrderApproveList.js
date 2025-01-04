@@ -14,11 +14,13 @@ import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/i
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
-import '../../PurchaseOrderApprove/PurchaseOrderAproveForm.css'
+import "../../PurchaseOrderApprove/PurchaseOrderAproveForm.css";
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const PurchaseOrderApproveList = ({
   permission,
   purchaseFilterApproveAllData,
+  isPurchaseOrderLoading,
 }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
@@ -136,12 +138,12 @@ const PurchaseOrderApproveList = ({
               title="Update item"
               style={{
                 color: `${
-                  purchaseFilterApproveAllData?.items?.length == 0
+                  purchaseFilterApproveAllData?.items?.length === 0
                     ? "gray"
                     : "orange"
                 } `,
                 border: `${
-                  purchaseFilterApproveAllData?.items?.length == 0
+                  purchaseFilterApproveAllData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -228,7 +230,12 @@ const PurchaseOrderApproveList = ({
   }, [filterText, resetPaginationToggle]);
 
   return (
-    <div className="row">
+    <div
+      className={`row ${isPurchaseOrderLoading ? "d-none" : "block"} ${
+        filteredItems?.length === 0 ? "d-none" : "block"
+      }`}
+    >
+      <LoadingSpineer isLoading={isPurchaseOrderLoading}></LoadingSpineer>
       <div className="col userlist-table podata-main-view">
         <div className="shadow-lg ">
           <DataTable

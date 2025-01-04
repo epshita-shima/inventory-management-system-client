@@ -56,6 +56,7 @@ const [selectedData, setSelectedData] = useState([]);
     const extractedFields = finishGoodActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
+      
       return{
         openingDate:item.openingDate,
         itemName: item.itemName,
@@ -68,7 +69,8 @@ const [selectedData, setSelectedData] = useState([]);
 
     const extractedInactiveFields = finishGoodInActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
-      const unit = itemUnitInfo?.find((x) => x._id === finishGoodInItemInfoData?.unitId);
+      const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
+      console.log(unit)
       return{
         openingDate:item.openingDate,
         itemName: item.itemName,
@@ -123,8 +125,8 @@ const [selectedData, setSelectedData] = useState([]);
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
                   onChange={(e) => handleCheckboxClick(row, setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
                 />
               </a>
@@ -141,6 +143,7 @@ const [selectedData, setSelectedData] = useState([]);
       }
     });
   };
+  
   const columns = [
     {
       name: "Sl.",

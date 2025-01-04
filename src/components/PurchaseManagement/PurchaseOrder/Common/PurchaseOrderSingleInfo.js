@@ -26,7 +26,7 @@ const PurchaseOrderSingleInfo = ({
   setPurchaseOrderAllInformation,
   makebyUser,
 }) => {
-  console.log(purchaseOrderAllInformation);
+
   return (
     <div class="row row-cols-2 row-cols-lg-3">
       <div class="col-6 col-lg-4">
@@ -97,7 +97,7 @@ const PurchaseOrderSingleInfo = ({
                     `PO-MEB-${e.sortName}-${formatedDate}-${
                       serialValue?.serialNo === undefined
                         ? "1"
-                        : serialValue?.serialNo
+                        :parseInt(serialValue?.serialNo) + 1
                     }`
                   );
                 }

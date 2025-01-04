@@ -108,26 +108,15 @@ const InsertCFTInfo = () => {
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
                   letterSpacing: ".5px",
+                  fontSize:'20px'
                 }}
               >
-                Create Finish Goods Item Info
+                Create CFT Info
               </span>
             </div>
             <div>
@@ -339,32 +328,24 @@ const InsertCFTInfo = () => {
                                                           }
                                                         )}
                                                         styles={{
-                                                          control: (
-                                                            baseStyles,
-                                                            state
-                                                          ) => ({
+                                                          control: (baseStyles, state) => ({
                                                             ...baseStyles,
                                                             width: "100%",
-                                                            borderColor:
-                                                              state.isFocused
-                                                                ? "#fff"
-                                                                : "#fff",
-                                                            border:
-                                                              "1px solid #2DDC1B",
+                                                            borderColor: state.isFocused ? "#fff" : "#fff",
+                                                            border: "1px solid #2DDC1B",
                                                           }),
                                                           menu: (provided) => ({
                                                             ...provided,
                                                             zIndex: 9999,
-                                                            // height:'200px',
-                                                            //  overflowY:'scroll'
+                                                            height: "auto",
+                                                            // overflowY: "scroll",
                                                           }),
                                                         }}
                                                         theme={(theme) => ({
                                                           ...theme,
                                                           colors: {
                                                             ...theme.colors,
-                                                            primary25:
-                                                              "#B8FEB3",
+                                                            primary25: "#B8FEB3",
                                                             primary: "#2DDC1B",
                                                           },
                                                         })}

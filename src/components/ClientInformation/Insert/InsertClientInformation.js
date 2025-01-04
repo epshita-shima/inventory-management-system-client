@@ -21,8 +21,10 @@ const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [insertClientInfo] = useInsertClientInformationMutation();
-  const [updateClientInfo] = useUpdateClientDetailsInfoMutation();
+  const [insertClientInfo, {isLoading: isInsertLoading }] =
+    useInsertClientInformationMutation();
+  const [updateClientInfo, {isLoading: isUpdateLoading }] =
+    useUpdateClientDetailsInfoMutation();
   const { data: singleClientInfo, isLoading: isClientInfoLoading } =
     useGetSingleClientInfoQuery(id);
   const [clientData, setClientData] = useState([]);
@@ -105,7 +107,7 @@ const InsertClientInformation = () => {
       <div className="">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
               style={{
                 fontSize: "14px",
                 color: "#000",
@@ -116,7 +118,7 @@ const InsertClientInformation = () => {
               }}
               icon={faPlus}
             />
-            &nbsp;
+            &nbsp; */}
             <span
               style={{
                 color: "#000",
@@ -361,7 +363,6 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-
                                         <div className="mb-2">
                                           <label htmlFor="mobileNo">
                                             Mobile Number
@@ -414,7 +415,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2">
+                                      <div className="mb-2">
                                           <label htmlFor="conatctPerson">
                                             Contact Person
                                           </label>
@@ -466,9 +467,13 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
+                                        
+                                        
+                                        
                                       </div>
 
                                       <div className="col-md-12 col-lg-6 col-xl-6">
+                                      
                                         <div className="mb-2">
                                           <label htmlFor="conatctPerson">
                                             Bin Number
@@ -520,59 +525,6 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2 mt-2">
-                                          <label htmlFor="tradeLicenceNo">
-                                            Trade Licence Number
-                                          </label>
-                                          <Field
-                                            type="text"
-                                            name={`detailsData.${index}.tradeLicenceNo`}
-                                            placeholder="Trade Licence Number"
-                                            value={
-                                              id
-                                                ? clientData?.tradeLicenceNo
-                                                : detail?.tradeLicenceNo
-                                            }
-                                            style={{
-                                              border: "1px solid #2DDC1B",
-                                              padding: "5px",
-                                              width: "100%",
-                                              borderRadius: "5px",
-                                              height: "38px",
-                                            }}
-                                            onChange={(e) => {
-                                              if (id) {
-                                                setClientData((prevData) => ({
-                                                  ...prevData,
-                                                  tradeLicenceNo:
-                                                    e.target.value,
-                                                  updateBy: makebyUser,
-                                                  updateDate: new Date(),
-                                                }));
-                                              } else {
-                                                setFieldValue(
-                                                  `detailsData.${index}.tradeLicenceNo`,
-                                                  e.target.value
-                                                );
-                                              }
-                                            }}
-                                          />
-                                          <br />
-                                          {id
-                                            ? ""
-                                            : touched.detailsData?.[index]
-                                                ?.tradeLicenceNo &&
-                                              errors.detailsData?.[index]
-                                                ?.tradeLicenceNo && (
-                                                <div className="text-danger">
-                                                  {
-                                                    errors.detailsData[index]
-                                                      .tradeLicenceNo
-                                                  }
-                                                </div>
-                                              )}
-                                        </div>
-
                                         <div className="mb-2">
                                           <label htmlFor="tradeLicenceNo">
                                             TIN Number
@@ -675,8 +627,8 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
+                                       
                                         <div>
-                                          {" "}
                                           <label htmlFor="remarks">
                                             Remarks
                                           </label>
@@ -747,10 +699,16 @@ const InsertClientInformation = () => {
                                             width: "20%",
                                           }}
                                           disabled={
-                                            id ? false : !(isValid && dirty)
+                                            id ? false : !(isValid && dirty) || isUpdateLoading ||isInsertLoading 
                                           }
                                         >
-                                          Save
+                                          {id
+                                            ? isUpdateLoading
+                                              ? "Updating"
+                                              : "Update"
+                                            : isInsertLoading
+                                            ? "Saving"
+                                            : "Save"}
                                         </button>
                                       </div>
                                     </div>

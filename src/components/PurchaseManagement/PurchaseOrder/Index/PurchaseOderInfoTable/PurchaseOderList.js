@@ -410,9 +410,11 @@ const PurchaseOderList = ({ permission }) => {
         purchaseInfoData={purchaseInfoData}
         purchaseOrderList={purchaseOrderList}
         setPurchaseOrderList={setPurchaseOrderList}
+        isLoading={isPurchaseloading}
       ></ListHeading>
       <div
         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
+        style={{display:isPurchaseloading ? 'none' :'block'}}
       >
         <div className="shadow-lg">
           <DataTable

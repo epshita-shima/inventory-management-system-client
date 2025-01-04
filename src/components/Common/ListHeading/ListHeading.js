@@ -30,6 +30,7 @@ const ListHeading = ({
   setPurchaseOrderList,
   purchaseOrderApproveData,
   purchaseOrderUnApproveData,
+  isLoading
 }) => {
   const [totalTitle, setTotalTitle] = useState("");
   const [totalActiveTitle, setTotalActiveTitle] = useState("");
@@ -42,8 +43,6 @@ const ListHeading = ({
   const getUserFromLocal = localStorage.getItem("user");
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
   const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
-
-  console.log(user)
 
   const traverse = (items) => {
     const urls = [];
@@ -154,7 +153,7 @@ const ListHeading = ({
   ]);
 
   return (
-    <div>
+    <div className={`${isLoading ? 'd-none' : 'd-block'}`}>
       <div class="row">
         <div
           class={

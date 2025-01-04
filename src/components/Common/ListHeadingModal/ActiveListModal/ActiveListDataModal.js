@@ -32,13 +32,13 @@ const ActiveListDataModal = ({
   selectedData,
   setSelectedData,
 }) => {
-  const [updateStatusForUserData, { isLoading, isError }] =
+  const [updateStatusForUserData, { isLoading:isLoadingUser}] =
     useUpdateMultipleUserStatusMutation();
-  const [updateStatusForRawMeterial] = useUpdateRawMaterialStatusMutation();
-  const [updateStatusForFinishGood] = useUpdateFinishGoodStatusMutation();
-  const [updateCFTInfoStatus] = useUpdateCFTInfoStatusMutation();
-  const [updateSupplierInfoStatus]=useUpdateSupplierInfoStatusMutation();
-  const [updateClientInfoStatus]=useUpdateClientInfoStatusMutation();
+  const [updateStatusForRawMeterial, { isLoading:isLoadingRawMaterial }] = useUpdateRawMaterialStatusMutation();
+  const [updateStatusForFinishGood,{isLoading:isLoadingFinishGoods}] = useUpdateFinishGoodStatusMutation();
+  const [updateCFTInfoStatus,{isLoading:isLoadingCft}] = useUpdateCFTInfoStatusMutation();
+  const [updateSupplierInfoStatus,{isLoading:isLoadingSupplierInfo}]=useUpdateSupplierInfoStatusMutation();
+  const [updateClientInfoStatus,{isLoading:isLoadingClient}]=useUpdateClientInfoStatusMutation();
   const currentUrl = window.location.href;
   const pathname = new URL(currentUrl).pathname;
   const wordsURL = pathname.split("/");
@@ -611,10 +611,10 @@ console.log(selectedData)
             <button
               type="button"
               class={`btn btn-primary ${
-                selectedData.length === 0 || isLoading ? "disabled-button" : ""
+                selectedData.length === 0 || isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft? "disabled-button" : ""
               }`}
               onClick={handleUpdate}
-              disabled={selectedData.length === 0 || isLoading}
+              disabled={selectedData.length === 0 || isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft}
               style={{
                 backgroundColor: "#2DDC1B",
                 border: "none",
@@ -622,7 +622,9 @@ console.log(selectedData)
                 textTransform: "uppercase",
               }}
             >
-              Update Status
+            {
+              isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft ? "Updating Status" :'Update Status'
+            }  
             </button>
           </div>
         </div>

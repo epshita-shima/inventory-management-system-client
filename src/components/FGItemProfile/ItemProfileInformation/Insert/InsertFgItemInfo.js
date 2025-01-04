@@ -24,11 +24,9 @@ const InsertFgItemInfo = () => {
   const [startDate, setStartDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
-  // const [selectedSizeValue, setSelectedSizeValue] = useState(null);
-  // const [selectedUnitValue, setSelectedUnitValue] = useState(null);
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
-  const [insertIteminfo] = useInsertItemInformationMutation();
+  const [insertIteminfo,{isLoading}] = useInsertItemInformationMutation();
   const navigate = useNavigate();
   const makebyUser = getMakebyUser();
 
@@ -244,9 +242,9 @@ const InsertFgItemInfo = () => {
                           borderRadius: "5px",
                           width: "100px",
                         }}
-                        disabled={!(isValid && dirty)}
+                        disabled={!(isValid && dirty) || isLoading }
                       >
-                        Save
+                      {isLoading ? "Saving" : "Save"}  
                       </button>
 
                       <div

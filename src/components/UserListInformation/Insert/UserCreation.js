@@ -43,7 +43,7 @@ const UserCreation = () => {
     isLoading: menuItemsIsLoading,
   } = useGetAllMenuItemsQuery();
 
-  const { data: serialNo } = useGetSerialNoQuery(undefined);
+  const { data: serialNo ,refetch:serialRefetch} = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
   const [createNewUser] = useCreateUserMutation();
   const navigate = useNavigate();
@@ -278,6 +278,7 @@ console.log(JSON.stringify(filteredData));
       ) {
         swal("Done", "Data Save Successfully", "success");
         navigate("/main-view/user-setting");
+        serialRefetch()
       } else {
         swal("Error", "An error occurred while creating the user", "error");
       }

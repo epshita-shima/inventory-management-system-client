@@ -12,7 +12,7 @@ const FGItemInfoTableData = () => {
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
   const {
     data: finishGoodInItemInfoData,
-    isFGItemloading,
+    isLoading:isFGItemloading,
     refetch,
   } = useGetAllItemInformationQuery(undefined);
   const [permission, setPermission] = useState();
@@ -44,7 +44,7 @@ const FGItemInfoTableData = () => {
       {permission?.isInserted ? (
         <div
           className={`position-absolute`}
-          style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
+          style={{ right: "10%", bottom: "4%", zIndex: "9999" }}
         >
           <div className="">
             <a

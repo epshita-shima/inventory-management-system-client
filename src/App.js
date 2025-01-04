@@ -55,7 +55,7 @@ function App() {
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
-  const [userIdForChangePassowrd,setUserIdForChangePassowrd]=useState('')
+  const [userIdForChangePassowrd,setUserIdForChangePassowrd]=useState('');
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
 

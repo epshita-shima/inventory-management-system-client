@@ -23,9 +23,11 @@ const InsertSupplierInformation = () => {
   const { id } = useParams();
   const getUser = localStorage.getItem("user");
   const makebyUser = getMakebyUser();
-  const [insertSupplierInfo] = useInsertSupplierInformationMutation();
+  const [insertSupplierInfo, { isLoading: isSaveSuplierLoading }] =
+    useInsertSupplierInformationMutation();
   const { data: singleSupplierInfo } = useGetSingleSupplierInfoQuery(id);
-  const [updateSupplierInfo] = useUpdateSupplierDetailsInfoMutation();
+  const [updateSupplierInfo, { isLoading: isUpdateSupplierLoading }] =
+    useUpdateSupplierDetailsInfoMutation();
   const [supplierData, setSupplierData] = useState([]);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const InsertSupplierInformation = () => {
     detailsData: [
       {
         supplierName: "",
-        supplierShortName:'',
+        supplierShortName: "",
         email: "",
         mobileNo: "",
         contactPerson: "",
@@ -68,7 +70,7 @@ const InsertSupplierInformation = () => {
         console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
-         navigate('/main-view/supplier-list')
+          navigate("/main-view/supplier-list");
         } else {
           swal(
             "Not Possible!",
@@ -704,7 +706,7 @@ const InsertSupplierInformation = () => {
                                                 )}
                                           </div>
                                         </div>
-                                      </div> 
+                                      </div>
                                       <div className="col-md-12 mt-3">
                                         <div className="d-flex justify-content-center">
                                           <button
@@ -717,6 +719,7 @@ const InsertSupplierInformation = () => {
                                                 : isValid && dirty
                                                 ? "#2DDC1B"
                                                 : "gray",
+
                                               color: "white",
                                               padding: "5px 10px",
                                               fontSize: "14px",
@@ -724,10 +727,23 @@ const InsertSupplierInformation = () => {
                                               width: "25%",
                                             }}
                                             disabled={
-                                              id ? false : !(isValid && dirty)
+                                              (id
+                                                ? false
+                                                : !(isValid && dirty)) ||
+                                              isUpdateSupplierLoading
+                                                ? true
+                                                : false || isSaveSuplierLoading
+                                                ? true
+                                                : false
                                             }
                                           >
-                                            Save
+                                            {id
+                                              ? isUpdateSupplierLoading
+                                                ? "Updating"
+                                                : "Update"
+                                              : isSaveSuplierLoading
+                                              ? "Saving..."
+                                              : "Save"}
                                           </button>
                                         </div>
                                       </div>
@@ -735,8 +751,6 @@ const InsertSupplierInformation = () => {
                                   );
                                 })
                               : null}
-                            {/* </tbody>
-                              </table> */}
                           </div>
                         </div>
                       );

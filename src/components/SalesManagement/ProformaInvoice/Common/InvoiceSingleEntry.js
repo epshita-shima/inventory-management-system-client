@@ -228,9 +228,8 @@ const InvoiceSingleEntry = ({
                   const makeBatchNo = `MEB-${shortName}-${removeDash}-${
                     serialValue?.serialNo === undefined
                       ? "1"
-                      : serialValue?.serialNo
+                      :parseInt(serialValue?.serialNo) + 1
                   }`;
-                  console.log(serialValue?.serialNo, makeBatchNo);
                   setFieldValue("invoiceNo", makeBatchNo);
                   setFieldValue("customerID", e.value);
                 }

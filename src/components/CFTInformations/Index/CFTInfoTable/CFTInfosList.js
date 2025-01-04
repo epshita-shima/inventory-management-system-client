@@ -588,7 +588,6 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
             const formattedClosingDate = formatDate(items?.closingDate);
             console.log(formattedClosingDate);
             const rowSpan = group?.length;
-
             return (
               <>
                 {group?.map((row, rowIndex) => {
@@ -619,7 +618,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {formattedClosingDate ==='Invalid Date' ? '-' : formattedClosingDate}
                           </td>
                         </>
                       )}

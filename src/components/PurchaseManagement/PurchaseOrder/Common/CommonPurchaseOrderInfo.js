@@ -51,7 +51,7 @@ const CommonPurchaseOrderInfo = () => {
   );
   const [purchaseOrderAllInformation, setPurchaseOrderAllInformation] =
     useState([]);
-  const { data: supplierInfo, isLoading } =
+  const { data: supplierInfo, isLoading:isLoadingSupplier } =
     useGetAllSupplierInformationQuery(undefined);
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
@@ -61,10 +61,11 @@ const CommonPurchaseOrderInfo = () => {
   const [totalGrandQuantity, setTotalGrandQuantity] = useState(0);
   const [totalGrandTotalAmount, setTotalGrandTotalAmount] = useState(0);
   const [serialValue, setSerialValue] = useState([]);
-  const { data: serialNo } = useGetSerialNoQuery(undefined);
+  const { data: serialNo,refetch } = useGetSerialNoQuery(undefined);
 
   const [createSerialNo] = useCreateSerialNoMutation();
-  const [insertPurchaseOrderInfo] = useInsertPurchaseOrderInformationMutation();
+  const [insertPurchaseOrderInfo, { isLoading: isLoadingCreatePO }] =
+    useInsertPurchaseOrderInformationMutation();
   const [updatePurchaseOrderInfo] = useUpdatePurchaseOrderInformationMutation();
   const makebyUser = getMakebyUser();
 
@@ -133,13 +134,16 @@ const CommonPurchaseOrderInfo = () => {
   }, [id, serialNo, purchaseOderInfo]);
 
   const areFieldsEmpty = () => {
-    return purchaseOrderAllInformation?.detailsData?.some(
-      (field) =>
-        !field.itemId ||
-        !field.itemDescription ||
-        !field.quantity ||
-        !field.unitPrice ||
-        !field.totalAmount
+    return (
+      !purchaseOrderAllInformation?.remarks ||
+      purchaseOrderAllInformation?.detailsData?.some(
+        (field) =>
+          !field.itemId ||
+          !field.itemDescription ||
+          !field.quantity ||
+          !field.unitPrice ||
+          !field.totalAmount
+      )
     );
   };
 
@@ -167,8 +171,10 @@ const CommonPurchaseOrderInfo = () => {
         }
       } else {
         const response = await insertPurchaseOrderInfo(values);
+        console.log(response);
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);
+          refetch()
           swal("Done", "Data Save Successfully", "success");
           resetForm();
         } else if (response?.error?.status === 400) {
@@ -190,13 +196,14 @@ const CommonPurchaseOrderInfo = () => {
         zIndex: "9999",
       }}
     >
-      {id && <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer>}
+      {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>}
 
-      <div class="">
+      <div class={`${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
+              remarks: Yup.string().required("Required"),
               detailsData: Yup.array().of(
                 Yup.object().shape({
                   itemId: Yup.string().required("Required"),
@@ -323,9 +330,11 @@ const CommonPurchaseOrderInfo = () => {
                                           ? areFieldsEmpty()
                                             ? "gray"
                                             : "#2DDC1B"
-                                          : isValid && dirty
-                                          ? "#2DDC1B"
-                                          : "gray",
+                                          : 
+                                            !(isValid && dirty)
+                                          ? "gray"
+                                          : "#2DDC1B",
+
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
@@ -337,10 +346,15 @@ const CommonPurchaseOrderInfo = () => {
                                           ? areFieldsEmpty()
                                             ? true
                                             : false
-                                          : !(isValid && dirty)
+                                          :
+                                          !(isValid && dirty)
                                       }
                                     >
-                                      {id ? "Update" : "Save"}
+                                      {id
+                                        ? "Update"
+                                        : isLoadingCreatePO
+                                        ? "Saving"
+                                        : "Save"}
                                     </button>
                                     <div
                                       className="border-0 "

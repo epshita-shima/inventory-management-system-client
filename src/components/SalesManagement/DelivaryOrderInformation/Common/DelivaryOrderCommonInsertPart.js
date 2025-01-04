@@ -236,11 +236,11 @@ console.log(isDOSave)
       clientId: paymentReceiveSelectedItem[0]?.clientId,
       piId: paymentReceiveSelectedItem[0]?.piNumber,
       doNo: `DO-${removeDash}-${
-        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+        serialValue?.serialNo === undefined ? "1" :parseInt(serialValue?.serialNo) + 1
       }`,
       mushokChallanNo: "",
       deliveryChallanNo: `${
-        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+        serialValue?.serialNo === undefined ? "1" :parseInt(serialValue?.serialNo) + 1
       }`,
       shipmentNo: singleInvoiceData?.shipmentNo + 1,
       approveStatus: false,

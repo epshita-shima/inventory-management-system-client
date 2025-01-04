@@ -20,6 +20,7 @@ import {
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import getMakebyUser from "./../../Common/CommonMakeUser/CommonMakingUser";
 
 const UpdateCFTInfo = () => {
   const [startDate, setStartDate] = useState(
@@ -32,15 +33,15 @@ const UpdateCFTInfo = () => {
   const { id } = useParams();
   const [file, setFile] = useState(null);
   const [singleCFTInfosData, setSingleCFTInfosData] = useState();
-  const { data: singleCFTInfoData ,isLoading:isCFTInfoloading} = useGetSingleCFTInfoQuery(id);
+  const { data: singleCFTInfoData, isLoading: isCFTInfoloading } =
+    useGetSingleCFTInfoQuery(id);
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [updateCFTInfoData] = useUpdateCFTInfoMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const updatebyUser = getUserParse.username;
+  const updatebyUser = getMakebyUser();
 
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
+
   useEffect(() => {
     if (singleCFTInfoData) {
       setSingleCFTInfosData({
@@ -57,7 +58,9 @@ const UpdateCFTInfo = () => {
     }
     setSingleCFTInfosData(singleCFTInfoData);
   }, [singleCFTInfoData]);
-
+  const areFieldsEmpty = () => {
+    return singleCFTInfosData?.detailsData?.some((field) => !field.cftPerKg);
+  };
   const handleKeyUp = (e, index, detail) => {
     const inputValue = e.target.value;
 
@@ -103,17 +106,15 @@ const UpdateCFTInfo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-        openingDate: singleCFTInfosData?.openingDate,
-        isActive: singleCFTInfosData?.isActive,
-        closingDate: singleCFTInfosData?.closingDate,
-        makeBy: singleCFTInfosData?.makeBy,
-        makeDate: singleCFTInfosData?.makeDate,
-        updateBy: singleCFTInfosData?.updateBy,
-        updateDate: singleCFTInfosData?.updateDate,
-        detailsData: singleCFTInfosData?.detailsData,
-      }
- 
-
+      openingDate: singleCFTInfosData?.openingDate,
+      isActive: singleCFTInfosData?.isActive,
+      closingDate: singleCFTInfosData?.closingDate,
+      makeBy: singleCFTInfosData?.makeBy,
+      makeDate: singleCFTInfosData?.makeDate,
+      updateBy: singleCFTInfosData?.updateBy,
+      updateDate: singleCFTInfosData?.updateDate,
+      detailsData: singleCFTInfosData?.detailsData,
+    };
     try {
       const response = await updateCFTInfoData({ payload, id });
       console.log(response.data.status);
@@ -132,7 +133,6 @@ const UpdateCFTInfo = () => {
       swal("Relax!", "An problem occurred while updating the data", "error");
     }
   };
-
   return (
     <div
       className=" row px-4 mx-4"
@@ -146,23 +146,12 @@ const UpdateCFTInfo = () => {
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
                   letterSpacing: ".5px",
+                  fontSize:'20px'
                 }}
               >
                 Update CFT Info
@@ -226,7 +215,6 @@ const UpdateCFTInfo = () => {
                       <DatePicker
                         dateFormat="y-MM-dd"
                         className="text-center custom-datepicker ms-2"
-                       
                         calendarClassName="custom-calendar"
                         selected={singleCFTInfosData?.openingDate}
                         value={singleCFTInfosData?.openingDate}
@@ -295,17 +283,18 @@ const UpdateCFTInfo = () => {
                         form="itemcreation-form"
                         className="border-0 "
                         style={{
-                          backgroundColor:
-                            isValid && dirty ? "#2DDC1B" : "gray",
+                          backgroundColor: areFieldsEmpty()
+                            ? "gray"
+                            : "#2DDC1B",
                           color: "white",
                           padding: "5px 10px",
                           fontSize: "14px",
                           borderRadius: "5px",
                           width: "100px",
                         }}
-                        // disabled={!(isValid && dirty)}
+                        disabled={areFieldsEmpty() ? true : false}
                       >
-                       Update
+                        Update
                       </button>
 
                       <div
@@ -391,7 +380,7 @@ const UpdateCFTInfo = () => {
                                                   {index + 1}
                                                 </td>
                                                 <td>
-                                                  <div className="w-100 d-flex justify-content-between mt-2">
+                                                  <div className=" w-100 d-flex justify-content-between mt-2">
                                                     <div className="w-100">
                                                       <Select
                                                         class="form-select"
@@ -411,32 +400,24 @@ const UpdateCFTInfo = () => {
                                                             detail.itemId
                                                         )}
                                                         styles={{
-                                                          control: (
-                                                            baseStyles,
-                                                            state
-                                                          ) => ({
+                                                          control: (baseStyles, state) => ({
                                                             ...baseStyles,
                                                             width: "100%",
-                                                            borderColor:
-                                                              state.isFocused
-                                                                ? "#fff"
-                                                                : "#fff",
-                                                            border:
-                                                              "1px solid #2DDC1B",
+                                                            borderColor: state.isFocused ? "#fff" : "#fff",
+                                                            border: "1px solid #2DDC1B",
                                                           }),
                                                           menu: (provided) => ({
                                                             ...provided,
                                                             zIndex: 9999,
-                                                            // height:'200px',
-                                                            //  overflowY:'scroll'
+                                                            height: "auto",
+                                                            // overflowY: "scroll",
                                                           }),
                                                         }}
                                                         theme={(theme) => ({
                                                           ...theme,
                                                           colors: {
                                                             ...theme.colors,
-                                                            primary25:
-                                                              "#B8FEB3",
+                                                            primary25: "#B8FEB3",
                                                             primary: "#2DDC1B",
                                                           },
                                                         })}
@@ -545,7 +526,7 @@ const UpdateCFTInfo = () => {
                                                         )
                                                       }
                                                     />
-                                                    {detail.file? (
+                                                    {detail.file ? (
                                                       <p>
                                                         <img
                                                           src={detail.image} // Use the file URL for preview
@@ -560,20 +541,22 @@ const UpdateCFTInfo = () => {
                                                         </span>{" "}
                                                         {/* Display file name */}
                                                       </p>
-                                                    ) : (<p>
-                                                      <img
-                                                        src={`${process.env.REACT_APP_BASE_URL}/${detail?.image}`} // Use the file URL for preview
-                                                        alt="Current CFT Image"
-                                                        style={{
-                                                          maxWidth: "100px",
-                                                          maxHeight: "50px",
-                                                        }}
-                                                      />
-                                                      <span>
-                                                        {detail.file?.name}
-                                                      </span>{" "}
-                                                      {/* Display file name */}
-                                                    </p>)}
+                                                    ) : (
+                                                      <p>
+                                                        <img
+                                                          src={`${process.env.REACT_APP_BASE_URL}/${detail?.image}`} // Use the file URL for preview
+                                                          alt="Current CFT Image"
+                                                          style={{
+                                                            maxWidth: "100px",
+                                                            maxHeight: "50px",
+                                                          }}
+                                                        />
+                                                        <span>
+                                                          {detail.file?.name}
+                                                        </span>{" "}
+                                                        {/* Display file name */}
+                                                      </p>
+                                                    )}
                                                   </div>
                                                 </td>
                                                 <td className="text-center align-middle">
@@ -636,9 +619,6 @@ const UpdateCFTInfo = () => {
       </div>
     </div>
   );
-
- 
-
 };
 
 export default UpdateCFTInfo;

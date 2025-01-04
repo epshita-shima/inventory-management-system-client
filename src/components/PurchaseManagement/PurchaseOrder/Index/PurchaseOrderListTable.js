@@ -42,7 +42,7 @@ const PurchaseOrderListTable = () => {
       </div>
     );
   }
-
+console.log(permission)
   return (
     <div>
       <PurchaseOderList

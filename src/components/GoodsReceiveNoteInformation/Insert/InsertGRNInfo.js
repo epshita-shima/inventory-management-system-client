@@ -23,13 +23,14 @@ import {
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import LoadingSpineer from './../../Common/LoadingSpinner/LoadingSpineer';
 
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
   const makebyUser = getMakebyUser();
-  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const { data: supplierInfo,isLoading:isLoadingSupplier } = useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseOrderInfo, isLoading } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rmItemInfo } = useGetAllRMItemInformationQuery(undefined);
@@ -47,7 +48,7 @@ const InsertGRNInfo = () => {
   const [updateGRNInfo] = useUpdateGRNInformationMutation();
   const { id } = useParams();
   const { data: singleGRNInfo } = useGetSingleGRNInformationQuery(id);
-  const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
+  const { data: serialNo ,refetch} = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
 
   const initialValues = {
@@ -104,6 +105,7 @@ const InsertGRNInfo = () => {
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
+        console.log(max,current)
         if (current.type === "grn") {
           return max && current.serialNo > max.serialNo
             ? current
@@ -161,7 +163,7 @@ const InsertGRNInfo = () => {
       pOSingleId: values.pOSingleId,
       supplierId: values.supplierId,
       grnSerialNo: `GRN-${
-        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+        serialValue?.serialNo === undefined ? "1" : parseInt(serialValue?.serialNo) + 1
       }`,
       supplierPoNo: values.supplierPoNo,
       receiveDate: values.receiveDate,
@@ -222,7 +224,7 @@ const InsertGRNInfo = () => {
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           await createSerialNo(serialData);
-          serialRefresh()
+          refetch()
           resetForm();
         } else {
           swal(
@@ -242,14 +244,16 @@ const InsertGRNInfo = () => {
   const supplier = supplierInfo?.find(
     (x) => x._id === grnSingleData?.supplierId
   );
-  const supplierName = supplier ? supplier.supplierName : "N/A";
+  const supplierName = supplier ? supplier?.supplierName : "N/A";
 
   return (
     <div
       className=" row mx-4"
       style={{ height: 'calc(98vh - 120px)', overflowY: 'hidden' }}
+
     >
-      <div class="overflow-hidden">
+      <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>
+      <div class={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={initialValues}

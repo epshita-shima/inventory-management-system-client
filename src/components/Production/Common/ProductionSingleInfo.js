@@ -162,7 +162,7 @@ const ProductionSingleInfo = ({
                 const makeBatchNo = `MEB-${removeDash}-${
                   serialValue?.serialNo === undefined
                     ? "1"
-                    : serialValue?.serialNo
+                    : parseInt(serialValue?.serialNo) + 1
                 }`;
 
                 setStartDates(startDate.toLocaleDateString("en-CA"));

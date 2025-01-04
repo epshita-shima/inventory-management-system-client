@@ -17,7 +17,7 @@ const ProductionListTable = () => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
         (user) => user._id == userIdFromSession
       );
@@ -86,7 +86,7 @@ const ProductionListTable = () => {
       {permission?.isInserted ? (
         <div
           className={`position-absolute`}
-          style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
+          style={{ right: "10%", bottom: "4%", zIndex: "9999" }}
         >
           <div className="">
             <a

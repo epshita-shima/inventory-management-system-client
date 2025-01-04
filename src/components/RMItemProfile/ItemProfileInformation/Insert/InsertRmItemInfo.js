@@ -26,7 +26,8 @@ const InsertRmItemInfo = () => {
   );
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
-  const [insertRMIteminfoData] = useInsertRMItemInformationMutation();
+  const [insertRMIteminfoData, { isLoading }] =
+    useInsertRMItemInformationMutation();
   const navigate = useNavigate();
   const makebyUser = getMakebyUser();
 
@@ -227,9 +228,9 @@ const InsertRmItemInfo = () => {
                         borderRadius: "5px",
                         width: "100px",
                       }}
-                      disabled={!(isValid && dirty)}
+                      disabled={!(isValid && dirty) || isLoading}
                     >
-                      Save
+                      {isLoading ? " Saving" : " Save"}
                     </button>
                     <div
                       className="border-0 mt-sm-2 mt-md-2 mt-lg-0 ms-sm-0 ms-lg-2"
@@ -357,10 +358,15 @@ const InsertRmItemInfo = () => {
                                                     detail.categoryId
                                                 )}
                                                 styles={{
-                                                  control: (baseStyles, state) => ({
+                                                  control: (
+                                                    baseStyles,
+                                                    state
+                                                  ) => ({
                                                     ...baseStyles,
                                                     width: "100%",
-                                                    borderColor: state.isFocused ? "#fff" : "#fff",
+                                                    borderColor: state.isFocused
+                                                      ? "#fff"
+                                                      : "#fff",
                                                     border: "1px solid #2DDC1B",
                                                   }),
                                                   menu: (provided) => ({
