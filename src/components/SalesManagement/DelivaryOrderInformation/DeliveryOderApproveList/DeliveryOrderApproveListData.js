@@ -112,7 +112,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
     {
       name: "Client Name",
       selector: (row) => {
-        const piInfo = invoiceInformation?.find((x) => x._id === row?.piNumber);
+        const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
         const clientInfo = clientInformation?.find(
           (x) => x._id == piInfo?.customerID
         );
@@ -127,7 +127,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
       name: "PI Number",
       selector: (row) => {
         const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piNumber
+          (x) => x._id === row?.piId
         );
         return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },

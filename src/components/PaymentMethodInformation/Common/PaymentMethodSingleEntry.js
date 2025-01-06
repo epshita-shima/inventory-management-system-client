@@ -29,13 +29,14 @@ import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymen
 import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
 import getInitialFormValues from "../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const makebyUser = getMakebyUser();
-  const { data: clientInfo } = useGetAllClientInformationQuery();
+  const { data: clientInfo,isLoading:isLoadingClientInfo } = useGetAllClientInformationQuery();
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
@@ -75,6 +76,7 @@ const PaymentMethodSingleEntry = () => {
     { value: "bank-cash", label: "Bank-Cash" },
     { value: "bank-cheque", label: "Bank-Cheque" },
   ];
+
   const paymentStatusOptions = [
     { value: "cash", label: "Cash" },
     { value: "advance", label: "Advance" },
@@ -274,10 +276,11 @@ const PaymentMethodSingleEntry = () => {
 
   return (
     <div
-      className=" row mx-4"
+      className= {`row mx-4 `}
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      <div class="overflow-hidden">
+      <LoadingSpineer isLoading={isLoadingClientInfo}></LoadingSpineer>
+      <div class={`overflow-hidden ${isLoadingClientInfo ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={formValues}

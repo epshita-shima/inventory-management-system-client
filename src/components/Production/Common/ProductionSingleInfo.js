@@ -25,9 +25,12 @@ const ProductionSingleInfo = ({
   updateProductionData,
   setUpdateProductionData,
   makebyUser,
+  proStartDate,
+  setProStartDate,
+  endDate,
+  setEndDate
 }) => {
-  const [proStartDate, setProStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
   const finishGoodsOptions = finishGoodsWithSizeItemDropdown(
@@ -115,7 +118,7 @@ const ProductionSingleInfo = ({
     const removeDashFromDate = new Date(startDates).toLocaleDateString("en-CA");
     const removeDash = removeDashFromDate.replace(/-/g, "");
     const makeBatchNo = `MEB-${removeDash}-${
-      serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+      serialValue?.serialNo === undefined ? "1" :parseInt(serialValue?.serialNo) + 1
     }`;
     setFieldValue(
       "productionDate",

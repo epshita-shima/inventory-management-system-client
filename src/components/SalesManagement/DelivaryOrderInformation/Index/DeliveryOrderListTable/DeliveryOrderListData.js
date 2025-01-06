@@ -28,7 +28,7 @@ const DeliveryOrderListData = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const { data: deliveryOrderData, refetch } =
+  const { data: deliveryOrderData,isLoading:isDOLoading, refetch } =
     useGetAllDelieryOrderInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
@@ -278,7 +278,7 @@ const DeliveryOrderListData = ({ permission }) => {
       }
     };
     return (
-      <div className="d-flex justify-content-end align-items-center w-100">
+      <div className="d-flex justify-content-end align-items-center w-100 mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex align-items-center me-2">
             <div>
@@ -349,7 +349,7 @@ const DeliveryOrderListData = ({ permission }) => {
 
   return (
     <div
-      className="row px-2 mx-4"
+      className={`row px-2 mx-4 ${isDOLoading ? 'd-none' : 'd-block'}`}
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <div className="col mt-sm-4 mt-md-4 mt-lg-0">

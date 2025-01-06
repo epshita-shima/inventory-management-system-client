@@ -6,10 +6,11 @@ import { useGetAllUserQuery } from "../../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import DeliveryOrderApproveList from "../../DeliveryOderApproveList/DeliveryOrderApproveList";
 import { extractUserMenuListForCurrectMenu } from "../../../../Uitilites/extractUserMenuListForCurrectMenu";
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveryOrderList = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
@@ -49,7 +50,9 @@ const DeliveryOrderList = () => {
   console.log(permission);
   return (
     <div>
-      <DeliveryOrderListData permission={permission}></DeliveryOrderListData>
+      <LoadingSpineer isLoading={isUserloading}></LoadingSpineer>
+     <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
+     <DeliveryOrderListData permission={permission}></DeliveryOrderListData>
       {permission?.isInserted && (
         <div
           className={`position-absolute`}
@@ -75,6 +78,7 @@ const DeliveryOrderList = () => {
           </div>
         </div>
       )}
+     </div>
     </div>
   );
 };

@@ -31,8 +31,9 @@ const InvoiceSingleEntry = ({
   userList,
   superAdminId,
   setMarketingPerson,
+  customerInfo
 }) => {
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+
   const { data: getRuserRole } = useGetUserRoleQuery(undefined);
   const customerOptions = clientInfoDropdown(customerInfo);
   const currencyOptions = [

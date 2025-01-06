@@ -41,7 +41,9 @@ const ProductionCommonPart = () => {
     useGetSerialNoQuery(undefined);
   const [serialValue, setSerialValue] = useState([]);
   const [createSerialNo] = useCreateSerialNoMutation();
-  const [insertProductionData] = useInsertProductionInformationMutation();
+    const [proStartDate, setProStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+  const [insertProductionData,{isLoading:isProdctionInsertLoading}] = useInsertProductionInformationMutation();
   const makebyUser = getMakebyUser();
   const initialValues = {
     productionDate: new Date().toLocaleDateString("en-CA"),
@@ -77,21 +79,21 @@ const ProductionCommonPart = () => {
     ],
   };
   const receipeOptions = [
-    { value: "6676521ee8ecc1fa62ec8a46", label: "200" },
-    { value: "6676521ee8ecc1fa62ec8a44", label: "150" },
-    { value: "6676521ee8ecc1fa62ec8a45", label: "450" },
-    { value: "6676521ee8ecc1fa62ec8a4a", label: "" },
-    { value: "6676521ee8ecc1fa62ec8a4c", label: "" },
-    { value: "6676521ee8ecc1fa62ec8a49", label: "200" },
+    { value: "677248c1a1a0d9059b94977e", label: "200" },
+    { value: "677248c1a1a0d9059b94977c", label: "150" },
+    { value: "677248c1a1a0d9059b94977d", label: "450" },
+    { value: "677248c1a1a0d9059b949780", label: "" },
+    { value: "677248c1a1a0d9059b949781", label: "" },
+    { value: "677248c1a1a0d9059b94977f", label: "200" },
   ];
 
   const receipeOptionsLessQty = [
-    { value: "6676521ee8ecc1fa62ec8a46", label: "188" },
-    { value: "6676521ee8ecc1fa62ec8a44", label: "150" },
-    { value: "6676521ee8ecc1fa62ec8a45", label: "450" },
-    { value: "6676521ee8ecc1fa62ec8a4a", label: "" },
-    { value: "6676521ee8ecc1fa62ec8a4c", label: "" },
-    { value: "6676521ee8ecc1fa62ec8a49", label: "150" },
+    { value: "677248c1a1a0d9059b94977e", label: "188" },
+    { value: "677248c1a1a0d9059b94977c", label: "150" },
+    { value: "677248c1a1a0d9059b94977d", label: "450" },
+    { value: "677248c1a1a0d9059b949780", label: "" },
+    { value: "677248c1a1a0d9059b949781", label: "" },
+    { value: "677248c1a1a0d9059b94977f", label: "150" },
   ];
 
   const areFieldsEmpty = () => {
@@ -102,6 +104,7 @@ const ProductionCommonPart = () => {
     ))
   };
 
+  console.log('areFieldsEmpty()',areFieldsEmpty())
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
@@ -186,6 +189,8 @@ const ProductionCommonPart = () => {
           await createSerialNo(serialData);
           serialRefresh();
           resetForm();
+          setProStartDate('')
+          setEndDate('')
         } else {
           swal(
             "Not Possible!",
@@ -254,7 +259,8 @@ const ProductionCommonPart = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values);
+                    console.log('!(isValid && dirty)',!(isValid && dirty));
+                    console.log('values',values)
                     return (
                       <div
                         className=" shadow-lg py-2 px-5"
@@ -311,6 +317,10 @@ const ProductionCommonPart = () => {
                                   }
                                   updateProductionData={updateProductionData}
                                   cftData={cftData}
+                                  proStartDate={proStartDate} 
+                                  setProStartDate ={setProStartDate}
+                                  endDate={endDate} 
+                                  setEndDate={setEndDate}
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -351,7 +361,7 @@ const ProductionCommonPart = () => {
                                           : !(isValid && dirty)
                                       }
                                     >
-                                    {id ? "Update" : "Save"}
+                                    {id ? "Update" : isProdctionInsertLoading ? "Saving" : "Save"}
                                     </button>
                                     <div
                                       className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"

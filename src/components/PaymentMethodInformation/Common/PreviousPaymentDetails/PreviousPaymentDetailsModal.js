@@ -45,18 +45,21 @@ const PreviousPaymentDetailsModal = ({
     useUpdatePreviousPaymentReceiveInfoMutation();
   const [isDeletePreviousPaymentData, setIsDeletePreviousPaymentData] =
     useState({});
-console.log(detail)
+
   let serialNo = 1;
   const initialValues = {
-    detailsData: detail?.detailsData || [], // Initialize based on your details data
+    detailsData: detail?.detailsData || []
   };
   const customerName = customerInfo?.find(
-    (x) => x._id === detail?.[0]?.clientId
+    (x) => x._id === detail[0]?.clientId
   );
   const clientNameValue = customerName ? customerName.clientName : "N/A";
+  
+  const findPiNumber = invoiceInformation?.find(
+    (x) => x._id === detail[0]?.piNumber
+  );
+  const piInfomation = findPiNumber ? findPiNumber.invoiceNo : "N/A";
 
-  console.log(updatePreviousPaymentReceiveDataPaymentDetails);
- 
   useEffect(() => {
     const accumulatedItemNameData = [];
     const accumulatedItemSizeData = [];
@@ -150,7 +153,8 @@ console.log(detail)
       swal("Error", "An error occurred while creating the data", "error");
     }
   };
-  let cumulativeIndex = 0
+
+  let cumulativeIndex = 0;
   return (
     <Formik
       initialValues={initialValues}
@@ -194,7 +198,7 @@ console.log(detail)
                     <label htmlFor="">PI Number</label>
                     <Field
                       name="piNumber"
-                      value={detail?.[0]?.piNumber}
+                      value={piInfomation}
                       type="text"
                       placeholder="Item Name"
                       disabled

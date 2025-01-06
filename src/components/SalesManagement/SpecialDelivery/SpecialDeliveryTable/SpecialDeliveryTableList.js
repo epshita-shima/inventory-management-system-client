@@ -31,6 +31,7 @@ import {
   useGetAllPaymentReceiveInformationQuery,
   useInsertPaymentReceiveInformationMutation,
 } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const SpecialDeliveryTableList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -46,7 +47,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
     piNumber: "",
   });
   const [customerID, setCustomID] = useState("");
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
+  const { data: customerInfo,isLoading:isCustomerLoading } = useGetAllClientInformationQuery(undefined);
   const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
@@ -66,12 +67,12 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const signature = authorizesSingatureImage;
   const getUser = localStorage.getItem("user");
   const getUserParse = JSON.parse(getUser);
-  const approveBy = getUserParse[0].username;
-  const [trigger, { data: filteredDatas }] =
+  const approveBy = getUserParse.username;
+  const [trigger, { data: filteredDatas,isLoading:isFilterDataLoading }] =
     useLazyGetFilteredInvoiceInfoQuery();
   const [userWaysListData, setUserWaysListData] = useState([]);
   const invoiceListOption = invoiceListDropdown(invoiceList);
-  const [insertPaymentReceive] = useInsertPaymentReceiveInformationMutation();
+  const [insertPaymentReceive,{isLoading:isInsertSpecialApproveLoading}] = useInsertPaymentReceiveInformationMutation();
   const makebyUser = getMakebyUser();
   const [paymentStatusMood, setPaymentStatusMood] = useState("");
   const [formValues, setFormValues] = useState(
@@ -348,6 +349,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
               approveStatus={approveStatus}
               paymentStatusMood={paymentStatusMood}
               insertPaymentReceive={insertPaymentReceive}
+              isInsertSpecialApproveLoading={isInsertSpecialApproveLoading}
             />
           )}
           <a
@@ -499,8 +501,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
   }, [filterText, resetPaginationToggle, companyinfo, userWaysListData]);
 
   return (
-    <div className="row px-5 mx-4 ">
-      <div className="col userlist-table ">
+    <div className={`row px-5 mx-4 `}>
+      <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer>
+      <div className={`col userlist-table ${isCustomerLoading ? 'd-none' : 'd-block'}`}>
         <div>
           <h3 className="fw-bold mt-1">Special Approve For Delivery</h3>
           <hr />
@@ -676,7 +679,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            {(filteredDatas?.length !== 0 ||
+            {/* {(filteredDatas?.length !== 0 ||
               filteredDatas?.length !== undefined) && (
               <div className="ms-2">
                 {paymentStatusMood?.paymentMode === "Cash" ? (
@@ -704,7 +707,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                   </button>
                 )}
               </div>
-            )}
+            )} */}
           </div>
           <div></div>
         </div>
@@ -714,16 +717,19 @@ const SpecialDeliveryTableList = ({ permission }) => {
             className=" "
             style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
           >
-            <DataTable
-              columns={columns}
-              data={transformedProductionData}
-              defaultSortField="name"
-              customStyles={customStyles}
-              striped
-              pagination
-              subHeader
-              subHeaderComponent={subHeaderComponent}
-            />
+            {
+              isFilterDataLoading? <LoadingSpineer isLoading={isFilterDataLoading}></LoadingSpineer> : ( <DataTable
+                columns={columns}
+                data={transformedProductionData}
+                defaultSortField="name"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+                subHeaderComponent={subHeaderComponent}
+              />)
+            }
+           
           </div>
         ) : null}
       </div>

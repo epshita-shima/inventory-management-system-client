@@ -251,8 +251,9 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
-        <div className="d-flex justify-content-end align-items-center">
+    <div className={`${filterUnapporovePiData?.length === 0 ? 'd-none' : 'd-block'}`}>
+        <div className={`d-block d-sm-flex justify-content-between align-items-center mb-2 `}>
+        <div className={`d-flex justify-content-end align-items-center `}>
           <div className="table-head-icon d-flex">
             <div class="dropdown">
               <button
@@ -312,14 +313,9 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
           />
         </div>
       </div>
+    </div>
     );
-  }, [
-    filterText,
-    resetPaginationToggle,
-    companyinfo,
-    invoiceData,
-    customerInfo,
-  ]);
+  }, [filterUnapporovePiData, filterText, resetPaginationToggle, companyinfo, invoiceData, customerInfo]);
 
   const handleApproveStatus = async (e, invoiceData) => {
     const updatedObject = {

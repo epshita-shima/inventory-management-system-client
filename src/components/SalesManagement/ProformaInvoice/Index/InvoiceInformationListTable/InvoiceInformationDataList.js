@@ -32,13 +32,17 @@ import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoice
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
 import getMakebyUser from "../../../../Common/CommonMakeUser/CommonMakingUser";
+import LoadingSpineer from "./../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const InvoiceInformationDataList = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const { data: invoiceDatas, refetch } =
-    useGetAllInvoiceInformationQuery(undefined);
+  const {
+    data: invoiceDatas,
+    refetch,
+    isLoading: isInvoiceLoading,
+  } = useGetAllInvoiceInformationQuery(undefined);
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const { data: finishGoodsData } = useGetAllItemInformationQuery(undefined);
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
@@ -390,74 +394,79 @@ const InvoiceInformationDataList = ({ permission }) => {
       }
     };
     return (
-      <div className="d-flex justify-content-end align-items-center w-100 mb-2">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex align-items-center me-2">
-            <div>
-              <FontAwesomeIcon
-                icon={faRefresh}
-                onClick={() => refetch()}
-              ></FontAwesomeIcon>
-              &nbsp;
-            </div>
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadInvoiceSingleDataPDF(
+      <div className={`${invoiceDatas?.length == 0 ? "d-none" : "d-block"}`}>
+        <div
+          className={`d-flex justify-content-end align-items-center w-100 mb-2 mt-2`}
+        >
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex align-items-center me-2">
+              <div>
+                <FontAwesomeIcon
+                  icon={faRefresh}
+                  onClick={() => refetch()}
+                ></FontAwesomeIcon>
+                &nbsp;
+              </div>
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadInvoiceSingleDataPDF(
+                            userWaysListData,
+                            customerInfo,
+                            { companyinfo },
+                            reportTitle
+                          );
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        handleInvoiceExcel(
                           userWaysListData,
                           customerInfo,
-                          { companyinfo },
+                          companyinfo,
                           reportTitle
                         );
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      handleInvoiceExcel(
-                        userWaysListData,
-                        customerInfo,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
 
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>
         </div>
       </div>
     );
   }, [
+    invoiceDatas,
     filterText,
     resetPaginationToggle,
     refetch,
@@ -467,41 +476,44 @@ const InvoiceInformationDataList = ({ permission }) => {
   ]);
 
   return (
-    <div
-      className="row px-5 mx-4"
-      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
-      <InvoiceListHeading
-        totalApprovedPi={totalApprovedPi?.length}
-        totalUnApprovePi={totalUnApprovePi?.length}
-        totalApprovePiAmount={totalApprovePiAmount}
-        totalUnApprovePiAmount={totalUnApprovePiAmount}
-        permission={permission}
-        userRoleId={userRoleId}
-        userRoles={userRoles}
-        finishGoodsData={finishGoodsData}
-        unitInfo={unitInfo}
-        sizeInfo={sizeInfo}
-        paymentInfo={paymentInfo}
-        base64Logo={base64Logo}
-        signature={signature}
-      ></InvoiceListHeading>
+    <div>
+       <LoadingSpineer isLoading={isInvoiceLoading}></LoadingSpineer>
       <div
-        className="px-2"
-        style={{ height: "calc(80vh - 120px)", overflowY: "auto" }}
+        className={`row px-5 mx-4 ${isInvoiceLoading ? "d-none" : "d-block"} `}
+        style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
       >
-        <div className="col  mt-sm-4 mt-md-4 mt-lg-0">
-          <div className="shadow-lg">
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              defaultSortField="name"
-              customStyles={customStyles}
-              striped
-              pagination
-              subHeader
-              subHeaderComponent={subHeaderComponent}
-            />
+        <InvoiceListHeading
+          totalApprovedPi={totalApprovedPi?.length}
+          totalUnApprovePi={totalUnApprovePi?.length}
+          totalApprovePiAmount={totalApprovePiAmount}
+          totalUnApprovePiAmount={totalUnApprovePiAmount}
+          permission={permission}
+          userRoleId={userRoleId}
+          userRoles={userRoles}
+          finishGoodsData={finishGoodsData}
+          unitInfo={unitInfo}
+          sizeInfo={sizeInfo}
+          paymentInfo={paymentInfo}
+          base64Logo={base64Logo}
+          signature={signature}
+        ></InvoiceListHeading>
+        <div
+          className="px-2"
+          style={{ height: "calc(80vh - 120px)", overflowY: "auto" }}
+        >
+          <div className="col  mt-sm-4 mt-md-4 mt-lg-4">
+            <div className="shadow-lg">
+              <DataTable
+                columns={columns}
+                data={filteredItems}
+                defaultSortField="name"
+                customStyles={customStyles}
+                striped
+                pagination
+                subHeader
+                subHeaderComponent={subHeaderComponent}
+              />
+            </div>
           </div>
         </div>
       </div>

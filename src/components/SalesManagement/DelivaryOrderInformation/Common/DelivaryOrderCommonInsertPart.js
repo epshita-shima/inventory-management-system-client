@@ -27,6 +27,7 @@ import { useGetAllItemInformationQuery } from "../../../../redux/features/itemin
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useInsertDeliveryOrderInformationMutation } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
@@ -47,12 +48,12 @@ const DelivaryOrderCommonInsertPart = () => {
   );
   const [checkNetTotalQuantity, setCheckNetTotalQuantity] = useState([]);
   const [serialValue, setSerialValue] = useState([]);
-  const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
+  const { data: paymentTypeInfo, isLoading:isPaymentLoading } = useGetAllPaymentInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: finishgoods } = useGetAllItemInformationQuery(undefined);
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
-  const { data: paymentReceiveInformation } =
+  const { data: paymentReceiveInformation, isLoading:isPaymentReceiveLoading } =
     useGetAllPaymentReceiveInformationQuery(undefined);
   const { data: serialNo, refetch: serialRefetch } =
     useGetSerialNoQuery(undefined);
@@ -63,9 +64,7 @@ const DelivaryOrderCommonInsertPart = () => {
   const { data: singleInvoiceData } = useGetSingleInvoiceQuery(invoiceId);
   const [updateInvoiceShipmentNo] = useUpdateInvoiceShipmentMutation();
 
-  const [insertDOInfo] = useInsertDeliveryOrderInformationMutation();
-  console.log(singleInvoiceData?.shipmentNo + 1);
-console.log(isDOSave)
+  const [insertDOInfo,{isLoading:isDOInsertLoading}] = useInsertDeliveryOrderInformationMutation();
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
@@ -204,7 +203,6 @@ console.log(isDOSave)
       return acc;
     }, []);
 
-    console.log(result);
     if (result) {
       setPaymentReceiveSelectedItem(result);
       setCheckNetTotalQuantity(result);
@@ -283,7 +281,7 @@ console.log(isDOSave)
   };
 
   useEffect(() => {}, [paymentReceiveSelectedItem]);
-  console.log(paymentReceiveSelectedItem);
+
   useEffect(() => {
     if (piType !== "" && piNumber !== "") {
       setIsDisplay(true);
@@ -294,10 +292,11 @@ console.log(isDOSave)
 
   return (
     <div
-      className=" row mx-2"
+      className={`row mx-2 `}
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      <div class="">
+      <LoadingSpineer isLoading={isPaymentLoading}></LoadingSpineer>
+      <div class={`${isPaymentLoading ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={formValues}
@@ -338,8 +337,6 @@ console.log(isDOSave)
                   name="detailsData"
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
-                    // const details = result?.detailsData;
-
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3  px-4">
                         <div>
@@ -576,8 +573,9 @@ console.log(isDOSave)
                             )} */}
                           </div>
                         </div>
+                        
                         {isDisplay && (
-                          <>
+                          <div div className={`${isPaymentReceiveLoading ? 'd-none' : 'd-block'}`}>
                             <div>
                               <h2
                                 style={{
@@ -595,18 +593,17 @@ console.log(isDOSave)
                                     className="border-0"
 
                                     style={{
-                                      backgroundColor:`${isDOSave ? "gray" :"#2DDC1B" }` ,
+                                      backgroundColor: isDOSave || isDOInsertLoading ? "gray" : "#2DDC1B",
                                       color: "white",
                                       padding: "5px 10px",
                                       fontSize: "14px",
                                       borderRadius: "5px",
                                       width: "100px",
                                     }}
-                                    disabled={
-                                      isDOSave ? true : false
+                                    disabled={isDOSave || isDOInsertLoading
                                     }
                                   >
-                                    Save
+                                   {isDOInsertLoading ? 'Saving' : 'Save'} 
                                   </button>
                                 </div>
                               </div>
@@ -626,7 +623,7 @@ console.log(isDOSave)
                                 values={values}
                               ></InsertDetailsDOInformation>
                             }
-                          </>
+                          </div>
                         )}
                       </div>
                     );
@@ -637,23 +634,7 @@ console.log(isDOSave)
           </Formik>
         </div>
       </div>
-      {/* {previousPaymentData && (
-        <PreviousPaymentDetailsModal
-          invoiceInformation={invoiceInformation}
-          paymentStatusOptions={paymentStatusOptions}
-          setshowPreviousPaymentDetailsButton={setshowPreviousPaymentDetailsButton}
-          makebyUser={makebyUser}
-          detail={previousPaymentData}
-          setPreviousPaymentData={setPreviousPaymentData}
-          finishGoods={finishGoods}
-          sizeInfo={sizeInfo}
-          show={show} // Pass row-specific modal visibility
-          handleClosePreviousPayment={() => handleCloseModal()} // Close modal for this specific row
-          bankChequeDate={bankChequeDate}
-          setBankChequeDate={setBankChequeDate}
-          refetch={refetch}
-        />
-      )} */}
+
     </div>
   );
 };

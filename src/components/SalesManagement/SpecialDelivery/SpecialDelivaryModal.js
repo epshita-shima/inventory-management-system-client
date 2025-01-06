@@ -18,6 +18,7 @@ const SpecialDelivaryModal = ({
   approveStatus,
   insertPaymentReceive,
   paymentStatusMood,
+  isInsertSpecialApproveLoading,
   navigate,
 }) => {
   const itemName = finishGoodsData.find(
@@ -251,7 +252,7 @@ const SpecialDelivaryModal = ({
                 onClick={handleClose}
                 disabled={formValues.detailsData[0].amount ? false : true}
               >
-                Save
+               {isInsertSpecialApproveLoading ? 'Saving' : 'Save'} 
               </Button>
             </Modal.Footer>
           </Modal>

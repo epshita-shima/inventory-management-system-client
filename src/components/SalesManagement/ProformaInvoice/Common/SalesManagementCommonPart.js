@@ -35,6 +35,8 @@ import {
   useGetSerialNoQuery,
 } from "../../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const SalesManagementCommonPart = () => {
   const { id } = useParams();
@@ -51,14 +53,15 @@ const SalesManagementCommonPart = () => {
   const [serialValue, setSerialValue] = useState([]);
   const { data: serialNo, refetch: serialRefetch } =
     useGetSerialNoQuery(undefined);
-  const [insertInvoiceInfo] = useInsertInvoiceInformationMutation();
+      const { data: customerInfo ,isLoading:isCustomerLoading} = useGetAllClientInformationQuery(undefined);
+  const [insertInvoiceInfo,{isLoading:isInvoiceInsertLoading}] = useInsertInvoiceInformationMutation();
   const [createSerialNo] = useCreateSerialNoMutation();
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const [acivePaymentModal, setAcivePaymentModal] = useState(false);
   const { data: getSingleInvoiceData } = useGetSingleInvoiceQuery(id);
   const [updateSingleInvoiceData, setUpdateSingleInvoiceData] = useState([]);
-  const [updateInvoiceInfo] = useUpdateInvoiceInfoMutation();
+  const [updateInvoiceInfo,{isLoading:isInvoiceUpdateLoading}] = useUpdateInvoiceInfoMutation();
   const { data: userList } = useGetAllUserQuery(undefined);
   const [marketingPerSon, setMarketingPerson] = useState("");
 
@@ -146,7 +149,6 @@ const SalesManagementCommonPart = () => {
     try {
       if (id) {
         const response = await updateInvoiceInfo(updateSingleInvoiceData);
-        console.log(response);
         if (response?.data?.status === 200) {
           navigate("/main-view/invoice-list");
           swal("Done", "Data Update Successfully", "success");
@@ -156,7 +158,6 @@ const SalesManagementCommonPart = () => {
         }
       } else {
         const response = await insertInvoiceInfo(values);
-        console.log(response);
         const errorMessages = response?.error?.data?.errorMessages;
         const formattedErrorMessages = Array.isArray(errorMessages)
           ? errorMessages?.map((msg) => msg.message || msg).join("\n")
@@ -179,14 +180,15 @@ const SalesManagementCommonPart = () => {
 
   return (
     <div
-      className=" row px-2 mx-1"
+      className={ `row px-2 mx-1`}
       style={{
         overflow: "scroll",
         height: "calc(98vh - 120px)",
         zIndex: "9999",
       }}
     >
-      <div class="">
+      <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer>
+      <div class={` ${isCustomerLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -289,6 +291,7 @@ const SalesManagementCommonPart = () => {
                                   userList={userList}
                                   superAdminId={superAdminId}
                                   setMarketingPerson={setMarketingPerson}
+                                  customerInfo={customerInfo}
                                 ></InvoiceSingleEntry>
                               }
                               <div>
@@ -329,7 +332,7 @@ const SalesManagementCommonPart = () => {
                                           : !(isValid && dirty)
                                       }
                                     >
-                                      {id ? "Update" : "Save"}
+                                      {id ? isInvoiceUpdateLoading ? "Updating" : "Update" :isInvoiceInsertLoading ? "Saving" : "Save"}
                                     </button>
                                     <div
                                       className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"

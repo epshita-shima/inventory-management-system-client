@@ -8,7 +8,7 @@ import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMe
 
 const ProductionListTable = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const ProductionListTable = () => {
   }
 
   return (
-    <div>
+    <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
       <ProductionInfoList permission={permission}></ProductionInfoList>
       {permission?.isInserted ? (
         <div
