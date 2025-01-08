@@ -13,6 +13,7 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
 import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../../Common/CommonDropdown/CommonDropdown";
 import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const ProductionReportView = ({ permission }) => {
   const [
@@ -37,7 +38,7 @@ const ProductionReportView = ({ permission }) => {
   });
   const {data:productionAllData}=useGetAllProductionInformationQuery(undefined)
   const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
-  const {data:rawMaterialDataInfo}=useGetAllRMItemInformationQuery(undefined);
+  const {data:rawMaterialDataInfo,isLoading:isRawItemInfoLoading}=useGetAllRMItemInformationQuery(undefined);
   const {data:finishGoodsItemInfo}=useGetAllItemInformationQuery(undefined);
   const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -83,33 +84,23 @@ const ProductionReportView = ({ permission }) => {
    
   };
 
-  console.log(productionDatewiseDetailsData);
   return (
-    <div>
-      <div
-        className="row px-5 mx-2"
-        style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-      >
+    <div   className="row px-5 mx-2"
+    style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}>
+      <LoadingSpineer isLoading={isRawItemInfoLoading}></LoadingSpineer>
+      <div className={`${isRawItemInfoLoading ? 'd-none' : 'd-block'}`}>
         <CommonProductionReportParameter
           fromDate={fromDate}
           setFromDate={setFromDate}
           setFilters={setFilters}
           toDate={toDate}
           setToDate={setToDate}
-          // clientInfoOptions={clientInfoOptions}
           filters={filters}
-          // piInfoOptions={piInfoOptions}
           itemsOptions={itemsOptions}
           batchOptions={batchOptions}
           handleApplyFilters={handleApplyFilters}
           setIsProductionDatewiseDetailsReport={setIsProductionDatewiseDetailsReport}
           setIsProductionDatewiseSummaryReport={setIsProductionDatewiseSummaryReport}
-          // setIsOrderSummmaryReport={setIsOrderSummmaryReport}
-          // setIsSalesSummaryReport={setIsSalesSummaryReport}
-          // setIsSalesDetailsReport={setIsSalesDetailsReport}
-          // setIsReturnSummaryReport={setIsReturnSummaryReport}
-          // setIsReturnDetailsReport={setIsReturnDetailsReport}
-          // setIsCombineReport={setIsCombineReport}
           setIsTableDisplay={setIsTableDisplay}
         />
 

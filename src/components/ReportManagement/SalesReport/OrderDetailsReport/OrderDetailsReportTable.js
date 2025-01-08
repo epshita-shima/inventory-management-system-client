@@ -19,6 +19,7 @@ import {
   calculateGrandTotalPIAmount,
   calculateGrandTotalPIQty,
 } from "../../../Uitilites/CalculationUtilities/calculation";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const OrderDetailsReportTable = ({
   permission,
@@ -27,6 +28,7 @@ const OrderDetailsReportTable = ({
   finishGoodsItemInfo,
   itemSizeInfo,
   itemUnitInformation,
+  isOderDetailsLoading,
   companyinfo,
 }) => {
   const [filterText, setFilterText] = React.useState("");
@@ -288,10 +290,11 @@ const OrderDetailsReportTable = ({
   }, [companyinfo, customerInfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, itemUnitInformation, transformedPIData]);
 
   return (
-    <div
+    <div 
     >
+      <LoadingSpineer isLoading={isOderDetailsLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
+        <div className={`${isOderDetailsLoading ? 'd-none' : 'd-block'}`} style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <div className="shadow-lg">
             <DataTable
               title={

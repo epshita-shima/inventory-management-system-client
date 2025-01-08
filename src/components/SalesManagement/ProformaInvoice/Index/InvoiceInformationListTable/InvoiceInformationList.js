@@ -7,12 +7,11 @@ import { useGetAllUserQuery } from '../../../../../redux/features/user/userApi';
 import { extractUserMenuListForCurrectMenu } from '../../../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const InvoiceInformationList = () => {
-    const clickhandler = (name) => console.log("delete", name);
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
   
     const [permission, setPermission] = useState();
     const navigate = useNavigate();
-    console.log(permission);
+
      useEffect(() => {
         if (!isUserloading && user) {
           const permissions = extractUserMenuListForCurrectMenu(user, "Invoice List");
@@ -43,6 +42,7 @@ const InvoiceInformationList = () => {
         </div>
       );
     }
+    
     return (
         <div>
           <InvoiceInformationDataList permission={permission}></InvoiceInformationDataList>

@@ -28,8 +28,8 @@ const CommonParameter = ({
     { value: "ordersummaryreport", label: "Order Summary Report" },
     { value: "salesdetailsreport", label: "Sales Details Report" },
     { value: "salessummaryreport", label: "Sales Summary Report" },
-    { value: "returndetailsreport", label: "Sales Return Details Report" },
-    { value: "returnsummaryreport", label: "Sales Return Summary Report" },
+    { value: "returndetailsreport", label: "Return Details Report" },
+    { value: "returnsummaryreport", label: "Return Summary Report" },
     { value: "combinereport", label: "Combine Report" },
   ];
 

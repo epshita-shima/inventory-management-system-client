@@ -22,6 +22,7 @@ import { useGetAllItemInformationQuery } from "../../../../redux/features/itemin
 import { downloadDeliveryOrderPDF } from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveryOrderApproveListData = ({ permission }) => {
   const reportTitle = "DELIVERY ORDER INFORMATION";
@@ -35,15 +36,16 @@ const DeliveryOrderApproveListData = ({ permission }) => {
   });
   const { data: clientInformation } =
     useGetAllClientInformationQuery(undefined);
-  const [trigger, { data: filteredDatas, error, isFetching }] =
-    useLazyGetFilteredDeliveryOrderQuery();
+  const [
+    trigger,
+    { data: filteredDatas, error, isFetching, isLoading: isGetDataLoading },
+  ] = useLazyGetFilteredDeliveryOrderQuery();
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const [insertApproveStatus] = useUpdateDeliveryOrderApproveStatusMutation();
-  const clientInfoOptions = clientInfoDropdown(clientInformation);
 
   const transformedDOData = filteredDatas?.flatMap((itemDetails) =>
     itemDetails.detailsData.map((detail) => ({
@@ -51,6 +53,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
       detailsData: detail,
     }))
   );
+
   const handleApproveStatus = async (e, doData) => {
     const updatedObject = {
       ...doData,
@@ -100,8 +103,6 @@ const DeliveryOrderApproveListData = ({ permission }) => {
     }
   }, [executeQuery, trigger, filters, filteredDatas]);
 
-  console.log(selectedData);
-
   const columns = [
     {
       name: "Sl.",
@@ -126,10 +127,8 @@ const DeliveryOrderApproveListData = ({ permission }) => {
     {
       name: "PI Number",
       selector: (row) => {
-        const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piId
-        );
-        return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+        const piNumber = invoiceInformation?.find((x) => x._id === row?.piId);
+        return piNumber ? piNumber.invoiceNo : "N/A";
       },
       sortable: true,
       center: true,
@@ -151,11 +150,15 @@ const DeliveryOrderApproveListData = ({ permission }) => {
         const itemName = finishGoodsInfo?.find(
           (x) => x._id === row?.detailsData.itemId
         );
-        return itemName ? itemName.itemName : "N/A";
+        const itemSize = itemsizeinfo?.find((x) => x._id === itemName.sizeId);
+        return itemName
+          ? `${itemName.itemName} (${itemSize?.sizeInfo})`
+          : "N/A";
       },
       sortable: true,
       center: true,
       filterable: true,
+      width: "250px",
     },
 
     {
@@ -183,7 +186,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
     {
       name: "Action",
       button: true,
-      width: "150px",
+      width: "100px",
       grow: 2,
       cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -290,8 +293,8 @@ const DeliveryOrderApproveListData = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
-        {filteredDatas?.length && (
+      <div className="d-block d-sm-flex  justify-content-between align-items-center mb-2">
+        {filteredDatas?.length !==0 ? (
           <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
@@ -299,7 +302,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
               filterText={filterText}
             />
           </div>
-        )}
+        ) : ''}
       </div>
     );
   }, [filterText, resetPaginationToggle, filteredDatas]);
@@ -314,77 +317,6 @@ const DeliveryOrderApproveListData = ({ permission }) => {
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
             style={{ width: "45%" }}
           >
-            {/* <div className="w-50">
-                    <label htmlFor="">Client Name</label>
-                    <div>
-                      <Select
-                        class="form-select"
-                        className="w-100 mb-3"
-                        aria-label="Default select example"
-                        name="itemName"
-                        options={clientInfoOptions}
-                        defaultValue={{
-                          label: "Select Item Name",
-                          value: 0,
-                        }}
-                        value={clientInfoOptions.filter(function (option) {
-                          return option.value === filters.customerID;
-                        })}
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            width: "100%",
-                            borderColor: state.isFocused ? "#fff" : "#fff",
-                            border: "1px solid #2DDC1B",
-                          }),
-                          menu: (provided) => ({
-                            ...provided,
-                            // zIndex: 9999,
-                            // height: "200px",
-                            // overflowY: "scroll",
-                          }),
-                        }}
-                        theme={(theme) => ({
-                          ...theme,
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#B8FEB3",
-                            primary: "#2DDC1B",
-                          },
-                        })}
-                        onChange={(e) => {
-                          const matchedInvoice = invoiceInformation?.filter(
-                            (invoice) =>
-                              invoice.customerID === e.value &&
-                              invoice.isApproved === true &&
-                              previousPaymentInformation.every(
-                                (item) => item.piNumber !== invoice.invoiceNo
-                              )
-                          );
-      
-                          if (matchedInvoice?.length > 0) {
-                            setInvoiceList(matchedInvoice);
-                          } else {
-                            swal({
-                              title: "Sorry!",
-                              text: "This Client has no PI.",
-                              icon: "warning",
-                              button: "OK",
-                            });
-                            setFilters((prevFilters) => ({
-                              ...prevFilters,
-                              piNumber: "",
-                            }));
-                            setInvoiceList([]);
-                          }
-                          setFilters((prevFilters) => ({
-                            ...prevFilters,
-                            customerID: e.value,
-                          }));
-                        }}
-                      ></Select>
-                    </div>
-                  </div> */}
             <div className="w-50">
               <label htmlFor="">Approve Type</label>
               <div>
@@ -436,7 +368,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
               <button
                 className="border-0 "
                 style={{
-                  backgroundColor: "#2DDC1B",
+                  backgroundColor: isGetDataLoading ? "gray" : "#2DDC1B",
                   color: "white",
                   padding: "5px 10px",
                   fontSize: "14px",
@@ -445,9 +377,10 @@ const DeliveryOrderApproveListData = ({ permission }) => {
                   height: "38px",
                   marginTop: "15px",
                 }}
+                disabled={isGetDataLoading}
                 onClick={handleApplyFilters}
               >
-                Show
+                {isGetDataLoading ? "Showing" : "Show"}
               </button>
             </div>
             <div>
@@ -476,10 +409,10 @@ const DeliveryOrderApproveListData = ({ permission }) => {
             </div>
           </div>
         </div>
-
+        <LoadingSpineer isLoading={isGetDataLoading}></LoadingSpineer>
         {isTableDispaly ? (
           <div
-            className=" "
+            className={`${isGetDataLoading ? "d-none" : "d-block"}`}
             style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
           >
             <DataTable

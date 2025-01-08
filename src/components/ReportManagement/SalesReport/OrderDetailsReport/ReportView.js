@@ -8,9 +8,7 @@ import {
   invoiceListDropdown,
 } from "../../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
-import {
-  useGetAllInvoiceInformationQuery,
-} from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
+import { useGetAllInvoiceInformationQuery } from "../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import SalesSummaryReport from "./SalesSummaryReport";
 import { useGetAllDelieryOrderInformationQuery } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import SalesDetailsReport from "./SalesDetailsReport";
@@ -30,30 +28,28 @@ import {
 } from "../../../../redux/features/salesreport/allreportApi";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import CombineReport from "./CombineReport";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const ReportView = ({ permission }) => {
   const [isOrderDetailsReport, setIsOrderDetailsReport] = useState(false);
   const [isOrderSumaryReport, setIsOrderSummmaryReport] = useState(false);
   const [isSalesDetailsReport, setIsSalesDetailsReport] = useState(false);
   const [isSalesSummaryReport, setIsSalesSummaryReport] = useState(false);
-  const [isChangeItemName,setIsChangeItemName]=useState(false)
-  const [isReturnDetailsReport, setIsReturnDetailsReport] =
-    useState(false);
-  const [isReturnSummaryReport, setIsReturnSummaryReport] =
-    useState(false);
-  const [isCombineReport, setIsCombineReport] =
-    useState(false);
+  const [isChangeItemName, setIsChangeItemName] = useState(false);
+  const [isReturnDetailsReport, setIsReturnDetailsReport] = useState(false);
+  const [isReturnSummaryReport, setIsReturnSummaryReport] = useState(false);
+  const [isCombineReport, setIsCombineReport] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
 
   const [isTableDispaly, setIsTableDisplay] = useState(false);
-  const { data: clientInformation } =
+  const { data: clientInformation, isLoading: isClientInfoLoading } =
     useGetAllClientInformationQuery(undefined);
   const { data: finishGoodsItemInfo } =
     useGetAllItemInformationQuery(undefined);
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
-  const {data:itemUnitInformation}=useGetAllItemUnitQuery(undefined);
+  const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: doInformation } =
     useGetAllDelieryOrderInformationQuery(undefined);
@@ -75,21 +71,20 @@ const ReportView = ({ permission }) => {
     itemSizeInfo
   );
 
-  const [triggerOrderDetailsReport, { data: orderDetailsData }] =
+  const [triggerOrderDetailsReport, { data: orderDetailsData ,isLoading:isOderDetailsLoading}] =
     useLazyGetOrderDetailsReportQuery();
-  const [triggerOrderSummaryReport, { data: orderSummaryData }] =
+  const [triggerOrderSummaryReport, { data: orderSummaryData ,isLoading:isOrderSummaryLoading}] =
     useLazyGetOrderSummaryReportQuery();
-  const [triggerSalesDetailsReport, { data: salesDetailsData }] =
+  const [triggerSalesDetailsReport, { data: salesDetailsData,isLoading:isSalesDetailsLoading }] =
     useLazyGetSalesDetailsReportQuery();
-  const [triggerSalesSummaryReport, { data: salesSummaryData }] =
+  const [triggerSalesSummaryReport, { data: salesSummaryData,isLoading:isSalesSummaryLoading }] =
     useLazyGetSalesSummaryReportQuery();
-  const [triggerReturnDetailsReport, { data: returnDetailsData }] =
+  const [triggerReturnDetailsReport, { data: returnDetailsData,isLoading:isReturnDetailsLoading}] =
     useLazyGetReturnDetailsReportQuery();
-  const [triggerReturnSummaryReport, { data: returnSummaryData }] =
+  const [triggerReturnSummaryReport, { data: returnSummaryData,isLoading:isReturnSummaryLoading }] =
     useLazyGetReturnSummaryReportQuery();
-  const [triggerCombineReport, { data: combineReportData }] =
+  const [triggerCombineReport, { data: combineReportData,isLoading:isCombineLoading }] =
     useLazyGetCombineReportQuery();
-
 
   useEffect(() => {
     if (executeQuery) {
@@ -123,14 +118,15 @@ const ReportView = ({ permission }) => {
   };
 
   return (
-    <div>
-      <div
-        className="row px-5 mx-2"
-        style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-      >
+    <div
+      className="row px-5 mx-2"
+      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+    >
+      <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>
+      <div className={`${isClientInfoLoading ? 'd-none' : 'd-block'}`}>
         <CommonParameter
-        setIsChangeItemName={setIsChangeItemName}
-        isChangeItemName={isChangeItemName}
+          setIsChangeItemName={setIsChangeItemName}
+          isChangeItemName={isChangeItemName}
           fromDate={fromDate}
           setFromDate={setFromDate}
           setFilters={setFilters}
@@ -152,11 +148,13 @@ const ReportView = ({ permission }) => {
         />
 
         {isOrderDetailsReport && (
+
           <OrderDetailsReportTable
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
             filteredDatas={orderDetailsData}
+            isOderDetailsLoading={isOderDetailsLoading}
             finishGoodsItemInfo={finishGoodsItemInfo}
             itemSizeInfo={itemSizeInfo}
             itemUnitInformation={itemUnitInformation}
@@ -170,6 +168,7 @@ const ReportView = ({ permission }) => {
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
             filteredDatas={orderSummaryData}
+            isOrderSummaryLoading={isOrderSummaryLoading}
             companyinfo={companyinfo}
           />
         )}
@@ -187,6 +186,7 @@ const ReportView = ({ permission }) => {
             itemSizeInfo={itemSizeInfo}
             itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}
+            isSalesDetailsLoading={isSalesDetailsLoading}
           />
         )}
         {isSalesSummaryReport && (
@@ -199,6 +199,7 @@ const ReportView = ({ permission }) => {
             piInformation={piInformation}
             doInformation={doInformation}
             companyinfo={companyinfo}
+            isSalesSummaryLoading={isSalesSummaryLoading}
           />
         )}
         {isReturnDetailsReport && (
@@ -215,6 +216,7 @@ const ReportView = ({ permission }) => {
             itemSizeInfo={itemSizeInfo}
             itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}
+            isReturnDetailsLoading={isReturnDetailsLoading}
           />
         )}
         {isReturnSummaryReport && (
@@ -227,6 +229,7 @@ const ReportView = ({ permission }) => {
             piInformation={piInformation}
             doInformation={doInformation}
             companyinfo={companyinfo}
+            isReturnSummaryLoading={isReturnSummaryLoading}
           />
         )}
         {isCombineReport && (
@@ -239,6 +242,7 @@ const ReportView = ({ permission }) => {
             piInformation={piInformation}
             doInformation={doInformation}
             companyinfo={companyinfo}
+            isCombineLoading={isCombineLoading}
           />
         )}
       </div>

@@ -29,13 +29,13 @@ const InsertFinishGoodsDeliveryDetails = ({ deliveryOrderInformation }) => {
                 ? deliveryOrderInformation?.detailsData?.map(
                     (detail, index) => {
                       const itemName = finishGoods?.find(
-                        (item) => item._id == detail.itemId
+                        (item) => item._id === detail.itemId
                       );
-                      console.log(itemName);
+                   
                       const sizeInfo = itemSizeInfo?.find(
-                        (size) => size._id == itemName?.sizeId
+                        (size) => size._id === itemName?.sizeId
                       );
-                      console.log(sizeInfo);
+                    
                       return (
                         <tr key={index}>
                           <td className="text-center  align-middle">

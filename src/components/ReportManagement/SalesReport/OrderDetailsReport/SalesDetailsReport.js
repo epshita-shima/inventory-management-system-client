@@ -11,6 +11,7 @@ import SalesDetailsTable from "../../../Uitilites/ReportTable/SalesDetailsTable"
 import { groupSalesDataByDetails } from "../../../Uitilites/reportDataGrouping";
 import { calculateGrandTotalSalesAmount, calculateGrandTotalSalesQty } from "../../../Uitilites/CalculationUtilities/calculation";
 import { downloadSalesDetailsPDF } from "../../../ReportProperties/PDF/handleDeliverDetailsReport";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const SalesDetailsReport = ({
   permission,
@@ -22,7 +23,8 @@ const SalesDetailsReport = ({
   isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
-  itemUnitInformation
+  itemUnitInformation,
+  isSalesDetailsLoading
 }) => {
   const [groupedData, setGroupedData] = useState({});
   const reportTitle = "DELIVERY ORDER INFORMATION";
@@ -33,24 +35,6 @@ const SalesDetailsReport = ({
     }))
   );
 
-  // const grandTotalDeliverQty = filteredDatas?.reduce((totalQty, item) => {
-  //   const detailsQty = item.detailsData.reduce(
-  //     (sum, detail) => sum + Number(detail.deliverQty),
-  //     0
-  //   );
-  //   return totalQty + detailsQty;
-  // }, 0);
-
-  // const grandTotalDeliverAmount = filteredDatas?.reduce((totalQty, detail) => {
-  //   const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
-  //     const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
-  //     const unitPrice = piNumber?.detailsData.find(
-  //       (item) => item.itemId === detail.itemId
-  //     );
-  //     return sum + Number(detail.deliverQty) * Number(unitPrice?.unitPrice);
-  //   }, 0);
-  //   return totalQty + detailReturnQty;
-  // }, 0);
 const grandTotalDeliverQty=calculateGrandTotalSalesQty(filteredDatas);
 const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piInformation);
 
@@ -298,9 +282,10 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
 
   return (
     <div>
+      <LoadingSpineer isLoading={isSalesDetailsLoading}></LoadingSpineer>
       {isTableDispaly ? (
         <div
-          className=" "
+          className={`${isSalesDetailsLoading ? 'd-none' : 'd-block'}`}
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable

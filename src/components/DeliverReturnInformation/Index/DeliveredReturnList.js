@@ -5,64 +5,21 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveredReturnList = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+  const { data: user, isLoading: isUserloading } =
+    useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (localStorage.length > 0) {
-  //     const getUserId = localStorage.getItem("user");
-  //     const userSingleId = JSON.parse(getUserId);
-  //     const userIdFromSession = userSingleId[0]?._id;
-  //     const permidionData = user?.filter(
-  //       (user) => user._id == userIdFromSession
-  //     );
-  //     const extractUserListForCurrentUser = (userData, userId) => {
-  //       let userList = null;
-  //       const currentUser = userData?.find((user) => user._id === userId);
-  //       if (currentUser) {
-  //         currentUser?.menulist?.forEach((menu) => {
-  //           const userListSubMenu = menu?.items?.find(
-  //             (subItem) => subItem?.label === "DO List"
-  //           );
-  //           if (userListSubMenu) {
-  //             userList = userListSubMenu;
-  //           } else {
-  //             menu?.items?.forEach((subMenu) => {
-  //               if (subMenu?.label === subMenu?.label) {
-  //                 const userListSubMenu = subMenu?.items?.find(
-  //                   (subItem) => subItem?.label === "List Information"
-  //                 );
-  //                 console.log(userListSubMenu);
-  //                 if (userListSubMenu) {
-  //                   userList = userListSubMenu;
-  //                 }
-  //               }
-  //             });
-  //           }
-  //         });
-  //       }
-  //       return userList;
-  //     };
-
-  //     var permissions = extractUserListForCurrentUser(
-  //       permidionData,
-  //       userIdFromSession
-  //     );
-  //     setPermission(permissions);
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, [user, navigate]);
   useEffect(() => {
     if (!isUserloading && user) {
       const permissions = extractUserMenuListForCurrectMenu(
         user,
-       "List Information"
+        "List Information"
       );
       if (permissions) {
         setPermission(permissions);
@@ -71,6 +28,7 @@ const DeliveredReturnList = () => {
       }
     }
   }, [user, navigate, isUserloading]);
+
   if (isUserloading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
@@ -92,36 +50,38 @@ const DeliveredReturnList = () => {
   }
   return (
     <div>
-      <DeliveredReturnListData
-        permission={permission}
-      ></DeliveredReturnListData>
-       {permission?.isInserted ? (
-            <div
-              className={`position-absolute`}
-              style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
-            >
-              <div className="">
-                <a
-                  href="/main-view/create-return-information"
-                  target="_blank"
-                  className="text-white text-center d-flex justify-content-center align-items-center"
-                  style={{
-                    backgroundColor: "#2DDC1B",
-                    height: "40px",
-                    width: "40px",
-                    borderRadius: "50px",
-                  }}
-                >
-                  <FontAwesomeIcon
-                    className="text-white fs-4"
-                    icon={faPlus}
-                  ></FontAwesomeIcon>
-                </a>
-              </div>
+      <LoadingSpineer isLoading={isUserloading}></LoadingSpineer>
+
+      <div>
+        <DeliveredReturnListData
+          permission={permission}
+        ></DeliveredReturnListData>
+        {permission?.isInserted && (
+          <div
+            className={`position-absolute`}
+            style={{ right: "15%", bottom: "4%", zIndex: "9999" }}
+          >
+            <div className="">
+              <a
+                href="/main-view/create-return-information"
+                target="_blank"
+                className="text-white text-center d-flex justify-content-center align-items-center"
+                style={{
+                  backgroundColor: "#2DDC1B",
+                  height: "40px",
+                  width: "40px",
+                  borderRadius: "50px",
+                }}
+              >
+                <FontAwesomeIcon
+                  className="text-white fs-4"
+                  icon={faPlus}
+                ></FontAwesomeIcon>
+              </a>
             </div>
-          ) : (
-            ""
-          )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

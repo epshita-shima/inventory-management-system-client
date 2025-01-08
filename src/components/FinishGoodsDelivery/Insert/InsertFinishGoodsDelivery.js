@@ -20,7 +20,7 @@ const InsertFinishGoodsDelivery = ({
   const invoiceInfo = invoiceInformation?.find(
     (invoice) => invoice._id == deliveryOrderInformation?.piId
   );
-  console.log(invoiceInfo);
+  
   return (
     <div class="row row-cols-1 row-cols-lg-3">
       <div class="col-sm-12 col-md-6 col-lg-3 mt-3">

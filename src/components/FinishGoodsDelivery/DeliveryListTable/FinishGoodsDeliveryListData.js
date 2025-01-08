@@ -5,10 +5,7 @@ import Select from "react-select";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import swal from "sweetalert";
-import {
-  faFilePdf,
-  faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 import { useLazyGetFilteredFinishGoodsDeliveryInfoQuery } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
@@ -21,6 +18,7 @@ import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import { downloadDeliveryOrderPDF } from "../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../Common/ListDataSearchBoxDesign/FilterComponent";
+import LoadingSpineer from "./../../Common/LoadingSpinner/LoadingSpineer";
 
 const FinishGoodsDeliveryListData = ({ permission }) => {
   const reportTitle = "DELIVERY ORDER INFORMATION";
@@ -32,9 +30,9 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     clientId: "",
     approveStatus: "",
   });
-  const { data: clientInformation } =
+  const { data: clientInformation, isLoading: isClientInfoLoading } =
     useGetAllClientInformationQuery(undefined);
-  const [trigger, { data: filteredDatas }] =
+  const [trigger, { data: filteredDatas, isLoading: isDeliveryLoading }] =
     useLazyGetFilteredFinishGoodsDeliveryInfoQuery();
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: invoiceInformation } =
@@ -43,7 +41,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const [insertApproveStatus] = useUpdateDeliveryOrderApproveStatusMutation();
   const clientInfoOptions = clientInfoDropdown(clientInformation);
-console.log(filteredDatas)
+
   const transformedDOData = filteredDatas?.flatMap((itemDetails) =>
     itemDetails.detailsData.map((detail) => ({
       ...itemDetails,
@@ -88,9 +86,7 @@ console.log(filteredDatas)
       setIsTableDisplay(true);
       trigger(filters)
         .unwrap()
-        .then((response) => {
-          console.log("Data fetched:", response);
-        })
+        .then((response) => {})
         .catch((err) => {
           console.error("Error fetching data:", err);
         })
@@ -111,7 +107,7 @@ console.log(filteredDatas)
       name: "Client Name",
       selector: (row) => {
         const clientInfo = clientInformation?.find(
-          (x) => x._id ==row?.clientId
+          (x) => x._id == row?.clientId
         );
         return clientInfo ? clientInfo?.clientName : "N/A";
       },
@@ -123,9 +119,7 @@ console.log(filteredDatas)
     {
       name: "PI Number",
       selector: (row) => {
-        const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piId
-        );
+        const piNumber = invoiceInformation?.find((x) => x._id === row?.piId);
         return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -145,15 +139,17 @@ console.log(filteredDatas)
     {
       name: "Delivery Quantity",
       selector: (row) => {
-        const totalDeliverQty = row.detailsData.reduce((acc, cur) => acc + parseFloat(cur.deliverQty || 0), 0);
-        console.log(totalDeliverQty);
+        const totalDeliverQty = row.detailsData.reduce(
+          (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
+          0
+        );
+
         return totalDeliverQty; // Return the total if needed
       },
       sortable: true,
       center: true,
       filterable: true,
     },
-
 
     {
       name: "Action",
@@ -162,7 +158,7 @@ console.log(filteredDatas)
       grow: 2,
       cell: (row) => (
         <div className="d-flex justify-content-between align-content-center">
-           {permission?.isPDF && (
+          {permission?.isPDF && (
             <a
               target="_blank"
               className={` action-icon `}
@@ -191,7 +187,7 @@ console.log(filteredDatas)
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
           )}
-          {permission?.isUpdated  && row.approveStatus == true && (
+          {permission?.isUpdated && row.approveStatus == true && (
             <a
               target="_blank"
               className={` action-icon `}
@@ -212,7 +208,6 @@ console.log(filteredDatas)
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
             </a>
           )}
-         
         </div>
       ),
     },
@@ -256,7 +251,7 @@ console.log(filteredDatas)
 
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        {filteredDatas?.length && (
+        {filteredDatas?.length ===0 ? (
           <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
@@ -264,14 +259,20 @@ console.log(filteredDatas)
               filterText={filterText}
             />
           </div>
-        )}
+        ):''}
       </div>
     );
   }, [filterText, resetPaginationToggle, filteredDatas]);
 
+
   return (
     <div className="row px-5 mx-4">
-      <div className="col userlist-table">
+      <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>
+      <div
+        className={`col userlist-table ${
+          isClientInfoLoading ? "d-none" : "d-block"
+        }`}
+      >
         <div>
           <h3 className="fw-bold mt-1">Finish Goods Delivery List</h3>
           <hr />
@@ -377,7 +378,7 @@ console.log(filteredDatas)
               <button
                 className="border-0 "
                 style={{
-                  backgroundColor: "#2DDC1B",
+                  backgroundColor: `${isDeliveryLoading ? "gray" : "#2DDC1B"}`,
                   color: "white",
                   padding: "5px 10px",
                   fontSize: "14px",
@@ -388,7 +389,7 @@ console.log(filteredDatas)
                 }}
                 onClick={handleApplyFilters}
               >
-                Show
+                {isDeliveryLoading ? "Showing" : " Show"}
               </button>
             </div>
             <div>

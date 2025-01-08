@@ -9,6 +9,7 @@ import handleReturnDetailsExcel from "../../../ReportProperties/Excel/handleRetu
 import { formatDate } from "../../../Uitilites/DateUtilities";
 import { groupReturnDateByDetails } from "../../../Uitilites/reportDataGrouping";
 import { calculateGrandTotalReturnAmount, calculateGrandTotalReturnQty } from "../../../Uitilites/CalculationUtilities/calculation";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 
 const SalesReturnDetailsReport = ({
@@ -24,6 +25,7 @@ const SalesReturnDetailsReport = ({
   finishGoodsItemInfo,
   itemSizeInfo,
   itemUnitInformation,
+  isReturnDetailsLoading
 }) => {
   const reportTitle = "SALES RETURN INFORMATION";
   const [groupedData, setGroupedData] = useState({});
@@ -273,9 +275,10 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
 
   return (
     <div>
+      <LoadingSpineer isLoading={isReturnDetailsLoading}></LoadingSpineer>
       {isTableDispaly ? (
         <div
-          className=" "
+          className={`${isReturnDetailsLoading ? 'd-none' : 'd-block'}`}
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable

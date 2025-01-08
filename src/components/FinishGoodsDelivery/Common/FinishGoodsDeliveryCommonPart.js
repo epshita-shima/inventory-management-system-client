@@ -12,6 +12,7 @@ import {
   useGetSingleFinishGoodsDeliveryInformationQuery,
   useInsertFinishGoodsDeliveryInformationMutation,
 } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const FinishGoodsDeliveryCommonPart = () => {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ const FinishGoodsDeliveryCommonPart = () => {
     truckNo: "",
   };
   const [deliveryOrderInformation, setDeliveryOrderInformation] = useState([]);
-  const { data: singleDeliveryOrderData } =
+  const { data: singleDeliveryOrderData,isLoading:isLoadingDetDelivery } =
     useGetSingleFinishGoodsDeliveryInformationQuery(id);
-  const [insertFinishGoodsDeliveryInfo] =
+  const [insertFinishGoodsDeliveryInfo,{isLoading:isLoadingInsertDelivery}] =
     useInsertFinishGoodsDeliveryInformationMutation();
 
   useEffect(() => {
@@ -89,7 +90,8 @@ const FinishGoodsDeliveryCommonPart = () => {
         zIndex: "9999",
       }}
     >
-      <div class="">
+      <LoadingSpineer isLoading={isLoadingDetDelivery}></LoadingSpineer>
+      <div class={isLoadingDetDelivery ? 'd-none' : 'd-block'}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -132,7 +134,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                         (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
                         0
                       );
-                    console.log(totalDeliverQtyCalculate);
+                   
                     return (
                       <div className=" shadow-lg py-2 px-5">
                         <div class="container-fluid">
@@ -206,7 +208,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                                       }}
                                       disabled={!(isValid && dirty)}
                                     >
-                                      Save
+                                   {isLoadingInsertDelivery ? 'Saving' : 'Save'}
                                     </button>
                                   </div>
                                   <div>

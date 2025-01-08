@@ -1,24 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {  useMemo} from "react";
-import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
 import DataTable from "react-data-table-component";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
 import handleOrderSummaryExcel from "../../../ReportProperties/Excel/handleOrderSummaryExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const OrderSummaryReport = ({
   permission,
   isTableDispaly,
   filteredDatas,
   companyinfo,
+  isOrderSummaryLoading
 }) => {
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const reportTitle = "ORDER SUMMARYF";
-  const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
-
-  console.log(filteredDatas);
-
   const grandTotalQuantity = filteredDatas?.reduce(
     (sum, details) => sum + details.grandQuantity,
     0
@@ -27,25 +24,6 @@ const OrderSummaryReport = ({
     (sum, details) => sum + details.grandAmount,
     0
   );
-  // const { grandQuantity, grandAmount } = filteredDatas?.reduce(
-  //   (acc, detail) => {
-  //     // Accumulate quantity and totalAmount for each matched item in detailsData
-  //     detail.detailsData.forEach((item) => {
-  //       acc.grandQuantity += item.quantity || 0;
-  //       acc.grandAmount += item.totalAmount || 0;
-  //     });
-  //     return acc;
-  //   },
-  //   { grandQuantity: 0, grandAmount: 0 } // Initial accumulator values
-  // );
-
-  // const summaryData = [
-  //   {
-  //     grandQuantity,
-  //     grandAmount,
-  //     averageRate: grandQuantity ? Math.round(grandAmount / grandQuantity) : 0,
-  //   },
-  // ];
 
   const columns = [
     {
@@ -184,12 +162,10 @@ const OrderSummaryReport = ({
   }, [companyinfo, filteredDatas, paymentTypeInfo]);
   
   return (
-    <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
+    <div >
+      <LoadingSpineer isLoading={isOrderSummaryLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
+        <div className={`${isOrderSummaryLoading ? 'd-none' : 'd-block'}`} style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <div className="shadow-lg">
             <DataTable
               title={
@@ -231,7 +207,7 @@ const OrderSummaryReport = ({
             const formattedDate = formatDate(detail.date);
             const avarageUnitPrice = detail.grandAmount / detail.grandQuantity;
             const paymentType = paymentTypeInfo?.find(
-              (x) => x._id == detail.paymentId
+              (x) => x._id === detail.paymentId
             );
             return (
               <tr key={detail._id}>

@@ -18,18 +18,19 @@ import {
 } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 import { useNavigate } from "react-router-dom";
 import { useGetAllFinishGoodsDeliveryInformationQuery,} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliverReturnCommonPart = () => {
   const navigate=useNavigate()
   const [isDisplay, setIsDisplay] = useState(false);
   const [doDetailsFilteredData, setDoDetailsFilteredData] = useState([]);
-  const { data: invoiceInformation } =
+  const { data: invoiceInformation,isLoading:isPiInfoLoading } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInfo } = useGetCompanyInfoQuery(undefined);
   const { data: deliveryOrderDataInformation } =
     useGetAllFinishGoodsDeliveryInformationQuery(undefined);
 const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
-  const [insertReturnDelivredInfo] =
+  const [insertReturnDelivredInfo,{isLoading:isInsertReturnLoading}] =
     useInsertReturnDeliveredInformationMutation();
 
   const [returnDate, setReturnDate] = useState(new Date());
@@ -56,7 +57,6 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
 
   const piNumberOptions = invoiceListDropdown(invoiceInformation);
 
-  console.log(doDetailsFilteredData)
   useEffect(() => {
     if (doDetailsFilteredData?.length !== 0) {
       setIsDisplay(true);
@@ -112,13 +112,14 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
         zIndex: "9999",
       }}
     >
-      <div class="">
+      <LoadingSpineer isLoading={isPiInfoLoading}></LoadingSpineer>
+      <div class={`${isPiInfoLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
               returnQty: Yup.string()
-                .required("Required") // Add validation for returnQty
+                .required("Required")
                 .matches(/^\d+$/, "Must be a number"),
             })}
             onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -145,15 +146,12 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                 <FieldArray
                   name="detailsData"
                   render={(arrayHelpers) => {
-                    const details = values.detailsData;
                     const totalQtyCalculate =
                       doDetailsFilteredData?.detailsData?.reduce(
                         (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
                         0
                       );
-                    console.log(JSON.stringify(values));
-                    console.log("isValid:", isValid, "dirty:", dirty);
-                    console.log("Form Errors:", errors);
+                 
                     return (
                       <div className=" shadow-lg py-2 px-5">
                         <div class="container-fluid">
@@ -223,7 +221,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                       form="pocreation-form"
                                       className="border-0 "
                                       style={{
-                                        backgroundColor: "#2DDC1B",
+                                        backgroundColor:isInsertReturnLoading? 'gray': "#2DDC1B",
                                         color: "white",
                                         padding: "5px 10px",
                                         fontSize: "14px",
@@ -231,8 +229,9 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                         borderRadius: "5px",
                                         width: "100px",
                                       }}
+                                      disabled={isInsertReturnLoading}
                                     >
-                                      Save
+                                     {isInsertReturnLoading ? 'Saving' : 'Save'}
                                     </button>
                                   </div>
                                   <div>

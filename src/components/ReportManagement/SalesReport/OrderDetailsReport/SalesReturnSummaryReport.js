@@ -1,18 +1,33 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
-import React, { useMemo } from 'react'
-import { downloadSalesSummaryPDF } from '../../../ReportProperties/PDF/handleSalesSummaryPDF';
-import handleSalesReturnSummaryExcel from '../../../ReportProperties/Excel/handleSalesReturnSummaryExcel';
-import { formatDate } from '../../../Uitilites/DateUtilities';
+import React, { useMemo } from "react";
+import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
+import handleSalesReturnSummaryExcel from "../../../ReportProperties/Excel/handleSalesReturnSummaryExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
-const SalesReturnSummaryReport = ({permission,filteredDatas,filterText,piInformation,clientInformation,companyInformation,isTableDispaly,companyinfo}) => {
-console.log(filteredDatas) 
-const reportTitle="RETURN SUMMARY"
-
-const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnAmount,0)
-const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalReturnQty,0)
+const SalesReturnSummaryReport = ({
+  permission,
+  filteredDatas,
+  filterText,
+  piInformation,
+  clientInformation,
+  companyInformation,
+  isTableDispaly,
+  companyinfo,
+  isReturnSummaryLoading,
+}) => {
+  const reportTitle = "RETURN SUMMARY";
+  const grandTotalAmount = filteredDatas?.reduce(
+    (sum, detail) => sum + detail.totalReturnAmount,
+    0
+  );
+  const grandTotalReturnQty = filteredDatas?.reduce(
+    (sum, detail) => sum + detail.totalReturnQty,
+    0
+  );
 
   const columns = [
     {
@@ -24,7 +39,7 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
 
     {
       name: "Return Date",
-      selector: (row) => new Date(row.returnDate).toLocaleDateString('en-CA'),
+      selector: (row) => new Date(row.returnDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
@@ -32,18 +47,18 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
 
     {
       name: "Total Return Qty",
-      selector: (row) =>  row.totalReturnQty,
+      selector: (row) => row.totalReturnQty,
       sortable: true,
       center: true,
       filterable: true,
     },
-    
+
     {
       name: "Avg Unit Price",
       selector: (row) => {
-       const unitPrice=row.totalReturnAmount /  row.totalReturnQty
-       
-        return  Math.round(unitPrice);
+        const unitPrice = row.totalReturnAmount / row.totalReturnQty;
+
+        return Math.round(unitPrice);
       },
       sortable: true,
       center: true,
@@ -51,12 +66,11 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
     },
     {
       name: "Total Return Amount",
-      selector: (row) =>row.totalReturnAmount,
+      selector: (row) => row.totalReturnAmount,
       sortable: true,
       center: true,
       filterable: true,
     },
-
   ];
   const customStyles = {
     rows: {
@@ -80,19 +94,19 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
     },
     headRow: {
       style: {
-        paddingTop: "0px", 
+        paddingTop: "0px",
       },
     },
     header: {
       style: {
-        marginTop: "8px",     
+        marginTop: "8px",
       },
     },
   };
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -113,10 +127,7 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadSalesSummaryPDF(
-                            { companyinfo },
-                            reportTitle
-                          );
+                          downloadSalesSummaryPDF({ companyinfo }, reportTitle);
                         }
                       }}
                     >
@@ -130,7 +141,7 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
                       onClick={() => {
                         handleSalesReturnSummaryExcel(
                           filteredDatas,
-                          
+
                           companyinfo,
                           reportTitle
                         );
@@ -147,37 +158,39 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
       </div>
     );
   }, [companyinfo, filteredDatas, reportTitle]);
+
   return (
     <div>
-       {isTableDispaly && (
-          <div
-            className=" "
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-          >
-            <DataTable
-              title={
-                <h2
-                  style={{
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                    color: "#000",
-                  }}
-                >
-                 Return Summary Report
-                </h2>
-              }
-              columns={columns}
-              data={filteredDatas}
-              defaultSortField="name"
-              customStyles={customStyles}
-              subHeaderComponent={subHeaderComponent}
-              striped
-              pagination
-              subHeader
-            />
-          </div>
-        )}
-<table id="my-sales-summary-table" className="d-none">
+      <LoadingSpineer isLoading={isReturnSummaryLoading}></LoadingSpineer>
+      {isTableDispaly && (
+        <div
+          className={`${  isReturnSummaryLoading ? 'd-none' : 'd-block'}`}
+          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+        >
+          <DataTable
+            title={
+              <h2
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#000",
+                }}
+              >
+                Return Summary Report
+              </h2>
+            }
+            columns={columns}
+            data={filteredDatas}
+            defaultSortField="name"
+            customStyles={customStyles}
+            subHeaderComponent={subHeaderComponent}
+            striped
+            pagination
+            subHeader
+          />
+        </div>
+      )}
+      <table id="my-sales-summary-table" className="d-none">
         <thead>
           <tr>
             <th>Return Date</th>
@@ -229,7 +242,7 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
             >
               {grandTotalReturnQty != null
                 ? grandTotalReturnQty?.toLocaleString()
-                : 0} 
+                : 0}
             </td>
             <td
               style={{
@@ -240,15 +253,13 @@ const grandTotalReturnQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalRe
             >
               {grandTotalAmount != null
                 ? grandTotalAmount?.toLocaleString()
-                : 0} 
+                : 0}
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+  );
+};
 
-      </div>
-    
-  )
-}
-
-export default SalesReturnSummaryReport
+export default SalesReturnSummaryReport;

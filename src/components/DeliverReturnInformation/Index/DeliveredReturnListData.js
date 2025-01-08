@@ -25,7 +25,7 @@ const DeliveredReturnListData = ({ permission }) => {
   const reportTitle = "Sales Return Report";
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const { data: deliveredReturnInformationData, refetch } =
+  const { data: deliveredReturnInformationData, refetch,isFetching:isReturnDataFetching } =
     useGetAllReturnDeliveredInformationQuery(undefined);
   const { data: deliverOrderInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
@@ -50,7 +50,6 @@ const DeliveredReturnListData = ({ permission }) => {
       }))
   );
 
-  console.log(finishGoodsDeliveryInfo);
 
   const columns = [
     {
@@ -213,19 +212,21 @@ const DeliveredReturnListData = ({ permission }) => {
         setFilterText("");
       }
     };
-
+console.log(deliveredReturnInformationData)
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
-        </div>
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2 pe-4">
+        {
+          deliveredReturnInformationData?.length ===0 ? '' : (<div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>)
+        }
       </div>
     );
-  }, [filterText, resetPaginationToggle]);
+  }, [filterText, resetPaginationToggle,deliveredReturnInformationData]);
 
   return (
     <div

@@ -1,64 +1,27 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import DeliveryOrderApproveListData from "./DeliveryOrderApproveListData";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const DeliveryOrderApproveList = () => {
-    const clickhandler = (name) => console.log("delete", name);
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
-  
     const [permission, setPermission] = useState();
     const navigate = useNavigate();
-    console.log(permission);
-    useEffect(() => {
-      if (localStorage.length > 0) {
-        const getUserId = localStorage.getItem("user");
-        const userSingleId = JSON.parse(getUserId);
-        const userIdFromSession = userSingleId[0]?._id;
-        const permidionData = user?.filter(
-          (user) => user._id == userIdFromSession
-        );
-        const extractUserListForCurrentUser = (userData, userId) => {
-          let userList = null;
-          const currentUser = userData?.find((user) => user._id === userId);
-          if (currentUser) {
-            currentUser?.menulist?.forEach((menu) => {
-              const userListSubMenu = menu?.items?.find(
-                (subItem) => subItem?.label === "Approve List"
-              );
-              if (userListSubMenu) {
-                userList = userListSubMenu;
-              } else {
-                menu?.items?.forEach((subMenu) => {
-                  if (subMenu?.label === subMenu?.label) {
-                    const userListSubMenu = subMenu?.items?.find(
-                      (subItem) => subItem?.label === "DO List"
-                    );
-                    console.log(userListSubMenu);
-                    if (userListSubMenu) {
-                      userList = userListSubMenu;
-                    }
-                  }
-                });
-              }
-            });
+
+     useEffect(() => {
+        if (!isUserloading && user) {
+          const permissions = extractUserMenuListForCurrectMenu(user, "Approve List");
+          if (permissions) {
+            setPermission(permissions);
+          } else {
+            navigate("/");
           }
-          return userList;
-        };
-  
-        var permissions = extractUserListForCurrentUser(
-          permidionData,
-          userIdFromSession
-        );
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
-    }, [user, navigate]);
-  
+        }
+      }, [user, navigate, isUserloading]);
+
     if (isUserloading) {
       return (
         <div className="d-flex justify-content-center align-items-center">
@@ -78,6 +41,7 @@ const DeliveryOrderApproveList = () => {
         </div>
       );
     }
+    
     return (
         <div>
          <DeliveryOrderApproveListData permission={permission}></DeliveryOrderApproveListData>

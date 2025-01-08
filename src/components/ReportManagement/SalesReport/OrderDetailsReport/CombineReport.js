@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import downloadCombineReportPDF from "../../../ReportProperties/PDF/handleCombineReportPDF";
 import handelCombineReportExcel from "../../../ReportProperties/Excel/handelCombineReportExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const CombineReport = ({
   permission,
@@ -15,6 +16,7 @@ const CombineReport = ({
   isTableDispaly,
   companyinfo,
   itemSizeInfo,
+  isCombineLoading
 }) => {
   const { groupedResult, orderInfo } = filteredCombineData || {};
   const reportTitle = "COMBINE REPORT (SALES)";
@@ -246,7 +248,7 @@ const CombineReport = ({
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {
           groupedResult?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
@@ -379,9 +381,10 @@ const CombineReport = ({
 
   return (
     <div>
+      <LoadingSpineer isLoading={isCombineLoading}></LoadingSpineer>
       {isTableDispaly && (
         <div
-          className=" "
+          className={`${isCombineLoading ? 'd-none' : 'd-block'}`}
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable

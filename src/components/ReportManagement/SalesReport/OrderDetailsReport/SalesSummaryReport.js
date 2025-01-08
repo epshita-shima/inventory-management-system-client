@@ -4,17 +4,16 @@ import React, { useMemo } from "react";
 import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
 import handleSalesSummaryExcel from "../../../ReportProperties/Excel/handleSalesSummaryExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const SalesSummaryReport = ({
   filteredDatas,
   isTableDispaly,
   companyinfo,
+  isSalesSummaryLoading
 }) => {
   const reportTitle = "SALES SUMMARY";
   const [filterText, setFilterText] = React.useState("");
-
-
-
   const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverAmount,0)
   const grandTotalDeliveredQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverQty,0)
   
@@ -89,7 +88,7 @@ const SalesSummaryReport = ({
 
   const subHeaderComponent = useMemo(() => {
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {filteredDatas?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
@@ -146,9 +145,10 @@ const SalesSummaryReport = ({
 
   return (
     <div>
+      <LoadingSpineer isLoading={isSalesSummaryLoading}></LoadingSpineer>
       {isTableDispaly && (
         <div
-          className=" "
+          className={`${isSalesSummaryLoading ? 'd-none' : 'd-block'} `}
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
