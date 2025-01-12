@@ -12,7 +12,6 @@ import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetSingleUserQuery,
-  useUpdateMultipleUserFieldMutation,
 } from "../../../redux/features/user/userApi";
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
@@ -25,20 +24,17 @@ const SingleUserDisplay = () => {
   const [singleUserData, setSingleUserData] = useState([]);
   const { data: singleUser, isLoading: singleUSerLoading } =
     useGetSingleUserQuery(id);
-  const [updateUser] = useUpdateMultipleUserFieldMutation();
+
   const {
     data: userRoleData,
-    isError: userRoleIsError,
-    isLoading: userRoleIsLoading,
+ 
   } = useGetUserRoleQuery();
   const {
     data: menuItems,
-    isError: menuItemsIsError,
-    isLoading: menuItemsIsLoading,
+    
   } = useGetAllMenuItemsQuery();
   const navigate = useNavigate();
 
-  console.log(singleUserData);
   useEffect(() => {
     const menulist = Array.isArray(singleUser?.menulist) ? singleUser.menulist : [];
     const menuItemsList = Array.isArray(menuItems) ? menuItems : [];
@@ -52,7 +48,7 @@ const SingleUserDisplay = () => {
       ...menuItemsList.filter(menu => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
     ];
     
-    console.log(result)
+
     if (Array.isArray(result)) {
       const updatedSingleUser = {
         ...singleUser,
@@ -68,26 +64,6 @@ const SingleUserDisplay = () => {
 
   const [validated, setValidated] = useState(false);
   const parentIds = [];
-  //   function synchronizeMenus(singleUserData, menuItem) {
-
-  // console.log(updatedMenuDataList)
-  //     const removedMenus = singleUserData?.menulist.filter(
-  //         menu => !menuItem.some(m => m._id === menu._id)
-  //     );
-
-  //     // Mark removed menus
-  //     removedMenus?.forEach(menu => {
-  //         menu.isRemoved = true;
-  //     });
-
-  //     return {
-  //         ...singleUserData,
-  //         menulist: [...updatedMenuDataList, ...removedMenus]
-  //     };
-  // }
-
-  // const synchronizedData = synchronizeMenus(singleUser, menuItems);
-  // console.log(JSON.stringify(synchronizedData));
 
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -98,17 +74,13 @@ const SingleUserDisplay = () => {
 
   const updateDropdownList = (updatedChild, menuList) => {
     return menuList?.map((item) => {
-      console.log(item.trackId ,updatedChild);
       if (item.trackId === updatedChild.parentIds) {
-        // If the current item matches the parent ID of the updated child
-        console.log("cant find parent");
+      
         return {
           ...item,
           items: updateDropdownListRecursive(updatedChild, item.items),
         };
       } else if (item.items && item.items.length > 0) {
-        // If the current item has items items, recursively call updateDropdownList on them
-        console.log("cant find drpdown");
         return {
           ...item,
           items: updateDropdownList(updatedChild, item.items),
@@ -119,17 +91,10 @@ const SingleUserDisplay = () => {
   };
 
   const updateDropdownListRecursive = (updatedChild, dropdownList) => {
-    console.log(updatedChild);
     return dropdownList.map((child) => {
-      console.log(child, updatedChild);
       if (child.trackId === updatedChild.trackId) {
-        // If the current child matches the updated child, update it
-        console.log(child);
-        console.log(updatedChild);
         return { ...child, ...updatedChild };
       } else if (child.items && child.items.length > 0) {
-        // If the current child has items items, recursively call updateDropdownListRecursive on them
-        console.log("parent child");
         return {
           ...child,
           items: updateDropdownListRecursive(updatedChild, child.items),
@@ -140,11 +105,9 @@ const SingleUserDisplay = () => {
   };
 
   const updateMenuItem = (menuItemID, updatedValues) => {
-    console.log(menuItemID, updatedValues);
-    console.log(singleUserData.menulist)
+
     const updatedMenuList = [...singleUserData.menulist];
     const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
-    console.log(updatedMenuLists)
     setSingleUserData((prevList) => {
       return { ...prevList, menulist: updatedMenuLists };
     });

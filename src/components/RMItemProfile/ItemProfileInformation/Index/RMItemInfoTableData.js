@@ -7,51 +7,31 @@ import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 import { useGetAllRMItemInformationQuery } from '../../../../redux/features/iteminformation/rmItemInfoApi';
 import RMItemInfoList from './ItemInfoTableData/RMItemInfoList';
 import { extractUserMenuListForCurrectMenu } from '../../../Uitilites/extractUserMenuListForCurrectMenu';
+import LoadingSpineer from '../../../Common/LoadingSpinner/LoadingSpineer';
 
 const RMItemInfoTableData = () => {
     const clickhandler = (name) => console.log("delete", name);
-    const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+    const { data: user,isLoading:isUserloading } = useGetAllUserQuery(undefined);
    
     const [permission, setPermission] = useState();
     const navigate = useNavigate();
-
-console.log(permission)
     useEffect(() => {
     if(!isUserloading && user){
       const permissions = extractUserMenuListForCurrectMenu(user, "Raw Material Item List");
-      console.log(permissions)
+
     if (permissions) {
       setPermission(permissions);
     } else {
       navigate("/");
     }
     }
-    
     }, [user, navigate, isUserloading]);
-
-    if (isUserloading) {
-      return (
-        <div className="d-flex justify-content-center align-items-center">
-          <button
-            class="btn"
-            style={{ backgroundColor: "#2DDC1B", color: "white" }}
-            type="button"
-            disabled
-          >
-            <span
-              class="spinner-grow spinner-grow-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Loading...
-          </button>
-        </div>
-      );
-    }
     
     return (
       <div>
-        <RMItemInfoList
+        <LoadingSpineer isLoading={isUserloading}> </LoadingSpineer>
+       <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
+       <RMItemInfoList
           permission={permission}
           click={clickhandler}
         />
@@ -80,6 +60,7 @@ console.log(permission)
             </div>
           </div>
         )}
+       </div>
       </div>
     );
 }

@@ -21,12 +21,12 @@ const UserActiveListModal = ({
   extractedInActiveData
 }) => {
   const [selectedData, setSelectedData] = useState([]);
-  const [updateMultipleData, { isLoading, isError }] =
+  const [updateMultipleData, { isLoading }] =
     useUpdateMultipleUserStatusMutation();
 const activeReportTitle="All Active User"
 const inActiveReportTitle="All Inactive User"
   const handleCheckboxClick = (dataItem) => {
-    console.log(dataItem);
+
     setSelectedData((prevSelectedData) => {
       if (prevSelectedData?.includes(dataItem)) {
         // Deselect the data item if it's already selected
@@ -65,7 +65,7 @@ const inActiveReportTitle="All Inactive User"
       console.error("Error updating data:", error);
     }
   };
-console.log(user)
+
   const columns = [
     {
       name: "Sl.",

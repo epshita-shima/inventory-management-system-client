@@ -1,8 +1,10 @@
-import { downloadGoupPurchaseDetailsPDF, downloadGoupPurchaseItemWisePDF } from "../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF";
+import {downloadGoupPurchaseItemWisePDF } from "../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF";
 import { groupPurchaseDateByDetails } from "./reportDataGrouping";
 import handlePurchaseDatewiseReportExcel from './../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
+import './dropdownTableCustomDesign.css'
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
+
 export const getPurchaseColumns = (
   triggerPurchaseReport,
   reportPurchaseTitle,
@@ -74,7 +76,7 @@ export const getPurchaseColumns = (
       <div className="d-flex justify-content-between align-content-center">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
-            <div class="dropdown">
+            <div class="dropdown dropup">
               <button
                 class="btn btn-download dropdown-toggle"
                 type="button"

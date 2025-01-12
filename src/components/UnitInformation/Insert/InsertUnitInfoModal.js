@@ -33,7 +33,7 @@ const InsertUnitInfoModal = () => {
     }
     try {
       const response = await insertunitinfo(values.detailsData);
-      console.log(response.data.status);
+
       if (response.data.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();

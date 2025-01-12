@@ -67,11 +67,11 @@ const DatewiseProductionDetails = ({
       name: "Item Name",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.productionItemName == x._id
+          (x) => row?.productionItemName === x._id
         );
-        console.log("row.detailsData", row.detailsData.itemId);
+       
         const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName?.sizeId
+          (size) => size._id === itemName?.sizeId
         );
         return itemName
           ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
@@ -86,10 +86,10 @@ const DatewiseProductionDetails = ({
       name: "Unit",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.productionItemName == x._id
+          (x) => row?.productionItemName === x._id
         );
         const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
+          (size) => size._id === itemName?.unitId
         );
         return itemName
           ? ` (${itemUnit?.unitInfo})`
@@ -132,7 +132,7 @@ const DatewiseProductionDetails = ({
                 const singleReturnData = filteredDatas.find(
                   (returnItem) => returnItem._id == row._id
                 );
-                console.log(singleReturnData);
+              
                 downloadProductionPDFPERBatch(
                   singleReturnData,
                   finishGoodsItemInfo,
@@ -298,7 +298,7 @@ const DatewiseProductionDetails = ({
                         const itemNames = finishGoodsItemInfo?.find(
                           (item) => item._id === detail.productionItemName
                         );
-                        console.log(itemNames);
+                       
                         const itemSize = itemSizeInfo.find(
                           (size) => size._id === itemNames?.sizeId
                         );

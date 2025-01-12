@@ -129,7 +129,6 @@ const PaymentMethodSingleEntry = () => {
         (invoice) =>
           invoice.customerID === getSinglePaymentReceiveInfo?.clientId
       );
-      console.log(matchedInvoice);
       setInvoiceList(matchedInvoice);
       const invoiceListMatchingData = matchedInvoice?.find(
         (data) => data.invoiceNo === getSinglePaymentReceiveInfo?.piNumber
@@ -198,7 +197,6 @@ const PaymentMethodSingleEntry = () => {
         (acc, item) => acc + item.amount,
         0
       );
-      console.log(totalPiAmount, totalAdjustmentAmount);
 
       const previousAdjustPayment = previousPaymentData
         .map((items) => {
@@ -214,12 +212,10 @@ const PaymentMethodSingleEntry = () => {
         .reduce((acc, amount) => acc + amount, 0);
       const totalPreviousAdjustPayment =
         previousAdjustPayment + totalAdjustmentAmount;
-        console.log(totalPreviousAdjustPayment , totalPiAmount)
 
       try {
         if (totalPreviousAdjustPayment < totalPiAmount) {
           const response = await insertPaymentReceive(modelData);
-          console.log(modelData);
           if (response?.data?.status === 200) {
             swal("Done", "Data Save Successfully", "success");
             // navigate("/main-view/payment-received-list");
@@ -440,7 +436,6 @@ const PaymentMethodSingleEntry = () => {
                                               invoice.customerID === e.value &&
                                               invoice.isApproved === true && invoice.paymentId === "667d2b983e37e91c4e1f3a1f"
                                           );
-                                        console.log(matchedInvoice);
                                         if (matchedInvoice?.length > 0) {
                                           setInvoiceList(matchedInvoice);
                                         } else {
@@ -543,7 +538,6 @@ const PaymentMethodSingleEntry = () => {
                                           paymnetReceiveData?.find(
                                             (data) => data.piNumber === e.value
                                           );
-                                        console.log(filterPaymentData);
                                         if (filterPaymentData !== undefined) {
                                           setPreviousPaymentData(
                                             filterPaymentData
@@ -568,7 +562,6 @@ const PaymentMethodSingleEntry = () => {
                                         );
                                         setUpdatePaymentReceiveInformation(
                                           (prevData) => {
-                                            console.log(prevData);
                                             return {
                                               ...prevData,
                                               piNumber: e.value,
@@ -584,7 +577,6 @@ const PaymentMethodSingleEntry = () => {
                                               data.piNumber === e.value &&
                                               data.clientId === clientName
                                           );
-                                        console.log(filterPaymentData);
                                         if (filterPaymentData !== undefined) {
                                           setPreviousPaymentData(
                                             filterPaymentData
@@ -608,7 +600,6 @@ const PaymentMethodSingleEntry = () => {
                                           invoiceListMatchingData
                                         );
                                         setFormValues((prevData) => {
-                                          console.log(prevData);
                                           return {
                                             ...prevData,
                                             piNumber: e.value,

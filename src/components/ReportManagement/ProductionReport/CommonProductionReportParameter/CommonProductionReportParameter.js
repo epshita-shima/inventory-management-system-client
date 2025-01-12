@@ -34,7 +34,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               selected={fromDate}
               required
               onChange={(fromDate) => {
-                console.log(fromDate);
                 if (fromDate > new Date()) {
                   swal({
                     title: "Select Valid Date",
@@ -62,7 +61,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               selected={toDate}
               required
               onChange={(toDate) => {
-                console.log(toDate);
 
                 setFilters((prevFilters) => ({
                   ...prevFilters,
@@ -167,8 +165,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
                   },
                 })}
                 onChange={(e) => {
-                  // console.log(e);
-                  // setPiNumber(e.value);
                   setFilters((prevFilters) => ({
                     ...prevFilters,
                     batchNo: e.value,

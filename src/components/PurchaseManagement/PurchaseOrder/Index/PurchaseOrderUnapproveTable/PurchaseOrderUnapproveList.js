@@ -176,10 +176,10 @@ const PurchaseOrderUnapproveList = ({
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "orange"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -263,7 +263,6 @@ const PurchaseOrderUnapproveList = ({
                     const response = await deletePurchaseOrderInfo(
                       purchaseFilterUnApproveAllData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",

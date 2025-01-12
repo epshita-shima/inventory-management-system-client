@@ -65,16 +65,16 @@ const PurchaseOderList = ({ permission }) => {
       acc[curr.paymentType].push(curr);
       return acc;
     }, {});
-    console.log(purchaseMatchedLCData)
+
     setPurchaseInCash(purchaseMatchedLCData?.cash);
     setPurchaseInInLCAtSight(purchaseMatchedLCData?.lcatsight);
 
     const approvePurchaseData = purchaseInfoData?.filter(
-      (x) => x.approveStatus == true
+      (x) => x.approveStatus === true
     );
 
     const unApprovePurchaseData = purchaseInfoData?.filter(
-      (x) => x.approveStatus == false
+      (x) => x.approveStatus === false
     );
 
     setPurchaseOrderApproveData(approvePurchaseData);
@@ -186,7 +186,7 @@ const PurchaseOderList = ({ permission }) => {
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {purchaseInfoData?.approveStatus == true ? (
+            {purchaseInfoData?.approveStatus === true ? (
               <p className="text-success fw-bold">Approve</p>
             ) : (
               <p className="text-danger fw-bold">UnApprove</p>
@@ -211,10 +211,10 @@ const PurchaseOderList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "orange"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -247,10 +247,10 @@ const PurchaseOderList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -284,7 +284,7 @@ const PurchaseOderList = ({ permission }) => {
               }}
               onClick={() => {
                 const matchData = grnDataInfo.find(
-                  (item) => item.pOSingleId == purchaseInfoData._id
+                  (item) => item.pOSingleId === purchaseInfoData._id
                 );
                 if(matchData && matchData.length !==0) {
                   swal(
@@ -304,7 +304,6 @@ const PurchaseOderList = ({ permission }) => {
                       const response = await deletePurchaseOrderInfo(
                         purchaseInfoData?._id
                       ).unwrap();
-                      console.log(response);
                       if (response.status === 200) {
                         swal(
                           "Deleted!",

@@ -22,6 +22,7 @@ import {
 import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
 import PurchaseSummaryDataTable from "./PurchaseSummaryDataTable";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const PurchaseReportView = ({ permission }) => {
   const [fromDate, setFromDate] = useState(new Date());
@@ -39,7 +40,8 @@ const PurchaseReportView = ({ permission }) => {
     poId: "",
     reportStatus: "",
   });
-  const { data: rawMaterialInfo } = useGetAllRMItemInformationQuery(undefined);
+  const { data: rawMaterialInfo, isLoading: isRawItemLoading } =
+    useGetAllRMItemInformationQuery(undefined);
   const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
@@ -58,10 +60,10 @@ const PurchaseReportView = ({ permission }) => {
   const supplierOptions = supplierDropdown(supplierInformation);
   const purchaseOptions = poInfoDropdown(purchaseInfoData);
 
-  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData }] =
+  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData ,isLoading:isPurchaseDetailsLoading}] =
     useLazyGetPurchaseDetailsReportQuery();
 
-  const [triggerPurchaseSummaryReport, { data: purchaseSummaryData }] =
+  const [triggerPurchaseSummaryReport, { data: purchaseSummaryData,isLoading:isPurchaseSummaryLoading }] =
     useLazyGetPurchaseSummaryReportQuery();
 
   useEffect(() => {
@@ -86,56 +88,60 @@ const PurchaseReportView = ({ permission }) => {
     }
   };
 
-  console.log(purchaseSummaryData);
-
   return (
     <div
       className="row px-5 mx-2"
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
-      {
-        <CommonPurchaseParameter
-          fromDate={fromDate}
-          setFromDate={setFromDate}
-          toDate={toDate}
-          setToDate={setToDate}
-          handleApplyFilters={handleApplyFilters}
-          filters={filters}
-          setFilters={setFilters}
-          setIsPurchaseDetails={setIsPurchaseDetails}
-          setIsPurchaseSummary={setIsPurchaseSummary}
-          setIsTableDisplay={setIsTableDisplay}
-          itemsOptions={itemsOptions}
-          supplierOptions={supplierOptions}
-          purchaseOptions={purchaseOptions}
-        ></CommonPurchaseParameter>
-      }
+      <LoadingSpineer isLoading={isRawItemLoading}></LoadingSpineer>
+      <div className={`${isRawItemLoading ? 'd-none' : 'd-block'}`}>
+        {
+          <CommonPurchaseParameter
+            fromDate={fromDate}
+            setFromDate={setFromDate}
+            toDate={toDate}
+            setToDate={setToDate}
+            handleApplyFilters={handleApplyFilters}
+            filters={filters}
+            setFilters={setFilters}
+            setIsPurchaseDetails={setIsPurchaseDetails}
+            setIsPurchaseSummary={setIsPurchaseSummary}
+            setIsTableDisplay={setIsTableDisplay}
+            itemsOptions={itemsOptions}
+            supplierOptions={supplierOptions}
+            purchaseOptions={purchaseOptions}
+          ></CommonPurchaseParameter>
+        }
 
-      {isPurchaseDetails && (
-        <PurchaseReportDataTable
-          rawMaterialInfo={rawMaterialInfo}
-          itemUnitInformation={itemUnitInformation}
-          finishGoodsInfo={finishGoodsInfo}
-          itemSizeInfo={itemSizeInfo}
-          permission={permission}
-          filteredDatas={purchaseDetailsData}
-          companyinfo={companyinfo}
-          piInformation={piInformation}
-          supplierInformation={supplierInformation}
-          bankInformation={bankInformation}
-          paymentData={paymentData}
-          filters={filters}
-          isTableDispaly={isTableDispaly}
-        ></PurchaseReportDataTable>
-      )}
-      {isPurchaseSummary && (
-        <PurchaseSummaryDataTable
-          filteredDatas={purchaseSummaryData}
-          isTableDispaly={isTableDispaly}
-          paymentTypeInfo={paymentData}
-          companyinfo={companyinfo}
-        ></PurchaseSummaryDataTable>
-      )}
+        {isPurchaseDetails && (
+          <PurchaseReportDataTable
+            rawMaterialInfo={rawMaterialInfo}
+            itemUnitInformation={itemUnitInformation}
+            finishGoodsInfo={finishGoodsInfo}
+            itemSizeInfo={itemSizeInfo}
+            permission={permission}
+            filteredDatas={purchaseDetailsData}
+            companyinfo={companyinfo}
+            piInformation={piInformation}
+            supplierInformation={supplierInformation}
+            bankInformation={bankInformation}
+            paymentData={paymentData}
+            filters={filters}
+            isTableDispaly={isTableDispaly}
+            isPurchaseDetailsLoading={isPurchaseDetailsLoading}
+          ></PurchaseReportDataTable>
+        )}
+
+        {isPurchaseSummary && (
+          <PurchaseSummaryDataTable
+            filteredDatas={purchaseSummaryData}
+            isTableDispaly={isTableDispaly}
+            paymentTypeInfo={paymentData}
+            companyinfo={companyinfo}
+            isPurchaseSummaryLoading={isPurchaseSummaryLoading}
+          ></PurchaseSummaryDataTable>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,9 +3,11 @@ import React, { useMemo } from 'react'
 import DataTable from "react-data-table-component";
 import { downloadGoupPurchaseSummaryPDF } from '../../ReportProperties/PDF/handlePurchaseDatewiseSummary';
 import handlePurchaseDatewiseSummaryExcel from '../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel';
-const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,companyinfo}) => {
+import LoadingSpineer from '../../Common/LoadingSpinner/LoadingSpineer';
+const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,companyinfo,isPurchaseSummaryLoading}) => {
 
   const reportPurchaseTitle="PURCHASE SUMMARY INFORMATION"
+
   const columns = [
     {
       name: "Sl.",
@@ -132,6 +134,7 @@ const PurchaseSummaryDataTable = ({filteredDatas,isTableDispaly,paymentTypeInfo,
 
   return (
     <div>
+      <LoadingSpineer isLoading={isPurchaseSummaryLoading}></LoadingSpineer>
         {isTableDispaly && (
         <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <div className="shadow-lg">

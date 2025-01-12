@@ -50,9 +50,6 @@ const ActiveListDataModal = ({
   const getUserFromLocal = localStorage.getItem("user");
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
   const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
-  // const [columns,setColumns]=useState([])
-
-console.log(selectedData)
 
   const traverse = (items) => {
     const urls = [];
@@ -73,27 +70,26 @@ console.log(selectedData)
   };
 
   const mainData = traverse(getMenuListFromLOcalUser);
-  console.log(mainData);
 
   var columns;
-  const searchItem = mainData?.filter((x) => x.url == pathname);
-  if (searchItem[0]?.menuId == MenuIdCollection.userSeting) {
+  const searchItem = mainData?.filter((x) => x.url === pathname);
+  if (searchItem[0]?.menuId === MenuIdCollection.userSeting) {
     const fieldsToDisplay = ["firstname", "mobileNo", "isactive"];
     columns = generateColumns(listData, fieldsToDisplay);
-  } else if (searchItem[0]?.menuId == MenuIdCollection.rmItemList) {
+  } else if (searchItem[0]?.menuId === MenuIdCollection.rmItemList) {
     const fieldsToDisplay = ["itemName", "categoryId", "itemStatus"];
     columns = generateColumns(listData, fieldsToDisplay);
-  } else if (searchItem[0]?.menuId == MenuIdCollection.fgItemList) {
+  } else if (searchItem[0]?.menuId === MenuIdCollection.fgItemList) {
     const fieldsToDisplay = ["itemName", "sizeId", "itemStatus"];
     columns = generateColumns(listData, fieldsToDisplay);
-  } else if (searchItem[0]?.menuId == MenuIdCollection.cftinfolist) {
+  } else if (searchItem[0]?.menuId === MenuIdCollection.cftinfolist) {
     const fieldsToDisplay = ["openingDate", "cftPerKg", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
-  } else if (searchItem[0]?.menuId == MenuIdCollection.supplierinfolist) {
+  } else if (searchItem[0]?.menuId === MenuIdCollection.supplierinfolist) {
     const fieldsToDisplay = ["supplierName", "mobileNo", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
   }
-   else if (searchItem[0]?.menuId == MenuIdCollection.clientinfolistId) {
+   else if (searchItem[0]?.menuId === MenuIdCollection.clientinfolistId) {
     const fieldsToDisplay = ["clientName", "mobileNo", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
   }
@@ -104,7 +100,7 @@ console.log(selectedData)
 
       if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.userSeting
+        searchItem[0]?.menuId === MenuIdCollection.userSeting
       ) {
         const updatedData = selectedData.map((item) => ({
           ...item,
@@ -112,7 +108,6 @@ console.log(selectedData)
         }));
 
         const response = await updateStatusForUserData(updatedData);
-        console.log(response);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -125,14 +120,13 @@ console.log(selectedData)
         }
       } else if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.rmItemList
+        searchItem[0]?.menuId === MenuIdCollection.rmItemList
       ) {
         const updateRawMeterial = selectedData.map((item) => ({
           ...item,
           itemStatus: false,
         }));
         const response = await updateStatusForRawMeterial(updateRawMeterial);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -145,14 +139,13 @@ console.log(selectedData)
         }
       } else if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.fgItemList
+        searchItem[0]?.menuId === MenuIdCollection.fgItemList
       ) {
         const updateFinishGood = selectedData.map((item) => ({
           ...item,
           itemStatus: false,
         }));
         const response = await updateStatusForFinishGood(updateFinishGood);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -165,14 +158,13 @@ console.log(selectedData)
         }
       } else if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.cftinfolist
+        searchItem[0]?.menuId === MenuIdCollection.cftinfolist
       ) {
         const updateCftInfo = selectedData.map((item) => ({
           ...item,
           isActive: false,
         }));
         const response = await updateCFTInfoStatus(updateCftInfo);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -186,14 +178,13 @@ console.log(selectedData)
       }
       else if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.supplierinfolist
+        searchItem[0]?.menuId === MenuIdCollection.supplierinfolist
       ) {
         const updateSupplierInfo = selectedData.map((item) => ({
           ...item,
           isActive: false,
         }));
         const response = await updateSupplierInfoStatus(updateSupplierInfo);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -207,14 +198,13 @@ console.log(selectedData)
       }
       else if (
         activeDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.clientinfolistId
+        searchItem[0]?.menuId === MenuIdCollection.clientinfolistId
       ) {
         const updateClientInfo = selectedData.map((item) => ({
           ...item,
           isActive: false,
         }));
         const response = await updateClientInfoStatus(updateClientInfo);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -228,14 +218,13 @@ console.log(selectedData)
       }
       if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.userSeting
+        searchItem[0]?.menuId === MenuIdCollection.userSeting
       ) {
         const updatedData = selectedData.map((item) => ({
           ...item,
           isactive: true,
         }));
         const response = await updateStatusForUserData(updatedData);
-        console.log(response);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -248,15 +237,15 @@ console.log(selectedData)
         }
       } else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.rmItemList
+        searchItem[0]?.menuId === MenuIdCollection.rmItemList
       ) {
         const updateRawMeterial = selectedData.map((item) => ({
           ...item,
           itemStatus: true,
         }));
-        console.log(updateRawMeterial);
+
         const response = await updateStatusForRawMeterial(updateRawMeterial);
-        console.log(response);
+   
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -269,7 +258,7 @@ console.log(selectedData)
         }
       } else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.fgItemList
+        searchItem[0]?.menuId === MenuIdCollection.fgItemList
       ) {
         const updateFinishGood = selectedData.map((item) => ({
           ...item,
@@ -288,15 +277,15 @@ console.log(selectedData)
         }
       } else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.cftinfolist
+        searchItem[0]?.menuId === MenuIdCollection.cftinfolist
       ) {
         const updateCFTInfo = selectedData.map((item) => ({
           ...item,
           isActive: true,
         }));
-        console.log(updateCFTInfo);
+
         const response = await updateCFTInfoStatus(updateCFTInfo);
-        console.log(response);
+
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -310,14 +299,13 @@ console.log(selectedData)
       }
       else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.supplierinfolist
+        searchItem[0]?.menuId === MenuIdCollection.supplierinfolist
       ) {
         const updateSupplierInfo = selectedData.map((item) => ({
           ...item,
           isActive: true,
         }));
         const response = await updateSupplierInfoStatus(updateSupplierInfo);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -331,14 +319,13 @@ console.log(selectedData)
       }
       else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId == MenuIdCollection.clientinfolistId
+        searchItem[0]?.menuId === MenuIdCollection.clientinfolistId
       ) {
         const updateClientInfo = selectedData.map((item) => ({
           ...item,
           isActive: true,
         }));
         const response = await updateClientInfoStatus(updateClientInfo);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);

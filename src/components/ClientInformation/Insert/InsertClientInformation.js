@@ -21,9 +21,9 @@ const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [insertClientInfo, {isLoading: isInsertLoading }] =
+  const [insertClientInfo, { isLoading: isInsertLoading }] =
     useInsertClientInformationMutation();
-  const [updateClientInfo, {isLoading: isUpdateLoading }] =
+  const [updateClientInfo, { isLoading: isUpdateLoading }] =
     useUpdateClientDetailsInfoMutation();
   const { data: singleClientInfo, isLoading: isClientInfoLoading } =
     useGetSingleClientInfoQuery(id);
@@ -62,7 +62,7 @@ const InsertClientInformation = () => {
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    console.log(values.detailsData);
+
     try {
       if (id) {
         const response = await updateClientInfo(clientData);
@@ -78,7 +78,6 @@ const InsertClientInformation = () => {
         }
       } else {
         const response = await insertClientInfo(values.detailsData);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           resetForm();
@@ -107,22 +106,11 @@ const InsertClientInformation = () => {
       <div className="">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
-            {/* <FontAwesomeIcon
-              style={{
-                fontSize: "14px",
-                color: "#000",
-                // backgroundColor: "#00B987",
-                backgroundColor: "#2DDC1B",
-                borderRadius: "50px",
-                padding: "3px",
-              }}
-              icon={faPlus}
-            />
-            &nbsp; */}
             <span
               style={{
                 color: "#000",
                 fontWeight: "700",
+                fontSize: "20px",
                 letterSpacing: ".5px",
               }}
             >
@@ -190,28 +178,21 @@ const InsertClientInformation = () => {
                   handleSubmit(e, values, resetForm);
                 }}
               >
-                {/* <div className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex mt-4 mb-4">
-                        </div>
-                      </div> */}
-
                 <FieldArray
                   name="detailsData"
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values, !(isValid && dirty));
                     return (
-                      <div className="row shadow-lg pt-5 pb-3 w-75 d-flex justify-content-center mx-auto rounded-4">
+                      <div className="row shadow-lg pt-5 pb-3 d-flex justify-content-center mx-auto rounded-4">
                         <div className="col-md-12">
                           {details && details.length > 0
                             ? details.map((detail, index) => {
-                                console.log(detail);
                                 return (
                                   <div key={index}>
                                     <div>
-                                      <div className="col-md-12 col-lg-6 col-xl-6">
-                                        <div className="mb-2">
+                                      <div className="row row-cols-1 row-cols-lg-3">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="text">
                                             Client Name
                                           </label>
@@ -262,7 +243,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="text">
                                             Client Short Name
                                           </label>
@@ -314,7 +295,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="email">Email</label>
                                           <Field
                                             type="email"
@@ -363,7 +344,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="mobileNo">
                                             Mobile Number
                                           </label>
@@ -415,7 +396,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                      <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="conatctPerson">
                                             Contact Person
                                           </label>
@@ -467,14 +448,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        
-                                        
-                                        
-                                      </div>
-
-                                      <div className="col-md-12 col-lg-6 col-xl-6">
-                                      
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="conatctPerson">
                                             Bin Number
                                           </label>
@@ -525,7 +499,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="tradeLicenceNo">
                                             TIN Number
                                           </label>
@@ -576,8 +550,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-
-                                        <div className="mb-2">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
                                           <label htmlFor="address">
                                             Address
                                           </label>
@@ -627,8 +600,7 @@ const InsertClientInformation = () => {
                                                 </div>
                                               )}
                                         </div>
-                                       
-                                        <div>
+                                        <div className="col-sm-12 col-md-6 col-lg-3 ">
                                           <label htmlFor="remarks">
                                             Remarks
                                           </label>
@@ -699,7 +671,11 @@ const InsertClientInformation = () => {
                                             width: "20%",
                                           }}
                                           disabled={
-                                            id ? false : !(isValid && dirty) || isUpdateLoading ||isInsertLoading 
+                                            id
+                                              ? false
+                                              : !(isValid && dirty) ||
+                                                isUpdateLoading ||
+                                                isInsertLoading
                                           }
                                         >
                                           {id

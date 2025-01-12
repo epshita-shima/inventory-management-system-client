@@ -25,7 +25,7 @@ const rawMaterialItemDropdown = (options) => {
 const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
   let result = [];
   options?.forEach((option) => {
-    const filteredSize = sizeInfo?.find((x) => x?._id == option.sizeId);
+    const filteredSize = sizeInfo?.find((x) => x?._id === option.sizeId);
     result.push({
       value: option._id,
       label: option.itemName + ` (${filteredSize?.sizeInfo})`,
@@ -38,7 +38,7 @@ const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
 const rawMaterialWithUnitDropdown = (options, unitInfo) => {
   let result = [];
   options?.forEach((option) => {
-    const filteredUnit = unitInfo?.find((x) => x?._id == option.unitId);
+    const filteredUnit = unitInfo?.find((x) => x?._id === option.unitId);
     result.push({
       value: option._id,
       label: option.itemName + ` (${filteredUnit?.unitInfo})`,
@@ -68,7 +68,6 @@ const paymentInfoDropdown = (options) => {
     });
    
   });
-  console.log(result)
   return result;
 
 };
@@ -148,7 +147,6 @@ const paymnetInformationDropdown = (options) => {
 };
 
 const deliveryOrderDropdown = (options) => {
-  console.log(options)
   let result = [];
   options?.forEach((option) => {
     result.push({
@@ -161,7 +159,6 @@ const deliveryOrderDropdown = (options) => {
 };
 
 const productionBatchDropdown = (options) => {
-  console.log(options)
   let result = [];
   options?.forEach((option) => {
     result.push({

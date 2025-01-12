@@ -50,15 +50,15 @@ import ProductionReportTable from "./components/ReportManagement/ProductionRepor
 import RawMaterialConsumptionTable from "./components/ReportManagement/RawMaterialConsumptionSection/RawMaterialConsumptionTable/RawMaterialConsumptionTable";
 import CombineReportTable from "./components/ReportManagement/CombineReport/CombineReportTable";
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
-
+import RequireAuth from "./pages/RequireAuth/RequireAuth";
 function App() {
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
-  const [userIdForChangePassowrd,setUserIdForChangePassowrd]=useState('');
+  const [userIdForChangePassowrd, setUserIdForChangePassowrd] = useState([]);
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
-
+  console.log(userIdForChangePassowrd);
   return (
     <div>
       <div className="app-container">
@@ -79,7 +79,6 @@ function App() {
                 <MainView
                   setChangePassword={setChangePassword}
                   setResetPassword={setResetPassword}
-                  setUserIdForChangePassowrd={setUserIdForChangePassowrd}
                 ></MainView>
               }
             >
@@ -88,7 +87,8 @@ function App() {
                 path="/main-view/change-password"
                 element={
                   <ChangePasswordModal
-                    menuListData={menuListData}
+                  menuListData={menuListData}
+                    userIdForChangePassowrd={userIdForChangePassowrd}
                     singleUserData={singleUserData}
                     setSingleUserData={setSingleUserData}
                     resetPassword={resetPassword}
@@ -99,217 +99,373 @@ function App() {
               <Route
                 path="/main-view/create-user"
                 element={
-                  // <RequireAuth>
-                  <UserCreation></UserCreation>
-                  //  </RequireAuth>
+                  <RequireAuth>
+                    <UserCreation></UserCreation>
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="/main-view/user-setting"
                 element={
-                  // <RequireAuth>
-                  <UserDataList
-                    setChangePassword={setChangePassword}
-                    setResetPassword={setResetPassword}
-                    setUserIdForChangePassowrd={setUserIdForChangePassowrd}
-                    resetPassword={resetPassword}
-                    changePassword={changePassword}
-                  ></UserDataList>
-                  //  </RequireAuth>
+                  <RequireAuth>
+                    <UserDataList
+                      setChangePassword={setChangePassword}
+                      setResetPassword={setResetPassword}
+                      setUserIdForChangePassowrd={setUserIdForChangePassowrd}
+                      resetPassword={resetPassword}
+                      changePassword={changePassword}
+                    ></UserDataList>
+                  </RequireAuth>
                 }
               ></Route>
 
               <Route
                 path="user-update/:id"
-                element={<SingleUserDisplay></SingleUserDisplay>}
+                element={
+                  <RequireAuth>
+                    <SingleUserDisplay />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/create-raw-material-item"
-                element={<InsertRmItemInfo></InsertRmItemInfo>}
+                element={
+                  <RequireAuth>
+                    <InsertRmItemInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/raw-material-item-list"
-                element={<RMItemInfoTableData></RMItemInfoTableData>}
+                element={
+                  <RequireAuth>
+                    <RMItemInfoTableData />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-items-raw-material/:id"
-                element={<UpdateRmItemInfo></UpdateRmItemInfo>}
+                element={
+                  <RequireAuth>
+                    <UpdateRmItemInfo />
+                  </RequireAuth>
+                }
               ></Route>
               {/* <Route path="/main-view/create-raw-material-item" element={<UpdateRmItemInfo></UpdateRmItemInfo>}></Route> */}
               <Route
                 path="/main-view/finish-goods-item-list"
-                element={<FGItemInfoTableData></FGItemInfoTableData>}
+                element={
+                  <RequireAuth>
+                    <FGItemInfoTableData />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/craete-finish-goods-item"
-                element={<InsertFgItemInfo></InsertFgItemInfo>}
+                element={
+                  <RequireAuth>
+                    <InsertFgItemInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-finish-goods-items/:id"
-                element={<UpdateFgItemInfo></UpdateFgItemInfo>}
+                element={
+                  <RequireAuth>
+                    <UpdateFgItemInfo />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="/main-view/create-cft-infos"
-                element={<InsertCFTInfo></InsertCFTInfo>}
+                element={
+                  <RequireAuth>
+                    <InsertCFTInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/cft-info-list"
-                element={<CFTInfosTableData></CFTInfosTableData>}
+                element={
+                  <RequireAuth>
+                    <CFTInfosTableData />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-cft-info/:id"
-                element={<UpdateCFTInfo></UpdateCFTInfo>}
+                element={
+                  <RequireAuth>
+                    <UpdateCFTInfo />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="/main-view/create-supplier"
                 element={
-                  <InsertSupplierInformation></InsertSupplierInformation>
+                  <RequireAuth>
+                    <InsertSupplierInformation />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="/main-view/supplier-list"
-                element={<SupplierInfoTableData></SupplierInfoTableData>}
+                element={
+                  <RequireAuth>
+                    <SupplierInfoTableData />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-supplier-info/:id"
                 element={
-                  <InsertSupplierInformation></InsertSupplierInformation>
+                  <RequireAuth>
+                    <InsertSupplierInformation />
+                  </RequireAuth>
                 }
               ></Route>
 
               <Route
                 path="/main-view/client-list"
-                element={<ClientInfoTableData></ClientInfoTableData>}
+                element={
+                  <RequireAuth>
+                    <ClientInfoTableData />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/create-client"
-                element={<InsertClientInformation></InsertClientInformation>}
+                element={
+                  <RequireAuth>
+                    <InsertClientInformation />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-client-info/:id"
-                element={<InsertClientInformation></InsertClientInformation>}
+                element={
+                  <RequireAuth>
+                    <InsertClientInformation />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="/main-view/po-list"
-                element={<PurchaseOrderListTable></PurchaseOrderListTable>}
+                element={
+                  <RequireAuth>
+                    <PurchaseOrderListTable />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/create-po"
-                element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}
+                element={
+                  <RequireAuth>
+                    <CommonPurchaseOrderInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-purchaseinfo/:id"
-                element={<CommonPurchaseOrderInfo></CommonPurchaseOrderInfo>}
+                element={
+                  <RequireAuth>
+                    <CommonPurchaseOrderInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/po-approval"
-                element={<PurchaseOrderApproveForm></PurchaseOrderApproveForm>}
+                element={
+                  <RequireAuth>
+                    <PurchaseOrderApproveForm />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="/main-view/grn-list"
-                element={<GRNInfoTable></GRNInfoTable>}
+                element={
+                  <RequireAuth>
+                    <GRNInfoTable />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="/main-view/create-grn"
-                element={<InsertGRNInfo></InsertGRNInfo>}
+                element={
+                  <RequireAuth>
+                    <InsertGRNInfo />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-grn-info/:id"
-                element={<InsertGRNInfo></InsertGRNInfo>}
+                element={
+                  <RequireAuth>
+                    <InsertGRNInfo />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="create-production"
-                element={<ProductionCommonPart></ProductionCommonPart>}
+                element={
+                  <RequireAuth>
+                    <ProductionCommonPart />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="production-list"
-                element={<ProductionListTable></ProductionListTable>}
+                element={
+                  <RequireAuth>
+                    <ProductionListTable />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-production-info/:id"
-                element={<ProductionCommonPart></ProductionCommonPart>}
+                element={
+                  <RequireAuth>
+                    <ProductionCommonPart />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="create-payment-mode"
-                element={<InsertPaymentOption></InsertPaymentOption>}
+                element={
+                  <RequireAuth>
+                    <InsertPaymentOption />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="payment-list"
-                element={<PaymentModeDataList></PaymentModeDataList>}
+                element={
+                  <RequireAuth>
+                    <PaymentModeDataList />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="create-invoice"
                 element={
-                  <SalesManagementCommonPart></SalesManagementCommonPart>
+                  <RequireAuth>
+                    <SalesManagementCommonPart />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="invoice-list"
-                element={<InvoiceInformationList></InvoiceInformationList>}
+                element={
+                  <RequireAuth>
+                    <InvoiceInformationList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-invoice/:id"
                 element={
-                  <SalesManagementCommonPart></SalesManagementCommonPart>
+                  <RequireAuth>
+                    <SalesManagementCommonPart />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="special-delivery-approve"
-                element={<SpecialDeliveryTableList></SpecialDeliveryTableList>}
+                element={
+                  <RequireAuth>
+                    <SpecialDeliveryTableList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="create-payment-received"
-                element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
+                element={
+                  <RequireAuth>
+                    <PaymentMethodSingleEntry />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="payment-received-list"
-                element={<PaymentReceiveDataTable></PaymentReceiveDataTable>}
+                element={
+                  <RequireAuth>
+                    <PaymentReceiveDataTable />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="update-payment-received/:id"
-                element={<PaymentMethodSingleEntry></PaymentMethodSingleEntry>}
+                element={
+                  <RequireAuth>
+                    <PaymentMethodSingleEntry />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="create-do"
                 element={
-                  <DelivaryOrderCommonInsertPart></DelivaryOrderCommonInsertPart>
+                  <RequireAuth>
+                    <DelivaryOrderCommonInsertPart />
+                  </RequireAuth>
                 }
               ></Route>
 
               <Route
                 path="do-list"
-                element={<DeliveryOrderList></DeliveryOrderList>}
+                element={
+                  <RequireAuth>
+                    <DeliveryOrderList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="approve-list"
-                element={<DeliveryOrderApproveList></DeliveryOrderApproveList>}
+                element={
+                  <RequireAuth>
+                    <DeliveryOrderApproveList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="list-page"
-                element={<FinishGoodsDeliveryList></FinishGoodsDeliveryList>}
+                element={
+                  <RequireAuth>
+                    <FinishGoodsDeliveryList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="finish-goods-delivery-order-info/:id"
                 element={
-                  <FinishGoodsDeliveryCommonPart></FinishGoodsDeliveryCommonPart>
+                  <RequireAuth>
+                    <FinishGoodsDeliveryCommonPart />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="create-return-information"
-                element={<DeliverReturnCommonPart></DeliverReturnCommonPart>}
+                element={
+                  <RequireAuth>
+                    <DeliverReturnCommonPart />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="list-information"
-                element={<DeliveredReturnList></DeliveredReturnList>}
+                element={
+                  <RequireAuth>
+                    <DeliveredReturnList />
+                  </RequireAuth>
+                }
               ></Route>
 
               {/* <Route
@@ -327,44 +483,70 @@ function App() {
               ></Route> */}
               <Route
                 path="create-menu"
-                element={<CreateMenu></CreateMenu>}
+                element={
+                  <RequireAuth>
+                    <CreateMenu />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="update-menu/:id"
-                element={<UpdateMenu></UpdateMenu>}
+                element={
+                  <RequireAuth>
+                    <UpdateMenu />
+                  </RequireAuth>
+                }
               ></Route>
 
               <Route
                 path="menu-list"
-                element={<MenuDataList></MenuDataList>}
+                element={
+                  <RequireAuth>
+                    <MenuDataList />
+                  </RequireAuth>
+                }
               ></Route>
               <Route path="*" element={<NotFound></NotFound>}></Route>
 
               {/* sales report */}
               <Route
                 path="sales-report"
-                element={<OrderDetailsReport></OrderDetailsReport>}
+                element={
+                  <RequireAuth>
+                    <OrderDetailsReport />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="finish-goods"
-                element={<ProductionReportTable></ProductionReportTable>}
+                element={
+                  <RequireAuth>
+                    <ProductionReportTable />
+                  </RequireAuth>
+                }
               ></Route>
               <Route
                 path="raw-material-consumption"
                 element={
-                  <RawMaterialConsumptionTable></RawMaterialConsumptionTable>
+                  <RequireAuth>
+                    <RawMaterialConsumptionTable />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="combine-report"
                 element={
-                 <CombineReportTable></CombineReportTable>
+                  <RequireAuth>
+                    <CombineReportTable />
+                  </RequireAuth>
                 }
               ></Route>
               <Route
                 path="purchase-report"
                 element={
-                 <PurchaseReportTable></PurchaseReportTable>
+                  <RequireAuth>
+                    <PurchaseReportTable />
+                  </RequireAuth>
                 }
               ></Route>
             </Route>

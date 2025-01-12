@@ -32,7 +32,6 @@ const DatewiseProductionSummary = ({
   const grandTotalProductionQuantity = filteredDatas?.reduce((totalQuantity, item) => 
     totalQuantity + item.totalProductionQty,0);
 
-  console.log(grandTotalProductionQuantity)
 
   const columns = [
     {
@@ -53,11 +52,11 @@ const DatewiseProductionSummary = ({
       name: "Item Name",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.productionItemName == x._id
+          (x) => row?.productionItemName === x._id
         );
 
         const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName?.sizeId
+          (size) => size._id === itemName?.sizeId
         );
         return itemName
           ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
@@ -72,10 +71,10 @@ const DatewiseProductionSummary = ({
       name: "Unit",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.productionItemName == x._id
+          (x) => row?.productionItemName === x._id
         );
         const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
+          (size) => size._id === itemName?.unitId
         );
         return itemName ? ` (${itemUnit?.unitInfo})` : "N/A";
       },

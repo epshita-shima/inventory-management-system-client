@@ -53,7 +53,6 @@ const CommonParameter = ({
               selected={fromDate}
               required
               onChange={(fromDate) => {
-                console.log(fromDate);
                 if (fromDate > new Date()) {
                   swal({
                     title: "Select Valid Date",
@@ -81,7 +80,6 @@ const CommonParameter = ({
               selected={toDate}
               required
               onChange={(toDate) => {
-                console.log(toDate);
 
                 setFilters((prevFilters) => ({
                   ...prevFilters,
@@ -233,8 +231,7 @@ const CommonParameter = ({
                   },
                 })}
                 onChange={(e) => {
-                  // console.log(e);
-                  // setPiNumber(e.value);
+                  
                   setFilters((prevFilters) => ({
                     ...prevFilters,
                     piId: e.value,

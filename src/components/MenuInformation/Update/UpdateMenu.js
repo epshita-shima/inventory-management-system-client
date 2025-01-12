@@ -31,7 +31,7 @@ const UpdateMenu = () => {
     const parentMenuRecursive = (options, parentLabel) => {
       let result = [];
       options?.forEach((option) => {
-        if (option.isParent == true) {
+        if (option.isParent === true) {
           result.push({
             value: option._id,
             label: option.label,
@@ -57,17 +57,14 @@ const UpdateMenu = () => {
   useEffect(() => {
     const updatedSingleData = (data) => {
       const matchedData = data?.items?.find((items) => {
-        if (items._id == id) {
-          console.log("checked");
+        if (items._id === id) {
         } else {
           if (items.items.length > 0) {
-            const matchingChild = items.items.find((x) => x._id == id);
-            console.log(matchingChild);
+            const matchingChild = items.items.find((x) => x._id === id);
             return matchingChild;
           }
         }
       });
-      console.log(matchedData);
       if (matchedData?.items?.length > 0) {
         return matchedData;
       }
@@ -75,7 +72,6 @@ const UpdateMenu = () => {
     };
 
     const tableUpdatedData = updatedSingleData(singleMenu);
-    console.log(JSON.stringify(tableUpdatedData));
     setSingleMenuData(tableUpdatedData);
   }, [id, singleMenu]);
 
@@ -88,7 +84,6 @@ const UpdateMenu = () => {
       const itemExists = prevMasterData?.items?.some(
         (item) => item._id === singleMenuData._id
       );
-      console.log(itemExists);
       if (!itemExists) {
         return singleMenuData;
       } else {
@@ -124,9 +119,7 @@ const UpdateMenu = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isUpdateAsChangeParent) {
-      console.log(masterMenuData);
       const response = await updateSingleMenus({ masterMenuData, singleMenu });
-      console.log(response);
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", {
           icon: "success",
@@ -136,7 +129,7 @@ const UpdateMenu = () => {
         swal("Error", "An error occurred while creating the data", "error");
       }
     } else {
-console.log(masterMenuData)
+
       const response = await updateSingleMenu(masterMenuData);
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", {
@@ -215,7 +208,6 @@ console.log(masterMenuData)
                     },
                   })}
                   onChange={(e) => {
-                    console.log(e);
                     if (e.value === singleMenu._id) {
                       setIsUpdateAsChangeParent(false);
                     } else {
@@ -224,22 +216,16 @@ console.log(masterMenuData)
                     const updatedItems = singleMenuData.items.map((item) => {
                       return {
                         ...item,
-                        trackId: e.value, // replace this with the new trackId value
+                        trackId: e.value, 
                       };
                     });
                     setSingleMenuData((prev) => ({
-                      ...prev, // Copy previous state
-                      _id: e.value, // Update _id property with new value
+                      ...prev, 
+                      _id: e.value, 
                       label: e.label,
                       items: updatedItems,
                     }));
-                    console.log(e.value);
-                    // setChangingParentId(e.value);
-
-                    // setSingleMenuData((prev) => ({
-                    //   ...prev, // Copy previous state
-
-                    // }));
+                
                   }}
                 ></Select>
               </div>
@@ -275,7 +261,6 @@ console.log(masterMenuData)
                     },
                   })}
                   onChange={(e) => {
-                    console.log(e);
                     if (e.value === "child") {
                       setSingleMenuData((prev) => ({
                         ...prev, // Copy previous state
@@ -417,7 +402,6 @@ console.log(masterMenuData)
                                             onClick={() => {
                                               handleToggle();
                                               setSingleMenuData((prevState) => {
-                                                console.log(prevState);
                                                 const updatedItems = [
                                                   ...prevState.items,
                                                 ]; // Create a new array

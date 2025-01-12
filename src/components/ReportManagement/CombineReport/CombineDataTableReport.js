@@ -22,9 +22,10 @@ const CombineDataTableReport = ({
   piInformation,
   clientInformation,
   supplierInformation,
-  filters
+  filters,
+  dropdownMenuStyles
 }) => {
-  console.log(combineReportData?.groupedProductionResult)
+  
   const reportSalesTitle = "DELIVERY ORDER INFORMATION";
   const reportReturnTitle = "RETURN INFORMATION";
   const reportOrderTitle = "ORDER INFORMATION";
@@ -42,6 +43,8 @@ const CombineDataTableReport = ({
   const [triggerSalesDetailsReport] =
   useLazyGetSalesDetailsReportQuery();
 
+
+  
   const salesColumns = getSalesColumns(
     finishGoodsInfo,
     itemSizeInfo,
@@ -52,7 +55,8 @@ const CombineDataTableReport = ({
     companyinfo,
     piInformation,
     reportSalesTitle,
-    clientInformation
+    clientInformation,
+    dropdownMenuStyles
   );
 
   const purchaseColumns = getPurchaseColumns(

@@ -91,7 +91,6 @@ const PreviousPaymentDetailsModal = ({
 
     // Set the state with the accumulated data
     setBankName(accumulatedBankData);
-    console.log(accumulatedItemNameData)
     setItemNameData(accumulatedItemNameData);
     setItemSize(accumulatedItemSizeData);
     setPaymentReceivePreviousData(detail);
@@ -630,9 +629,6 @@ const PreviousPaymentDetailsModal = ({
                                       calCulateTotalAmount
                                     );
                                   } else {
-                                    console.log(
-                                      "Invalid values for amount or unit price"
-                                    );
 
                                     setFieldValue(
                                       `detailsData.${index}.quantity`,
@@ -768,7 +764,7 @@ const PreviousPaymentDetailsModal = ({
                                                       item._id ===
                                                       detailItem._id
                                                   );
-                                                console.log(existingIndex);
+                                            
                                                 if (existingIndex > -1) {
                                                   const updatedData = [
                                                     ...prevData,
@@ -779,7 +775,7 @@ const PreviousPaymentDetailsModal = ({
                                                     isParent: true,
                                                     parentId: payment._id,
                                                   };
-                                                  console.log(updatedData);
+                                                 
                                                   return updatedData;
                                                 } else {
                                                   return [

@@ -83,7 +83,7 @@ const InsertFgItemInfo = () => {
   };
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    console.log(values.detailsData);
+
     resetForm();
     try {
       const response = await insertIteminfo(values.detailsData);
@@ -259,7 +259,6 @@ const InsertFgItemInfo = () => {
                           marginLeft: "5px",
                         }}
                         onClick={() => {
-                          console.log("ArrayHelperRef ");
                           ArrayHelperRef.current.push({
                             itemName: "",
                             sizeId: "",
@@ -347,7 +346,6 @@ const InsertFgItemInfo = () => {
                                   <tbody>
                                     {details && details.length > 0
                                       ? details.map((detail, index) => {
-                                          console.log(detail.sizeId);
                                           return (
                                             <tr key={index}>
                                               <td className="text-center align-middle">

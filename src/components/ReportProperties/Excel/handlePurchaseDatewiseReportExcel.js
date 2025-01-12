@@ -9,7 +9,7 @@ const handlePurchaseDatewiseReportExcel = (
   companyinfo,
   reportPurchaseTitle
 ) => {
-  console.log(reportPurchaseTitle)
+
   const fileName = reportPurchaseTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
@@ -163,7 +163,7 @@ const handlePurchaseDatewiseReportExcel = (
     return totalAmt +detailsAmt
   },0)
   
-  console.log(totalQuantity)
+
 
   const datas = {
     receiveDate: "",

@@ -11,7 +11,7 @@ const handleOrderDetailsExcel = (
   companyinfo,
   reportOrderTitle
 ) => {
-  console.log(reportOrderTitle)
+
   const fileName = reportOrderTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
@@ -168,7 +168,6 @@ const handleOrderDetailsExcel = (
     return totalQuantity +detailsAmt
   },0)
   
-  console.log(totalQuantity)
 
   const datas = {
     piDate: "",

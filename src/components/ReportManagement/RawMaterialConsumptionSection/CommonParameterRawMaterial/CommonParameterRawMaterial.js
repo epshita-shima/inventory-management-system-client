@@ -48,7 +48,6 @@ const CommonParameterRawMaterial = ({
               selected={fromDate}
               required
               onChange={(fromDate) => {
-                console.log(fromDate);
                 if (fromDate > new Date()) {
                   swal({
                     title: "Select Valid Date",
@@ -76,7 +75,6 @@ const CommonParameterRawMaterial = ({
               selected={toDate}
               required
               onChange={(toDate) => {
-                console.log(toDate);
 
                 setFilters((prevFilters) => ({
                   ...prevFilters,

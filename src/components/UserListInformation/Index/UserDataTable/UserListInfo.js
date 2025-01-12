@@ -48,8 +48,6 @@ const UserListInfo = ({
     useDeleteUserMutation();
   const navigate = useNavigate();
 
-  console.log(user);
-
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
   const [extractedAllData, setExtractedAllData] = useState([]);
@@ -124,7 +122,6 @@ const UserListInfo = ({
                   aria-label={`Checkbox for data item ${row.id}`}
                   
                   onChange={(e) => {
-                    console.log(row);
                     handleCheckboxClick(row, setSelectedData);
                   }}
                 />
@@ -223,7 +220,6 @@ const UserListInfo = ({
               data-target="#exampleModalLong"
               icon={faEye}
               onClick={() => {
-                console.log(user);
                 handleActiveStatus(user);
               }}
             ></FontAwesomeIcon>
@@ -243,7 +239,6 @@ const UserListInfo = ({
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(user);
                 window.open(`user-update/${user?._id}`);
                 // handleActiveStatus(activeUser?._id);
               }}
@@ -271,10 +266,12 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-                if (menuListData._id === user._id) {
+                console.log(user._id)
+                if ((menuListData._id === user._id) || (menuListData._id==='6628cc5702c618aa74323521')) {
                   setResetPassword(true);
                   setChangePassword(false);
-                  const url = `/main-view/change-password?reset=true&change=false`;
+                  setUserIdForChangePassowrd(user);
+                  const url = `/main-view/change-password?reset=true&change=false&userId=${user._id}`;
                   window.open(url, "_blank");
                 } else {
                   setUserIdForChangePassowrd(user._id);
@@ -369,7 +366,6 @@ const UserListInfo = ({
               <FontAwesomeIcon
                 icon={faRefresh}
                 onClick={() => {
-                  console.log("clik");
                   refetch();
                 }}
               ></FontAwesomeIcon>{" "}

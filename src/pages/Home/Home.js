@@ -12,11 +12,11 @@ import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
 const Home = ({ singleUserData, setChangePassword, setResetPassword}) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
 const {data:menus}=useGetAllMenuItemsQuery(undefined)
-console.log(menus)
+
   const getMenulistData = localStorage?.getItem("user");
 
   const menuListData = JSON.parse(getMenulistData);
-  console.log(menuListData)
+
   if (menuListData !== null) {
     var menuListSingleData = menuListData?.menulist;
   }

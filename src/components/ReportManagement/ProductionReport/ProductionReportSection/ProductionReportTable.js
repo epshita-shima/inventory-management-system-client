@@ -6,24 +6,23 @@ import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 // import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
 
 const ProductionReportTable = () => {
-  const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+
+  const { data: user,isLoading: isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
-  console.log(permission);
   useEffect(() => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
         const currentUser = userData?.find((user) => user._id === userId);
-        console.log(currentUser);
+   
         if (currentUser) {
           currentUser?.menulist?.forEach((menu) => {
             const userListSubMenu = menu?.items?.find(
@@ -57,6 +56,7 @@ const ProductionReportTable = () => {
       navigate("/");
     }
   }, [user, navigate]);
+  
   if (isUserloading) {
     return (
       <div className="d-flex justify-content-center align-items-center">

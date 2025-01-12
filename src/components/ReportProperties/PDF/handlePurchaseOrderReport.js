@@ -252,7 +252,6 @@ const downloadPOPDF = async (
 
     if (matchesPaymentType.paymentType !== "cash") {
       let bankingInfoHeaderY = textY + 105;
-      console.log(textY, pageHeight, bankingInfoHeaderY);
       if (bankingInfoHeaderY > pageHeight - 50) {
         doc.addPage();
 
@@ -453,7 +452,6 @@ const addFooterForPO = (doc, companyinfo, reportTitle) => {
     // const contentStartY = headerHeight + spaceBetween;
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-    console.log(pageHeight);
     const headerY = 10;
     const footerY = pageHeight - 10;
 

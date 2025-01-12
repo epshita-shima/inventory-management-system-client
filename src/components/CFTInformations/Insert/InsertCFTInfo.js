@@ -71,14 +71,10 @@ const InsertCFTInfo = () => {
 
     try {
       const matchData = allCFTInfoData.find((x) => x.isActive == true);
-      console.log(matchData);
       if (matchData) {
         swal("Not Possible!", "Plase Close the Active CFT", "error");
       } else if (matchData == undefined) {
-        console.log("test error");
         const response = await insertCFTInfos(payload);
-        console.log(response);
-        console.log(response.data.status);
 
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
@@ -247,7 +243,6 @@ const InsertCFTInfo = () => {
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(details);
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap py-2"

@@ -324,7 +324,7 @@ const UpdatePaymentMethodInformation = ({
                           onChange={(e) => {
                             const calCulateTotalAmount =
                               parseFloat(e.target.value) / detail.unitPrice;
-                            console.log(calCulateTotalAmount);
+                         
                             setUpdatePaymentReceiveInformation((prev) => {
                               const temp_details = [...prev.detailsData];
                               const newDetail = { ...temp_details[index] };

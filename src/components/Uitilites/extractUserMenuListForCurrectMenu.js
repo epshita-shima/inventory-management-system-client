@@ -6,11 +6,10 @@ export const extractUserMenuListForCurrectMenu = (user, menuLabel) => {
 
   const userSingleId = JSON.parse(getUserId);
   const userIdFromSession = userSingleId?._id;
-  console.log("userIdFromSession", userIdFromSession);
   // Filter the user data to find the current user
   const permidionData = user?.filter((user) => user._id === userIdFromSession);
 
-  console.log("permidionData", permidionData);
+
   let userList = null;
 
   // Find the user object matching the provided userId

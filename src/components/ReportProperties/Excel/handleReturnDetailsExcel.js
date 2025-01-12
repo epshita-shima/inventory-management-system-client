@@ -26,7 +26,6 @@ const handleReturnDetailsExcel = (
     "totalAmount",
   ];
 
-  console.log(columnsToInclude);
   let dynamicColumns = [
     { header: "Return Date", key: "returnDate", width: 15 },
     { header: "Transfer From", key: "transferFrom", width: 15 },
@@ -132,7 +131,6 @@ const handleReturnDetailsExcel = (
       ?.filter((company) => company._id === item.transferToCompanyId)
       .map((filteredItem) => filteredItem.companyName)
       .join(", ");
-      console.log(piInformation)
     const findInvoice = piInformation.find((piData) => piData._id === item.piId);
     const unitPrice = findInvoice?.detailsData.find(
       (unit) => unit.itemId === item?.detailsData?.itemId

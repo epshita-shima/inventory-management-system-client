@@ -2,7 +2,6 @@ import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
 const handleSalesReturnSummaryExcel = (data, companyinfo, reportTitle) => {
-  console.log(data);
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
@@ -98,7 +97,6 @@ const handleSalesReturnSummaryExcel = (data, companyinfo, reportTitle) => {
   });
 
   data.forEach((item) => {
-    console.log(item)
     const avgUnitPrice = item.totalReturnAmount / item.totalReturnQty;
     const values = {
       date: new Date(item.returnDate).toLocaleDateString("en-CA"),

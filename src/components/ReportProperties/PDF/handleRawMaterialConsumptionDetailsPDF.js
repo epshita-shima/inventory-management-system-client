@@ -40,7 +40,7 @@ const downloadRawMaterailConsumptionDetailsPDF = async (
         const cellContent = data.cell.raw;
         // Extract text content from HTML string
         const textContent = cellContent?.innerText || cellContent?.textContent;
-        console.log(textContent);
+
         if (rowIndex === totalRows - 1) {
           data.cell.styles.fontStyle = "bold";
           data.cell.styles.fillColor = [138, 138, 138]; // Gray line color

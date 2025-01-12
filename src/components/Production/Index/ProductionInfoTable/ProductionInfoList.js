@@ -176,10 +176,10 @@ const ProductionInfoList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                  filteredData?.detailsData?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  filteredData?.detailsData?.length == 0
+                  filteredData?.detailsData?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -259,7 +259,6 @@ const ProductionInfoList = ({ permission }) => {
                     const response = await deleteProductionInfo(
                       filteredData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -346,7 +345,7 @@ const ProductionInfoList = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      console.log(filteredData, companyinfo);
+                      
                       if (companyinfo?.length !== 0 || undefined) {
                         downloadProductionPDF(
                           { companyinfo },
@@ -426,7 +425,6 @@ const ProductionInfoList = ({ permission }) => {
                 selected={fromDate}
                 required
                 onChange={(fromDate) => {
-                  console.log(fromDate);
                   if (fromDate > new Date()) {
                     swal({
                       title: "Select Valid Date",

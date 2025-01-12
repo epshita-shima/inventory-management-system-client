@@ -44,7 +44,6 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
 
     try {
       const response = await insertPaymentInfo(values.detailsData);
-      console.log(response?.error?.data?.message);
       if (response?.data?.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();

@@ -78,7 +78,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
   const [formValues, setFormValues] = useState(
     getInitialFormValues(customerID, piNumber, makebyUser, new Date())
   );
-  console.log(filteredDatas);
+
 
   useEffect(() => {
     setUserWaysListData(filteredDatas);
@@ -95,7 +95,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
       detailsData: detail,
     }))
   );
-  console.log(filteredDatas?.length);
+
   const handleCheckboxClick = (dataItem) => {
     const updatedDataItem = {
       ...dataItem,
@@ -296,7 +296,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 const paymentType = paymentInfo?.find(
                   (x) => x._id === row?.paymentId
                 );
-                console.log(paymentType.paymentMode);
+               
                 if (paymentType.paymentMode == "Cash") {
                   handlePaymentMethodChange(e, index);
                   handleCheckboxClick(row);
@@ -322,7 +322,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 const paymentType = paymentInfo?.find(
                   (x) => x._id === row?.paymentId
                 );
-                console.log(paymentType.paymentMode);
+            
                 if (paymentType.paymentMode == "Cash") {
                   handlePaymentMethodChange(e, index);
                   handleCheckboxClick(row);
@@ -369,7 +369,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
               const filterPIInfo = filteredDatas.find(
                 (piinfo) => piinfo._id === row._id
               );
-              console.log(filterPIInfo);
+     
               downloadInvoicePDF(
                 filterPIInfo,
                 finishGoodsData,
@@ -451,7 +451,6 @@ const SpecialDeliveryTableList = ({ permission }) => {
                         class="dropdown-item"
                         href="#"
                         onClick={() => {
-                          console.log(companyinfo);
                           if (companyinfo?.length !== 0 || undefined) {
                             // downloadProductionPDF(
                             //   { companyinfo },

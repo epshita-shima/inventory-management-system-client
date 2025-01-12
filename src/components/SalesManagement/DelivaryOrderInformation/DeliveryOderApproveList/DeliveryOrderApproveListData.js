@@ -61,7 +61,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
       approveBy: getMakebyUser(),
       approveDate: new Date(),
     };
-    console.log(updatedObject);
+
     const response = await insertApproveStatus(updatedObject);
     if (response.data.status === 200) {
       swal("Done", "Data Update status Successfully", "success");
@@ -92,7 +92,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
       trigger(filters)
         .unwrap()
         .then((response) => {
-          console.log("Data fetched:", response);
+         
         })
         .catch((err) => {
           console.error("Error fetching data:", err);

@@ -2,7 +2,7 @@ import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
 const handleOrderSummaryExcel = (data,paymentTypeInfo, companyinfo, reportTitle) => {
-  console.log(data);
+
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
@@ -100,7 +100,6 @@ const handleOrderSummaryExcel = (data,paymentTypeInfo, companyinfo, reportTitle)
   });
 
   data.forEach((item) => {
-    console.log(item)
     const paymentType=paymentTypeInfo.find((x)=>x._id==item.paymentId)
     const avgUnitPrice = item.grandAmount / item.grandQuantity;
     const values = {

@@ -82,7 +82,7 @@ const RawMaterialDetailsView = ({
     processData();
   }, [filteredDatas]);
 
-  console.log(groupedData);
+
   const columns = [
     {
       name: "Sl.",
@@ -111,7 +111,7 @@ const RawMaterialDetailsView = ({
       name: "Item Name",
       selector: (row) => {
         const itemName = rawMaterialDataInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
+          (x) => row?.detailsData.itemId === x._id
         );
 
         return itemName ? itemName?.itemName : "N/A";
@@ -125,10 +125,10 @@ const RawMaterialDetailsView = ({
       name: "Unit",
       selector: (row) => {
         const itemName = rawMaterialDataInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
+          (x) => row?.detailsData.itemId === x._id
         );
         const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
+          (size) => size._id === itemName?.unitId
         );
         return itemName ? ` (${itemUnit?.unitInfo})` : "N/A";
       },
@@ -167,9 +167,8 @@ const RawMaterialDetailsView = ({
               }}
               onClick={() => {
                 const singleReturnData = filteredDatas.find(
-                  (returnItem) => returnItem._id == row._id
+                  (returnItem) => returnItem._id === row._id
                 );
-                console.log(singleReturnData);
                 downloadProductionPDFPERBatch(
                   singleReturnData,
                   finishGoodsItemInfo,
@@ -258,12 +257,7 @@ const RawMaterialDetailsView = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        console.log(  transformedProductionData,
-                          filteredDatas,
-                          rawMaterialDataInfo,
-                          itemUnitInformation,
-                          companyinfo,
-                          reportTitle)
+                       
                         handleRawMaterialConsumptionDetails(
                           transformedProductionData,
                           filteredDatas,

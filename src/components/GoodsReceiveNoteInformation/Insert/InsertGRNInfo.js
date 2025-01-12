@@ -90,7 +90,7 @@ const InsertGRNInfo = () => {
       purchaseOrderInfo.length > 0
     ) {
       setPOGrandTotalQuantity(purchaseOrderInfo[0]?.grandTotalQuantity);
-      console.log(purchaseOrderInfo[0]?.grandTotalQuantity);
+
     } else {
       console.log(
         "purchaseOrderInfo is not defined or is not an array or is empty"
@@ -105,7 +105,6 @@ const InsertGRNInfo = () => {
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
-        console.log(max,current)
         if (current.type === "grn") {
           return max && current.serialNo > max.serialNo
             ? current
@@ -132,7 +131,7 @@ const InsertGRNInfo = () => {
 
   const handleSelectSupplier = (e, setFieldValue) => {
     const matchPoNo = purchaseOrderInfo?.filter((item) => item.poNo === e.poNo);
-    console.log(matchPoNo);
+
     if (matchPoNo[0]?.approveStatus === false || matchPoNo.length === 0) {
       swal({
         title: "Sorry!",
@@ -196,7 +195,7 @@ const InsertGRNInfo = () => {
     if (id) {
       try {
         const response = await updateGRNInfo(grnSingleData);
-        console.log(response);
+   
         if (response.data.status === 200) {
           swal("Done", "Data Update Successfully", "success");
           navigate("/main-view/grn-list");
@@ -293,7 +292,7 @@ const InsertGRNInfo = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values);
+                 
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
                         <div>

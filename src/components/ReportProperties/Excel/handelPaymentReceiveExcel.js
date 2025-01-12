@@ -129,10 +129,8 @@ const handelPaymentReceiveExcel = (
   }
 
   data.forEach((item) => {
-    console.log(item);
     const customerName = customerInfo?.find((x) => x._id === item?.clientId);
     const piCurrency = invoiceData?.find((x) => x._id === item?.piNumber);
-    console.log('piCurrency',piCurrency)
     item.detailsData.map((singleItem) => {
       const itemNames = finishGoods?.find(
         (rawItem) => rawItem._id === singleItem.itemId

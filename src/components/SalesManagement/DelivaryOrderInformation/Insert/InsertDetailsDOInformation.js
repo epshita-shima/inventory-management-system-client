@@ -16,7 +16,7 @@ const InsertDetailsDOInformation = ({
   setIsDOSave,
   values,
 }) => {
-  console.log(details);
+
   useEffect(() => {
     details[0]?.detailsData.forEach((detail, index) => {
       const filterPIData = invoiceInformation?.filter(
@@ -45,7 +45,7 @@ const InsertDetailsDOInformation = ({
       }
     });
   }, [details, invoiceInformation, setFieldValue, setIsDOSave]);
-  console.log(values);
+
   return (
     <div className="shadow-lg  doinsertdata-main-view">
       <div class="col-12 col-md-12 col-lg-12 py-2">
@@ -311,8 +311,6 @@ const InsertDetailsDOInformation = ({
                             }}
                             onChange={(e) => {
                               const newValue = Number(e.target.value);
-                              console.log(newValue, itemsNetDeliverQty);
-                              // Check if the input exceeds itemsNetDeliverQty
                               if (newValue > Number(itemsNetDeliverQty)) {
                                 swal({
                                   title: "Not Possible",

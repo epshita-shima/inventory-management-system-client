@@ -9,7 +9,6 @@ const handleRawMaterialConsumptionSummaryExcel = (
   reportTitle
 ) => {
 
-  console.log(data)
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Order Details Report");
@@ -105,12 +104,11 @@ const handleRawMaterialConsumptionSummaryExcel = (
   });
 
   data.forEach((item) => {
-    console.log(item.itemId)
-    console.log(rawMaterialDataInfo)
+   
     const itemName = rawMaterialDataInfo?.find(
       (items) => item?.itemId === items._id
     );
-    console.log(itemName)
+
     const itemSize = itemUnitInformation.find(
       (size) => size._id === itemName?.unitId
     );

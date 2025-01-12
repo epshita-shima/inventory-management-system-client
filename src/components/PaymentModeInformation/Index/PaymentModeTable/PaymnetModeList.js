@@ -83,7 +83,7 @@ const PaymnetModeList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(paymentModeData?.value);
+           
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",

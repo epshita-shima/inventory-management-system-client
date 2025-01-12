@@ -68,10 +68,10 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
               title="Update item"
               style={{
                 color: `${
-                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                  filteredData?.detailsData?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  filteredData?.detailsData?.length == 0
+                  filteredData?.detailsData?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -215,7 +215,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                All User List
+               Production List
               </h5>
               <button
                 type="button"
@@ -228,7 +228,6 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
             </div>
             <div class="modal-body">
               <div
-                className=" "
                 style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
               >
                 <DataTable

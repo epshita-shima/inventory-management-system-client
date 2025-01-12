@@ -29,7 +29,7 @@ const handleGRNDownload = (
     "totalAmount",
   ];
 
-  console.log(columnsToInclude)
+
   let dynamicColumns = [
     { header: "Receive Date", key: "receiveDate", width: 15 },
     { header: "Supplier Id", key: "supplierId", width: 15 },

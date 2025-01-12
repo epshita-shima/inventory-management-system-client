@@ -3,7 +3,6 @@ import { downloadGoupOrderDetailsPDF } from "../ReportProperties/PDF/handleOrder
 import handleOrderDetailsExcel from "./../ReportProperties/Excel/handleOrderDetailsExcel";
 import {
   groupOrderDateByDetails,
-  groupSalesDataByDetails,
 } from "./reportDataGrouping";
 export const getOrderColumns = (
   finishGoodsInfo,
@@ -84,7 +83,7 @@ export const getOrderColumns = (
       <div className="d-flex justify-content-between align-content-center">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
-            <div class="dropdown">
+            <div class="dropdown dropup">
               <button
                 class="btn btn-download dropdown-toggle"
                 type="button"
@@ -106,7 +105,7 @@ export const getOrderColumns = (
                           const matchedDetails = salesData.detailsData?.filter(
                             (details) => details.itemId === row?.itemId
                           );
-                          console.log({matchedDetails});
+                      
                           if (matchedDetails.length > 0) {
                             return {
                               ...salesData,
@@ -117,7 +116,6 @@ export const getOrderColumns = (
                           return null;
                         })
                         .filter((item) => item !== null);
-                      console.log({filteredData});
                       const groupData = groupOrderDateByDetails(filteredData);
                       const convertGroupData = Object.values(groupData);
                       const itemNames = finishGoodsInfo.find(

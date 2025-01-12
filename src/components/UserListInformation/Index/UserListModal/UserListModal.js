@@ -147,7 +147,6 @@ const UserListModal = ({ user }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      console.log(reportTitle)
                       handleDownload(extractedData, companyinfo,reportTitle);
                     }}
                   >

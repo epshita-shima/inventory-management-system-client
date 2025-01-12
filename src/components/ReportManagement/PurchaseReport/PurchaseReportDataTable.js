@@ -8,6 +8,7 @@ import { downloadGoupPurchaseDetailsPDF } from "../../ReportProperties/PDF/handl
 import handlePurchaseDatewiseReportExcel from "../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel";
 import { downloadPOPDF } from "../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 const PurchaseReportDataTable = ({
   rawMaterialInfo,
   filteredDatas,
@@ -18,7 +19,8 @@ const PurchaseReportDataTable = ({
   bankInformation,
   paymentData,
   filters,
-  isTableDispaly
+  isTableDispaly,
+  isPurchaseDetailsLoading
 }) => {
   const [groupedData, setGroupedData] = useState({});
   const reportPurchaseTitle = "PURCHASE ORDER INFORMATION";
@@ -148,7 +150,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                 const filterReportData = poInformation.find(
                   (item) => item._id === poDetails.pOSingleId
                 );
-                console.log(filterReportData);
+              
                 downloadPOPDF(
                   filterReportData,
                   rawMaterialInfo,
@@ -272,6 +274,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
     // className="row px-5 mx-2"
     // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
+      <LoadingSpineer isLoading={isPurchaseDetailsLoading}></LoadingSpineer>
      {isTableDispaly && (
       <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
         <div className="shadow-lg">

@@ -67,7 +67,6 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
         const transferFrom = clientInformation?.find(
           (x) => x._id === row?.transferFromClientId
         );
-        console.log(transferFrom);
         return transferFrom ? transferFrom.clientName : "N/A";
       },
       sortable: true,
@@ -92,10 +91,10 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
       name: "Item Name",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
+          (x) => row?.detailsData.itemId === x._id
         );
         const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName.sizeId
+          (size) => size._id === itemName.sizeId
         );
         return itemName
           ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
@@ -121,7 +120,7 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
       selector: (row) => {
         const piInfo = piInformation?.find((x) => x._id === row?.piId);
         const itemDetails = piInfo?.detailsData.find(
-          (item) => item.itemId == row.detailsData.itemId
+          (item) => item.itemId === row.detailsData.itemId
         );
 
         return itemDetails?.unitPrice * row.detailsData.returnQty;
@@ -154,9 +153,8 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
               }}
               onClick={() => {
                 const singleReturnData = filteredDatas.find(
-                  (returnItem) => returnItem._id == row._id
+                  (returnItem) => returnItem._id === row._id
                 );
-                console.log(singleReturnData);
                 downloadReturnDeliveredPDF(
                   singleReturnData,
                   transformedSalsReturnData,
@@ -324,7 +322,6 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
           Object.keys(groupedData).length > 0 ? (
             Object.keys(groupedData)?.map((key) => {
               const group = groupedData[key];
-              console.log(group);
               const formattedDate = formatDate(group.returnDate);
               const rowSpan = group?.detailsData.length;
 
@@ -347,7 +344,7 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
                 },
                 0
               );
-              console.log("dateWiseTotalAmount", dateWiseTotalAmount);
+             
               return (
                 <>
                   {group?.detailsData.map((detail, detailIndex) => {
@@ -373,19 +370,14 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
                       .join(", ");
 
                     const unitPrice = piNumber.detailsData.find(
-                      (item) => item.itemId == detail.itemId
+                      (item) => item.itemId === detail.itemId
                     );
 
                     const calCulateAmount =
                       unitPrice.unitPrice * detail.returnQty;
                     const calculateAvgPrice =
                       calCulateAmount / detail.returnQty;
-                    console.log(
-                      "calculateAvgPrice",
-                      calCulateAmount,
-                      detail.returnQty,
-                      calculateAvgPrice
-                    );
+                  
                     return (
                       <tr key={detail._id}>
                         {detailIndex === 0 && (

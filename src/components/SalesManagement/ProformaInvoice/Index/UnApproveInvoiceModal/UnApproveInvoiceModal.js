@@ -36,11 +36,10 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
   const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
   const [filterUnapporovePiData, setfilterUnapporovePiData] = useState([]);
   const makebyUser = getMakebyUser();
-  const [piApproveDate, setPiApproveDate] = useState(new Date());
+
   const [updatePIStatus] = useUpdateInvoiceStatusMutation();
   const [approveStatus, setApproveStatus] = useState([]);
 
-  console.log(makebyUser)
   useEffect(() => {
     const invoiceDatas = invoiceData?.filter(
       (data) => data.makeBy === makebyUser
@@ -324,7 +323,7 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
       approveBy: makebyUser,
       approveDate: new Date(),
     };
-    console.log(updatedObject)
+ 
     const response = await updatePIStatus(updatedObject);
     if (response.data.status === 200) {
       swal("Done", "Data Update status Successfully", "success");

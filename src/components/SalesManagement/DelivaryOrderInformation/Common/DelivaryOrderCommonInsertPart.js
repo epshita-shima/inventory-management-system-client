@@ -116,7 +116,6 @@ const DelivaryOrderCommonInsertPart = () => {
           if (!groupedData[piNumber]) {
             groupedData[piNumber] = {};
           }
-          console.log(detailsData);
           if (!groupedData[piNumber][itemId]) {
             groupedData[piNumber][itemId] = {
               piNumber,
@@ -265,7 +264,6 @@ const DelivaryOrderCommonInsertPart = () => {
     }));
 
     const response = await insertDOInfo(modelData);
-    console.log(modelData);
     if (response?.data?.status === 200) {
       await Promise.all([
         createSerialNo(serialData),
@@ -424,7 +422,6 @@ const DelivaryOrderCommonInsertPart = () => {
                                             invoice.isApproved === true &&
                                             invoice.paymentId === e.value
                                         );
-                                      console.log(matchedInvoice);
                                       setPIType(e.value);
                                       if (matchedInvoice?.length > 0) {
                                         setInvoiceList(matchedInvoice);
@@ -500,8 +497,6 @@ const DelivaryOrderCommonInsertPart = () => {
                                       setInvoiceId(e.value);
                                       setPINumber(e.value);
                                       setFieldValue("piNumber", e.value);
-
-                                      console.log(paymentReceiveInformation);
                                       if (
                                         paymentReceiveInformation.length !== 0
                                       ) {
@@ -509,7 +504,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                           paymentReceiveInformation.filter(
                                             (item) => item.piNumber === e.value
                                           );
-                                        console.log(matchPIWithPaymentReceive);
+                                        
                                         if (
                                           matchPIWithPaymentReceive.length > 0
                                         ) {
@@ -531,12 +526,11 @@ const DelivaryOrderCommonInsertPart = () => {
                                         invoiceList.find(
                                           (data) => data._id === e.value
                                         );
-                                      console.log(invoiceListMatchingData);
+                                   
                                       setInvoiveByInvoiceNumber(
                                         invoiceListMatchingData
                                       );
                                       setFormValues((prevData) => {
-                                        console.log(prevData);
                                         return {
                                           ...prevData,
                                           piNumber: e.value,

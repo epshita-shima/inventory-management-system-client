@@ -55,7 +55,7 @@ export const groupReturnDateByDetails = (data) => {
       const existingDetail = acc[key].detailsData.find(
         (d) => d.itemId === detail.itemId
       );
-      console.log(existingDetail);
+
       if (existingDetail) {
         // If it exists, add to the existing returnQty
         existingDetail.returnQty += Number(detail.returnQty);

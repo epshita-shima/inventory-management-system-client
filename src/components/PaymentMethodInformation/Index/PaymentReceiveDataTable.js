@@ -8,13 +8,12 @@ import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMe
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const PaymentReceiveDataTable = () => {
-  const clickhandler = (name) => console.log("delete", name);
   const { data: user, isLoading: isUserloading } =
     useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
-  console.log(permission);
+
 
   useEffect(() => {
     if (!isUserloading && user) {

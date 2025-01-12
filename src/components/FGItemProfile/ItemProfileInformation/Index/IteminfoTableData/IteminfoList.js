@@ -38,8 +38,8 @@ const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All Finish Good Item List";
 
   useEffect(() => {
-    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus==true);
-    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus == false);
+    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus===true);
+    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus === false);
     
     const extractedFieldsForAllData = finishGoodInItemInfoData?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
@@ -70,7 +70,7 @@ const [selectedData, setSelectedData] = useState([]);
     const extractedInactiveFields = finishGoodInActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      console.log(unit)
+
       return{
         openingDate:item.openingDate,
         itemName: item.itemName,
@@ -196,7 +196,7 @@ const [selectedData, setSelectedData] = useState([]);
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {finishGoodInItemInfoData?.itemStatus == true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {finishGoodInItemInfoData?.itemStatus === true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
           </a>
         </div>
       ),
@@ -217,10 +217,10 @@ const [selectedData, setSelectedData] = useState([]);
               title="Update item"
               style={{
                 color: `${
-                  finishGoodInItemInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  finishGoodInItemInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  finishGoodInItemInfoData?.items?.length == 0
+                  finishGoodInItemInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -264,7 +264,6 @@ const [selectedData, setSelectedData] = useState([]);
                     const response = await deleteItemInfo(
                       finishGoodInItemInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",

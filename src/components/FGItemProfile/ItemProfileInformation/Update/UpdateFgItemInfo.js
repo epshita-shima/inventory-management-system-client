@@ -33,8 +33,7 @@ const UpdateFgItemInfo = () => {
   const [updateItemInfo] = useUpdateItemInfoMutation();
   const navigate = useNavigate();
  const updatebyUser = getMakebyUser();
-  console.log(id);
-  console.log(singleItemInfoData);
+
   useEffect(() => {
     setSingleItemInfoData(singleItemData);
   }, [singleItemData]);
@@ -70,7 +69,6 @@ const UpdateFgItemInfo = () => {
 
     try {
       const response = await updateItemInfo(singleItemInfoData);
-      console.log(response.data.status);
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", "success");
         navigate("/main-view/finish-goods-item-list");
@@ -195,7 +193,7 @@ const UpdateFgItemInfo = () => {
                       name="sizeinfo"
                       options={itemSizeConvertedOptions}
                       value={itemSizeConvertedOptions.find(
-                        (x) => x.value == singleItemInfoData?.sizeId
+                        (x) => x.value === singleItemInfoData?.sizeId
                       )}
                       styles={{
                         control: (baseStyles, state) => ({
@@ -256,7 +254,7 @@ const UpdateFgItemInfo = () => {
                       name="unitinfo"
                       options={itemUnitConvertedOptions}
                       value={itemUnitConvertedOptions.find(
-                        (x) => x.value == singleItemInfoData?.unitId
+                        (x) => x.value === singleItemInfoData?.unitId
                       )}
                       styles={{
                         control: (baseStyles, state) => ({
@@ -314,7 +312,6 @@ const UpdateFgItemInfo = () => {
                     value={singleItemInfoData?.openingDate}
                     required
                     onChange={(startDate) => {
-                      console.log(startDate);
                       if (startDate > new Date()) {
                         swal({
                           title: "Select Valid Date",

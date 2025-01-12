@@ -117,7 +117,6 @@ const UpdateCFTInfo = () => {
     };
     try {
       const response = await updateCFTInfoData({ payload, id });
-      console.log(response.data.status);
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", "success");
         navigate("/main-view/cft-info-list");
@@ -262,7 +261,6 @@ const UpdateCFTInfo = () => {
                               button: "OK",
                             });
                           } else {
-                            console.log(finishDate);
                             setFinishDate(
                               finishDate.toLocaleDateString("en-CA")
                             );
@@ -332,7 +330,6 @@ const UpdateCFTInfo = () => {
                     name="detailsData"
                     render={(arrayHelpers) => {
                       const details = singleCFTInfosData?.detailsData;
-                      console.log(details);
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap py-2"

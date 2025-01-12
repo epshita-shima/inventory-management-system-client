@@ -27,14 +27,12 @@ const makebyUser = getMakebyUser();;
     };
     const handleSubmit = async (e, values, resetForm) => {
       e.preventDefault();
-      console.log(values.detailsData);
       if (existingUserRoles.includes(categoryInfoData)) {
         alert("This size info already exists!");
         return;
       }
       try {
         const response = await insertCategoryInfo(values.detailsData);
-        console.log(response.data.status);
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           resetForm();
@@ -157,7 +155,6 @@ const makebyUser = getMakebyUser();;
                                 </thead>
                                 {details && details.length > 0
                                   ? details.map((detail, index) => {
-                                    console.log(detail)
                                       return (
                                         <tbody>
                                           <tr key={index}>

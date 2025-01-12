@@ -164,7 +164,7 @@ const OrderDetailsReportTable = ({
                   (item) => item._id === invoiceDetails._id
                 );
 
-                console.log(filterReportData);
+            
                 downloadInvoicePDF(
                   filterReportData,
                   finishGoodsItemInfo,

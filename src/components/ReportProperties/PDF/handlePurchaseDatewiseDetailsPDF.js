@@ -12,8 +12,7 @@ const downloadGoupPurchaseDetailsPDF = (
   companyinfo,
   reportPurchaseTitle
 ) => {
-  console.log({ groupedData });
-  console.log({ filteredData });
+
   const doc = new jsPDF();
   const finalRows = [];
 
@@ -50,7 +49,6 @@ const downloadGoupPurchaseDetailsPDF = (
     if (Array.isArray(groups)) {
       groups.forEach((group, index) => {
         group.detailsData.forEach((detail, detailIndex) => {
-          console.log(group.detailsData.length);
           const formattedDate = detailIndex === 0 ? formatDate(group.receiveDate) : "";
           const supplierName = supplierInformation?.filter((supplier) => supplier._id === group.supplierId)
           .map((filteredItem) => filteredItem.supplierName)
@@ -269,8 +267,7 @@ const downloadGoupPurchaseItemWisePDF = (
   companyinfo,
   reportPurchaseTitle
 ) => {
-  console.log({ groupedData });
-  console.log({ filteredData });
+
   const doc = new jsPDF();
   const finalRows = [];
 
@@ -307,18 +304,11 @@ const downloadGoupPurchaseItemWisePDF = (
     if (Array.isArray(groups)) {
       groups.forEach((group, index) => {
         group.detailsData.forEach((detail, detailIndex) => {
-          console.log(group.detailsData.length);
           const formattedDate = detailIndex === 0 ? formatDate(group.receiveDate) : "";
           const supplierName = supplierInformation?.filter((supplier) => supplier._id === group.supplierId)
           .map((filteredItem) => filteredItem.supplierName)
           .join(", ");
       
-          const itemNames = finishGoodsItemInfo.find(
-            (item) => item._id === detail.itemId
-          );
-          const itemUnit = itemUnitInformation.find(
-            (size) => size._id === itemNames.unitId
-          );
           const row = [
             formattedDate,
             supplierName, 

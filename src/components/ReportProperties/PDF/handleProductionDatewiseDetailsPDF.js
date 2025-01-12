@@ -39,12 +39,10 @@ const downloadProductionDatewiseDetailsInfoPDF = async (
     didParseCell: function (data) {
       const rowIndex = data.row.index;
       const totalRows = data.table.body.length;
-      const colIndex = data.column.index;
-      const totalCols = data.table.body[0].raw.length;
       const cellContent = data.cell.raw;
       // Extract text content from HTML string
       const textContent = cellContent?.innerText || cellContent?.textContent;
-      console.log(textContent);
+
       if (rowIndex === totalRows - 1) {
         data.cell.styles.fontStyle = "bold";
         data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
@@ -85,10 +83,9 @@ const downloadProductionGroupedDetailsPDF = async (
   const doc = new jsPDF();
   const finalRows = [];
   const grandTotalPIQty = calculateProductionQuantity(filteredData);
-  console.log(groupedData);
+
   Object.keys(groupedData).forEach((key) => {
     const group = groupedData[key];
-    console.log(group);
     const rowSpan = group?.mainData.length;
     const dateWiseTotalQuantity = group.mainData.reduce(
       (totalQty, item) => totalQty + item.productionQty,
@@ -100,9 +97,6 @@ const downloadProductionGroupedDetailsPDF = async (
         (item) => item._id === detail.productionItemName
       );
 
-      const itemSize = itemSizeInfo.find(
-        (size) => size._id === itemNames?.sizeId
-      );
       const formattedDate = formatDate(detail.productionDate);
       const itemUnit = itemUnitInformation.find(
         (size) => size._id === itemNames?.unitId
@@ -175,7 +169,7 @@ const downloadProductionGroupedDetailsPDF = async (
       },
     },
   ]);
-  console.log(finalRows);
+
   doc.autoTable({
     // html: "#my-deliver-details-table",
     head: [["Production Date", "Batch",  "Unit", "Production Qty"]],

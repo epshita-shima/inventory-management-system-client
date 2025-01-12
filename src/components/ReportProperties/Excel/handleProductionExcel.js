@@ -118,24 +118,14 @@ const handleProductionExcel = (
     cell.font = { bold: true };
   });
 
-  // worksheet.columns = columnsToInclude.map((col) => ({
-  //   header: col,
-  //   key: col,
-  //   width: 20,
-  // }));
-
-
 
   data.forEach((item) => {
     const itemName = finishGoods
       ?.filter((items) => item?.productionItemName === items._id)
       .map((filteredItem) => filteredItem.itemName)
       .join(", ");
-      
-      console.log(itemName)
-    const unitPrice = item.detailsData
-      .map((detail) => detail.unitPrice)
-      .join(", ");
+    
+    
 
     const values = {
       productionDate:item.productionDate,

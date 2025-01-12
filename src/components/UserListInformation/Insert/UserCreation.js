@@ -99,8 +99,7 @@ const UserCreation = () => {
     );
   }
   function mergePermissions(mainData, permissionsData) {
-    // Helper function to merge permissions for items items recursively
-    console.log(permissionsData);
+
     function mergeDropdownPermissions(mainDropdown, permissionsDropdown) {
       if (!mainDropdown || !permissionsDropdown.length === 0) {
         return [];
@@ -128,18 +127,14 @@ const UserCreation = () => {
     }
 
     return mainData?.map((mainItem) => {
-      console.log(mainItem);
       const permissionsItem = permissionsData?.find(
         (permItem) =>
           permItem.parentIds.reduce((acc, key) => {
-            // You can set any default value here
             return key === mainItem._id;
           }, {})
-        //  permItem && permItem.parentIds === mainItem._id
+        
       );
-      console.log(permissionsItem);
       if (permissionsItem && mainItem.items && permissionsItem.items) {
-        // Merge permissions for the current main item's items items
         return {
           ...mainItem,
           items: mergeDropdownPermissions(mainItem.items, permissionsItem),
@@ -152,14 +147,12 @@ const UserCreation = () => {
   const mergedData = mergePermissions(menuItems, formData?.menulist);
 
   const mergedArray = mergedData?.map((dataItem) => {
-    console.log(dataItem._id)
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {
      
       return items?.map((item) => {
         const clickedCheckbox = clickedCheckboxes.find(
           (checkbox) => checkbox.childId === item._id
         );
-        console.log(item)
         const isChecked = clickedCheckbox ? clickedCheckbox.isChecked : false;
         const isInserted = clickedCheckbox ? clickedCheckbox.isInserted : false;
         const isUpdated = clickedCheckbox ? clickedCheckbox.isUpdated : false;
@@ -167,14 +160,13 @@ const UserCreation = () => {
         const del = clickedCheckbox ? clickedCheckbox.isRemoved : false;
         const parentIds = clickedCheckbox ? clickedCheckbox.parentIds : [];
         const trackId = parentIds[1] || parentIds[0] || dataItem._id;
-        console.log('trackId',trackId)
-        console.log('clickedCheckbox',clickedCheckbox)
+   
         // Recursively merge checkboxes into nested items
         const mergedItems = mergeCheckboxIntoDropdown(
           item?.items,
           clickedCheckboxes
         );
-        console.log(mergedItems)
+      
         const anyChildChecked = mergedItems?.some((child) => child.isChecked);
         const parentIsChecked = anyChildChecked || isChecked || false;
 
@@ -196,16 +188,15 @@ const UserCreation = () => {
     const clickedCheckboxe = clickedCheckboxes.filter((checkbox) =>
       checkbox.parentIds.includes(dataItem._id)
     );
-console.log('clickedCheckboxe',clickedCheckboxe)
-console.log('dataItem',dataItem)
+
     // Check if any immediate child item is checked
     const anyImmediateChildChecked = clickedCheckboxe.some(
       (checkbox) => checkbox.isChecked
     );
-console.log(anyImmediateChildChecked)
+
     // Set the isChecked field for the top parent
     const topParentIsChecked = anyImmediateChildChecked || dataItem.isChecked;
-      console.log(dataItem)
+    
     return {
       ...dataItem,
       isChecked: topParentIsChecked,
@@ -219,8 +210,6 @@ console.log(anyImmediateChildChecked)
       .map(item => ({ ...item, items: filterCheckedItems(item.items || []) }));
   
   const filteredData = filterCheckedItems(mergedArray);
-
-console.log(JSON.stringify(filteredData));
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -269,9 +258,8 @@ console.log(JSON.stringify(filteredData));
       return;
     } else {
       const responseSerial = await createSerialNo(serialData);
-      console.log(responseSerial);
       const responseUser = await createNewUser(dataWithoutMenulistId);
-      console.log(responseUser);
+
       if (
         responseSerial.data.status === 201 &&
         responseUser.data?.status === 200
@@ -283,11 +271,8 @@ console.log(JSON.stringify(filteredData));
         swal("Error", "An error occurred while creating the user", "error");
       }
       
-      // swal("Done", "Data Save Successfully", "success");
-      // navigate("/main-view/user-list");
     }
-    // Handle form submission, for example, send data to backend
-    console.log("Form submitted:", JSON.stringify(dataWithoutMenulistId));
+  
   };
 
   const handleChange = (e) => {

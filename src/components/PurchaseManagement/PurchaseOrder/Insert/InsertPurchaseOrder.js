@@ -206,7 +206,6 @@ const InsertPurchaseOrder = ({
                             textAlign: "center",
                           }}
                           onKeyUp={(e) => {
-                            console.log(e.target.value);
                             setFieldValue(
                               `detailsData.${index}.quantity`,
                               e.target.value

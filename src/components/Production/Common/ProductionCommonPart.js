@@ -104,7 +104,6 @@ const ProductionCommonPart = () => {
     ))
   };
 
-  console.log('areFieldsEmpty()',areFieldsEmpty())
   useEffect(() => {
     if (serialNo && serialNo.length > 0) {
       const maxSerialNoObject = serialNo?.reduce((max, current) => {
@@ -131,7 +130,6 @@ const ProductionCommonPart = () => {
         const response = await updateSingleProductionInfo(
           updateProductionData
         );
-        console.log(response);
         if (response?.data?.status === 200) {
           navigate("/main-view/production-list");
           swal("Done", "Data Save Successfully", "success");
@@ -182,7 +180,6 @@ const ProductionCommonPart = () => {
             consumptionStatus:item.consumptionStatus
           });
         });
-        console.log(JSON.stringify(newProductionInfo));
         const response = await insertProductionData(newProductionInfo);
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
@@ -259,8 +256,6 @@ const ProductionCommonPart = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log('!(isValid && dirty)',!(isValid && dirty));
-                    console.log('values',values)
                     return (
                       <div
                         className=" shadow-lg py-2 px-5"

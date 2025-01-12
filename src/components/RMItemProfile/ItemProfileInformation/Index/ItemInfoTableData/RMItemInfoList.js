@@ -52,17 +52,16 @@ const RMItemInfoList = ({ permission }) => {
 
   useEffect(() => {
     const rmItemActiveStatus = rmItemInfoData?.filter(
-      (item) => item.itemStatus == true
+      (item) => item.itemStatus === true
     );
     const rmItemInActiveStatus = rmItemInfoData?.filter(
-      (item) => item.itemStatus == false
+      (item) => item.itemStatus === false
     );
-    console.log(rmItemActiveStatus);
-    console.log(rmItemInActiveStatus);
+
     const extractedFields = rmItemActiveStatus?.map((item) => {
       const category = categoryInfoData?.find((x) => x._id === item.categoryId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      console.log(category);
+
       return {
         openingDate: item.openingDate,
         itemName: item.itemName,
@@ -75,7 +74,7 @@ const RMItemInfoList = ({ permission }) => {
     const extractedFieldsForAllData = rmItemInfoData?.map((item) => {
       const category = categoryInfoData?.find((x) => x._id === item.categoryId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      console.log(category);
+
       return {
         openingDate: item.openingDate,
         itemName: item.itemName,
@@ -189,7 +188,6 @@ const RMItemInfoList = ({ permission }) => {
         const category = categoryInfoData?.find(
           (x) => x._id === rmItemInfoData?.categoryId
         );
-        console.log(category);
         return category ? category.categoryInfo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -301,7 +299,6 @@ const RMItemInfoList = ({ permission }) => {
                     const response = await deleteRMItemInfo(
                       rmItemInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",

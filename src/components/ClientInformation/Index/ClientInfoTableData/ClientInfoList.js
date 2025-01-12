@@ -42,14 +42,13 @@ const ClientInfoList = ({ permission }) => {
   const [clientInfoActiveStatus, setClientInfoActiveStatus] = useState([]);
   const [clientInfoInActiveStatus, setClientInfoInActiveStatus] = useState([]);
   var reportTitle = "All Client List";
-  console.log(selectedData);
 
   useEffect(() => {
     const clientInfoActiveStatus = clientInfoData?.filter(
-      (item) => item.isActive == true
+      (item) => item.isActive === true
     );
     const clientInfoInActiveStatus = clientInfoData?.filter(
-      (item) => item.isActive == false
+      (item) => item.isActive === false
     );
 
     const extractedForAddDataFields = clientInfoData?.map((item) => {
@@ -272,7 +271,6 @@ const ClientInfoList = ({ permission }) => {
                     const response = await deleteClientInfo(
                       clientInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",

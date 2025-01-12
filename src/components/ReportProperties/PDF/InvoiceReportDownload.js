@@ -14,7 +14,7 @@ const downloadInvoicePDF = async (
   companyinfo,
   reportTitle
 ) => {
-  console.log(data);
+
   const customerFilterData = customerInfo.filter(
     (x) => x._id === data?.customerID
   );
@@ -27,7 +27,7 @@ const downloadInvoicePDF = async (
   const matchesPaymentType = paymentData?.find(
     (payment) => payment._id === data?.paymentId
   );
-  console.log(matchesPaymentType);
+
   const numberInWords = toWords(parseInt(calculateTotalAmount));
   const companyContact = companyinfo.companyinfo[0].companyContact;
   const companyEmail = companyinfo.companyinfo[0].companyEmail;

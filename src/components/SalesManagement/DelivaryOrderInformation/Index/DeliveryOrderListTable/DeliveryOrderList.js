@@ -9,17 +9,14 @@ import { extractUserMenuListForCurrectMenu } from "../../../../Uitilites/extract
 import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveryOrderList = () => {
-  const clickhandler = (name) => console.log("delete", name);
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
-  console.log(permission);
 
   useEffect(() => {
     if (!isUserloading && user) {
       const permissions = extractUserMenuListForCurrectMenu(user, "DO List");
-      console.log(permissions);
       if (permissions) {
         setPermission(permissions);
       } else {
@@ -47,7 +44,7 @@ const DeliveryOrderList = () => {
       </div>
     );
   }
-  console.log(permission);
+  
   return (
     <div>
       <LoadingSpineer isLoading={isUserloading}></LoadingSpineer>

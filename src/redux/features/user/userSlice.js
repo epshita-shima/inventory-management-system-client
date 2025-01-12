@@ -98,7 +98,7 @@ const initialState = {
 };
 
 export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
- console.log(userData)
+
   try {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/register`, {
       method: 'POST',
@@ -120,7 +120,7 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
 });
 
 export const login = createAsyncThunk('auth/login', async (userData, { rejectWithValue }) => {
- console.log(userData)
+
   try {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/login`, {
       method: 'POST',
@@ -130,7 +130,6 @@ export const login = createAsyncThunk('auth/login', async (userData, { rejectWit
       body: JSON.stringify(userData),
     });
 
-    console.log(response)
     if (!response.ok) {
       throw new Error('Invalid email or password');
     }

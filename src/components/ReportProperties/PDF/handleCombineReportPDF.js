@@ -51,11 +51,9 @@ const downloadCombineReportPDF =(  companyinfo,
         const cellContentText = String(cellContent || "").trim();
 
         const numericValue = parseFloat(cellContentText);
-        const targetColumnIndex = 3;
         const textContent = cellContent?.innerText || cellContent?.textContent;
-        console.log(textContent);
+
         const lastRowIndex = data.table.body.length;
-        console.log('lastRowIndex=',lastRowIndex,"data.column.index=",data.column.index)
         if (!isNaN(numericValue) && colIndex === totalCols - 1) {
           if (numericValue < 0) {
             data.cell.styles.textColor = [255, 0, 0]; // Red text for negative values

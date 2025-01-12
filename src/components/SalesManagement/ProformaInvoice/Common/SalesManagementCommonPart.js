@@ -127,7 +127,6 @@ const SalesManagementCommonPart = () => {
         }
         return max;
       }, undefined);
-      console.log(maxSerialNoObject);
       if (maxSerialNoObject) {
         setSerialValue(maxSerialNoObject);
       }
@@ -231,7 +230,6 @@ const SalesManagementCommonPart = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values);
                     return (
                       <div className="shadow-lg py-2 px-5">
                         <div class="container-fluid">

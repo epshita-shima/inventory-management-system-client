@@ -1,10 +1,7 @@
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { groupSalesDataByDetails } from "./reportDataGrouping";
-import downloadSalesDetailsPDF, { downloadGoupSalesDetailsPDF } from "../ReportProperties/PDF/handleDeliverDetailsReport";
-import SalesDetailsTable from "./ReportTable/SalesDetailsTable";
-import { useState } from "react";
-import { formatDate } from "./DateUtilities";
+import {
+  downloadGoupSalesDetailsPDF,
+} from "../ReportProperties/PDF/handleDeliverDetailsReport";
 import handleSalesDetailsExcel from "../ReportProperties/Excel/handleSalesDetailsExcel";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
@@ -18,8 +15,9 @@ export const getSalesColumns = (
   companyinfo,
   piInformation,
   reportSalesTitle,
-  clientInformation
-) =>[
+  clientInformation,
+  dropdownMenuStyles
+) => [
   {
     name: "Sl.",
     selector: (row, index) => index + 1,
@@ -34,9 +32,7 @@ export const getSalesColumns = (
       const itemSize = itemSizeInfo?.find(
         (size) => size._id == itemName?.sizeId
       );
-      return itemName
-        ? `${itemName?.itemName} (${itemSize.sizeInfo})`
-        : "N/A";
+      return itemName ? `${itemName?.itemName} (${itemSize.sizeInfo})` : "N/A";
     },
     sortable: true,
     center: true,
@@ -89,7 +85,7 @@ export const getSalesColumns = (
       <div className="d-flex justify-content-between align-content-center">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
-            <div class="dropdown">
+            <div class="dropdown  dropup">
               <button
                 class="btn btn-download dropdown-toggle"
                 type="button"
@@ -99,19 +95,18 @@ export const getSalesColumns = (
               >
                 Download
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul class="dropdown-menu" data-bs-display="static" aria-labelledby="dropdownMenuButton1" style={dropdownMenuStyles}>
                 <li>
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={async() => {
-const result=await triggerSalesDetailsReport(filters)
+                    onClick={async () => {
+                      const result = await triggerSalesDetailsReport(filters);
                       const filteredData = result.data
                         ?.map((salesData) => {
-                          const matchedDetails =
-                            salesData.detailsData?.filter(
-                              (details) => details.itemId === row?.itemId
-                            );
+                          const matchedDetails = salesData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
 
                           if (matchedDetails.length > 0) {
                             return {
@@ -154,14 +149,13 @@ const result=await triggerSalesDetailsReport(filters)
                   <a
                     class="dropdown-item"
                     href="#"
-                    onClick={async() => {
-                      const result=await triggerSalesDetailsReport(filters)
+                    onClick={async () => {
+                      const result = await triggerSalesDetailsReport(filters);
                       const filteredData = result.data
                         ?.map((salesData) => {
-                          const matchedDetails =
-                            salesData.detailsData?.filter(
-                              (details) => details.itemId === row?.itemId
-                            );
+                          const matchedDetails = salesData.detailsData?.filter(
+                            (details) => details.itemId === row?.itemId
+                          );
                           if (matchedDetails.length > 0) {
                             return {
                               ...salesData,
@@ -198,9 +192,8 @@ const result=await triggerSalesDetailsReport(filters)
               </ul>
             </div>
           </div>
-     
         )}
       </div>
     ),
   },
-];;
+];

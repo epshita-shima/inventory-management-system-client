@@ -67,7 +67,7 @@ const InsertSupplierInformation = () => {
     try {
       if (id) {
         const response = await updateSupplierInfo(supplierData);
-        console.log(response.data.status);
+
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           navigate("/main-view/supplier-list");
@@ -80,7 +80,7 @@ const InsertSupplierInformation = () => {
         }
       } else {
         const response = await insertSupplierInfo(values.detailsData);
-        console.log(response.data.status);
+
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           resetForm();
@@ -110,22 +110,11 @@ const InsertSupplierInformation = () => {
         <div className="">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
+                  fontSize: "20px",
                   letterSpacing: ".5px",
                 }}
               >
@@ -211,500 +200,474 @@ const InsertSupplierInformation = () => {
                           <div className="col-md-12">
                             {details && details.length > 0
                               ? details.map((detail, index) => {
-                                  console.log(detail);
                                   return (
                                     <div key={index}>
-                                      <div>
-                                        <div className="col-md-12 col-lg-6 col-xl-6">
-                                          <div className="mb-2">
-                                            <label htmlFor="supplierName">
-                                              Supplier Name
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.supplierName`}
-                                              placeholder="Supplier Name"
-                                              value={
-                                                id
-                                                  ? supplierData?.supplierName
-                                                  : detail?.supplierName
+                                      <div className="row row-cols-1 row-cols-lg-3">
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="supplierName">
+                                            Supplier Name
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.supplierName`}
+                                            placeholder="Supplier Name"
+                                            value={
+                                              id
+                                                ? supplierData?.supplierName
+                                                : detail?.supplierName
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  supplierName: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.supplierName`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      supplierName:
-                                                        e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.supplierName`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.supplierName &&
-                                                errors.detailsData?.[index]
-                                                  ?.supplierName && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .supplierName
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
-                                          <div className="mb-2">
-                                            <label htmlFor="supplierShortName">
-                                              Supplier Short Name
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.supplierShortName`}
-                                              placeholder="Supplier short name"
-                                              value={
-                                                id
-                                                  ? supplierData?.supplierShortName
-                                                  : detail?.supplierShortName
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.supplierName &&
+                                              errors.detailsData?.[index]
+                                                ?.supplierName && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .supplierName
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="supplierShortName">
+                                            Supplier Short Name
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.supplierShortName`}
+                                            placeholder="Supplier short name"
+                                            value={
+                                              id
+                                                ? supplierData?.supplierShortName
+                                                : detail?.supplierShortName
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  supplierShortName:
+                                                    e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.supplierShortName`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      supplierShortName:
-                                                        e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.supplierShortName`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.supplierShortName &&
-                                                errors.detailsData?.[index]
-                                                  ?.supplierShortName && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .supplierShortName
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
-                                          <div className="mb-2">
-                                            <label htmlFor="email">Email</label>
-                                            <Field
-                                              type="email"
-                                              name={`detailsData.${index}.email`}
-                                              placeholder="Email"
-                                              value={
-                                                id
-                                                  ? supplierData?.email
-                                                  : detail?.email
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.supplierShortName &&
+                                              errors.detailsData?.[index]
+                                                ?.supplierShortName && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .supplierShortName
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="email">Email</label>
+                                          <Field
+                                            type="email"
+                                            name={`detailsData.${index}.email`}
+                                            placeholder="Email"
+                                            value={
+                                              id
+                                                ? supplierData?.email
+                                                : detail?.email
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  email: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.email`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      email: e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.email`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.email &&
-                                                errors.detailsData?.[index]
-                                                  ?.email && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .email
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
-
-                                          <div className="mb-2">
-                                            <label htmlFor="mobileNo">
-                                              Mobile Number
-                                            </label>
-                                            <Field
-                                              type="number"
-                                              name={`detailsData.${index}.mobileNo`}
-                                              placeholder="Mobile Number"
-                                              value={
-                                                id
-                                                  ? supplierData?.mobileNo
-                                                  : detail?.mobileNo
-                                              }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                                marginBottom: "5px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      mobileNo: e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.mobileNo`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.mobileNo &&
-                                                errors.detailsData?.[index]
-                                                  ?.mobileNo && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .mobileNo
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
-
-                                          <div>
-                                            <label htmlFor="conatctPerson">
-                                              Contact Person
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.contactPerson`}
-                                              placeholder="Contact Person"
-                                              value={
-                                                id
-                                                  ? supplierData?.contactPerson
-                                                  : detail?.contactPerson
-                                              }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                                marginBottom: "5px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      contactPerson:
-                                                        e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.contactPerson`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.contactPerson &&
-                                                errors.detailsData?.[index]
-                                                  ?.contactPerson && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .contactPerson
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.email &&
+                                              errors.detailsData?.[index]
+                                                ?.email && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .email
+                                                  }
+                                                </div>
+                                              )}
                                         </div>
 
-                                        <div className="col-md-12 col-lg-6 col-xl-6">
-                                          <div className="mb-2">
-                                            <label htmlFor="conatctPerson">
-                                              Bin Number
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.binNo`}
-                                              placeholder="Bin Number"
-                                              value={
-                                                id
-                                                  ? supplierData?.binNo
-                                                  : detail?.binNo
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="mobileNo">
+                                            Mobile Number
+                                          </label>
+                                          <Field
+                                            type="number"
+                                            name={`detailsData.${index}.mobileNo`}
+                                            placeholder="Mobile Number"
+                                            value={
+                                              id
+                                                ? supplierData?.mobileNo
+                                                : detail?.mobileNo
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                              marginBottom: "5px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  mobileNo: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.mobileNo`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      binNo: e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.binNo`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.binNo &&
-                                                errors.detailsData?.[index]
-                                                  ?.binNo && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .binNo
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.mobileNo &&
+                                              errors.detailsData?.[index]
+                                                ?.mobileNo && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .mobileNo
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
 
-                                          <div className="mb-2">
-                                            <label htmlFor="tradeLicenceNo">
-                                              Trade Licence No
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.tradeLicenceNo`}
-                                              placeholder="Trade Licence No"
-                                              value={
-                                                id
-                                                  ? supplierData?.tradeLicenceNo
-                                                  : detail?.tradeLicenceNo
+                                        <div className="col-sm-12 col-md-6 col-lg-3">
+                                          <label htmlFor="conatctPerson">
+                                            Contact Person
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.contactPerson`}
+                                            placeholder="Contact Person"
+                                            value={
+                                              id
+                                                ? supplierData?.contactPerson
+                                                : detail?.contactPerson
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                              marginBottom: "5px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  contactPerson: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.contactPerson`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      tradeLicenceNo:
-                                                        e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.tradeLicenceNo`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.tradeLicenceNo &&
-                                                errors.detailsData?.[index]
-                                                  ?.tradeLicenceNo && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .tradeLicenceNo
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.contactPerson &&
+                                              errors.detailsData?.[index]
+                                                ?.contactPerson && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .contactPerson
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="conatctPerson">
+                                            Bin Number
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.binNo`}
+                                            placeholder="Bin Number"
+                                            value={
+                                              id
+                                                ? supplierData?.binNo
+                                                : detail?.binNo
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  binNo: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.binNo`,
+                                                  e.target.value
+                                                );
+                                              }
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.binNo &&
+                                              errors.detailsData?.[index]
+                                                ?.binNo && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .binNo
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
 
-                                          <div className="mb-2">
-                                            <label htmlFor="tradeLicenceNo">
-                                              TIN Number
-                                            </label>
-                                            <Field
-                                              type="text"
-                                              name={`detailsData.${index}.tinNo`}
-                                              placeholder="Tin No"
-                                              value={
-                                                id
-                                                  ? supplierData?.tinNo
-                                                  : detail?.tinNo
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="tradeLicenceNo">
+                                            Trade Licence No
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.tradeLicenceNo`}
+                                            placeholder="Trade Licence No"
+                                            value={
+                                              id
+                                                ? supplierData?.tradeLicenceNo
+                                                : detail?.tradeLicenceNo
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  tradeLicenceNo:
+                                                    e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.tradeLicenceNo`,
+                                                  e.target.value
+                                                );
                                               }
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                height: "38px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      tinNo: e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.tinNo`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            <br />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.tinNo &&
-                                                errors.detailsData?.[index]
-                                                  ?.tinNo && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .tinNo
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.tradeLicenceNo &&
+                                              errors.detailsData?.[index]
+                                                ?.tradeLicenceNo && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .tradeLicenceNo
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
 
-                                          <div className="mb-2">
-                                            {" "}
-                                            <label htmlFor="address">
-                                              Address
-                                            </label>
-                                            <textarea
-                                              type="textarea"
-                                              name={`detailsData.${index}.address`}
-                                              placeholder="Address"
-                                              value={
-                                                id
-                                                  ? supplierData?.address
-                                                  : detail?.address
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          <label htmlFor="tradeLicenceNo">
+                                            TIN Number
+                                          </label>
+                                          <Field
+                                            type="text"
+                                            name={`detailsData.${index}.tinNo`}
+                                            placeholder="Tin No"
+                                            value={
+                                              id
+                                                ? supplierData?.tinNo
+                                                : detail?.tinNo
+                                            }
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                              height: "38px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  tinNo: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.tinNo`,
+                                                  e.target.value
+                                                );
                                               }
-                                              rows="4"
-                                              style={{
-                                                border: "1px solid #2DDC1B",
-                                                padding: "5px",
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                              }}
-                                              onChange={(e) => {
-                                                if (id) {
-                                                  setSupplierData(
-                                                    (prevData) => ({
-                                                      ...prevData,
-                                                      address: e.target.value,
-                                                      updateBy: makebyUser,
-                                                      updateDate: new Date(),
-                                                    })
-                                                  );
-                                                } else {
-                                                  setFieldValue(
-                                                    `detailsData.${index}.address`,
-                                                    e.target.value
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                            {id
-                                              ? ""
-                                              : touched.detailsData?.[index]
-                                                  ?.address &&
-                                                errors.detailsData?.[index]
-                                                  ?.address && (
-                                                  <div className="text-danger">
-                                                    {
-                                                      errors.detailsData[index]
-                                                        .address
-                                                    }
-                                                  </div>
-                                                )}
-                                          </div>
+                                            }}
+                                          />
+                                          <br />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.tinNo &&
+                                              errors.detailsData?.[index]
+                                                ?.tinNo && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .tinNo
+                                                  }
+                                                </div>
+                                              )}
+                                        </div>
+
+                                        <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                                          {" "}
+                                          <label htmlFor="address">
+                                            Address
+                                          </label>
+                                          <textarea
+                                            type="textarea"
+                                            name={`detailsData.${index}.address`}
+                                            placeholder="Address"
+                                            value={
+                                              id
+                                                ? supplierData?.address
+                                                : detail?.address
+                                            }
+                                            rows="4"
+                                            style={{
+                                              border: "1px solid #2DDC1B",
+                                              padding: "5px",
+                                              width: "100%",
+                                              borderRadius: "5px",
+                                            }}
+                                            onChange={(e) => {
+                                              if (id) {
+                                                setSupplierData((prevData) => ({
+                                                  ...prevData,
+                                                  address: e.target.value,
+                                                  updateBy: makebyUser,
+                                                  updateDate: new Date(),
+                                                }));
+                                              } else {
+                                                setFieldValue(
+                                                  `detailsData.${index}.address`,
+                                                  e.target.value
+                                                );
+                                              }
+                                            }}
+                                          />
+                                          {id
+                                            ? ""
+                                            : touched.detailsData?.[index]
+                                                ?.address &&
+                                              errors.detailsData?.[index]
+                                                ?.address && (
+                                                <div className="text-danger">
+                                                  {
+                                                    errors.detailsData[index]
+                                                      .address
+                                                  }
+                                                </div>
+                                              )}
                                         </div>
                                       </div>
                                       <div className="col-md-12 mt-3">

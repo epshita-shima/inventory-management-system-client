@@ -36,7 +36,7 @@ const PurchaseOrderStatusListTable = ({
 
         // Find the user object matching the provided userId
         const currentUser = userData?.find((user) => user._id === userId);
-        console.log(currentUser);
+
         if (currentUser) {
           // Loop through the menus of the current user
           currentUser?.menulist?.forEach((menu) => {
@@ -47,7 +47,6 @@ const PurchaseOrderStatusListTable = ({
                 const userListSubMenu = subMenu?.items?.find(
                   (subItem) => subItem?.label === "PO List"
                 );
-                console.log(userListSubMenu);
                 if (userListSubMenu) {
                   // Set the user list property
                   userList = userListSubMenu;

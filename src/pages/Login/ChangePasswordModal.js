@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useUpdateUserPasswordMutation } from "../../redux/features/user/userApi";
-import { useNavigate } from "react-router-dom";
+import {
+  useGetAllUserQuery,
+  useUpdateUserPasswordMutation,
+} from "../../redux/features/user/userApi";
+import { useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import "./ChangePasswordModal.css";
 
@@ -22,12 +25,20 @@ const ChangePasswordModal = ({
   const queryParams = new URLSearchParams(window.location.search);
   const reset = queryParams.get("reset");
   const change = queryParams.get("change");
+  const { data: users } = useGetAllUserQuery(undefined);
 
-  console.log("Reset:", reset); // true
-  console.log("Change:", change);
+  const userIdForChangePassowrd = queryParams.get("userId");
+
   useEffect(() => {
-    setSingleUserData(menuListData);
-  }, [setSingleUserData]);
+    const filteredUser = users?.filter(
+      (user) => user._id == userIdForChangePassowrd
+    );
+    if (!userIdForChangePassowrd) {
+      setSingleUserData(menuListData);
+    } else {
+      setSingleUserData(filteredUser);
+    }
+  }, [setSingleUserData, userIdForChangePassowrd, users]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;
@@ -37,28 +48,57 @@ const ChangePasswordModal = ({
       [name]: value,
     });
 
-    setSingleUserData((prev) => {
-      const temp_data = prev;
-      console.log(temp_data);
-      temp_data[0]["password"] = value;
-      return temp_data;
-    });
+    if (!userIdForChangePassowrd) {
+      setSingleUserData((prev) => {
+        const temp_data = prev;
+        console.log(temp_data);
+        temp_data["password"] = value;
+        return temp_data;
+      });
+    } else {
+      setSingleUserData((prev) => {
+        const temp_data = [...prev];
+        console.log(temp_data[0]);
+        if (temp_data[0]) {
+          temp_data[0] = { ...temp_data[0], password: value };
+        }
+        return temp_data;
+      });
+    }
   };
 
   const handleSaveChangePassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await updateUserPassword(singleUserData[0]);
-      if (response.data.status === "success") {
-        swal("Done", `${response.data.message}`, "success");
-        navigate("/main-view/user-setting");
-      } else {
-        swal(
-          "Not Possible!",
-          "An problem occurred while updating the data",
-          "error"
-        );
+
+      if(!userIdForChangePassowrd){
+        const response = await updateUserPassword(singleUserData);
+        if (response.data.status === "success") {
+          swal("Done", `${response.data.message}`, "success");
+          navigate("/");
+          localStorage.clear()
+        } else {
+          swal(
+            "Not Possible!",
+            "An problem occurred while updating the data",
+            "error"
+          );
+        }
       }
+      else{
+        const response = await updateUserPassword(singleUserData[0]);
+        if (response.data.status === "success") {
+          swal("Done", `${response.data.message}`, "success");
+          navigate("/main-view/user-setting");
+        } else {
+          swal(
+            "Not Possible!",
+            "An problem occurred while updating the data",
+            "error"
+          );
+        }
+      }
+  
     } catch (error) {
       console.error("Error updating password:", error); // Handle any errors
     }

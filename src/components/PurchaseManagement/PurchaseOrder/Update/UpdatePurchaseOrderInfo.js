@@ -112,7 +112,6 @@ const UpdatePurchaseOrderInfo = ({
                     Math.round(calGrandTotalQuantity * 100) / 100;
                   calTotalAmount += +singleTotalAmount;
                   getCalTotalAmount = Math.round(calTotalAmount * 100) / 100;
-                  console.log( getCalTotalAmount)
                   setTotalGrandQuantity(getCalGrandTotalQuantity);
                   setTotalGrandTotalAmount(getCalTotalAmount);
                 }
@@ -161,7 +160,6 @@ const UpdatePurchaseOrderInfo = ({
                               },
                             })}
                             onChange={(e) => {
-                              console.log(e.value);
                               setPurchaseOrderAllInformation((prev) => {
                                 const temp_details = [...prev.detailsData];
                                 const newDetail = { ...temp_details[index] };

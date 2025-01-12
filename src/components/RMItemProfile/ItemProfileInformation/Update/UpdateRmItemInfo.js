@@ -18,9 +18,9 @@ import {
   useUpdateRMItemInfoMutation,
 } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryInfo/categoryInfoApi";
-import InsertCategoryInformationModal from "../../../CategoryInformation/Insert/InsertCategoryInformationModal";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import InsertCategoryInformationModal from "../../../CategoryInformation/Update/InsertCategoryInformationModal";
 
 const UpdateRmItemInfo = () => {
   const [startDate, setStartDate] = useState(
@@ -72,7 +72,7 @@ const UpdateRmItemInfo = () => {
 
     try {
       const response = await updateRMItemInfoData(singleItemInfoData);
-      console.log(response.data.status);
+   
       if (response.data.status === 200) {
         swal("Done", "Data Update Successfully", "success");
         navigate("/main-view/raw-material-item-list");
@@ -319,7 +319,6 @@ const UpdateRmItemInfo = () => {
                       value={singleItemInfoData?.openingDate}
                       required
                       onChange={(startDate) => {
-                        console.log(startDate);
                         if (startDate > new Date()) {
                           swal({
                             title: "Select Valid Date",

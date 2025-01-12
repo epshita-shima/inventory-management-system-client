@@ -4,7 +4,7 @@ import { Field } from "formik";
 import React from "react";
 import Select from "react-select";
 const UpdateInvoiceDetails = ({finisGoodsOptions,  touched, errors,makebyUser, updateSingleInvoiceData,setUpdateSingleInvoiceData}) => {
- console.log(updateSingleInvoiceData)
+ 
   return (
         <div class="row">
           <div class="col-12 col-md-12 col-lg-12 fixed-column">

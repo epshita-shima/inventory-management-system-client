@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import CombineReportView from './CombineReportView';
-import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import CombineReportView from "./CombineReportView";
+import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
+import { useNavigate } from "react-router-dom";
 
 const CombineReportTable = () => {
-  const clickhandler = (name) => console.log("delete", name);
+
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
-  console.log(permission);
+
+  const dropdownMenuStyles = {
+    position: "relative",
+    inset: "0px auto auto 0px",
+    margin: "0px",
+    transform: "translate3d(-32.5px, -20px, 0px)",
+  };
+
   useEffect(() => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
         const currentUser = userData?.find((user) => user._id === userId);
-        console.log(currentUser);
         if (currentUser) {
           currentUser?.menulist?.forEach((menu) => {
             const userListSubMenu = menu?.items?.find(
@@ -55,6 +61,7 @@ const CombineReportTable = () => {
       navigate("/");
     }
   }, [user, navigate]);
+
   if (isUserloading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
@@ -75,10 +82,13 @@ const CombineReportTable = () => {
     );
   }
   return (
-      <div>
-        <CombineReportView  permission={permission}></CombineReportView>
-      </div>
-    );
-}
+    <div>
+      <CombineReportView
+        dropdownMenuStyles={dropdownMenuStyles}
+        permission={permission}
+      ></CombineReportView>
+    </div>
+  );
+};
 
-export default CombineReportTable
+export default CombineReportTable;

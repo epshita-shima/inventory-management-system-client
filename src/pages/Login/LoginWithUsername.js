@@ -20,14 +20,13 @@ const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn); 
   const navigate = useNavigate();
-  console.log(user)
+
   const formRef = useRef(null);
 
   const handleFocus = () => {
     setPassword(''); // Clearing the password value
   };
-  console.log(isButtonDisabled)
-console.log(singleUserData)
+
 if(isUserLoading){
   <p>loding ....</p>
 }
@@ -50,7 +49,7 @@ useEffect(() => {
     try {
       // Compare the plain password with the hashed password
       const isPasswordMatch = await bcrypt.compare(password, userData.password);
-console.log(userData)
+
       if (isPasswordMatch) {
         setSingleUserData(userData);
         setIsButtonDisabled(false);
@@ -65,10 +64,9 @@ console.log(userData)
   validateUser();
 }, [user, password, username, setSingleUserData]);
   
-console.log(singleUserData)
+
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(singleUserData)
     if(singleUserData && Object.keys(singleUserData).length > 0){
       navigate('/main-view')
       localStorage.setItem('user',JSON.stringify(singleUserData))
@@ -118,7 +116,7 @@ console.log(singleUserData)
               <Form onSubmit={handleLogin} ref={formRef} autoComplete="off">
                 <Form.Label htmlFor="inputPassword5" style={{color:'#032339',letterSpacing:'1px'}}>
                   Username
-                </Form.Label>
+                </Form.Label> 
                 <InputGroup className="mb-3">
                   <Form.Control
                     placeholder="Username"

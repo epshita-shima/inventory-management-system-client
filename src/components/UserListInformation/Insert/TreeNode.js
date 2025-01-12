@@ -10,70 +10,13 @@ const TreeNode = ({
  data
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-console.log(parentIds)
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  // function convertToNestedObject(clickedCheckboxes, parentNode) {
-  //   const nestedObject =[ {
-  //     _id: parentNode._id,
-  //     label: parentNode.label,
-  //     url: parentNode.url,
-  //     permissions: [],
-  //     items: [],
-  //   }];
-  //   console.log(parentNode);
-  //   if (parentNode.items && parentNode.items.length > 0) {
-  //     parentNode.items.forEach((subNode) => {
-  //       // Filter clickedCheckboxes to get only child data for the current subNode
-  //       console.log(subNode);
-  //       const childCheckboxes = clickedCheckboxes.filter(
-  //         (checkbox) =>
-  //           checkbox.childId === subNode._id &&
-  //           checkbox.parentIds.includes(parentNode._id)
-  //       );
-  //       console.log(childCheckboxes, clickedCheckboxes);
-  //       const nestedDropdown = {
-  //         _id: subNode._id,
-  //         label: subNode.label,
-  //         url: subNode.url,
-  //         permissions: [],
-  //         isChecked:
-  //           childCheckboxes.length > 0 ? childCheckboxes[0].isChecked : false,
-  //         isInserted:
-  //           childCheckboxes.length > 0 ? childCheckboxes[0].isInserted : false,
-  //         isUpdated:
-  //           childCheckboxes.length > 0 ? childCheckboxes[0].isUpdated : false,
-  //         isPDF: childCheckboxes.length > 0 ? childCheckboxes[0].isPDF : false,
-  //         isRemoved:
-  //           childCheckboxes.length > 0 ? childCheckboxes[0].isRemoved : false,
-  //         items: [],
-  //       };
-
-       
-
-  //       if (subNode.items && subNode.items.length > 0) {
-  //         nestedDropdown.items = convertToNestedObject(
-  //           clickedCheckboxes,
-  //           subNode
-  //         );
-  //         console.log(nestedDropdown.items);
-  //       }
-
-  //       nestedObject.items.push(nestedDropdown);
-  //     });
-  //   }
-  //   console.log(nestedObject);
-  //   return nestedObject;
-  // }
-
-  // Assuming node, clickedCheckboxes, and parentIds are available
-//   const nestedObject = convertToNestedObject(clickedCheckboxes, node);
-// console.log(nestedObject)
   const handleCheckboxClick = (subNode,trackId, checked) => {
-    console.log(subNode,trackId, checked)
-    console.log(parentIds)
+
     const isDuplicate = clickedCheckboxes?.some(
       (check) => check?.itemId === subNode?._id
     );
@@ -107,15 +50,9 @@ console.log(parentIds)
         ]);
       }
 
-    console.log("Previous Array:", clickedCheckboxes);
     }
   };
 
-
-  // const sendFunctionToParentComponent = () => {
-  //   // const functionData = "Function data from child";
-  //   sendFunctionToParent(nestedObject);
-  // };
 
   return (
     <div style={{position: "relative", overflow: "auto"}}>
@@ -163,14 +100,12 @@ console.log(parentIds)
                             const { checked } = e.target;
                             if (checked) {
                               parentIds.push(node._id);
-                              console.log(node._id)
-                              console.log(subNode.isChecked)
+                    
                               handleCheckboxClick(subNode,node.trackId, checked);
                             } else {
                               const updatedData = clickedCheckboxes.filter(
                                 (item) => item?.childId !== subNode?._id
                               );
-                              console.log(updatedData)
                               setClickedCheckboxes(updatedData);
                             }
                           }}
@@ -344,9 +279,7 @@ console.log(parentIds)
                             );
 
                             if (checked) {
-                              console.log(clickedCheckboxes);
                               if (indexes === -1) {
-                                // Item does not exist in the array
                                 swal(
                                   "Not possible",
                                   "Please select menu",

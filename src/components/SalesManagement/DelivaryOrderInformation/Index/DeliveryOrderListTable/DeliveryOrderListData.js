@@ -75,7 +75,6 @@ const DeliveryOrderListData = ({ permission }) => {
     {
       name: "PI Number",
       selector: (row) => {
-        console.log(row)
         const piNumber = invoiceInformation?.find(
           (x) => x._id === row?.piId
         );

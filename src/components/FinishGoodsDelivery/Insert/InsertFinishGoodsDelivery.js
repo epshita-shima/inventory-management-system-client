@@ -15,10 +15,10 @@ const InsertFinishGoodsDelivery = ({
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const clientInfo = clientInformation?.find(
-    (client) => client._id == deliveryOrderInformation?.clientId
+    (client) => client._id === deliveryOrderInformation?.clientId
   );
   const invoiceInfo = invoiceInformation?.find(
-    (invoice) => invoice._id == deliveryOrderInformation?.piId
+    (invoice) => invoice._id === deliveryOrderInformation?.piId
   );
   
   return (

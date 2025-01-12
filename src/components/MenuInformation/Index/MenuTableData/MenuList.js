@@ -17,7 +17,7 @@ const MenuList = ({permission}) => {
 const [deleteMenu]=useDeleteMenuDataMutation()
 const [filterText, setFilterText] = React.useState("");
 const [resetPaginationToggle, setResetPaginationToggle] =React.useState(false);
-const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undefined);
+const { data: menuItems,isLoading: isMenuloading,refetch } = useGetAllMenuItemsQuery(undefined);
 
 
   const flattenOptions = (options) => {
@@ -102,7 +102,6 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(flattenedOptions?.value)
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",
@@ -189,7 +188,6 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
       </div>
     );
   }, [filterText, resetPaginationToggle,refetch]);
-
 
   return (
       <div className="row p-5 mx-4">

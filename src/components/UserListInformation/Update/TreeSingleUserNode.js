@@ -13,7 +13,7 @@ const TreeSingleUserNode = ({
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
-  console.log(node);
+
   const handleCheckboxClick = (subNode, parentId, checked) => {
     if (checked) {
       const updatedChild = {
@@ -42,7 +42,7 @@ const TreeSingleUserNode = ({
       isInserted: checked,
       parentIds: parentId,
     };
-    console.log(updatedChild)
+
     updateMenuItem(updatedChild);
   };
   const handleCheckboxClickUpdate = (subNode, parentId, checked) => {
@@ -89,7 +89,6 @@ const TreeSingleUserNode = ({
           {isOpen && node?.items?.length > 0 && (
             <>
               {node?.items.map((subNode) => {
-                console.log(subNode?.items?.length, subNode);
                 return (
                   <tr key={subNode?.trackId}>
                     <td>
@@ -212,7 +211,6 @@ const TreeSingleUserNode = ({
                             checked={subNode?.isPDF}
                             className="form-check-input border-success me-2"
                             onClick={(e) => {
-                              console.log(subNode.isChecked);
                               const { checked } = e.target;
                               if (subNode.isChecked) {
                                 handleCheckboxClickPDF(

@@ -20,7 +20,6 @@ const InsertGRNDetailsInfo = ({
 }) => {
   const { data: grnInfoData } = useGetAllGRNInformationQuery(undefined);
 
-  console.log(purchaseOrderInfo);
   useEffect(() => {
     // Calculate the grand totals when details change
     let calGrandTotalQuantity = 0;
@@ -121,7 +120,6 @@ const InsertGRNDetailsInfo = ({
                                   background: "#F1F5F9",
                                 }}
                                 onKeyUp={(e) => {
-                                  console.log(e.target.value);
                                   setFieldValue(
                                     `detailsData.${index}.itemId`,
                                     e.target.value
@@ -154,7 +152,6 @@ const InsertGRNDetailsInfo = ({
                                   background: "#F1F5F9",
                                 }}
                                 onKeyUp={(e) => {
-                                  console.log(e.target.value);
                                   setFieldValue(
                                     `detailsData.${index}.itemId`,
                                     e.target.value

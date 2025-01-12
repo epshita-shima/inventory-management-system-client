@@ -76,7 +76,7 @@ const DeliveredReturnListData = ({ permission }) => {
         const transferFrom = clientInformation?.find(
           (x) => x._id === row?.transferFromClientId
         );
-        console.log(transferFrom);
+
         return transferFrom ? transferFrom.clientName : "N/A";
       },
       sortable: true,
@@ -89,7 +89,6 @@ const DeliveredReturnListData = ({ permission }) => {
         const transferTo = companyInformation?.find(
           (x) => x._id === row?.transferToCompanyId
         );
-        console.log(transferTo);
         return transferTo ? transferTo.companyName : "N/A";
       },
       sortable: true,
@@ -212,7 +211,7 @@ const DeliveredReturnListData = ({ permission }) => {
         setFilterText("");
       }
     };
-console.log(deliveredReturnInformationData)
+
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2 pe-4">
         {

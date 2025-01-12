@@ -62,7 +62,6 @@ const RawMaterialConsumptionView = ({ permission }) => {
     }
   };
 
-console.log({rawMaterialConsumptionSummaryData})
 
   return (
     <div>

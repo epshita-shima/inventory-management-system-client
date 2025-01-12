@@ -94,7 +94,6 @@ const menuApi = api.injectEndpoints({
     }),
     getSingleChangeParentMenu: builder.query({
       query: (id) => {
-        console.log(id);
         if (id) {
           return `/api/v1/menuitems/singlemenu/changingparent/${id}`;
         } else {

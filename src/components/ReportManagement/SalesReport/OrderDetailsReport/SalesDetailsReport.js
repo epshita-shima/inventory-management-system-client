@@ -66,7 +66,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       name: "Client Name",
       selector: (row) => {
         const clientInfo = clientInformation?.find(
-          (x) => x._id == row?.clientId
+          (x) => x._id === row?.clientId
         );
         return clientInfo ? clientInfo?.clientName : "N/A";
       },
@@ -91,10 +91,10 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       name: "Item Name",
       selector: (row) => {
         const itemName = finishGoodsItemInfo?.find(
-          (x) => row?.detailsData.itemId == x._id
+          (x) => row?.detailsData.itemId === x._id
         );
         const itemSize = itemSizeInfo?.find(
-          (size) => size._id == itemName.sizeId
+          (size) => size._id === itemName.sizeId
         );
         return itemName
           ? itemName?.itemName + ` (${itemSize?.sizeInfo})`
@@ -130,7 +130,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       selector: (row) => {
         const piData = piInformation?.find((x) => x._id === row?.piId);
         const itemDetails = piData?.detailsData.find(
-          (item) => item.itemId == row.detailsData.itemId
+          (item) => item.itemId === row.detailsData.itemId
         );
         return itemDetails ? itemDetails.unitPrice : "N/A";
       },
@@ -144,7 +144,7 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       selector: (row) => {
         const piData = piInformation?.find((x) => x._id === row?.piId);
         const itemDetails = piData?.detailsData.find(
-          (item) => item.itemId == row.detailsData.itemId
+          (item) => item.itemId === row.detailsData.itemId
         );
         return itemDetails
           ? itemDetails.unitPrice * row.detailsData.deliverQty

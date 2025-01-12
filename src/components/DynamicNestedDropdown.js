@@ -15,7 +15,6 @@ const DynamicNestedDropdown = () => {
   const updateDropdownPlacement = () => {
     const buttonRect = buttonRef.current.getBoundingClientRect();
     const dropdownRect = dropdownRef.current.getBoundingClientRect();
-    console.log(buttonRect.left,dropdownRect.width,buttonRef.current, dropdownRef.current)
     if (buttonRect.left < dropdownRect.width) {
       setPlacement('right');
     } else {
@@ -30,7 +29,7 @@ const DynamicNestedDropdown = () => {
       const popperInstance = createPopper(buttonRef.current, dropdownRef.current, {
         placement: placement,
       });
-    console.log(popperInstance)
+
       return () => {
         popperInstance.destroy();
       };

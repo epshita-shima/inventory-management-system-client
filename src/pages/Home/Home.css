@@ -12,10 +12,11 @@
     margin-right: 15px;
 }
 .p-submenu-list{
-     background-color: rgba(21, 253, 4, 0.5);
+     background-color: rgb(54, 239, 41);
     border-radius: 10px;
      padding: 5px;
      margin-left: 6px; 
+     margin-top: 7px;
      border:1px solid #1EDFBD
 }
 .p-submenu-list li{

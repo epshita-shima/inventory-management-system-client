@@ -100,7 +100,7 @@ const handleCFTExcel = (data, rawItemInfo, companyinfo, reportTitle) => {
         (items) => detail.itemId === items._id
       );
       const itemName = matchingItem ? matchingItem.itemName : "";
-      console.log(itemName);
+
       const quantity = detail.cftPerKg;
 
       const values = {

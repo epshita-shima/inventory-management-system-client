@@ -701,14 +701,13 @@ const downloadPaymentReceivedAllSelectedPIPDF = (
   const doc = new jsPDF({
     orientation: "landscape",
   });
-console.log()
   const xCoordinate = 20;
   const labelWidth = 40;
   const textY = 60;
   const finalY = doc.previousAutoTable.finalY || textY;
-console.log(data)
+
   const customerName = customerInfo?.find((x) => x._id === data[0]?.clientId);
-  console.log(customerName)
+
   doc.setFontSize(11);
   doc.setFont("times", "bold");
   doc.text("Client Name", xCoordinate, textY);
@@ -749,7 +748,7 @@ console.log(data)
       const regex = /\(\s*(-?\d+)\s*\)/;
       // Extract text content from HTML string
       const textContent = cellContent?.innerText || cellContent?.textContent;
-      console.log(textContent);
+
       if (rowIndex === totalRows - 1) {
         data.cell.styles.fontStyle = "bold";
         data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
@@ -805,7 +804,7 @@ const downloadDeliveryOrderPDF = (
   reportTitle,
   doInformation
 ) => {
-  console.log(row, data);
+
   const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
   const customerName = customerInfo?.find((x) => x._id === piInfo?.customerID);
 
@@ -846,11 +845,9 @@ const downloadDeliveryOrderPDF = (
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 80;
   const filteredData = data?.filter((item) => item._id === row._id);
-  console.log("Finish Goods:", finishGoods);
-  console.log(filteredData[0]?.detailsData)
+
   const itemNames = filteredData[0]?.detailsData?.map((item) => {
     const foundItem = finishGoods?.find((rawItem) => rawItem._id === item.itemId);
-    console.log("Searching for itemId:", item.itemId, "Found:", foundItem);
     return foundItem; // Assuming finishGoods has itemName field
   });
   const filteredItemSize = itemNames?.map((item) => {
@@ -863,7 +860,7 @@ const downloadDeliveryOrderPDF = (
   const finalRows = filteredData[0]?.detailsData?.map((rows, index) => {
     const itemName = itemNames[index]?.itemName;
     const filteredItemSizes = filteredItemSize[index]?.sizeInfo;
-    console.log(itemName,filteredItemSizes)
+
     return [
       index + 1,
       `${itemName} (${filteredItemSizes})`,
@@ -878,9 +875,7 @@ const downloadDeliveryOrderPDF = (
     },
     0
   );
-  console.log("Final Rows:", finalRows);
 
-  console.log("Total Delivered Quantity:", totalDeliverQty);
   finalRows?.push([
     {
       content: "Total",
@@ -946,7 +941,7 @@ const downloadReturnDeliveredPDF = (
   const transferFrom = clientInformation.find(
     (client) => client._id === row.transferFromClientId
   );
-console.log(itemUnitInformation)
+
   const formatDate = (adjustDate) => {
     const date = new Date(adjustDate);
     const options = { year: "numeric", month: "short", day: "numeric" };
@@ -957,8 +952,6 @@ console.log(itemUnitInformation)
 
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
-
-  const pageWidth = doc.internal.pageSize.getWidth();
 
   const xCoordinate = 20;
   const labelWidth = 40;
@@ -995,15 +988,14 @@ console.log(itemUnitInformation)
   const filteredDoNumber = deliverOrderInformation.find(
     (deliverOrder) => deliverOrder._id === row?.doId
   );
-  console.log('deliverOrderInformation',deliverOrderInformation)
-  console.log('filteredDoNumber',row.doId,filteredDoNumber)
+
   const itemNames = row?.detailsData?.map((item) => {
     const foundItem = finishGoods?.find(
       (rawItem) => rawItem._id === item.itemId
     );
     return foundItem;
   });
-  console.log(itemNames)
+
   const filteredItemSize = itemNames?.map((item) => {
     const foundSize = itemsizeinfo?.find(
       (rawItem) => rawItem._id === item.sizeId
@@ -1015,10 +1007,10 @@ console.log(itemUnitInformation)
     const foundUnit = itemUnitInformation?.find(
       (rawItem) => rawItem._id === item.unitId
     );
-    console.log(foundUnit)
+
     return foundUnit;
   });
-  console.log(filteredItemUnit)
+
   const finalRows = row?.detailsData?.map((rows, index) => {
     const itemName = itemNames[index]?.itemName;
     const filteredItemSizes = filteredItemSize[index]?.sizeInfo;
@@ -1132,7 +1124,7 @@ const downloadAllPDF = (companyinfo, reportTitle) => {
 const downloadInactivePDF = (companyinfo, reportTitle) => {
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
-  console.log(companyinfo);
+ 
   doc.autoTable({
     html: "#my-tableInactive",
     startY: 50,
@@ -1183,7 +1175,7 @@ const getBase64Image = (imgUrl, callback) => {
 };
 
 const downloadImage = async (data, companyinfo, reportTitle) => {
-  console.log(data);
+
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
   const processedData = await Promise.all(
@@ -1243,7 +1235,6 @@ const downloadImage = async (data, companyinfo, reportTitle) => {
     },
 
     didDrawCell: function (data) {
-      console.log(data.cell.minWidth);
       if (data.column.index === 2 && data.cell.section === "body") {
         const imageSize = 30;
         const cellHeight = data.cell.height;
@@ -1269,7 +1260,7 @@ const downloadImage = async (data, companyinfo, reportTitle) => {
 };
 
 const downloadAllImage = async (data, companyinfo, reportTitle) => {
-  console.log(data);
+
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
   const processedData = await Promise.all(
@@ -1331,7 +1322,6 @@ const downloadAllImage = async (data, companyinfo, reportTitle) => {
     },
 
     didDrawCell: function (data) {
-      console.log(data.cell.minWidth);
       if (data.column.index === 2 && data.cell.section === "body") {
         const imageSize = 30;
         const cellHeight = data.cell.height;
@@ -1646,9 +1636,8 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
 };
 
 const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
-  console.log(companyinfo)
+
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -1673,7 +1662,6 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =
           companyinfo?.companyinfo[0]?.companyName.toUpperCase();
-          console.log(companyNameUpper)
       }
     }
 
@@ -1787,9 +1775,8 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
   }
 };
 const addFooterForSalesReturn = (doc, companyinfo, reportTitle) => {
-  console.log(companyinfo)
+
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -1813,7 +1800,7 @@ const addFooterForSalesReturn = (doc, companyinfo, reportTitle) => {
     if (companyinfo ) {
       if (companyinfo[0]?.companyName) {
         var companyNameUpper =companyinfo[0]?.companyName.toUpperCase();
-          console.log(companyNameUpper)
+       
       }
     }
 

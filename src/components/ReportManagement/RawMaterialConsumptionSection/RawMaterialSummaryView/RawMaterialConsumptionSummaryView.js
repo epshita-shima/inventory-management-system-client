@@ -38,7 +38,6 @@ const RawMaterialConsumptionSummaryView = ({
     0
   );
 
-  console.log(filteredDatas);
 
   const columns = [
     {
@@ -59,7 +58,7 @@ const RawMaterialConsumptionSummaryView = ({
     {
       name: "Item Name",
       selector: (row) => {
-        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId == x._id);
+        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId === x._id);
 
         return itemName ? itemName?.itemName : "N/A";
       },
@@ -71,9 +70,9 @@ const RawMaterialConsumptionSummaryView = ({
     {
       name: "Unit",
       selector: (row) => {
-        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId == x._id);
+        const itemName = rawMaterialDataInfo?.find((x) => row?.itemId === x._id);
         const itemUnit = itemUnitInformation?.find(
-          (size) => size._id == itemName?.unitId
+          (size) => size._id === itemName?.unitId
         );
         return itemName ? ` (${itemUnit?.unitInfo})` : "N/A";
       },

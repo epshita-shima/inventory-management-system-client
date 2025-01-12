@@ -8,7 +8,6 @@ const ProductionListHeading = ({
   yesterdayData,
   permission
 }) => {
-  console.log(JSON.stringify(totalProduction))
   const [lastMonthModal, setLastMonthModal] = useState(false);
   const [totalProductionModal, setTotalProductionModal] = useState(false);
   const [lastOneWeekProdactionModal,setLastOneWeekProductionModal]=useState(false)

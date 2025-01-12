@@ -253,7 +253,6 @@ const SupplierInfoList = ({permission}) => {
                     const response = await deleteSupplierInfo(
                       supplierInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",

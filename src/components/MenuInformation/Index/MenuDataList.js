@@ -5,10 +5,11 @@ import MenuList from "./MenuTableData/MenuList";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const MenuDataList = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user } = useGetAllUserQuery(undefined);
+  const { data: user ,isLoading:isUserLoading} = useGetAllUserQuery(undefined);
  
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
@@ -17,9 +18,9 @@ const MenuDataList = () => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
@@ -53,40 +54,41 @@ const MenuDataList = () => {
         permidionData,
         userIdFromSession
       );
-      console.log(permission);
       setPermission(permission);
     } else {
       navigate("/");
     }
   }, [user, navigate]);
 
-  // if (isMenuloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         class="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           class="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
+  if (isUserLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <button
+          class="btn"
+          style={{ backgroundColor: "#2DDC1B", color: "white" }}
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    );
+  }
   
   return (
     <div>
+<LoadingSpineer isLoading={isUserLoading}></LoadingSpineer>
+      <div>
       <MenuList
         permission={permission}
         click={clickhandler}
       />
-      {permission?.isInserted ? (
+      {permission?.isInserted && (
         <div
           className={`position-absolute`}
           style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
@@ -110,9 +112,8 @@ const MenuDataList = () => {
             </a>
           </div>
         </div>
-      ) : (
-        ""
-      )}
+      ) }
+      </div>
     </div>
   );
 };

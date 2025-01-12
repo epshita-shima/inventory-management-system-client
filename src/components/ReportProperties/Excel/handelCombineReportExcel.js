@@ -5,8 +5,6 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Combine Report");
-
-  console.log(data);
   
   const columnsToInclude = [
     "date",
@@ -151,9 +149,6 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
       cell.alignment = { horizontal: "center" };
     });
 
-    // worksheet.addRow(columnsToInclude.map((col) =>
-    //     values[col]
-    // ));
   });
 
   const totalPIQuantity = data.reduce((total, details) => {
@@ -180,26 +175,6 @@ const handelCombineReportExcel = (data, companyinfo, reportTitle) => {
   const grandTotalNetAmount= data.reduce((total, details) => {
     return total + details.totalNetAmount;
   }, 0);
-
-
-  // const totalAmount = data.reduce((total, data) => {
-  //   const paidAmount = data.detailsData.reduce((sum, item) => {
-  //     // Only add the quantity if the paymentStatus is "cash"
-  //     return item.paymentStatus === "cash" ? sum + item.amount : sum;
-  //   }, 0);
-
-  //   return total + paidAmount;
-  // }, 0);
-  // const totalPIQuantity= mainData.reduce((totalQty,item)=>{
-  //   const detailsQty=item.detailsData.reduce((sum,detail)=>sum+detail.quantity,0);
-  //   return totalQty +detailsQty
-  // },0)
-  // const totalAmount= mainData.reduce((totalAmt,item)=>{
-  //   const detailsAmt=item.detailsData.reduce((sum,detail)=>sum+detail.totalAmount,0);
-  //   return totalPIQuantity +detailsAmt
-  // },0)
-
-  // console.log(totalPIQuantity)
 
   const datas = {
     date:  "Grand Total",

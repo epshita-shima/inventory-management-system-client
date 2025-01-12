@@ -65,7 +65,7 @@ export const getProductionColumns = (
       <div className="d-flex justify-content-between align-content-center ">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
-            <div className="dropdown">
+            <div className="dropdown dropup">
               <button
                 className="btn btn-download dropdown-toggle"
                 type="button"
@@ -76,7 +76,7 @@ export const getProductionColumns = (
                 Download
               </button>
               <ul
-                className="dropdown-menu dropdown-menu-end custom-dropdown-menu" // Align dropdown menu properly
+                className="dropdown-menu" // Align dropdown menu properly
                 aria-labelledby={`dropdownMenuButton1-${row.id}`}
               >
                 <li>
@@ -84,20 +84,12 @@ export const getProductionColumns = (
                     className="dropdown-item"
                     href="#"
                     onClick={async () => {
-                      console.log(row);
                       try {
                         const result = await triggerProductionReport(filters);
-                        console.log(result.data);
                         const filteredData = result?.data.filter((x) => {
-                          console.log(
-                            "Production Item Name:",
-                            x.productionItemName,
-                            "Row itemId:",
-                            row.itemId
-                          );
+                        
                           return x.productionItemName === row.itemId;
                         });
-                        console.log(filteredData);
                         const groupData =
                           groupProductionDateByDetails(filteredData);
                         const convertGroupData = Object.values(groupData);
@@ -131,17 +123,12 @@ export const getProductionColumns = (
                     href="#"
                     onClick={async () => {
                       const result = await triggerProductionReport(filters);
-                      console.log(result.data);
+                 
                       const filteredData = result?.data.filter((x) => {
-                        console.log(
-                          "Production Item Name:",
-                          x.productionItemName,
-                          "Row itemId:",
-                          row.itemId
-                        );
+                      
                         return x.productionItemName === row.itemId;
                       });
-                      console.log(filteredData);
+                    
                       const transformedProductionData = filteredData?.flatMap(
                         (piDetails) =>
                           piDetails.detailsData.map((detail) => ({

@@ -22,16 +22,14 @@ const SpecialDelivaryModal = ({
   navigate,
 }) => {
   const itemName = finishGoodsData.find(
-    (item) => item._id == row.detailsData.itemId
+    (item) => item._id === row.detailsData.itemId
   );
-  const sizeDetails = sizeInfo.find((size) => size._id == itemName.sizeId);
+  const sizeDetails = sizeInfo.find((size) => size._id === itemName.sizeId);
   const initialValues = formValues;
-  console.log("formvalues", formValues.detailsData[0].amount);
+  
   const handleSubmit = async (e, values) => {
     e.preventDefault();
-    console.log(formValues);
-    console.log(JSON.stringify(selectedData));
-    if (paymentStatusMood._id == "667d2b983e37e91c4e1f3a1f") {
+    if (paymentStatusMood._id === "667d2b983e37e91c4e1f3a1f") {
       const response = await approveStatus(selectedData);
       if (response?.data?.status === 200) {
         const response = await insertPaymentReceive(formValues);
@@ -44,7 +42,6 @@ const SpecialDelivaryModal = ({
       }
     } else {
       const response = await approveStatus(selectedData);
-      console.log(response);
       if (response?.data?.status === 200) {
         swal("Done", "PI Payment Successfully", "success");
       } else if (response?.error?.status === 400) {
@@ -186,14 +183,7 @@ const SpecialDelivaryModal = ({
                       textAlign: "center",
                     }}
                     onKeyUp={(e) => {
-                      const calCulateTotalAmount =
-                        parseFloat(e.target.value) / row.detail.unitPrice;
-                      console.log(parseFloat(calCulateTotalAmount.toFixed(2)));
-
-                      // setFieldValue(
-                      //   `detailsData.${index}.quantity`,
-                      //   parseFloat(e.target.value)
-                      // );
+                     
                     }}
                   />
                 </div>

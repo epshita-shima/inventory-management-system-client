@@ -15,7 +15,7 @@ const SupplierInsertModal = ({
   aciveBankInfoModal,
   setAciveBankInfoModal
 }) => {
-console.log(acivePaymentModal)
+
   return (
     <div
       class="modal fade"

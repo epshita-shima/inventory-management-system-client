@@ -18,7 +18,7 @@ const InsertProduction = ({
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
-        (detail) => detail.itemId == itemId
+        (detail) => detail.itemId === itemId
       );
       if (itemData) {
         return itemData.cftPerKg;
@@ -118,17 +118,16 @@ const InsertProduction = ({
                               },
                             })}
                             onChange={(e) => {
-                              if(values.receipeQtyRatio == ''  || values.totalBatch ==''){
+                              if(values.receipeQtyRatio === ''  || values.totalBatch ==''){
                                 swal("Not Possible", "Please select Receipe qty ratio OR Fill Total Batch", "warning");
                               }
                              else {
-                              if (values.receipeQtyRatio == 1000  ) {
+                              if (values.receipeQtyRatio === 1000  ) {
                                
                                 const receipeData = receipeOptions.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 if(receipeData){
-                                  console.log("receipeData",receipeData)
                                   const labelData = receipeData
                                     ? receipeData.label
                                     : null;
@@ -193,12 +192,11 @@ const InsertProduction = ({
                                 }
                               
                              
-                              } else if(values.receipeQtyRatio == 938) {
+                              } else if(values.receipeQtyRatio === 938) {
                                 const receipeData = receipeOptionsLessQty.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 if(receipeData){
-                                  console.log("receipeData",receipeData)
                                   const labelData = receipeData
                                     ? receipeData.label
                                     : null;
@@ -206,7 +204,6 @@ const InsertProduction = ({
                                     e.value
                                   );
                                   if(findCFTPerKG){
-                                    console.log(findCFTPerKG)
                                     const calculateAsPerRatio =
                                       (labelData / findCFTPerKG) *
                                       values.totalBatch;
@@ -319,8 +316,7 @@ const InsertProduction = ({
                           const value1 = parseFloat(e.target.value);
                           const value2 = parseFloat(detail.asPerRatio);
                           const calculateExcessOrLess = value1 - value2;
-                          console.log(calculateExcessOrLess);
-                          if (calculateExcessOrLess == 0) {
+                          if (calculateExcessOrLess === 0) {
                             setFieldValue(`detailsData.${index}.less`, 0);
                             setFieldValue(`detailsData.${index}.excess`, 0);
                             setFieldValue(
@@ -391,7 +387,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.excess`}
                         placeholder="Excess"
-                        value={detail?.excess == 0 ? "-" : detail?.excess}
+                        value={detail?.excess === 0 ? "-" : detail?.excess}
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -408,7 +404,7 @@ const InsertProduction = ({
                         type="text"
                         name={`detailsData.${index}.Less`}
                         placeholder="Less"
-                        value={detail?.less == 0 ? "-" : detail?.less}
+                        value={detail?.less === 0 ? "-" : detail?.less}
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",

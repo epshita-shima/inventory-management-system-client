@@ -55,7 +55,6 @@ const CommonParameterForCombineReport = ({
             selected={toDate}
             required
             onChange={(toDate) => {
-              console.log(toDate);
 
               setFilters((prevFilters) => ({
                 ...prevFilters,

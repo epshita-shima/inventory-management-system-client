@@ -11,8 +11,7 @@
 .accordion-item {
   margin: 0 !important;  /* Remove margins around accordion item */
 }
-
-
+ 
 .accordion-header {
   margin: 0 !important;  /* Remove margins for header */
   padding: 0 !important; /* Remove paddings for header */

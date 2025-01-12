@@ -29,7 +29,6 @@ import InsertPurchaseOrder from "../Insert/InsertPurchaseOrder";
 import PurchaseOrderSingleInfo from "./PurchaseOrderSingleInfo";
 import "../Insert/InsertPurchaseOrder.css";
 import UpdatePurchaseOrderInfo from "../Update/UpdatePurchaseOrderInfo";
-import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
@@ -39,7 +38,7 @@ import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
-  console.log(id);
+
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const [activeSupplierModal, setActiveSupplierModal] = useState(false);
@@ -161,7 +160,7 @@ const CommonPurchaseOrderInfo = () => {
         const response = await updatePurchaseOrderInfo(
           purchaseOrderAllInformation
         );
-        console.log(response);
+
         if (response?.data?.status === 200) {
           navigate("/main-view/po-list");
           swal("Done", "Data Save Successfully", "success");
@@ -171,7 +170,7 @@ const CommonPurchaseOrderInfo = () => {
         }
       } else {
         const response = await insertPurchaseOrderInfo(values);
-        console.log(response);
+
         if (response?.data?.status === 200) {
           await createSerialNo(serialData);
           refetch()

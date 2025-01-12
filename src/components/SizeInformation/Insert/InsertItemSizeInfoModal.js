@@ -28,14 +28,13 @@ const InsertItemSizeInfoModal = () => {
   };
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    console.log(values.detailsData);
+
     if (existingUserRoles.includes(sizeInfoData)) {
       alert("This size info already exists!");
       return;
     }
     try {
       const response = await insertItemsize(values.detailsData);
-      console.log(response.data.status);
       if (response.data.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();

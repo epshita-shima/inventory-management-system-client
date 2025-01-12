@@ -36,7 +36,6 @@ const InsertBankInformation = () => {
     e.preventDefault();
     try {
       const response = await insertBankingInfo(values.detailsData);
-      console.log(response?.error?.data?.message);
       if (response?.data?.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();
@@ -152,7 +151,6 @@ const InsertBankInformation = () => {
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(values);
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom"

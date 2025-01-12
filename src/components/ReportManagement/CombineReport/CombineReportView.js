@@ -10,8 +10,9 @@ import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/comp
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
-const CombineReportView = ({ permission }) => {
+const CombineReportView = ({ permission, dropdownMenuStyles }) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -31,8 +32,10 @@ const CombineReportView = ({ permission }) => {
   const { data: supplierInformation } =
     useGetAllSupplierInformationQuery(undefined);
 
-  const [triggerCombineReport, { data: combineReportData }] =
-    useLazyGetManagementCombineReportQuery();
+  const [
+    triggerCombineReport,
+    { data: combineReportData, isLoading: isCombineDataLoading },
+  ] = useLazyGetManagementCombineReportQuery();
 
   useEffect(() => {
     if (executeQuery) {
@@ -42,16 +45,12 @@ const CombineReportView = ({ permission }) => {
   }, [executeQuery]);
 
   const handleApplyFilters = async (updatedFilters) => {
-    console.log(updatedFilters);
     setExecuteQuery(true);
     await triggerCombineReport(updatedFilters);
   };
 
   return (
-    <div
-      className="row px-5 mx-2"
-      // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
+    <div className="row px-5 mx-2">
       {
         <CommonParameterForCombineReport
           fromDate={fromDate}
@@ -64,21 +63,25 @@ const CombineReportView = ({ permission }) => {
           setIsTableDisplay={setIsTableDisplay}
         />
       }
-      {isTableDispaly && (
-        <CombineDataTableReport
-          combineReportData={combineReportData}
-          rawMaterialInfo={rawMaterialInfo}
-          itemUnitInformation={itemUnitInformation}
-          finishGoodsInfo={finishGoodsInfo}
-          itemSizeInfo={itemSizeInfo}
-          permission={permission}
-          companyinfo={companyinfo}
-          piInformation={piInformation}
-          clientInformation={clientInformation}
-          supplierInformation={supplierInformation}
-          filters={filters}
-        ></CombineDataTableReport>
-      )}
+      <LoadingSpineer isLoading={isCombineDataLoading}></LoadingSpineer>
+      <div className={`${isCombineDataLoading ? "d-none" : "d-block"}`}>
+        {isTableDispaly && (
+          <CombineDataTableReport
+            combineReportData={combineReportData}
+            rawMaterialInfo={rawMaterialInfo}
+            itemUnitInformation={itemUnitInformation}
+            finishGoodsInfo={finishGoodsInfo}
+            itemSizeInfo={itemSizeInfo}
+            permission={permission}
+            companyinfo={companyinfo}
+            piInformation={piInformation}
+            clientInformation={clientInformation}
+            supplierInformation={supplierInformation}
+            filters={filters}
+            dropdownMenuStyles={dropdownMenuStyles}
+          ></CombineDataTableReport>
+        )}
+      </div>
     </div>
   );
 };

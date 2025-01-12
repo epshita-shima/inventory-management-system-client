@@ -4,7 +4,6 @@ import { useGetSingleUserQuery, useUpdateUserMutation } from "../../../../redux/
 import swal from "sweetalert";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 const UserActivationModal = ({userId}) => {
-  console.log(userId)
   const { data: singleUser } = useGetSingleUserQuery(userId);
   const [updateData] = useUpdateUserMutation();
   const [ updateUserStatus,setUpdateUserStatus]=useState([])
@@ -101,9 +100,7 @@ const UserActivationModal = ({userId}) => {
                           aria-label="Checkbox for following text input"
                           onClick={async(e)=>{
                             const {checked}=e.target
-                            // const updatedUserData = { ...singleUser, isactive:checked};
-                            // console.log(updatedUserData)
-                            // setUpdateUserStatus(updatedUserData)
+                       
                             setUpdateUserStatus((prevData) => ({
                               ...prevData,
                               isactive: checked,

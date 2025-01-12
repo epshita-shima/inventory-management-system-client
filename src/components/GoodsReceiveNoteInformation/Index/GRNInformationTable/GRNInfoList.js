@@ -19,7 +19,6 @@ import Select from "react-select";
 import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import styles from "./GRNInfoList.css";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { downloadGRNPDF } from "../../../ReportProperties/PDF/handleGRNReport";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
@@ -52,8 +51,6 @@ const GRNInfoList = ({ permission }) => {
   const [pOOptionsData, setPOOptionsData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const animatedComponents = makeAnimated();
   const reportTitle = "GOODS RECEIVE REPORT";
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -65,10 +62,9 @@ const GRNInfoList = ({ permission }) => {
     selectMonth: [],
   });
 
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas, isFetching }] =
     useLazyGetFilteredGRNQuery();
 
-  console.log(JSON.stringify(filteredData));
 
   useEffect(() => {
     const createPODropdown = (options) => {
@@ -273,7 +269,6 @@ const GRNInfoList = ({ permission }) => {
                       const response = await deleteGRNInfo(
                         filteredData?._id
                       ).unwrap();
-                      console.log(response);
                       if (response.status === 200) {
                         swal(
                           "Deleted!",
@@ -365,7 +360,6 @@ const GRNInfoList = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      console.log(filteredData, companyinfo);
                       if (companyinfo?.length !== 0 || undefined) {
                         downloadGRNPDF(
                           filteredData,
@@ -584,7 +578,6 @@ const GRNInfoList = ({ permission }) => {
                 selected={fromDate}
                 required
                 onChange={(fromDate) => {
-                  console.log(fromDate);
                   if (fromDate > new Date()) {
                     swal({
                       title: "Select Valid Date",
@@ -612,7 +605,6 @@ const GRNInfoList = ({ permission }) => {
                 selected={toDate}
                 required
                 onChange={(toDate) => {
-                  console.log(toDate);
 
                   setFilters((prevFilters) => ({
                     ...prevFilters,
@@ -674,7 +666,6 @@ const GRNInfoList = ({ permission }) => {
                         return new Date(year, month, 0).getDate();
                       };
                       const dates = sortedSelectedMonths?.map((option) => {
-                        console.log(option);
 
                         const [selectedYear, selectedMonthNum] = option.value
                           .split("-")
@@ -797,7 +788,6 @@ const GRNInfoList = ({ permission }) => {
         <tbody>
           {Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
-            console.log(key);
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;

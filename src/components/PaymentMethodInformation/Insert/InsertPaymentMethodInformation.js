@@ -111,7 +111,7 @@ const InsertPaymentMethodInformation = ({
                 <tbody>
                   {details && details.length > 0
                     ? details.map((detail, index) => {
-                        console.log(detail);
+                 
                         return (
                           <tr key={index}>
                             <td className="text-center  align-middle">
@@ -342,13 +342,10 @@ const InsertPaymentMethodInformation = ({
                                     },
                                   })}
                                   onChange={(e) => {
-                                    console.log(invoiveByInvoiceNumber);
-                                    console.log(e);
                                     const filterInvoice =
                                       invoiveByInvoiceNumber?.detailsData?.find(
                                         (item) => item.itemId === e.value
                                       );
-                                  console.log(filterInvoice)
                                     const calculateQuantity=detail.amount /filterInvoice?.unitPrice
                                     setFieldValue(
                                       `detailsData.${index}.itemId`,
@@ -410,7 +407,7 @@ const InsertPaymentMethodInformation = ({
                                   const calCulateTotalAmount =
                                     parseFloat(e.target.value) /
                                     detail.unitPrice;
-                                  console.log(parseFloat(calCulateTotalAmount.toFixed(2)))
+                                 
                                   setFieldValue(
                                     `detailsData.${index}.quantity`,
                                    parseFloat(calCulateTotalAmount.toFixed(2))

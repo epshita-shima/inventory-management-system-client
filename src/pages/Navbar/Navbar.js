@@ -33,7 +33,7 @@ const Navbar = ({ data }) => {
     updatedMenuItems.forEach(item => {
       item.isChecked = updateParentCheckedStatus(item.items);
     });
-    console.log(updatedMenuItems)
+  
     setMenuItems(updatedMenuItems);
   }, []); // Run once on component mount
 

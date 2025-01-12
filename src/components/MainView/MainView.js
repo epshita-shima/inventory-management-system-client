@@ -8,7 +8,6 @@ const MainView = ({
   setSingleUserData,
   setChangePassword,
   setResetPassword,
-  setUserIdForChangePassowrd,
 }) => {
   const extraSmallScreenHeight = "50vh";
   const smallToMediumScreenHeight = "80vh";
@@ -29,7 +28,6 @@ const MainView = ({
           setSingleUserData={setSingleUserData}
           setChangePassword={setChangePassword}
           setResetPassword={setResetPassword}
-          setUserIdForChangePassowrd={setUserIdForChangePassowrd}
         ></Home>
         <div style={{ paddingTop: "20px", width: "100%" }}>
           <Outlet></Outlet>

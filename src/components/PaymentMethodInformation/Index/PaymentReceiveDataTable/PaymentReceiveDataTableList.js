@@ -326,13 +326,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         );
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-          // Filter the "cash" items
           const paidQuantityItems = filterMatchedItem
             .flat()
             .filter((item) => item.paymentStatus === "cash");
-
-          console.log(paidQuantityItems);
-          // Calculate total amount for cash and adjustment
 
           const totalQuantity = paidQuantityItems
             .flat()
@@ -341,7 +337,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           return Math.round(totalQuantity * 100) / 100;
         }
 
-        return "N/A"; // Default value if no match is found
+        return "N/A";
       },
       center: true,
       width: "180px",
@@ -383,13 +379,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         );
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-          // Filter the "cash" items
+     
           const adjustmentItems = filterMatchedItem
             .flat()
-            .filter((item) => item.paymentStatus === "adjustment");
-
-          console.log(adjustmentItems);
-          // Calculate total amount for cash and adjustment
+            .filter((item) => item.paymentStatus === "adjustment")
 
           const totalAdjustment = adjustmentItems
             .flat()
@@ -398,7 +391,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           return Math.round(totalAdjustment * 100) / 100;
         }
 
-        return "N/A"; // Default value if no match is found
+        return "N/A"; 
       },
       center: true,
       width: "180px",
@@ -467,7 +460,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
             .reduce((acc, item) => acc + item.quantity, 0);
 
           const netAmount = totalCash - totalAdjustment;
-          console.log(netAmount);
           return Math.round(netAmount * 100) / 100;
         }
 
@@ -497,9 +489,8 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           const totalAdjustment = adjustmentItems
             .flat()
             .reduce((acc, item) => acc + item.amount, 0);
-          console.log(totalCash, totalAdjustment);
           const netAmount = totalCash - totalAdjustment;
-          console.log(netAmount);
+
           return Math.round(netAmount * 100) / 100;
         }
         return "N/A";
@@ -592,7 +583,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       const { piNumber, detailsData } = entry;
       detailsData?.forEach((item) => {
         const { itemId, amount, quantity, paymentStatus } = item;
-        console.log(itemId, amount, quantity, paymentStatus);
         if (!groupedData[piNumber]) {
           groupedData[piNumber] = {};
         }
@@ -666,7 +656,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     return acc;
   }, []);
 
-  console.log(result)
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -864,7 +853,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                     },
                   })}
                   onChange={(e) => {
-                    console.log(e);
+
                     setPiNumber(e.value);
                     setFilters((prevFilters) => ({
                       ...prevFilters,
@@ -1005,7 +994,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                     const filterIPQuantity = matchPiNumber?.detailsData.find(
                       (item) => item.itemId === detail.itemId
                     );
-                    console.log(detail);
+   
                     return (
                       <tr key={`${row.piNumber}-${detail.itemId}`}>
                         {detailIndex === 0 && (

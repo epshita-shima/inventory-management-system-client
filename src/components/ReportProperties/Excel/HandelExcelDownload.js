@@ -5,7 +5,7 @@ const handleDownload = (data, companyinfo,reportTitle) => {
     const fileName=reportTitle.toLowerCase().replace(/\s+/g,'');
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Supplierlist Report');
-console.log({data})
+
     // Merge and center header information
     const headerLength = data.length > 0 ? Object.keys(data[0]).length : 0;
 

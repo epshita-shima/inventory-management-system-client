@@ -93,7 +93,6 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
     });
 
     const response = await insertReturnDelivredInfo(modelData);
-    console.log(response)
     if (response?.data?.status === 200) {
       // await updateFinishGoodsReturnStatus(doDetailsFilteredData);
       swal("Done", "Data Save Successfully", "success");

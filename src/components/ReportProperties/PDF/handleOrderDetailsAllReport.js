@@ -49,7 +49,6 @@ const downloadOrderDetailsAllDataPDF = async (companyinfo, reportTitle) => {
       const cellContent = data.cell.raw;
       // Extract text content from HTML string
       const textContent = cellContent?.innerText || cellContent?.textContent;
-      console.log(textContent);
       if (rowIndex === totalRows - 1) {
         data.cell.styles.fontStyle = "bold";
         data.cell.styles.fillColor = [138, 138, 138]; // Gray line color
@@ -88,8 +87,7 @@ const downloadGoupOrderDetailsPDF = (
   companyinfo,
   reportOrderTitle
 ) => {
-  console.log({ groupedData });
-  console.log({ filteredData });
+
   const doc = new jsPDF();
   const finalRows = [];
   const grandTotalPIQty = calculateGrandTotalPIQty(filteredData);
@@ -125,7 +123,7 @@ const downloadGoupOrderDetailsPDF = (
     if (Array.isArray(groups)) {
       groups.forEach((group, index) => {
         group.detailsData.forEach((detail, detailIndex) => {
-          console.log(group.detailsData.length);
+          
           const formattedDate = detailIndex === 0 ? formatDate(group.piDate) : "";
           const clientName = clientInformation?.filter((client) => client._id === group.customerID)
           .map((filteredItem) => filteredItem.clientName)

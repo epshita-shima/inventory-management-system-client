@@ -24,7 +24,7 @@ const UserDataList = ({
       const userSingleId = JSON.parse(getUserId);
       const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       setPermissionResult(permidionData);
       setUserIdFromLocalStorage(userIdFromSession);
@@ -65,7 +65,7 @@ const UserDataList = ({
         menu?.items?.forEach((subMenu) => {
           
           if(subMenu.items.length <= 0){
-            if(subMenu.label=='User Setting'){
+            if(subMenu.label==='User Setting'){
               userList=subMenu
             }
           }
@@ -73,7 +73,7 @@ const UserDataList = ({
             const userListSubMenu = subMenu?.items.find(
               (subItem) => subItem?.label === 'User Setting'
             );
-            console.log( userListSubMenu)
+         
             if (userListSubMenu) {
               // Set the user list property
               userList = userListSubMenu;
