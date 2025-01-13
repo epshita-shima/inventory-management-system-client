@@ -110,7 +110,7 @@ const UserDataList = ({
         >
           <div className="">
             <a
-              href="/main-view/create-user"
+              href="/main-view/user-setting/create-user"
               target="_blank"
               className="text-white text-center d-flex justify-content-center align-items-center"
               style={{

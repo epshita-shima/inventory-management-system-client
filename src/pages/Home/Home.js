@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import "../../components/NestedDropdown.css";
-import { useGetAllUserQuery, useUpdateMultipleUserFieldMutation } from "../../redux/features/user/userApi";
+import {
+  useGetAllUserQuery,
+  useUpdateMultipleUserFieldMutation,
+} from "../../redux/features/user/userApi";
 import { useEffect } from "react";
 import { Menubar } from "primereact/menubar";
 import "./Home.css";
@@ -9,9 +12,10 @@ import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
-const Home = ({ singleUserData, setChangePassword, setResetPassword}) => {
+import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCollection";
+const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
-const {data:menus}=useGetAllMenuItemsQuery(undefined)
+  const { data: menus } = useGetAllMenuItemsQuery(undefined);
 
   const getMenulistData = localStorage?.getItem("user");
 
@@ -21,18 +25,16 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
     var menuListSingleData = menuListData?.menulist;
   }
 
-  const [setAllMenuData]=useUpdateMultipleUserFieldMutation()
+  const [setAllMenuData] = useUpdateMultipleUserFieldMutation();
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(localStorage.length>0){
+  useEffect(() => {
+    if (localStorage.length > 0) {
+    } else {
+      navigate("/");
+    }
+  }, [navigate]);
 
-    }
-    else{
-      navigate('/')
-    }
-  },[navigate])
-  
   const cardStyle = {
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -66,7 +68,7 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
     const filteredItems = filterItems(menu.items);
     return { ...menu, items: filteredItems };
   });
- 
+
   const handleClick = () => {
     // setShowComponent(true); // Set showComponent state to true to render MyComponent
     setChangePassword(true);
@@ -77,17 +79,18 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
 
   const handleRefreshData = async () => {
     await refetch().then(({ data }) => {
+      console.log(data);
       const userData = data?.filter(
         (item) =>
           item?.username === menuListData?.username &&
           item.password === menuListData?.password
       );
- 
-      if (userData[0]?.roleId === "65d48768a106fcb4f5c28071") {
+
+      if (userData[0]?.roleId === MenuIdCollection.userrole_supperadmin) {
         const updateProperties = (item) => {
-          // Create a new object with the existing properties and set them to true
           const newItem = {
             ...item,
+            id:item._id,
             isChecked: true,
             isInserted: true,
             isUpdated: true,
@@ -104,15 +107,17 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
 
         // Update properties for each item in the menulist
         const updatedUserData = userData.map((item) => {
-          const updatedMenuList = menus?.map((menu) =>
-            updateProperties(menu)
-          );
+          const updatedMenuList = menus?.map((menu) => updateProperties(menu));
           return { ...item, menulist: updatedMenuList };
         });
-        setAllMenuData(updatedUserData)
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+        const userObjectData = updatedUserData[0];
+        console.log(userObjectData)
+        setAllMenuData(updatedUserData);
+        localStorage.setItem("user", JSON.stringify(userObjectData));
       } else {
-        localStorage.setItem("user", JSON.stringify(userData));
+        const userObjectData = userData[0];
+        localStorage.setItem("user", JSON.stringify(userObjectData));
       }
     });
   };
@@ -126,7 +131,6 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
         >
           <div class="d-block d-md-none">
             <div className="d-flex justify-content-between align-items-center">
-          
               <div className="position-relative">
                 <Dropdown>
                   <Dropdown.Toggle
@@ -188,7 +192,6 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
                         />
                       </Dropdown.Menu>
                     </Dropdown>
-              
 
                     <Dropdown.Item
                       href="#"
@@ -210,7 +213,7 @@ const {data:menus}=useGetAllMenuItemsQuery(undefined)
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-             
+
               <span className="d-none d-md-block">
                 {menuListData !== null
                   ? `Hello, ${menuListData?.firstname} ${menuListData?.lastname}`

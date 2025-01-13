@@ -6,6 +6,8 @@ export const MenuIdCollection={
     'supplierinfolist':'665aae8916c2aa11dbc22d6a',
     'clientinfolistId':'665aafed251b2d1d3ebbb4d9',
     'purchaseorderlist':'667d1795a8bc4ef14b3c4a40',
-    'purchaseorderapprove':"6680dbcab71263df8a48c8db"
+    'purchaseorderapprove':"6680dbcab71263df8a48c8db",
+    'supperAdmin':'6628cc5702c618aa74323521',
+    'userrole_supperadmin':'65d48768a106fcb4f5c28071'
 }
 export default MenuIdCollection

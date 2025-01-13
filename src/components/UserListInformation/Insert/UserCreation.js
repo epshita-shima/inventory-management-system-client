@@ -43,7 +43,8 @@ const UserCreation = () => {
     isLoading: menuItemsIsLoading,
   } = useGetAllMenuItemsQuery();
 
-  const { data: serialNo ,refetch:serialRefetch} = useGetSerialNoQuery(undefined);
+  const { data: serialNo, refetch: serialRefetch } =
+    useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
   const [createNewUser] = useCreateUserMutation();
   const navigate = useNavigate();
@@ -99,7 +100,6 @@ const UserCreation = () => {
     );
   }
   function mergePermissions(mainData, permissionsData) {
-
     function mergeDropdownPermissions(mainDropdown, permissionsDropdown) {
       if (!mainDropdown || !permissionsDropdown.length === 0) {
         return [];
@@ -127,12 +127,10 @@ const UserCreation = () => {
     }
 
     return mainData?.map((mainItem) => {
-      const permissionsItem = permissionsData?.find(
-        (permItem) =>
-          permItem.parentIds.reduce((acc, key) => {
-            return key === mainItem._id;
-          }, {})
-        
+      const permissionsItem = permissionsData?.find((permItem) =>
+        permItem.parentIds.reduce((acc, key) => {
+          return key === mainItem._id;
+        }, {})
       );
       if (permissionsItem && mainItem.items && permissionsItem.items) {
         return {
@@ -148,8 +146,8 @@ const UserCreation = () => {
 
   const mergedArray = mergedData?.map((dataItem) => {
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {
-     
       return items?.map((item) => {
+        console.log(item._id);
         const clickedCheckbox = clickedCheckboxes.find(
           (checkbox) => checkbox.childId === item._id
         );
@@ -160,13 +158,13 @@ const UserCreation = () => {
         const del = clickedCheckbox ? clickedCheckbox.isRemoved : false;
         const parentIds = clickedCheckbox ? clickedCheckbox.parentIds : [];
         const trackId = parentIds[1] || parentIds[0] || dataItem._id;
-   
+        const id = item._id;
         // Recursively merge checkboxes into nested items
         const mergedItems = mergeCheckboxIntoDropdown(
           item?.items,
           clickedCheckboxes
         );
-      
+
         const anyChildChecked = mergedItems?.some((child) => child.isChecked);
         const parentIsChecked = anyChildChecked || isChecked || false;
 
@@ -179,6 +177,7 @@ const UserCreation = () => {
           isPDF,
           isRemoved: del,
           parentIds,
+          id,
           items: mergedItems,
         };
       });
@@ -196,7 +195,7 @@ const UserCreation = () => {
 
     // Set the isChecked field for the top parent
     const topParentIsChecked = anyImmediateChildChecked || dataItem.isChecked;
-    
+
     return {
       ...dataItem,
       isChecked: topParentIsChecked,
@@ -204,11 +203,16 @@ const UserCreation = () => {
     };
   });
 
+  console.log({ mergedArray });
+
   const filterCheckedItems = (data) =>
     data
-      ?.filter(item => item.isChecked)
-      .map(item => ({ ...item, items: filterCheckedItems(item.items || []) }));
-  
+      ?.filter((item) => item.isChecked)
+      .map((item) => ({
+        ...item,
+        items: filterCheckedItems(item.items || []),
+      }));
+
   const filteredData = filterCheckedItems(mergedArray);
 
   const handleCreateUser = async (e) => {
@@ -230,7 +234,7 @@ const UserCreation = () => {
 
         return {
           ...itemWithoutId,
-          id:_id,
+          id: _id,
           items: dropdownWithoutIds,
         };
       }),
@@ -266,13 +270,11 @@ const UserCreation = () => {
       ) {
         swal("Done", "Data Save Successfully", "success");
         navigate("/main-view/user-setting");
-        serialRefetch()
+        serialRefetch();
       } else {
         swal("Error", "An error occurred while creating the user", "error");
       }
-      
     }
-  
   };
 
   const handleChange = (e) => {
@@ -317,7 +319,7 @@ const UserCreation = () => {
                   letterSpacing: ".5px",
                 }}
               >
-                 Add user(s)
+                Add user(s)
               </span>
             </p>
 
@@ -352,9 +354,7 @@ const UserCreation = () => {
                         name="firstname"
                         placeholder="User's first name"
                         className="input-with-bottom-border"
-                        value={
-                          formData.firstname
-                        }
+                        value={formData.firstname}
                         onChange={(e) => handleChange(e)}
                         isInvalid={validated && formData.firstname === ""}
                       />
@@ -379,8 +379,7 @@ const UserCreation = () => {
                         name="lastname"
                         placeholder="User's last name"
                         className="input-with-bottom-border"
-                        value={formData.lastname
-                        }
+                        value={formData.lastname}
                         onChange={handleChange}
                         isInvalid={validated && formData.lastname === ""}
                       />
@@ -400,9 +399,7 @@ const UserCreation = () => {
                       name="mobileNo"
                       placeholder="Mobile no"
                       className="input-with-bottom-border"
-                      value={
-                      formData.mobileNo
-                      }
+                      value={formData.mobileNo}
                       onChange={handleChange}
                       isInvalid={validated && formData.lastname === ""}
                     />
@@ -418,7 +415,7 @@ const UserCreation = () => {
                       type="text"
                       placeholder="Password"
                       className="input-with-bottom-border"
-                      value={ password}
+                      value={password}
                       style={{ background: "transparent" }}
                       isInvalid={validated && formData.password === ""}
                     />
@@ -451,14 +448,11 @@ const UserCreation = () => {
                           primary: "#2DDC1B",
                         },
                       })}
-                      value={
-                         options?.find((x) => x.value == formData.roleId)
-                      }
+                      value={options?.find((x) => x.value == formData.roleId)}
                       // style={{ border: "1px solid #2DDC1B" }}
                       // value={typeOption.find((x)=>x.value==itemInformation.itemType)}
                       onChange={(e) => {
-                          setFormData({ ...formData, roleId: e.value });
-                        
+                        setFormData({ ...formData, roleId: e.value });
                       }}
                     ></Select>
 

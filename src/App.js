@@ -59,6 +59,7 @@ function App() {
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
   console.log(userIdForChangePassowrd);
+  // http://localhost:3000/main-view/production-list/update-production-info/677a2c1f52e67d627de4f9f7
   return (
     <div>
       <div className="app-container">
@@ -87,7 +88,7 @@ function App() {
                 path="/main-view/change-password"
                 element={
                   <ChangePasswordModal
-                  menuListData={menuListData}
+                    menuListData={menuListData}
                     userIdForChangePassowrd={userIdForChangePassowrd}
                     singleUserData={singleUserData}
                     setSingleUserData={setSingleUserData}
@@ -96,14 +97,7 @@ function App() {
                   />
                 }
               ></Route>
-              <Route
-                path="/main-view/create-user"
-                element={
-                  <RequireAuth>
-                    <UserCreation></UserCreation>
-                  </RequireAuth>
-                }
-              ></Route>
+
               <Route
                 path="/main-view/user-setting"
                 element={
@@ -118,9 +112,16 @@ function App() {
                   </RequireAuth>
                 }
               ></Route>
-
               <Route
-                path="user-update/:id"
+                path="/main-view//create-user"
+                element={
+                  <RequireAuth>
+                    <UserCreation></UserCreation>
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path="user-setting/user-update/:id"
                 element={
                   <RequireAuth>
                     <SingleUserDisplay />
@@ -132,7 +133,7 @@ function App() {
                 element={
                   <RequireAuth>
                     <InsertRmItemInfo />
-                  </RequireAuth>
+                 </RequireAuth>
                 }
               ></Route>
               <Route
@@ -327,7 +328,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-production-info/:id"
+                path="production-list/update-production-info/:id"
                 element={
                   <RequireAuth>
                     <ProductionCommonPart />

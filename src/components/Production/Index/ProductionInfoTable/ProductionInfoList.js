@@ -29,7 +29,7 @@ import handleProductionExcel from "../../../ReportProperties/Excel/handleProduct
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-
+import '../../Common/ProductionDatePicker.css'
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -123,6 +123,7 @@ const ProductionInfoList = ({ permission }) => {
   const handleApplyFilters = async () => {
     setExecuteQuery(true);
   };
+console.log(permission)
 
   const columns = [
     {
@@ -224,7 +225,7 @@ const ProductionInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-production-info/${filteredData?._id}`);
+                window.open(`production-list/update-production-info/${filteredData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -420,8 +421,8 @@ const ProductionInfoList = ({ permission }) => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
+                className="text-center custom-datepicker-production "
+                calendarClassName="custom-calendar-production"
                 selected={fromDate}
                 required
                 onChange={(fromDate) => {
@@ -447,8 +448,8 @@ const ProductionInfoList = ({ permission }) => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
+                className="text-center custom-datepicker-production "
+                calendarClassName="custom-calendar-production"
                 selected={toDate}
                 required
                 onChange={(toDate) => {

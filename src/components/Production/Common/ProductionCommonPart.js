@@ -203,6 +203,7 @@ const ProductionCommonPart = () => {
     }
     resetForm();
   };
+  
   return (
     <div
       className=" row px-4 mx-4"

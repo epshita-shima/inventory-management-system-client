@@ -53,7 +53,6 @@ const TreeNode = ({
     }
   };
 
-
   return (
     <div style={{position: "relative", overflow: "auto"}}>
       <table className="table table-bordered">

@@ -30,6 +30,7 @@ import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModa
 import handleCheckboxClick from "./../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import "./UserListInfo.js";
+import MenuIdCollection from "../../../Common/MenuIdCollection/MenuIdCollection.js";
 
 const UserListInfo = ({
   setChangePassword,
@@ -239,7 +240,7 @@ const UserListInfo = ({
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`user-update/${user?._id}`);
+                window.open(`user-setting/user-update/${user?._id}`);
                 // handleActiveStatus(activeUser?._id);
               }}
             >
@@ -267,7 +268,7 @@ const UserListInfo = ({
               icon={faGear}
               onClick={() => {
                 console.log(user._id)
-                if ((menuListData._id === user._id) || (menuListData._id==='6628cc5702c618aa74323521')) {
+                if ((menuListData._id === user._id) || (menuListData._id===MenuIdCollection.supperAdmin)) {
                   setResetPassword(true);
                   setChangePassword(false);
                   setUserIdForChangePassowrd(user);
