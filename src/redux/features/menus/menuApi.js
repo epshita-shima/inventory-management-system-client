@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const menuApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllMenuItems: builder.query({
-      query: () => "/api/v1/menuitems",
+      query: () => "/menuitems",
       providesTags: ["getallmenu", "getallchildmenu", "deletemenu","updatenestedmenudata","updatesinglemenudata,updatesingleportionmenu"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -11,7 +11,7 @@ const menuApi = api.injectEndpoints({
     }),
     createMenu: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/menuitems/create/menu",
+        url: "/menuitems/create/menu",
         method: "POST",
         body: payload,
       }),
@@ -30,7 +30,7 @@ const menuApi = api.injectEndpoints({
     updateMenu: builder.mutation({
       query: (payload) => (
         {
-        url: "/api/v1/menuitems/update/menu",
+        url: "/menuitems/update/menu",
         method: "POST",
         body: payload,
       }),
@@ -43,7 +43,7 @@ const menuApi = api.injectEndpoints({
     }),
     updateNestedMenu: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/menuitems/updatenesteditems/menu",
+        url: "/menuitems/updatenesteditems/menu",
         method: "POST",
         body: payload,
       }),
@@ -55,7 +55,7 @@ const menuApi = api.injectEndpoints({
     }),
     updateSingleMenu: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/menuitems/updatesingle-menu",
+        url: "/menuitems/updatesingle-menu",
         method: "PUT",
         body: payload,
       }),
@@ -67,7 +67,7 @@ const menuApi = api.injectEndpoints({
     }),
     updateSingleProtionMenu: builder.mutation({
       query: (payload) => ({
-        url: `/api/v1/menuitems/singlemenu/singleupdate/${payload._id}`,
+        url: `/menuitems/singlemenu/singleupdate/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -86,7 +86,7 @@ const menuApi = api.injectEndpoints({
     getSingleMenu: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/menuitems/singlemenu/${id}`;
+          return `/menuitems/singlemenu/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -95,7 +95,7 @@ const menuApi = api.injectEndpoints({
     getSingleChangeParentMenu: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/menuitems/singlemenu/changingparent/${id}`;
+          return `/menuitems/singlemenu/changingparent/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -103,7 +103,7 @@ const menuApi = api.injectEndpoints({
     }),
     deleteMenuData: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/menuitems/deletemenu/${id}`,
+        url: `/menuitems/deletemenu/${id}`,
         method: "DELETE",
       }),
       transformResponse: (response, meta) => ({

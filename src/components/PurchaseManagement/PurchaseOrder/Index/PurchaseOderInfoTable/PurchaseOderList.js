@@ -259,7 +259,7 @@ const PurchaseOderList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-purchaseinfo/${purchaseInfoData?._id}`);
+                window.open(`po-list/update-purchaseinfo/${purchaseInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

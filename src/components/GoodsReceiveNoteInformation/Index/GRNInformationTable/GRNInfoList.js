@@ -27,6 +27,7 @@ import makeAnimated from "react-select/animated";
 import handleGRNDownload from "../../../ReportProperties/Excel/handleGRNExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+import "./GRNInfoList.css";
 
 const GRNInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
@@ -54,6 +55,7 @@ const GRNInfoList = ({ permission }) => {
   const animatedComponents = makeAnimated();
   const reportTitle = "GOODS RECEIVE REPORT";
   const [executeQuery, setExecuteQuery] = useState(false);
+
   const [filters, setFilters] = useState({
     supplierPONo: "",
     supplierId: "",
@@ -65,6 +67,7 @@ const GRNInfoList = ({ permission }) => {
   const [trigger, { data: filteredDatas, isFetching }] =
     useLazyGetFilteredGRNQuery();
 
+  console.log({ filteredDatas });
 
   useEffect(() => {
     const createPODropdown = (options) => {
@@ -96,39 +99,42 @@ const GRNInfoList = ({ permission }) => {
 
   const groupedData = groupData(filteredData);
 
-  useEffect(() => {
-    if (executeQuery) {
-      setIsTableDisplay(true);
-      trigger(filters); // Trigger the query
-      setExecuteQuery(false); // Reset executeQuery after triggering the query
-    }
-  }, [executeQuery, trigger, filters]);
+  // useEffect(() => {
+  //   if (executeQuery) {
+  //     setIsTableDisplay(true);
+  //     trigger(filters);
+  //     setExecuteQuery(false);
+  //   }
+  // }, [executeQuery, trigger, filters]);
 
-  useEffect(() => {
-    // Check if filteredDatas has been updated
-    if (filteredDatas && filteredDatas.length === 0) {
-      setIsTableDisplay(false);
-      swal({
-        title: "Sorry!",
-        text: "No data found for the selected filters",
-        icon: "warning",
-        button: "OK",
-      });
-    } else {
-      setFilteredData(filteredDatas || []); // Ensure filteredDatas is not null/undefined
-    }
-  }, [filteredDatas]);
+  // useEffect(() => {
+  //   // Check if filteredDatas has been updated
+  //   if (filteredDatas && filteredDatas.length === 0) {
+  //     setIsTableDisplay(false);
+  //     swal({
+  //       title: "Sorry!",
+  //       text: "No data found for the selected filters",
+  //       icon: "warning",
+  //       button: "OK",
+  //     });
+  //   } else {
+  //     setFilteredData(filteredDatas || []); // Ensure filteredDatas is not null/undefined
+  //   }
+  // }, [filteredDatas]);
 
-  useEffect(() => {
-    if (isFetchAfterDeleteData) {
-      // setFilteredData(grnAllInformation);
-      handleApplyFilters();
-      setIsFetchAfterDeleteData(false);
-    }
-  }, [isFetchAfterDeleteData]);
+  // useEffect(() => {
+  //   if (isFetchAfterDeleteData) {
+
+  //     handleApplyFilters();
+  //     setIsFetchAfterDeleteData(false);
+  //   }
+  // }, [isFetchAfterDeleteData]);
 
   const handleApplyFilters = async () => {
-    setExecuteQuery(true);
+    // setExecuteQuery(true);
+    console.log(filters);
+    trigger(filters);
+    setIsTableDisplay(true);
   };
 
   const columns = [
@@ -226,7 +232,7 @@ const GRNInfoList = ({ permission }) => {
                     "error"
                   );
                 } else {
-                  window.open(`update-grn-info/${filteredData?._id}`);
+                  window.open(`grn-list/update-grn-info/${filteredData?._id}`);
                 }
               }}
             >
@@ -326,11 +332,13 @@ const GRNInfoList = ({ permission }) => {
     },
   };
 
-  const filteredItems = filteredData?.filter(
+  const filteredItems = filteredDatas?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
+
+  console.log({ filteredItems });
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -453,308 +461,317 @@ const GRNInfoList = ({ permission }) => {
   }, 0);
   const formattedDate = generateMonths(new Date());
 
+  console.log("Columns:", columns);
+  console.log("Filtered Items:", filteredItems);
   return (
-    <div
-      className={`row px-5 mx-4 ${isLoadingSupplier ? "d-none" : "d-block"}`}
-    >
+    <div className="row px-5 mx-4">
       <div className="col userlist-table mt-4">
-        <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>
+        <LoadingSpineer isLoading={isLoadingSupplier} />
         <div>
           <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
           <hr />
-          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-lg-100 d-md-block">
-            <div className="width-lg-23 width-md-23">
-              <div className="w-100">
-                <label htmlFor="">Supplier Name</label>
-                <br />
-                <div className="w-100">
-                  <Select
-                    class="form-select"
-                    className="w-100"
-                    aria-label="Default select example"
-                    name="poinfo"
-                    options={supplierOptions}
-                    defaultValue={{
-                      label: "Select Supplier Name",
-                      value: 0,
-                    }}
-                    value={supplierOptions.filter(function (option) {
-                      return option.value === selectSupplierName;
-                    })}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        width: "100%",
-                        borderColor: state.isFocused ? "#fff" : "#fff",
-                        border: "1px solid #2DDC1B",
-                      }),
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                        height: "auto",
-                        // overflowY: "scroll",
-                      }),
-                    }}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: "#B8FEB3",
-                        primary: "#2DDC1B",
-                      },
-                    })}
-                    onChange={(e) => {
-                      setFilters((prevFilters) => ({
-                        ...prevFilters,
-                        supplierId: e.value,
-                      }));
-                      setSelectSupplierName(e.value);
-                    }}
-                  ></Select>
+          <div className="d-lg-flex justify-content-lg-between align-items-lg-center">
+            <div className="col-md-12">
+              <div className="row row-cols-1 row-cols-lg-3">
+                <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                  <div className="w-100">
+                    <label htmlFor="">Supplier Name</label>
+                    <br />
+                    <div className="w-100">
+                      <Select
+                        class="form-select"
+                        className="w-100"
+                        aria-label="Default select example"
+                        name="poinfo"
+                        options={supplierOptions}
+                        defaultValue={{
+                          label: "Select Supplier Name",
+                          value: 0,
+                        }}
+                        value={supplierOptions.filter(function (option) {
+                          return option.value === selectSupplierName;
+                        })}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            width: "100%",
+                            borderColor: state.isFocused ? "#fff" : "#fff",
+                            border: "1px solid #2DDC1B",
+                          }),
+                          menu: (provided) => ({
+                            ...provided,
+                            zIndex: 9999,
+                            height: "auto",
+                            // overflowY: "scroll",
+                          }),
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#B8FEB3",
+                            primary: "#2DDC1B",
+                          },
+                        })}
+                        onChange={(e) => {
+                          setFilters((prevFilters) => ({
+                            ...prevFilters,
+                            supplierId: e.value,
+                          }));
+                          setSelectSupplierName(e.value);
+                        }}
+                      ></Select>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div
-              className="width-lg-23 width-md-23"
-              style={{ marginLeft: "18px" }}
-            >
-              <div className="w-100">
-                <label htmlFor="">Supplier PO No</label>
-                <br />
-                <div className="w-100">
-                  <Select
-                    class="form-select"
-                    className="w-100"
-                    aria-label="Default select example"
-                    name="poinfo"
-                    options={pOOptionsData}
-                    defaultValue={{
-                      label: "Select Supplier PONo",
-                      value: 0,
-                    }}
-                    value={pOOptionsData.filter(function (option) {
-                      return option.value === selectSupplierPoNo;
-                    })}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        width: "100%",
-                        borderColor: state.isFocused ? "#fff" : "#fff",
-                        border: "1px solid #2DDC1B",
-                      }),
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                        height: "auto",
-                        // overflowY: "scroll",
-                      }),
-                    }}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: "#B8FEB3",
-                        primary: "#2DDC1B",
-                      },
-                    })}
-                    onChange={(e) => {
-                      setFilters((prevFilters) => ({
-                        ...prevFilters,
-                        supplierPONo: e.value,
-                      }));
-                      setSelectSupplierPoNo(e.value);
-                    }}
-                  ></Select>
+                <div className="col-sm-12 col-md-6 col-lg-3 mb-2">
+                  <div className="w-100">
+                    <label htmlFor="">Supplier PO No</label>
+                    <br />
+                    <div className="w-100">
+                      <Select
+                        class="form-select"
+                        className="w-100"
+                        aria-label="Default select example"
+                        name="poinfo"
+                        options={pOOptionsData}
+                        defaultValue={{
+                          label: "Select Supplier PONo",
+                          value: 0,
+                        }}
+                        value={pOOptionsData.filter(function (option) {
+                          return option.value === selectSupplierPoNo;
+                        })}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            width: "100%",
+                            borderColor: state.isFocused ? "#fff" : "#fff",
+                            border: "1px solid #2DDC1B",
+                          }),
+                          menu: (provided) => ({
+                            ...provided,
+                            zIndex: 9999,
+                            height: "auto",
+                            // overflowY: "scroll",
+                          }),
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#B8FEB3",
+                            primary: "#2DDC1B",
+                          },
+                        })}
+                        onChange={(e) => {
+                          setFilters((prevFilters) => ({
+                            ...prevFilters,
+                            supplierPONo: e.value,
+                          }));
+                          setSelectSupplierPoNo(e.value);
+                        }}
+                      ></Select>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="ms-lg-4 margin-md">
-              <label htmlFor="">From Date</label>
-              <br />
-              <DatePicker
-                dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
-                selected={fromDate}
-                required
-                onChange={(fromDate) => {
-                  if (fromDate > new Date()) {
-                    swal({
-                      title: "Select Valid Date",
-                      text: "Date should be equal or earlier than today",
-                      icon: "warning",
-                      button: "OK",
-                    });
-                  } else {
-                    setFilters((prevFilters) => ({
-                      ...prevFilters,
-                      fromDate: fromDate?.toLocaleDateString("en-CA"),
-                    }));
-                    setFromDate(fromDate?.toLocaleDateString("en-CA"));
-                  }
-                }}
-              />
-            </div>
-            <div className="ms-lg-4 margin-md">
-              <label htmlFor="">To Date</label>
-              <br />
-              <DatePicker
-                dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
-                selected={toDate}
-                required
-                onChange={(toDate) => {
-
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    toDate: toDate?.toLocaleDateString("en-CA"),
-                  }));
-                  setToDate(toDate?.toLocaleDateString("en-CA"));
-                }}
-              />
-            </div>
-            <div
-              className="width-lg-16 margin-md"
-              style={{ marginLeft: "20px" }}
-            >
-              <div className="w-100">
-                <label htmlFor="">Select Month</label>
-                <br />
-                <div className="w-100">
-                  <Select
-                    class="form-select"
-                    className="w-100"
-                    aria-label="Default select example"
-                    name="monthinfo"
-                    components={animatedComponents}
-                    options={formattedDate}
-                    isMulti
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        width: "100%",
-                        borderColor: state.isFocused ? "#fff" : "#fff",
-                        border: "1px solid #2DDC1B",
-                      }),
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                        height: "auto",
-                        // overflowY: "scroll",
-                      }),
-                    }}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: "#B8FEB3",
-                        primary: "#2DDC1B",
-                      },
-                    })}
-                    onChange={(e) => {
-                      const sortedSelectedMonths = e.slice().sort((a, b) => {
-                        if (a.value < b.value) {
-                          return -1;
+                <div className="col-sm-12 col-md-6 col-lg-2 mb-2">
+                  <div className="ms-lg-4 margin-md">
+                    <label htmlFor="">From Date</label>
+                    <br />
+                    <DatePicker
+                      dateFormat="y-MM-dd"
+                      className="text-center custom-datepicker2 "
+                      calendarClassName="custom-calendar2"
+                      selected={fromDate}
+                      required
+                      onChange={(fromDate) => {
+                        if (fromDate > new Date()) {
+                          swal({
+                            title: "Select Valid Date",
+                            text: "Date should be equal or earlier than today",
+                            icon: "warning",
+                            button: "OK",
+                          });
+                        } else {
+                          setFilters((prevFilters) => ({
+                            ...prevFilters,
+                            fromDate: fromDate?.toLocaleDateString("en-CA"),
+                          }));
+                          setFromDate(fromDate?.toLocaleDateString("en-CA"));
                         }
-                        if (a.value > b.value) {
-                          return 1;
-                        }
-                        return 0;
-                      });
-                      const getEndDate = (year, month) => {
-                        return new Date(year, month, 0).getDate();
-                      };
-                      const dates = sortedSelectedMonths?.map((option) => {
-
-                        const [selectedYear, selectedMonthNum] = option.value
-                          .split("-")
-                          .map(Number);
-                        const start = `${selectedYear}-${String(
-                          selectedMonthNum
-                        ).padStart(2, "0")}-01`;
-                        const endDay = getEndDate(
-                          selectedYear,
-                          selectedMonthNum
-                        );
-                        const end = `${selectedYear}-${String(
-                          selectedMonthNum
-                        ).padStart(2, "0")}-${endDay}`;
-                        return { start, end };
-                      });
-                      setFilters((prevFilters) => ({
-                        ...prevFilters,
-                        selectMonth: JSON.stringify(
-                          dates.map((month) => ({
-                            start: month.start,
-                            end: month.end,
-                          }))
-                        ),
-                      }));
-                    }}
-                  ></Select>
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-12 col-md-6 col-lg-2 mb-2">
+                  <div className="ms-lg-4 margin-md">
+                    <label htmlFor="">To Date</label>
+                    <br />
+                    <DatePicker
+                      dateFormat="y-MM-dd"
+                      className="text-center custom-datepicker2 "
+                      calendarClassName="custom-calendar2"
+                      selected={toDate}
+                      required
+                      onChange={(toDate) => {
+                        setFilters((prevFilters) => ({
+                          ...prevFilters,
+                          toDate: toDate?.toLocaleDateString("en-CA"),
+                        }));
+                        setToDate(toDate?.toLocaleDateString("en-CA"));
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-12 col-md-6 col-lg-2 mb-2">
+                  <div className="w-100">
+                    <label htmlFor="">Select Month</label>
+                    <br />
+                    <div className="w-100">
+                      <Select
+                        class="form-select"
+                        className="w-100"
+                        aria-label="Default select example"
+                        name="monthinfo"
+                        components={animatedComponents}
+                        options={formattedDate}
+                        isMulti
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            width: "100%",
+                            borderColor: state.isFocused ? "#fff" : "#fff",
+                            border: "1px solid #2DDC1B",
+                          }),
+                          menu: (provided) => ({
+                            ...provided,
+                            zIndex: 9999,
+                            height: "auto",
+                            // overflowY: "scroll",
+                          }),
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#B8FEB3",
+                            primary: "#2DDC1B",
+                          },
+                        })}
+                        onChange={(e) => {
+                          const sortedSelectedMonths = e
+                            .slice()
+                            .sort((a, b) => {
+                              if (a.value < b.value) {
+                                return -1;
+                              }
+                              if (a.value > b.value) {
+                                return 1;
+                              }
+                              return 0;
+                            });
+                          const getEndDate = (year, month) => {
+                            return new Date(year, month, 0).getDate();
+                          };
+                          const dates = sortedSelectedMonths?.map((option) => {
+                            const [selectedYear, selectedMonthNum] =
+                              option.value.split("-").map(Number);
+                            const start = `${selectedYear}-${String(
+                              selectedMonthNum
+                            ).padStart(2, "0")}-01`;
+                            const endDay = getEndDate(
+                              selectedYear,
+                              selectedMonthNum
+                            );
+                            const end = `${selectedYear}-${String(
+                              selectedMonthNum
+                            ).padStart(2, "0")}-${endDay}`;
+                            return { start, end };
+                          });
+                          setFilters((prevFilters) => ({
+                            ...prevFilters,
+                            selectMonth: JSON.stringify(
+                              dates.map((month) => ({
+                                start: month.start,
+                                end: month.end,
+                              }))
+                            ),
+                          }));
+                        }}
+                      ></Select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div>
-            <button
-              className="border-0 "
-              style={{
-                backgroundColor: isFetching ? "gray" : "#2DDC1B",
-                color: "white",
-                padding: "5px 10px",
-                fontSize: "14px",
-                borderRadius: "5px",
-                width: "100px",
-                height: "38px",
-                marginTop: "25px",
-              }}
-              disabled={isFetching ? true : false}
-              onClick={handleApplyFilters}
-            >
-              Show
-            </button>
+          <div className="col-md-12">
+            <div>
+              <button
+                className="border-0 "
+                style={{
+                  backgroundColor: isFetching ? "gray" : "#2DDC1B",
+                  color: "white",
+                  padding: "5px 10px",
+                  fontSize: "14px",
+                  borderRadius: "5px",
+                  width: "100px",
+                  height: "38px",
+                  marginTop: "25px",
+                }}
+                disabled={isFetching ? true : false}
+                onClick={handleApplyFilters}
+              >
+                Show
+              </button>
 
-            <button
-              className="border-0 "
-              style={{
-                backgroundColor: "red",
-                color: "white",
-                padding: "5px 10px",
-                fontSize: "14px",
-                borderRadius: "5px",
-                width: "100px",
-                height: "38px",
-                marginLeft: "10px",
-                marginTop: "25px",
-              }}
-              onClick={() => {
-                setFromDate(new Date()?.toLocaleDateString("en-CA"));
-                setToDate(new Date()?.toLocaleDateString("en-CA"));
-                setFilters((prevFilters) => ({
-                  ...prevFilters,
-                  supplierPONo: "",
-                  supplierId: "",
-                  fromDate: new Date().toLocaleDateString("en-CA"),
-                  toDate: new Date().toLocaleDateString("en-CA"),
-                  selectMonth: [],
-                }));
-                setSelectSupplierName("");
-                setSelectSupplierPoNo("");
-                setSelectMonth("");
-                setIsTableDisplay(false);
-              }}
-            >
-              Clear
-            </button>
+              <button
+                className="border-0 "
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  padding: "5px 10px",
+                  fontSize: "14px",
+                  borderRadius: "5px",
+                  width: "100px",
+                  height: "38px",
+                  marginLeft: "10px",
+                  marginTop: "25px",
+                }}
+                onClick={() => {
+                  setFromDate(new Date()?.toLocaleDateString("en-CA"));
+                  setToDate(new Date()?.toLocaleDateString("en-CA"));
+                  setFilters((prevFilters) => ({
+                    ...prevFilters,
+                    supplierPONo: "",
+                    supplierId: "",
+                    fromDate: new Date().toLocaleDateString("en-CA"),
+                    toDate: new Date().toLocaleDateString("en-CA"),
+                    selectMonth: [],
+                  }));
+                  setSelectSupplierName("");
+                  setSelectSupplierPoNo("");
+                  setSelectMonth("");
+                  setIsTableDisplay(false);
+                }}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </div>
 
-        {isTableDispaly ? (
+        {/* <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}> */}
+        {isTableDispaly && (
           <div
-            className={`${filteredItems?.length === 0 ? "d-none" : "d-block"}`}
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+            style={{
+              height: "calc(65vh - 120px)",
+              overflowY: "scroll",
+              overflowX: "scroll",
+              border: "1px solid white",
+              backgroundColor: "white",
+            }}
           >
             <DataTable
               columns={columns}
@@ -767,7 +784,9 @@ const GRNInfoList = ({ permission }) => {
               subHeaderComponent={subHeaderComponent}
             />
           </div>
-        ) : null}
+        )}
+
+        {/* </div> */}
       </div>
 
       <table id="my-grn-table" className="d-none">

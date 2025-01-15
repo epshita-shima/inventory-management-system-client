@@ -236,7 +236,7 @@ const ClientInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-client-info/${clientInfoData?._id}`);
+                window.open(`client-list/update-client-info/${clientInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

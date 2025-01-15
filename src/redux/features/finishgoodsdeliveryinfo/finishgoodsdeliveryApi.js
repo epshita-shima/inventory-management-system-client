@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const finishgoodsdeliveryApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllFinishGoodsDeliveryInformation: builder.query({
-      query: () => "/api/v1/finish-goods-delivery",
+      query: () => "/finish-goods-delivery",
       providesTags: [
         "insertfinishgoodsdeliveryinfo",
         "updatefinishgoodsdeliveryinfo",
@@ -17,7 +17,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
 
     getFilteredFinishGoodsDeliveryInfo: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/finish-goods-delivery/filtered",
+        url: "/finish-goods-delivery/filtered",
         params: queryParams,
         providesTags: [
           "insertfinishgoodsdeliveryinfo",
@@ -31,7 +31,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
 
     insertFinishGoodsDeliveryInformation: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/finish-goods-delivery",
+        url: "/finish-goods-delivery",
         method: "POST",
         body: payload,
       }),
@@ -45,7 +45,7 @@ const finishgoodsdeliveryApi = api.injectEndpoints({
     getSingleFinishGoodsDeliveryInformation: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/finish-goods-delivery/${id}`;
+          return `/finish-goods-delivery/${id}`;
         } else {
           throw new Error("DeliveryOrder id is required");
         }

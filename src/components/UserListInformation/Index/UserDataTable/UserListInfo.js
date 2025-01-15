@@ -240,7 +240,7 @@ const UserListInfo = ({
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`user-setting/user-update/${user?._id}`);
+                window.open(`user-list/user-update/${user?._id}`);
                 // handleActiveStatus(activeUser?._id);
               }}
             >

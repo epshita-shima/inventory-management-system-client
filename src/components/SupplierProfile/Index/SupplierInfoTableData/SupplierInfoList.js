@@ -193,7 +193,7 @@ const SupplierInfoList = ({permission}) => {
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (supplierInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -218,7 +218,7 @@ const SupplierInfoList = ({permission}) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-supplier-info/${supplierInfoData?._id}`)
+                window.open(`supplier-list/update-supplier-info/${supplierInfoData?._id}`)
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

@@ -90,7 +90,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
         const updateProperties = (item) => {
           const newItem = {
             ...item,
-            id:item._id,
+            id: item._id,
             isChecked: true,
             isInserted: true,
             isUpdated: true,
@@ -112,7 +112,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
         });
 
         const userObjectData = updatedUserData[0];
-        console.log(userObjectData)
+        console.log(userObjectData);
         setAllMenuData(updatedUserData);
         localStorage.setItem("user", JSON.stringify(userObjectData));
       } else {

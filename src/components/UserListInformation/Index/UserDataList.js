@@ -65,13 +65,13 @@ const UserDataList = ({
         menu?.items?.forEach((subMenu) => {
           
           if(subMenu.items.length <= 0){
-            if(subMenu.label==='User Setting'){
+            if(subMenu.label==='User List'){
               userList=subMenu
             }
           }
           if (subMenu?.label === subMenu?.label) {
             const userListSubMenu = subMenu?.items.find(
-              (subItem) => subItem?.label === 'User Setting'
+              (subItem) => subItem?.label === 'User List'
             );
          
             if (userListSubMenu) {
@@ -110,7 +110,7 @@ const UserDataList = ({
         >
           <div className="">
             <a
-              href="/main-view/user-setting/create-user"
+              href="/main-view/create-user"
               target="_blank"
               className="text-white text-center d-flex justify-content-center align-items-center"
               style={{

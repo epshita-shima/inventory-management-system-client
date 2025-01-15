@@ -78,7 +78,7 @@ const { data: menuItems,isLoading: isMenuloading,refetch } = useGetAllMenuItemsQ
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-menu/${flattenedOptions?.value}`);
+                window.open(`menu-list/update-menu/${flattenedOptions?.value}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useGetAllFinishGoodsDeliveryInformationQuery,} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import '../../../buttonStyle/style.css'
 
 const DeliverReturnCommonPart = () => {
   const navigate=useNavigate()
@@ -167,13 +168,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                 </h2>
                                 <div>
                                   <button
-                                    style={{
-                                      backgroundColor: "#E55566",
-                                      outline: "none",
-                                      border: "none",
-                                      color: "white",
-                                      height: "25px",
-                                    }}
+                                   className="customBackToListButton"
                                     onClick={() => {
                                         navigate('/main-view/list-information');
                                     }}

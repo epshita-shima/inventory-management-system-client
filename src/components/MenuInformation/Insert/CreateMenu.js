@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import '../../../buttonStyle/style.css';
 
 const CreateMenu = () => {
   const { data: menuItems, isLoading: isMenuloading } =
@@ -342,13 +343,7 @@ const CreateMenu = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+               className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/menu-list");
                 }}

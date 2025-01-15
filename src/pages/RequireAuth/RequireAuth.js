@@ -42,7 +42,7 @@ const RequireAuth = ({ children }) => {
   const pathname = new URL(currentUrl).pathname;
   console.log(pathname);
   const matchUrlWithData = (data, url) => {
-    console.log('data',data)
+    console.log("data", data);
     const splitUrl = url.substr(1).split("/");
     const mainView = splitUrl[0];
     const getParentMenu = splitUrl[1];
@@ -51,12 +51,13 @@ const RequireAuth = ({ children }) => {
     console.log(childMenuName);
 
     for (const item of data) {
-      console.log(item?.url , `/${mainView}/${getParentMenu}`);
+      console.log(item?.url);
+      console.log(`/${mainView}/${getParentMenu}`);
+
       if (item.url === url) {
         console.log("item?.url", item?.url, "url:", url);
         return item;
-      }
-       else if (item?.url === `/${mainView}/${getParentMenu}`) {
+      } else if (item?.url === `/${mainView}/${getParentMenu}`) {
         if (childMenuName.includes("update")) {
           console.log("Child menu action: update");
           return item.isUpdated
@@ -65,10 +66,9 @@ const RequireAuth = ({ children }) => {
         } else {
           return null;
         }
-      } else {
-        return null;
-      }
+      } 
     }
+    return null
   };
 
   const matchedItem = matchUrlWithData(data, pathname);

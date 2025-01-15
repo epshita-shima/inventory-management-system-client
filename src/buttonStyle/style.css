@@ -1,0 +1,8 @@
+.customBackToListButton {
+  background-color: #e55566;
+  outline: none;
+  border: none;
+  color: white;
+  height: 25px;
+  border-radius: 5px;
+}

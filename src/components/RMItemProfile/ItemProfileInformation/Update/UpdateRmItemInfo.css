@@ -1,0 +1,15 @@
+.form-check-input:checked {
+  background-color: #28a745; /* Green for Active */
+  border-color: #28a745;
+}
+
+.form-check-input:not(:checked) {
+  background-color: lightgray; /* Red for Inactive */
+  border-color: lightgray;
+}
+
+.form-check-label {
+  font-weight: bold;
+  margin-left: 10px;
+  color: #333;
+}

@@ -21,6 +21,8 @@ import "./InsertCFTInfo.css";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css'
+
 const InsertCFTInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -117,13 +119,7 @@ const InsertCFTInfo = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+               className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/finish-goods-item-list");
                 }}

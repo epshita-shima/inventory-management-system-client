@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const purchaseOrderInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllPurchaseOrderInformation: builder.query({
-        query: () => "/api/v1/purchaseorderinfo",
+        query: () => "/purchaseorderinfo",
         providesTags: ["insertpurchaseorderinfo","updatepurchaseorderinfo","purchaseorderinfostatus","deletepurchaseorderinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const purchaseOrderInfoApi= api.injectEndpoints({
       
     insertPurchaseOrderInformation: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/purchaseorderinfo",
+        url: "/purchaseorderinfo",
         method: "POST",
         body: payload,
       }),
@@ -24,7 +24,7 @@ const purchaseOrderInfoApi= api.injectEndpoints({
     getSinglePurchaseOrderInformation: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/purchaseorderinfo/${id}`;
+          return `/purchaseorderinfo/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -32,7 +32,7 @@ const purchaseOrderInfoApi= api.injectEndpoints({
     }),
     updatePurchaseOrderInformation: builder.mutation({
       query: (payload) => ({
-        url: `/api/v1/purchaseorderinfo/${payload._id}`,
+        url: `/purchaseorderinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -45,7 +45,7 @@ const purchaseOrderInfoApi= api.injectEndpoints({
 
     updatePurchaseOrderInformationStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/purchaseorderinfo",
+        url: "/purchaseorderinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -58,7 +58,7 @@ const purchaseOrderInfoApi= api.injectEndpoints({
 
     deletePurchaseOrderInformation: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/purchaseorderinfo/${id}`,
+        url: `/purchaseorderinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletepurchaseorderinfo"],

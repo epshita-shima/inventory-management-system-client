@@ -30,7 +30,7 @@ import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInforma
 import getInitialFormValues from "../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
-
+import '../../../buttonStyle/style.css'
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
@@ -350,13 +350,7 @@ const PaymentMethodSingleEntry = () => {
                             </h2>
                             <div>
                               <button
-                                style={{
-                                  backgroundColor: "#E55566",
-                                  outline: "none",
-                                  border: "none",
-                                  color: "white",
-                                  height: "25px",
-                                }}
+                               className="customBackToListButton"
                                 onClick={() => {
                                   navigate("/main-view/payment-received-list");
                                 }}

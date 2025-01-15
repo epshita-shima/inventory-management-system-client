@@ -239,7 +239,7 @@ const RMItemInfoList = ({ permission }) => {
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (rmItemInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -252,10 +252,10 @@ const RMItemInfoList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  rmItemInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  rmItemInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  rmItemInfoData?.items?.length == 0
+                  rmItemInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -264,7 +264,7 @@ const RMItemInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-items-raw-material/${rmItemInfoData?._id}`);
+                window.open(`raw-material-item-list/update-items-raw-material/${rmItemInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

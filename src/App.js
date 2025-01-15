@@ -51,14 +51,16 @@ import RawMaterialConsumptionTable from "./components/ReportManagement/RawMateri
 import CombineReportTable from "./components/ReportManagement/CombineReport/CombineReportTable";
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
+import useInactivityLogout from "./components/AutoLogout/useInactivityLogout";
 function App() {
+  useInactivityLogout();
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
   const [userIdForChangePassowrd, setUserIdForChangePassowrd] = useState([]);
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
-  console.log(userIdForChangePassowrd);
+ 
   // http://localhost:3000/main-view/production-list/update-production-info/677a2c1f52e67d627de4f9f7
   return (
     <div>
@@ -99,7 +101,7 @@ function App() {
               ></Route>
 
               <Route
-                path="/main-view/user-setting"
+                path="/main-view/user-list"
                 element={
                   <RequireAuth>
                     <UserDataList
@@ -113,7 +115,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="/main-view//create-user"
+                path="/main-view/create-user"
                 element={
                   <RequireAuth>
                     <UserCreation></UserCreation>
@@ -121,7 +123,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="user-setting/user-update/:id"
+                path="user-list/user-update/:id"
                 element={
                   <RequireAuth>
                     <SingleUserDisplay />
@@ -145,7 +147,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-items-raw-material/:id"
+                path="raw-material-item-list/update-items-raw-material/:id"
                 element={
                   <RequireAuth>
                     <UpdateRmItemInfo />
@@ -170,7 +172,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-finish-goods-items/:id"
+                path="finish-goods-item-list/update-finish-goods-items/:id"
                 element={
                   <RequireAuth>
                     <UpdateFgItemInfo />
@@ -195,7 +197,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-cft-info/:id"
+                path="cft-info-list/update-cft-info/:id"
                 element={
                   <RequireAuth>
                     <UpdateCFTInfo />
@@ -220,7 +222,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-supplier-info/:id"
+                path="supplier-list/update-supplier-info/:id"
                 element={
                   <RequireAuth>
                     <InsertSupplierInformation />
@@ -245,7 +247,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-client-info/:id"
+                path="client-list/update-client-info/:id"
                 element={
                   <RequireAuth>
                     <InsertClientInformation />
@@ -270,7 +272,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-purchaseinfo/:id"
+                path="po-list/update-purchaseinfo/:id"
                 element={
                   <RequireAuth>
                     <CommonPurchaseOrderInfo />
@@ -303,7 +305,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-grn-info/:id"
+                path="grn-list/update-grn-info/:id"
                 element={
                   <RequireAuth>
                     <InsertGRNInfo />
@@ -370,7 +372,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-invoice/:id"
+                path="invoice-list/update-invoice/:id"
                 element={
                   <RequireAuth>
                     <SalesManagementCommonPart />
@@ -403,7 +405,7 @@ function App() {
               ></Route>
 
               <Route
-                path="update-payment-received/:id"
+                path="payment-received-list/update-payment-received/:id"
                 element={
                   <RequireAuth>
                     <PaymentMethodSingleEntry />
@@ -445,7 +447,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="finish-goods-delivery-order-info/:id"
+                path="list-page/update-finish-goods-delivery-order-info/:id"
                 element={
                   <RequireAuth>
                     <FinishGoodsDeliveryCommonPart />
@@ -491,7 +493,7 @@ function App() {
                 }
               ></Route>
               <Route
-                path="update-menu/:id"
+                path="menu-list/update-menu/:id"
                 element={
                   <RequireAuth>
                     <UpdateMenu />

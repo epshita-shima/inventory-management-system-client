@@ -24,6 +24,7 @@ import {
   useGetSerialNoQuery,
 } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css';
 
 const UserCreation = () => {
   const { id } = useParams();
@@ -67,6 +68,7 @@ const UserCreation = () => {
     lastname: "",
     mobileNo: "",
     password: "LC00",
+    hashPassword:"LC00",
     roleId: "",
     username: "",
     isactive: true,
@@ -269,7 +271,7 @@ const UserCreation = () => {
         responseUser.data?.status === 200
       ) {
         swal("Done", "Data Save Successfully", "success");
-        navigate("/main-view/user-setting");
+        navigate("/main-view/user-list");
         serialRefetch();
       } else {
         swal("Error", "An error occurred while creating the user", "error");
@@ -324,15 +326,9 @@ const UserCreation = () => {
             </p>
 
             <button
-              style={{
-                backgroundColor: "#E55566",
-                outline: "none",
-                border: "none",
-                color: "white",
-                height: "25px",
-              }}
+              className="customBackToListButton"
               onClick={() => {
-                navigate("/main-view/user-setting");
+                navigate("/main-view/user-list");
               }}
             >
               <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon>{" "}

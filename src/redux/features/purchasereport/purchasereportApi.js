@@ -4,7 +4,7 @@ const purchasereportApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getPurchaseDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/purchase-report/details",
+        url: "/purchase-report/details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -13,7 +13,7 @@ const purchasereportApi = api.injectEndpoints({
     }),
     getPurchaseSummaryReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/purchase-report/summary",
+        url: "/purchase-report/summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,

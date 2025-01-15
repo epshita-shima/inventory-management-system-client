@@ -4,7 +4,7 @@ const combinereportApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getManagementCombineReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/combine-report",
+        url: "/combine-report",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,

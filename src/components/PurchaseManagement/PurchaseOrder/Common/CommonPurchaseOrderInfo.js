@@ -35,6 +35,7 @@ import {
 } from "../../../../redux/features/serialgenerate/serialApi";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../../buttonStyle/style.css';
 
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
@@ -264,13 +265,7 @@ const CommonPurchaseOrderInfo = () => {
                                 </h2>
                                 <div>
                                   <button
-                                    style={{
-                                      backgroundColor: "#E55566",
-                                      outline: "none",
-                                      border: "none",
-                                      color: "white",
-                                      height: "25px",
-                                    }}
+                                   className="customBackToListButton"
                                     onClick={() => {
                                       navigate("/main-view/po-list");
                                     }}

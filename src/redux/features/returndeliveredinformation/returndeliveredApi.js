@@ -3,14 +3,14 @@ import { api } from "../../api/apiSlice";
 const returndeliveredApi = api.injectEndpoints({
     endpoints: (builder) => ({
       getAllReturnDeliveredInformation: builder.query({
-        query: () => "/api/v1/return-deliver",
+        query: () => "/return-deliver",
         providesTags: ["insertdeliveryorderinfo","deletereturndeliveredinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
       }),
       insertReturnDeliveredInformation: builder.mutation({
         query: (payload) => ({
-          url: "/api/v1/return-deliver",
+          url: "/return-deliver",
           method: "POST",
           body: payload,
         }),
@@ -23,7 +23,7 @@ const returndeliveredApi = api.injectEndpoints({
       getReturnDelivredInformationById: builder.query({
         query: (id) => {
           if (id) {
-            return `/api/v1/return-deliver/${id}`;
+            return `/return-deliver/${id}`;
           } else {
             throw new Error("DeliveryOrder id is required");
           }
@@ -31,7 +31,7 @@ const returndeliveredApi = api.injectEndpoints({
       }),
       deleteReturnDeliveredInformation: builder.mutation({
         query: (id) => ({
-          url: `/api/v1/return-deliver/${id}`,
+          url: `/return-deliver/${id}`,
           method: "DELETE",
         }),
         invalidatesTags: ["deletereturndeliveredinfo"],

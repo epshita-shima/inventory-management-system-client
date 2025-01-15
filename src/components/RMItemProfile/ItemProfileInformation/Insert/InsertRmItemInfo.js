@@ -19,6 +19,7 @@ import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryI
 import { useInsertRMItemInformationMutation } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Update/InsertCategoryInformationModal";
+import '../../../../buttonStyle/style.css';
 
 const InsertRmItemInfo = () => {
   const ArrayHelperRef = useRef();
@@ -136,13 +137,7 @@ const InsertRmItemInfo = () => {
           </div>
           <div>
             <button
-              style={{
-                backgroundColor: "#E55566",
-                outline: "none",
-                border: "none",
-                color: "white",
-                height: "25px",
-              }}
+             className="customBackToListButton"
               onClick={() => {
                 navigate("/main-view/raw-material-item-list");
               }}

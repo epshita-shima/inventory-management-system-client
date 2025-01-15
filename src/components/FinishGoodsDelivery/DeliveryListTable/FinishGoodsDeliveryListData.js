@@ -202,7 +202,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`finish-goods-delivery-order-info/${row?._id}`);
+                window.open(`list-page/update-finish-goods-delivery-order-info/${row?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

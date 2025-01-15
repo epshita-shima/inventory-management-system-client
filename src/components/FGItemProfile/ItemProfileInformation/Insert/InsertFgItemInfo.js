@@ -19,6 +19,8 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useNavigate } from "react-router-dom";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../../buttonStyle/style.css';
+
 const InsertFgItemInfo = () => {
   const ArrayHelperRef = useRef();
   const [startDate, setStartDate] = useState(
@@ -127,23 +129,13 @@ const InsertFgItemInfo = () => {
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
+             
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
                   letterSpacing: ".5px",
+                  fontSize:'20px'
                 }}
               >
                 Create Finish Goods Item Info
@@ -151,13 +143,7 @@ const InsertFgItemInfo = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+              className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/finish-goods-item-list");
                 }}
@@ -209,7 +195,7 @@ const InsertFgItemInfo = () => {
                       <label htmlFor="">Opening Stock Date</label>
                       <DatePicker
                         dateFormat="y-MM-dd"
-                        className="text-center custom-datepicker ms-2"
+                        className="text-center custom-datepicker-fgProduction ms-2"
                         //   value={isEdit ? updateOpeningStore?.OpeningDate : startDate}
                         calendarClassName="custom-calendar"
                         selected={startDate}

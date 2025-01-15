@@ -24,7 +24,7 @@ import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import LoadingSpineer from './../../Common/LoadingSpinner/LoadingSpineer';
-
+import '../../../buttonStyle/style.css';
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();
@@ -306,13 +306,7 @@ const InsertGRNInfo = () => {
                             </h2>
                             <div>
                               <button
-                                style={{
-                                  backgroundColor: "#E55566",
-                                  outline: "none",
-                                  border: "none",
-                                  color: "white",
-                                  height: "25px",
-                                }}
+                              className="customBackToListButton"
                                 onClick={() => {
                                   navigate("/main-view/grn-list");
                                 }}

@@ -21,6 +21,7 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { InputGroup, Form } from "react-bootstrap";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../../buttonStyle/style.css';
 
 const UpdateFgItemInfo = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -32,7 +33,7 @@ const UpdateFgItemInfo = () => {
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
   const [updateItemInfo] = useUpdateItemInfoMutation();
   const navigate = useNavigate();
- const updatebyUser = getMakebyUser();
+  const updatebyUser = getMakebyUser();
 
   useEffect(() => {
     setSingleItemInfoData(singleItemData);
@@ -88,32 +89,18 @@ const UpdateFgItemInfo = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      style={{
-        overflowY: "hidden",
-        height: "calc(100vh - 120px)",
-      }}
+   
     >
       {<LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer>}
       <div className="shadow-lg  p-5 rounded-4">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
-            <FontAwesomeIcon
-              style={{
-                fontSize: "14px",
-                color: "#000",
-                // backgroundColor: "#00B987",
-                backgroundColor: "#2DDC1B",
-                borderRadius: "50px",
-                padding: "3px",
-              }}
-              icon={faPlus}
-            />
-            &nbsp;
             <span
               style={{
                 color: "#000",
                 fontWeight: "700",
                 letterSpacing: ".5px",
+                fontSize: "20px",
               }}
             >
               Update Finish Goods Item Info
@@ -121,13 +108,7 @@ const UpdateFgItemInfo = () => {
           </div>
           <div>
             <button
-              style={{
-                backgroundColor: "#E55566",
-                outline: "none",
-                border: "none",
-                color: "white",
-                height: "25px",
-              }}
+              className="customBackToListButton"
               onClick={() => {
                 navigate("/main-view/finish-goods-item-list");
               }}
@@ -137,7 +118,7 @@ const UpdateFgItemInfo = () => {
             </button>
           </div>
         </div>
-        <div></div>
+
 
         <div className="mt-3 table-responsive-custom">
           <Form
@@ -147,246 +128,289 @@ const UpdateFgItemInfo = () => {
             }}
           >
             <div className="d-flex justify-content-center align-items-center w-100 ">
-              <div className="card shadow-lg w-50 p-5">
-                <Form.Label
-                  htmlFor="inputPassword5"
-                  style={{ color: "#032339", letterSpacing: "1px" }}
-                >
-                  Item Name
-                </Form.Label>
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    placeholder="Username"
-                    name="username"
-                    required
-                    aria-label="Recipient's username"
-                    aria-describedby="basic-addon2"
-                    value={singleItemInfoData?.itemName}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setSingleItemInfoData((prevData) => ({
-                        ...prevData,
-                        itemName: e.target.value,
-                        updateBy: updatebyUser,
-                        updateDate: new Date(),
-                      }));
-                    }}
-                    style={{
-                      border: "1px solid #B8FEB3",
-                      background: "white",
-                    }}
-                  />
-                </InputGroup>
+              <div className="card shadow-lg w-75 p-5">
+                <div className="col-md-12">
+                  <div className="row row-cols-1 row-cols-lg-3">
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <Form.Label
+                        htmlFor="inputPassword5"
+                        style={{ color: "#032339", letterSpacing: "1px" }}
+                      >
+                        Item Name
+                      </Form.Label>
+                      <InputGroup className="mb-3">
+                        <Form.Control
+                          placeholder="Username"
+                          name="username"
+                          required
+                          aria-label="Recipient's username"
+                          aria-describedby="basic-addon2"
+                          value={singleItemInfoData?.itemName}
+                          autoComplete="off"
+                          onChange={(e) => {
+                            setSingleItemInfoData((prevData) => ({
+                              ...prevData,
+                              itemName: e.target.value,
+                              updateBy: updatebyUser,
+                              updateDate: new Date(),
+                            }));
+                          }}
+                          style={{
+                            
+                            background: "white",
+                            border: "1px solid #2DDC1B",
+                            height:'35px',
+                            borderRadius:'5px'
+                          }}
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <div className="w-100 d-flex justify-content-between ">
+                        <div className="w-100">
+                          <Form.Label
+                            htmlFor="inputPassword5"
+                            style={{ color: "#032339", letterSpacing: "1px" }}
+                          >
+                            Size Info
+                          </Form.Label>
+                          <Select
+                            class="form-select"
+                            className=""
+                            aria-label="Default select example"
+                            name="sizeinfo"
+                            options={itemSizeConvertedOptions}
+                            value={itemSizeConvertedOptions.find(
+                              (x) => x.value === singleItemInfoData?.sizeId
+                            )}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                borderColor: state.isFocused ? "#fff" : "#fff",
+                                border: "1px solid #2DDC1B",
+                              }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                                height: "200px",
+                                overflowY: "scroll",
+                              }),
+                            }}
+                            theme={(theme) => ({
+                              ...theme,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#B8FEB3",
+                                primary: "#2DDC1B",
+                              },
+                            })}
+                            onChange={(e) => {
+                              setSingleItemInfoData((prevData) => ({
+                                ...prevData,
+                                sizeId: e.value,
+                                updateBy: updatebyUser,
+                                updateDate: new Date(),
+                              }));
+                            }}
+                          ></Select>
+                        </div>
+                        <div className="ms-2 mt-5">
+                          <FontAwesomeIcon
+                            className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
+                            style={{
+                              background: "#2DDC1B",
+                            }}
+                            icon={faPlus}
+                            data-toggle="modal"
+                            data-target="#exampleModal1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <div className="w-100 d-flex justify-content-between ">
+                        <div className="w-100">
+                          <Form.Label
+                            htmlFor="inputPassword5"
+                            style={{ color: "#032339", letterSpacing: "1px" }}
+                          >
+                            Unit Info
+                          </Form.Label>
+                          <Select
+                            class="form-select"
+                            className=" mb-3"
+                            aria-label="Default select example"
+                            name="unitinfo"
+                            options={itemUnitConvertedOptions}
+                            value={itemUnitConvertedOptions.find(
+                              (x) => x.value === singleItemInfoData?.unitId
+                            )}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                borderColor: state.isFocused ? "#fff" : "#fff",
+                                border: "1px solid #2DDC1B",
+                              }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999, // Increase the z-index value here
+                              }),
+                            }}
+                            theme={(theme) => ({
+                              ...theme,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#B8FEB3",
+                                primary: "#2DDC1B",
+                              },
+                            })}
+                            onChange={(e) => {
+                              setSingleItemInfoData((prevData) => ({
+                                ...prevData,
+                                unitId: e.value,
+                                updateBy: updatebyUser,
+                                updateDate: new Date(),
+                              }));
+                            }}
+                          ></Select>
+                        </div>
+                        <div className="ms-2 mt-5">
+                          <FontAwesomeIcon
+                            className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
+                            style={{
+                              background: "#2DDC1B",
+                            }}
+                            icon={faPlus}
+                            data-toggle="modal"
+                            data-target="#exampleModal3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <Form.Label
+                        htmlFor="inputPassword5"
+                        style={{ color: "#032339", letterSpacing: "1px" }}
+                      >
+                        Opening Stock Date
+                      </Form.Label>
 
-                <div className="w-100 d-flex justify-content-between mt-2">
-                  <div className="w-100">
-                    <Form.Label
-                      htmlFor="inputPassword5"
-                      style={{ color: "#032339", letterSpacing: "1px" }}
-                    >
-                      Size Info
-                    </Form.Label>
-                    <Select
-                      class="form-select"
-                      className=" mb-3"
-                      aria-label="Default select example"
-                      name="sizeinfo"
-                      options={itemSizeConvertedOptions}
-                      value={itemSizeConvertedOptions.find(
-                        (x) => x.value === singleItemInfoData?.sizeId
-                      )}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          borderColor: state.isFocused ? "#fff" : "#fff",
-                          border: "1px solid #2DDC1B",
-                        }),
-                        menu: (provided) => ({
-                          ...provided,
-                          zIndex: 9999,
-                          height: "200px",
-                          overflowY: "scroll",
-                        }),
-                      }}
-                      theme={(theme) => ({
-                        ...theme,
-                        colors: {
-                          ...theme.colors,
-                          primary25: "#B8FEB3",
-                          primary: "#2DDC1B",
-                        },
-                      })}
-                      onChange={(e) => {
-                        setSingleItemInfoData((prevData) => ({
-                          ...prevData,
-                          sizeId: e.value,
-                          updateBy: updatebyUser,
-                          updateDate: new Date(),
-                        }));
-                      }}
-                    ></Select>
+                      <div className="mb-2">
+                        <DatePicker
+                          dateFormat="y-MM-dd"
+                          className="text-center custom-datepicker-fgProduction"
+                          calendarClassName="custom-calendar"
+                          selected={singleItemInfoData?.openingDate}
+                          value={singleItemInfoData?.openingDate}
+                          required
+                          onChange={(startDate) => {
+                            if (startDate > new Date()) {
+                              swal({
+                                title: "Select Valid Date",
+                                text: "Date should be equal or earlier than today",
+                                icon: "warning",
+                                button: "OK",
+                              });
+                            } else {
+                              setStartDate(
+                                startDate.toLocaleDateString("en-CA")
+                              );
+                              setSingleItemInfoData((prevData) => ({
+                                ...prevData,
+                                openingDate:
+                                  startDate.toLocaleDateString("en-CA"),
+                                updateBy: updatebyUser,
+                                updateDate: new Date(),
+                              }));
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <Form.Label
+                        htmlFor="inputPassword5"
+                        style={{ color: "#032339", letterSpacing: "1px" }}
+                      >
+                        Opening Stock
+                      </Form.Label>
+                      <InputGroup className="mb-3">
+                        <Form.Control
+                          name="opening-stock"
+                          required
+                          aria-label="Recipient's opening stock"
+                          aria-describedby="basic-addon2"
+                          value={singleItemInfoData?.openingStock}
+                          autoComplete="off"
+                          onChange={(e) => {
+                            setSingleItemInfoData((prevData) => ({
+                              ...prevData,
+                              openingStock: e.target.value,
+                              updateBy: updatebyUser,
+                              updateDate: new Date(),
+                            }));
+                          }}
+                          style={{
+                            border: "1px solid #2DDC1B",
+                            height:'35px',
+                            borderRadius:'5px',
+                            background: "white",
+                          }}
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
+                      <Form.Label
+                        htmlFor="inputPassword5"
+                        style={{ color: "#032339", letterSpacing: "1px" }}
+                      >
+                        Production Qty(Per Batch)
+                      </Form.Label>
+                      <InputGroup className="mb-3">
+                        <Form.Control
+                          name="productionQtyPerBatch"
+                          required
+                          aria-label="Recipient's production qty per batch"
+                          aria-describedby="basic-addon2"
+                          value={singleItemInfoData?.productionQtyPerBatch}
+                          autoComplete="off"
+                          onChange={(e) => {
+                            setSingleItemInfoData((prevData) => ({
+                              ...prevData,
+                              productionQtyPerBatch: e.target.value,
+                              updateBy: updatebyUser,
+                              updateDate: new Date(),
+                            }));
+                          }}
+                          style={{
+                            border: "1px solid #2DDC1B",
+                            height:'35px',
+                            borderRadius:'5px',
+                            background: "white",
+                          }}
+                        />
+                      </InputGroup>
+                    </div>
                   </div>
-                  <div className="ms-2 mt-5">
-                    <FontAwesomeIcon
-                      className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
+                  <div className="d-flex justify-content-center align-items-center mt-4 w-100">
+                    <button
+                      type="submit"
+                      form="itemcreation-form"
+                      className="border-0 "
                       style={{
-                        background: "#2DDC1B",
+                        backgroundColor: "#2DDC1B",
+                        color: "white",
+                        padding: "9px 10px",
+                        fontSize: "14px",
+                        borderRadius: "5px",
+                        width: "15%",
                       }}
-                      icon={faPlus}
-                      data-toggle="modal"
-                      data-target="#exampleModal1"
-                    />
+                    >
+                      Save
+                    </button>
                   </div>
                 </div>
 
-                <div className="w-100 d-flex justify-content-between mt-2">
-                  <div className="w-100">
-                    <Form.Label
-                      htmlFor="inputPassword5"
-                      style={{ color: "#032339", letterSpacing: "1px" }}
-                    >
-                      Unit Info
-                    </Form.Label>
-                    <Select
-                      class="form-select"
-                      className=" mb-3"
-                      aria-label="Default select example"
-                      name="unitinfo"
-                      options={itemUnitConvertedOptions}
-                      value={itemUnitConvertedOptions.find(
-                        (x) => x.value === singleItemInfoData?.unitId
-                      )}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          borderColor: state.isFocused ? "#fff" : "#fff",
-                          border: "1px solid #2DDC1B",
-                        }),
-                        menu: (provided) => ({
-                          ...provided,
-                          zIndex: 9999, // Increase the z-index value here
-                        }),
-                      }}
-                      theme={(theme) => ({
-                        ...theme,
-                        colors: {
-                          ...theme.colors,
-                          primary25: "#B8FEB3",
-                          primary: "#2DDC1B",
-                        },
-                      })}
-                      onChange={(e) => {
-                        setSingleItemInfoData((prevData) => ({
-                          ...prevData,
-                          unitId: e.value,
-                          updateBy: updatebyUser,
-                          updateDate: new Date(),
-                        }));
-                      }}
-                    ></Select>
-                  </div>
-                  <div className="ms-2 mt-5">
-                    <FontAwesomeIcon
-                      className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
-                      style={{
-                        background: "#2DDC1B",
-                      }}
-                      icon={faPlus}
-                      data-toggle="modal"
-                      data-target="#exampleModal3"
-                    />
-                  </div>
-                </div>
-                <Form.Label
-                  htmlFor="inputPassword5"
-                  style={{ color: "#032339", letterSpacing: "1px" }}
-                >
-                  Opening Stock Date
-                </Form.Label>
-                <div className="mb-2">
-                  <DatePicker
-                    dateFormat="y-MM-dd"
-                    className="text-center custom-datepicker-update"
-                    calendarClassName="custom-calendar"
-                    selected={singleItemInfoData?.openingDate}
-                    value={singleItemInfoData?.openingDate}
-                    required
-                    onChange={(startDate) => {
-                      if (startDate > new Date()) {
-                        swal({
-                          title: "Select Valid Date",
-                          text: "Date should be equal or earlier than today",
-                          icon: "warning",
-                          button: "OK",
-                        });
-                      } else {
-                        setStartDate(startDate.toLocaleDateString("en-CA"));
-                        setSingleItemInfoData((prevData) => ({
-                          ...prevData,
-                          openingDate: startDate.toLocaleDateString("en-CA"),
-                          updateBy: updatebyUser,
-                          updateDate: new Date(),
-                        }));
-                      }
-                    }}
-                  />
-                </div>
-                <Form.Label
-                  htmlFor="inputPassword5"
-                  style={{ color: "#032339", letterSpacing: "1px" }}
-                >
-                  Opening Stock
-                </Form.Label>
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    name="opening-stock"
-                    required
-                    aria-label="Recipient's opening stock"
-                    aria-describedby="basic-addon2"
-                    value={singleItemInfoData?.openingStock}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setSingleItemInfoData((prevData) => ({
-                        ...prevData,
-                        openingStock: e.target.value,
-                        updateBy: updatebyUser,
-                        updateDate: new Date(),
-                      }));
-                    }}
-                    style={{
-                      border: "1px solid #B8FEB3",
-                      background: "white",
-                    }}
-                  />
-                </InputGroup>
-                <Form.Label
-                  htmlFor="inputPassword5"
-                  style={{ color: "#032339", letterSpacing: "1px" }}
-                >
-                  Production Qty(Per Batch)
-                </Form.Label>
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    name="productionQtyPerBatch"
-                    required
-                    aria-label="Recipient's production qty per batch"
-                    aria-describedby="basic-addon2"
-                    value={singleItemInfoData?.productionQtyPerBatch}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setSingleItemInfoData((prevData) => ({
-                        ...prevData,
-                        productionQtyPerBatch: e.target.value,
-                        updateBy: updatebyUser,
-                        updateDate: new Date(),
-                      }));
-                    }}
-                    style={{
-                      border: "1px solid #B8FEB3",
-                      background: "white",
-                    }}
-                  />
-                </InputGroup>
                 {/* <Form.Label
                     htmlFor="inputPassword5"
                     style={{ color: "#032339", letterSpacing: "1px" }}
@@ -409,23 +433,6 @@ const UpdateFgItemInfo = () => {
                     />
                   </div> */}
               </div>
-            </div>
-            <div className="d-flex justify-content-center align-items-center mt-4 w-100">
-              <button
-                type="submit"
-                form="itemcreation-form"
-                className="border-0 "
-                style={{
-                  backgroundColor: "#2DDC1B",
-                  color: "white",
-                  padding: "5px 10px",
-                  fontSize: "14px",
-                  borderRadius: "5px",
-                  width: "20%",
-                }}
-              >
-                Save
-              </button>
             </div>
           </Form>
         </div>

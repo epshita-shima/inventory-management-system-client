@@ -1,7 +1,5 @@
 import {
   faArrowAltCircleLeft,
-  faPlus,
-  faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, FieldArray, Form, Formik } from "formik";
@@ -15,8 +13,9 @@ import {
   useUpdateSupplierDetailsInfoMutation,
 } from "../../../redux/features/supplierInformation/supplierInfoApi";
 import swal from "sweetalert";
-import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css';
+
 const InsertSupplierInformation = () => {
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
@@ -125,19 +124,13 @@ const InsertSupplierInformation = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+              className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/supplier-list");
                 }}
               >
                 <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon>
-                Back to SupplierList
+                Back to List
               </button>
             </div>
           </div>
@@ -684,10 +677,10 @@ const InsertSupplierInformation = () => {
                                                 : "gray",
 
                                               color: "white",
-                                              padding: "5px 10px",
+                                              padding: "7px 10px",
                                               fontSize: "14px",
                                               borderRadius: "5px",
-                                              width: "25%",
+                                              width: "20%",
                                             }}
                                             disabled={
                                               (id

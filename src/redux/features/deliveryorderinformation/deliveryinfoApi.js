@@ -3,14 +3,14 @@ import { api } from "../../api/apiSlice";
 const deliveryinfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllDelieryOrderInformation: builder.query({
-      query: () => "/api/v1/delivery-order",
+      query: () => "/delivery-order",
       providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","changdeliveryorderapprove","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
     }),
 
     getAllDelieryOrderInformationAfterDeliver: builder.query({
-      query: () => "/api/v1/delivery-order/after-deliver",
+      query: () => "/delivery-order/after-deliver",
       providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","changdeliveryorderapprove","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -19,7 +19,7 @@ const deliveryinfoApi = api.injectEndpoints({
     getSingleDeliveryOrderInformation: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/delivery-order/${id}`;
+          return `/delivery-order/${id}`;
         } else {
           throw new Error("DeliveryOrder id is required");
         }
@@ -28,7 +28,7 @@ const deliveryinfoApi = api.injectEndpoints({
 
     getDeliveryOrderInfoForReturn: builder.query({
       query: (queryParams) => ({
-        url: '/api/v1/delivery-order/single-info',
+        url: '/delivery-order/single-info',
         params: queryParams,
         providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
@@ -38,7 +38,7 @@ const deliveryinfoApi = api.injectEndpoints({
 
     getFilteredDeliveryOrder: builder.query({
       query: (queryParams) => ({
-        url: '/api/v1/delivery-order/filtered',
+        url: '/delivery-order/filtered',
         params: queryParams,
         providesTags: ["insertdeliveryorderinfo", "updatedeliveryorderinfo","deletedeliveryorderinfo"],
       refetchOnReconnect: true,
@@ -48,7 +48,7 @@ const deliveryinfoApi = api.injectEndpoints({
 
     insertDeliveryOrderInformation: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/delivery-order",
+        url: "/delivery-order",
         method: "POST",
         body: payload,
       }),
@@ -61,7 +61,7 @@ const deliveryinfoApi = api.injectEndpoints({
     
     updateDeliveryOrderInformation: builder.mutation({
       query: (payload) => ({
-        url: `/api/v1/delivery-order/${payload._id}`,
+        url: `/delivery-order/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -74,7 +74,7 @@ const deliveryinfoApi = api.injectEndpoints({
 
     updateDeliveryOrderApproveStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/delivery-order/approve-status",
+        url: "/delivery-order/approve-status",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -87,7 +87,7 @@ const deliveryinfoApi = api.injectEndpoints({
 
     deleteDeliveryOrderInformation: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/delivery-order/${id}`,
+        url: `/delivery-order/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletedeliveryorderinfo"],

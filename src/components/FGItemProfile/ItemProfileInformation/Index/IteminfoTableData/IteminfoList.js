@@ -204,7 +204,7 @@ const [selectedData, setSelectedData] = useState([]);
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (finishGoodInItemInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -229,7 +229,7 @@ const [selectedData, setSelectedData] = useState([]);
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-finish-goods-items/${finishGoodInItemInfoData?._id}`);
+                window.open(`finish-goods-item-list/update-finish-goods-items/${finishGoodInItemInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

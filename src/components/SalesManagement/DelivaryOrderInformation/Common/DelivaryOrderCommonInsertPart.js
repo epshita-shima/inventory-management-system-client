@@ -28,6 +28,7 @@ import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/
 import { useInsertDeliveryOrderInformationMutation } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+import '../../../../buttonStyle/style.css';
 
 const DelivaryOrderCommonInsertPart = () => {
   const navigate = useNavigate();
@@ -347,13 +348,7 @@ const DelivaryOrderCommonInsertPart = () => {
                             </h2>
                             <div>
                               <button
-                                style={{
-                                  backgroundColor: "#E55566",
-                                  outline: "none",
-                                  border: "none",
-                                  color: "white",
-                                  height: "25px",
-                                }}
+                                className="customBackToListButton"
                                 onClick={() => {
                                   navigate("/main-view/do-list");
                                 }}

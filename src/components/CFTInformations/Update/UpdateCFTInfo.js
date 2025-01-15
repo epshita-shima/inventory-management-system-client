@@ -21,6 +21,7 @@ import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminf
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "./../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css'
 
 const UpdateCFTInfo = () => {
   const [startDate, setStartDate] = useState(
@@ -158,13 +159,7 @@ const UpdateCFTInfo = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+             className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/cft-info-list");
                 }}

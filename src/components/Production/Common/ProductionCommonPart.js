@@ -22,6 +22,7 @@ import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/c
 import UpdateProduction from "../Update/UpdateProduction";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css';
 
 const ProductionCommonPart = () => {
   const { id } = useParams();
@@ -279,13 +280,7 @@ const ProductionCommonPart = () => {
                                 </h2>
                                 <div>
                                   <button
-                                    style={{
-                                      backgroundColor: "#E55566",
-                                      outline: "none",
-                                      border: "none",
-                                      color: "white",
-                                      height: "25px",
-                                    }}
+                                   className="customBackToListButton"
                                     onClick={() => {
                                       navigate("/main-view/production-list");
                                     }}

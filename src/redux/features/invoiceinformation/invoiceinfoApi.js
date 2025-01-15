@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const invoiceinfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllInvoiceInformation: builder.query({
-      query: () => "/api/v1/invoiceinfo",
+      query: () => "/invoiceinfo",
       providesTags: [
         "insertinvoiceinfo",
         "updateinvoiceinfo",
@@ -18,7 +18,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     insertInvoiceInformation: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/invoiceinfo",
+        url: "/invoiceinfo",
         method: "POST",
         body: payload,
       }),
@@ -32,7 +32,7 @@ const invoiceinfoApi = api.injectEndpoints({
     getSingleInvoice: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/invoiceinfo/${id}`;
+          return `/invoiceinfo/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -41,7 +41,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     getFilteredInvoiceInfo: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/invoiceinfo/filtered",
+        url: "/invoiceinfo/filtered",
         params: queryParams,
         providesTags: [
           "insertinvoiceinfo",
@@ -57,7 +57,7 @@ const invoiceinfoApi = api.injectEndpoints({
     }),
     getFilteredForReportInvoiceInfo: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/report",
+        url: "/report",
         params: queryParams,
         providesTags: [
           "insertinvoiceinfo",
@@ -74,7 +74,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     updateInvoiceInfo: builder.mutation({
       query: (payload) => ({
-        url: `/api/v1/invoiceinfo/${payload._id}`,
+        url: `/invoiceinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -87,7 +87,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     updateInvoiceSpecialPIApproveStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/invoiceinfo/special-approve",
+        url: "/invoiceinfo/special-approve",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -100,7 +100,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     updateInvoiceStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/invoiceinfo",
+        url: "/invoiceinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -113,7 +113,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     updateInvoiceDeliveredQty: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/invoiceinfo/update-delivered-qty",
+        url: "/invoiceinfo/update-delivered-qty",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -126,7 +126,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     updateInvoiceShipment: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/api/v1/invoiceinfo/shipment",
+        url: "/invoiceinfo/shipment",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -139,7 +139,7 @@ const invoiceinfoApi = api.injectEndpoints({
 
     deleteInvoiceInfo: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/invoiceinfo/${id}`,
+        url: `/invoiceinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteinvoiceinfo"],

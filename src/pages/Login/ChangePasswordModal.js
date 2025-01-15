@@ -52,14 +52,15 @@ const ChangePasswordModal = ({
       setSingleUserData((prev) => {
         const temp_data = prev;
         console.log(temp_data);
+        temp_data["hashPassword"] = value;
         temp_data["password"] = value;
         return temp_data;
       });
     } else {
       setSingleUserData((prev) => {
         const temp_data = [...prev];
-        console.log(temp_data[0]);
         if (temp_data[0]) {
+          temp_data[0] = { ...temp_data[0], hashPassword: value };
           temp_data[0] = { ...temp_data[0], password: value };
         }
         return temp_data;
@@ -89,7 +90,7 @@ const ChangePasswordModal = ({
         const response = await updateUserPassword(singleUserData[0]);
         if (response.data.status === "success") {
           swal("Done", `${response.data.message}`, "success");
-          navigate("/main-view/user-setting");
+          navigate("/main-view/user-list");
         } else {
           swal(
             "Not Possible!",
@@ -100,7 +101,7 @@ const ChangePasswordModal = ({
       }
   
     } catch (error) {
-      console.error("Error updating password:", error); // Handle any errors
+      console.error("Error updating hashPassword:", error); // Handle any errors
     }
   };
 
@@ -140,9 +141,9 @@ const ChangePasswordModal = ({
                   New Password
                 </Form.Label>
                 <Form.Control
-                  type="password"
+                  type="hashPassword"
                   name="newPassword"
-                  placeholder="Enter password"
+                  placeholder="Enter hashPassword"
                   onChange={(e) => handleChangePassword(e)}
                 />
               </Form.Group>
@@ -152,7 +153,7 @@ const ChangePasswordModal = ({
                   Confirm Password
                 </Form.Label>
                 <Form.Control
-                  type="password"
+                  type="hashPassword"
                   name="confirmPassword"
                   placeholder="Password"
                   onChange={(e) => handleChangePassword(e)}

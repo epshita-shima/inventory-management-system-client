@@ -4,7 +4,7 @@ const productionreportApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProductionDatewiseDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production-report/datewise-details",
+        url: "/production-report/datewise-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -13,7 +13,7 @@ const productionreportApi = api.injectEndpoints({
     }),
     getProductionDatewiseSummaryReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production-report/datewise-summary",
+        url: "/production-report/datewise-summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -22,7 +22,7 @@ const productionreportApi = api.injectEndpoints({
     }),
     getProductionItemwiseDetailsReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production-report/itemwise-details",
+        url: "/production-report/itemwise-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -31,7 +31,7 @@ const productionreportApi = api.injectEndpoints({
     }),
     getRawMaterialDetailsConsumptionReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production-report/raw-material-consumption-details",
+        url: "/production-report/raw-material-consumption-details",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,
@@ -40,7 +40,7 @@ const productionreportApi = api.injectEndpoints({
     }),
     getRawMaterialSummaryConsumptionReport: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production-report/raw-material-consumption-summary",
+        url: "/production-report/raw-material-consumption-summary",
         params: queryParams,
         providesTags: [],
         refetchOnReconnect: true,

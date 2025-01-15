@@ -12,6 +12,7 @@ import { useInsertPaymentInformationMutation } from "../../../redux/features/pay
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css';
 
 const InsertPaymentOption = () => {
   const ArrayHelperRef = useRef();
@@ -139,13 +140,7 @@ const InsertPaymentOption = () => {
                     </div>
                     <div>
                       <button
-                        style={{
-                          backgroundColor: "#E55566",
-                          outline: "none",
-                          border: "none",
-                          color: "white",
-                          height: "25px",
-                        }}
+                        className="customBackToListButton"
                         onClick={() => {
                           navigate("/main-view/payment-list");
                         }}

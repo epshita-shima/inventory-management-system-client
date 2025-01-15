@@ -122,7 +122,7 @@ const SingleUserDisplay = () => {
     //   await updateUser(singleUserData);
     //   // Data has been successfully updated
     //   swal("Done", "Data Update Successfully", "success");
-    //   navigate("/main-view/user-setting");
+    //   navigate("/main-view/user-list");
     // } catch (error) {
     //   // An error occurred while updating data
     //   swal("Not possible", "Try again", "warning");

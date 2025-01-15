@@ -16,7 +16,7 @@ import swal from "sweetalert";
 import "./InsertClientInformation.css";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-
+import '../../../buttonStyle/style.css'
 const InsertClientInformation = () => {
   const ArrayHelperRef = useRef();
   const { id } = useParams();
@@ -98,9 +98,6 @@ const InsertClientInformation = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      // style={{
-      //   height: "90%"
-      // }}
     >
       {id && <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>}
       <div className="">
@@ -119,19 +116,13 @@ const InsertClientInformation = () => {
           </div>
           <div>
             <button
-              style={{
-                backgroundColor: "#E55566",
-                outline: "none",
-                border: "none",
-                color: "white",
-                height: "25px",
-              }}
+            className="customBackToListButton"
               onClick={() => {
                 navigate("/main-view/client-list");
               }}
             >
               <FontAwesomeIcon icon={faArrowAltCircleLeft}></FontAwesomeIcon>
-              Back to SupplierList
+              Back to List
             </button>
           </div>
         </div>
@@ -665,7 +656,7 @@ const InsertClientInformation = () => {
                                               ? "#2DDC1B"
                                               : "gray",
                                             color: "white",
-                                            padding: "5px 10px",
+                                            padding: "7px 10px",
                                             fontSize: "14px",
                                             borderRadius: "5px",
                                             width: "20%",

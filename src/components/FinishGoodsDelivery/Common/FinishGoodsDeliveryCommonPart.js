@@ -13,6 +13,7 @@ import {
   useInsertFinishGoodsDeliveryInformationMutation,
 } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import '../../../buttonStyle/style.css';
 
 const FinishGoodsDeliveryCommonPart = () => {
   const navigate = useNavigate();
@@ -151,13 +152,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                                 </h2>
                                 <div>
                                   <button
-                                    style={{
-                                      backgroundColor: "#E55566",
-                                      outline: "none",
-                                      border: "none",
-                                      color: "white",
-                                      height: "25px",
-                                    }}
+                                   className="customBackToListButton"
                                     onClick={() => {
                                       navigate('/main-view/list-page');
                                     }}

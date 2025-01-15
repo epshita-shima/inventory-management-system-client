@@ -286,7 +286,7 @@ const InvoiceInformationDataList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-invoice/${userWaysListData?._id}`);
+                window.open(`invoice-list/update-invoice/${userWaysListData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>

@@ -9,6 +9,8 @@ import { useGetAllUserQuery } from "../../redux/features/user/userApi";
 import swal from "sweetalert";
 import bcrypt from "bcryptjs";
 import './LoginWithUsername.css'
+import { useInsertUserLoginMutation } from "../../redux/features/chekingUser/chekinguserApi";
+import axios from "axios";
 
 const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
   const [data] = useUserLoginMutation();
@@ -17,6 +19,7 @@ const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [loginUserValidation]=useInsertUserLoginMutation()
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn); 
   const navigate = useNavigate();
@@ -30,7 +33,7 @@ const LoginWithUsername = ({singleUserData,setSingleUserData}) => {
 if(isUserLoading){
   <p>loding ....</p>
 }
-
+//require('crypto').randomBytes(64).toString('hex)
 useEffect(() => {
   const validateUser = async () => {
     // Find the user
@@ -65,9 +68,28 @@ useEffect(() => {
 }, [user, password, username, setSingleUserData]);
   
 
-  const handleLogin = (e) => {
+  const handleLogin =async (e) => {
     e.preventDefault();
     if(singleUserData && Object.keys(singleUserData).length > 0){
+      const loginUser={username:singleUserData.username,password:singleUserData.password}
+      console.log(
+        loginUser
+      )
+
+      try {
+        const response = await loginUserValidation(loginUser) 
+        console.log('Login successful:', response);
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+    // axios.post('http://localhost:5000/api/v1/jwt', loginUser,{withCredentials:true})
+    // .then(res => {
+    //   console.log('Full response:', res.data); // Log the entire response object
+    //   console.log('Token:', res.data.token); 
+    // })
+    // .catch(err => {
+    //   console.error("Error:", err);
+    // });
       navigate('/main-view')
       localStorage.setItem('user',JSON.stringify(singleUserData))
     }

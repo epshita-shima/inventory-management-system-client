@@ -301,7 +301,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
               onClick={() => {
                 if (cftInfoActiveStatus.length > 0) {
                   if (cftInfoActiveStatus[0]?._id === cftInfosData?._id) {
-                    window.open(`update-cft-info/${cftInfosData?._id}`);
+                    window.open(`cft-info-list/update-cft-info/${cftInfosData?._id}`);
                   } else {
                     swal(
                       "Not Possible!",
@@ -310,7 +310,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                     );
                   }
                 } else {
-                  window.open(`update-cft-info/${cftInfosData?._id}`);
+                  window.open(`cft-info-list/update-cft-info/${cftInfosData?._id}`);
                 }
               }}
             >

@@ -30,7 +30,7 @@ const ListHeading = ({
   setPurchaseOrderList,
   purchaseOrderApproveData,
   purchaseOrderUnApproveData,
-  isLoading
+  isLoading,
 }) => {
   const [totalTitle, setTotalTitle] = useState("");
   const [totalActiveTitle, setTotalActiveTitle] = useState("");
@@ -44,6 +44,7 @@ const ListHeading = ({
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
   const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
 
+  console.log(user);
   const traverse = (items) => {
     const urls = [];
     items?.forEach((item) => {
@@ -74,30 +75,27 @@ const ListHeading = ({
       setTotalInActiveTitle(`Total InActive ${searchItem[0]?.headerLabelName}`);
 
       if (
-        (searchItem[0]?.menuId === MenuIdCollection.purchaseorderlist) ||
-        (searchItem[0]?.menuId === MenuIdCollection.purchaseorderapprove)
+        searchItem[0]?.menuId === MenuIdCollection.purchaseorderlist ||
+        searchItem[0]?.menuId === MenuIdCollection.purchaseorderapprove
       ) {
         setTotalTitle(`Total PO`);
         setTotalActiveTitle(`Total PO in Cash`);
         setTotalInActiveTitle(`Total PO in LC`);
       }
- 
-      if (searchItem[0]?.menuId === MenuIdCollection.fgItemList) {
 
+      if (searchItem[0]?.menuId === MenuIdCollection.fgItemList) {
         grandTotal = finishGoodInItemInfoData?.length;
         totalActive = finishGoodActiveStatus?.length;
         totalInActive = finishGoodInActiveStatus?.length;
-      } else if (searchItem[0]?.menuId === MenuIdCollection.userSeting) {
+      } else if (searchItem[0]?.menuId === MenuIdCollection.userList) {
         grandTotal = user?.length;
         totalActive = activeUser?.length;
         totalInActive = inActiveUser?.length;
       } else if (searchItem[0]?.menuId === MenuIdCollection.rmItemList) {
-
         grandTotal = rmItemInfoData?.length;
         totalActive = rmItemActiveStatus?.length;
         totalInActive = rmItemInActiveStatus?.length;
       } else if (searchItem[0]?.menuId === MenuIdCollection.cftinfolist) {
-      
         grandTotal = cftInfosData?.length;
         totalActive = cftInfoActiveStatus?.length;
         totalInActive = cftInfoInActiveStatus?.length;
@@ -112,14 +110,19 @@ const ListHeading = ({
       } else if (searchItem[0]?.menuId === MenuIdCollection.purchaseorderlist) {
         grandTotal = purchaseInfoData?.length;
         totalActive = purchaseInCash?.length;
-        totalInActive = purchaseInLCAtSight?.length== undefined ? 0 :  purchaseInLCAtSight?.length;
-
+        totalInActive =
+          purchaseInLCAtSight?.length === undefined
+            ? 0
+            : purchaseInLCAtSight?.length;
       } else if (
         searchItem[0]?.menuId === MenuIdCollection.purchaseorderapprove
       ) {
         grandTotal = purchaseInfoData?.length;
         totalActive = purchaseInCash?.length;
-        totalInActive = purchaseInLCAtSight?.length == undefined ? 0 :  purchaseInLCAtSight?.length;
+        totalInActive =
+          purchaseInLCAtSight?.length === undefined
+            ? 0
+            : purchaseInLCAtSight?.length;
       }
 
       setGrandTotal(grandTotal);
@@ -153,7 +156,7 @@ const ListHeading = ({
   ]);
 
   return (
-    <div className={`${isLoading ? 'd-none' : 'd-block'}`}>
+    <div className={`${isLoading ? "d-none" : "d-block"}`}>
       <div class="row">
         <div
           class={
@@ -217,13 +220,18 @@ const ListHeading = ({
               data-target="#exampleModalCenter"
               onClick={() => {
                 const searchItem = mainData?.filter((x) => x.url === pathname);
-                console.log('searchItem[0]?.menuId',searchItem[0]?.menuId,MenuIdCollection.purchaseorderapprove)
+                console.log(
+                  "searchItem[0]?.menuId",
+                  searchItem[0]?.menuId,
+                  MenuIdCollection.purchaseorderapprove
+                );
                 if (
-                  (searchItem[0]?.menuId !== MenuIdCollection.purchaseorderapprove) && (searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist)
+                  searchItem[0]?.menuId !==
+                    MenuIdCollection.purchaseorderapprove &&
+                  searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
                   setActiveDataModal(true);
                 }
-             
               }}
             >
               <p
@@ -268,11 +276,12 @@ const ListHeading = ({
               onClick={() => {
                 const searchItem = mainData?.filter((x) => x.url == pathname);
                 if (
-                  (searchItem[0]?.menuId !== MenuIdCollection.purchaseorderapprove) && (searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist)
+                  searchItem[0]?.menuId !==
+                    MenuIdCollection.purchaseorderapprove &&
+                  searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
                   setInActiveDataModal(true);
                 }
-              
               }}
             >
               <p

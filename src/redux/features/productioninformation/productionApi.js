@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const productionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllProductionInformation: builder.query({
-      query: () => "/api/v1/production",
+      query: () => "/production",
       providesTags: [
         "insertproductioninfo",
         "updateproductioninfo,deleteproductioninfo",
@@ -15,7 +15,7 @@ const productionApi = api.injectEndpoints({
     getSingleProductionInformation: builder.query({
       query: (id) => {
         if (id) {
-          return `/api/v1/production/${id}`;
+          return `/production/${id}`;
         } else {
           throw new Error("production id is required");
         }
@@ -23,7 +23,7 @@ const productionApi = api.injectEndpoints({
     }),
     getFilteredProductionInfo: builder.query({
       query: (queryParams) => ({
-        url: "/api/v1/production/filtered",
+        url: "/production/filtered",
         params: queryParams,
         providesTags: [
           "insertproductioninfo",
@@ -36,7 +36,7 @@ const productionApi = api.injectEndpoints({
 
     updateProductionInformation: builder.mutation({
       query: (payload) => ({
-        url: `/api/v1/production/${payload._id}`,
+        url: `/production/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -49,7 +49,7 @@ const productionApi = api.injectEndpoints({
 
     insertProductionInformation: builder.mutation({
       query: (payload) => ({
-        url: "/api/v1/production",
+        url: "/production",
         method: "POST",
         body: payload,
       }),
@@ -62,7 +62,7 @@ const productionApi = api.injectEndpoints({
 
     deleteProductionInformation: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/production/${id}`,
+        url: `/production/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteproductioninfo"],

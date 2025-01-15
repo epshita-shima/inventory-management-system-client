@@ -404,11 +404,20 @@ const UpdateMenu = () => {
                                               setSingleMenuData((prevState) => {
                                                 const updatedItems = [
                                                   ...prevState.items,
-                                                ]; // Create a new array
+                                                ]; 
+                                                console.log('updatedItems[index].label',updatedItems[index].isParent,)
+                                                console.log('updatedItems[index].label with url',updatedItems[index].label
+                                                  .toLowerCase()
+                                                  .replace(/\s+/g, "-"))
                                                 updatedItems[index] = {
                                                   ...updatedItems[index],
                                                   isParent: isToggled,
-                                                }; // Create a new object for the item with updated label
+                                                  url:isToggled ? '#' : "/main-view/" +
+                                                  updatedItems[index].label
+                                                    .toLowerCase()
+                                                    .replace(/\s+/g, "-") 
+                                                }; 
+                                                console.log(updatedItems)
                                                 return {
                                                   ...prevState,
                                                   items: updatedItems,
