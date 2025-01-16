@@ -13,6 +13,9 @@ import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
 import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCollection";
+import { useUserLoggedOutMutation } from "../../redux/features/chekingUser/chekinguserApi";
+import swal from "sweetalert";
+
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
   const { data: menus } = useGetAllMenuItemsQuery(undefined);
@@ -20,7 +23,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const getMenulistData = localStorage?.getItem("user");
 
   const menuListData = JSON.parse(getMenulistData);
-
+  const [loggedoutUser] = useUserLoggedOutMutation();
   if (menuListData !== null) {
     var menuListSingleData = menuListData?.menulist;
   }
@@ -202,10 +205,17 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                     </Dropdown.Item>
                     <Dropdown.Item
                       href="#"
-                      style={{ fontWeight: "bold" }}
-                      onClick={() => {
-                        localStorage.clear();
-                        navigate("/");
+                      style={{ fontWeight: "bold" }} 
+                      onClick={async () => {
+                        const response = await loggedoutUser();
+                        if (response.data.success === true) {
+                          swal("Done", `${response.data.message}`, "success");
+                          localStorage.clear();
+                          navigate("/");
+                        }
+                        else{
+console.log('something error')
+                        }
                       }}
                     >
                       Logout
@@ -264,9 +274,17 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#"
-                    onClick={() => {
-                      localStorage.clear();
-                      navigate("/");
+                    onClick={async () => {
+                      const response = await loggedoutUser();
+                      console.log(response.data.success)
+                      if (response.data.success === true) {
+                       
+                        swal("Done", `${response.data.message}`, "success").then(() => {
+                          localStorage.clear();
+                          navigate('/');
+                      });
+                      }
+                      console.log(response);
                     }}
                   >
                     Logout

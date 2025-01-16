@@ -9,6 +9,12 @@ const chekinguserApi= api.injectEndpoints({
         body: payload,
       }),
     }),
+    userLoggedOut: builder.mutation({
+      query: (payload) => ({
+        url: "/jwt/logout",
+        method: "POST",
+      }),
+    }),
   }),
 });
-export const { useInsertUserLoginMutation} = chekinguserApi;
+export const { useInsertUserLoginMutation,useUserLoggedOutMutation} = chekinguserApi;

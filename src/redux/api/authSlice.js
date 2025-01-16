@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -8,7 +9,7 @@ const authSlice = createSlice({
   },
   reducers: {
     logout: (state) => {
-      console.log('statte',state)
+      Cookies.remove('token');
       state.isAuthenticated = false;
       state.user = null;
     },
