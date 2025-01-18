@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const rmItemInfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllRMItemInformation: builder.query({
-      query: () => "/rawmaterialinfo",
+      query: () => "/api/v1/rawmaterialinfo",
       providesTags: ["insertiteminfo", "updateiteminfo","deleteiteminfo","changesitemtatus"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -11,7 +11,7 @@ const rmItemInfoApi = api.injectEndpoints({
 
     insertRMItemInformation: builder.mutation({
       query: (payload) => ({
-        url: "/rawmaterialinfo",
+        url: "/api/v1/rawmaterialinfo",
         method: "POST",
         body: payload,
       }),
@@ -25,7 +25,7 @@ const rmItemInfoApi = api.injectEndpoints({
     getSingleRMItem: builder.query({
       query: (id) => {
         if (id) {
-          return `/rawmaterialinfo/${id}`;
+          return `/api/v1/rawmaterialinfo/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -34,7 +34,7 @@ const rmItemInfoApi = api.injectEndpoints({
 
     updateRMItemInfo: builder.mutation({
       query: (payload) => ({
-        url: `/rawmaterialinfo/${payload._id}`,
+        url: `/api/v1/rawmaterialinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -46,7 +46,7 @@ const rmItemInfoApi = api.injectEndpoints({
     }),
     updateRawMaterialStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/rawmaterialinfo",
+        url: "/api/v1/rawmaterialinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -58,7 +58,7 @@ const rmItemInfoApi = api.injectEndpoints({
     }),
     deleteRMItemInfo: builder.mutation({
       query: (id) => ({
-        url: `/rawmaterialinfo/${id}`,
+        url: `/api/v1/rawmaterialinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteiteminfo"],

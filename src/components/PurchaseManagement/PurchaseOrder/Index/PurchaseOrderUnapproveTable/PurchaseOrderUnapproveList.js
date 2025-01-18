@@ -136,7 +136,7 @@ const PurchaseOrderUnapproveList = ({
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "120px",
       grow: 2,
       cell: (purchaseFilterUnApproveAllData) => (
         <div className="d-flex justify-content-between align-items-center">

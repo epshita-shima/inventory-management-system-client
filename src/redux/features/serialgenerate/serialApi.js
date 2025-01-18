@@ -3,11 +3,11 @@ import { api } from "../../api/apiSlice";
 const supplierInfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getSerialNo:builder.query({
-      query:()=>'/serial'
+      query:()=>'/api/v1/serial'
     }),
     createSerialNo:builder.mutation({
       query: (payload) => ({
-        url: "/serial",
+        url: "/api/v1/serial",
         method: "POST",
         body: payload,
       }),

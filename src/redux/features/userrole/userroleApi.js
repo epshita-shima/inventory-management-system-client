@@ -7,7 +7,7 @@ const useroleApi = api.injectEndpoints({
     }),
     addNewUserRole: builder.mutation({
       query: (payload) => ({
-        url: "/userrole",
+        url: "/api/v1/userrole",
         method: "POST",
         body: payload,
       }),

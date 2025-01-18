@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const itemUnitInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllItemUnit: builder.query({
-        query: () => "/itemunit",
+        query: () => "/api/v1/itemunit",
         providesTags: ["insertitemunit"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const itemUnitInfoApi= api.injectEndpoints({
       
     insertItemUnit: builder.mutation({
       query: (payload) => ({
-        url: "/itemunit",
+        url: "/api/v1/itemunit",
         method: "POST",
         body: payload,
       }),

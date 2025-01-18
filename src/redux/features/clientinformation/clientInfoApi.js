@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const clientInfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllClientInformation: builder.query({
-      query: () => "/clientinfo",
+      query: () => "/api/v1/clientinfo",
       providesTags: ["insertclientinfo", "updateiclientinfo","deleteclientinfo","changesclientstatus"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -11,7 +11,7 @@ const clientInfoApi = api.injectEndpoints({
 
     insertClientInformation: builder.mutation({
       query: (payload) => ({
-        url: "/clientinfo",
+        url: "/api/v1/clientinfo",
         method: "POST",
         body: payload,
       }),
@@ -25,7 +25,7 @@ const clientInfoApi = api.injectEndpoints({
     getSingleClientInfo: builder.query({
       query: (id) => {
         if (id) {
-          return `/clientinfo/${id}`;
+          return `/api/v1/clientinfo/${id}`;
         } else {
           throw new Error("Client id is required");
         }
@@ -34,7 +34,7 @@ const clientInfoApi = api.injectEndpoints({
 
     updateClientDetailsInfo: builder.mutation({
       query: (payload) => ({
-        url: `/clientinfo/${payload._id}`,
+        url: `/api/v1/clientinfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -47,7 +47,7 @@ const clientInfoApi = api.injectEndpoints({
     
     updateClientInfoStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/clientinfo",
+        url: "/api/v1/clientinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -60,7 +60,7 @@ const clientInfoApi = api.injectEndpoints({
 
     deleteClientInfo: builder.mutation({
       query: (id) => ({
-        url: `/clientinfo/${id}`,
+        url: `/api/v1/clientinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteclientinfo"],

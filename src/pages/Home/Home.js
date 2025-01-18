@@ -13,8 +13,9 @@ import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
 import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCollection";
-import { useUserLoggedOutMutation } from "../../redux/features/chekingUser/chekinguserApi";
+
 import swal from "sweetalert";
+import { useUserLoggedOutMutation } from "../../redux/features/auth/authApi";
 
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);

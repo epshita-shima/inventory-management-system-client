@@ -317,7 +317,7 @@ const SupplierInfoList = ({permission}) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>

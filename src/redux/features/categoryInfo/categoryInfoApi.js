@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const categoryInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllCategoryInfo: builder.query({
-        query: () => "/categoryinfo",
+        query: () => "/api/v1/categoryinfo",
         providesTags: ["insertcategory"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const categoryInfoApi= api.injectEndpoints({
       
     insertCategoryInfo: builder.mutation({
       query: (payload) => ({
-        url: "/categoryinfo",
+        url: "/api/v1/categoryinfo",
         method: "POST",
         body: payload,
       }),

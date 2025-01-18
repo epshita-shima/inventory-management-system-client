@@ -1,20 +1,20 @@
 import { api } from "../../api/apiSlice";
 
-const chekinguserApi= api.injectEndpoints({
+const authApi= api.injectEndpoints({
   endpoints: (builder) => ({
     insertUserLogin: builder.mutation({
       query: (payload) => ({
-        url: "/jwt",
+        url: "/api/v2/jwt",
         method: "POST",
         body: payload,
       }),
     }),
     userLoggedOut: builder.mutation({
-      query: (payload) => ({
-        url: "/jwt/logout",
+      query: () => ({
+        url: "/api/v2/jwt/logout",
         method: "POST",
       }),
     }),
   }),
 });
-export const { useInsertUserLoginMutation,useUserLoggedOutMutation} = chekinguserApi;
+export const { useInsertUserLoginMutation,useUserLoggedOutMutation} = authApi;
