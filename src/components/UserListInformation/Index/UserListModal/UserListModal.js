@@ -24,6 +24,7 @@ const UserListModal = ({ user }) => {
     }));
     setExtractedData(extractedFields);
   }, [user]);
+  
   const columns = [
     {
       name: "Sl.",
@@ -96,6 +97,7 @@ const UserListModal = ({ user }) => {
       },
     },
   };
+
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);

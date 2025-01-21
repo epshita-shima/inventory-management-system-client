@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserActivationModal.css";
-import { useGetSingleUserQuery, useUpdateUserMutation } from "../../../../redux/features/user/userApi";
+import {
+  useGetSingleUserQuery,
+  useUpdateUserMutation,
+} from "../../../../redux/features/user/userApi";
 import swal from "sweetalert";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
-const UserActivationModal = ({userId}) => {
+const UserActivationModal = ({ userId }) => {
   const { data: singleUser } = useGetSingleUserQuery(userId);
   const [updateData] = useUpdateUserMutation();
-  const [ updateUserStatus,setUpdateUserStatus]=useState([])
+  const [updateUserStatus, setUpdateUserStatus] = useState([]);
+
+  useEffect(() => {
+    setUpdateUserStatus(singleUser);
+  }, [singleUser]);
+
+  console.log(updateUserStatus)
 
   return (
     <div
@@ -69,7 +78,6 @@ const UserActivationModal = ({userId}) => {
                           value={singleUser?.firstname}
                           aria-describedby="basic-addon1"
                         />
-                        
                       </td>
                       <td>
                         <input
@@ -98,9 +106,9 @@ const UserActivationModal = ({userId}) => {
                           type="checkbox"
                           checked={updateUserStatus?.isactive}
                           aria-label="Checkbox for following text input"
-                          onClick={async(e)=>{
-                            const {checked}=e.target
-                       
+                          onClick={async (e) => {
+                            const { checked } = e.target;
+
                             setUpdateUserStatus((prevData) => ({
                               ...prevData,
                               isactive: checked,
@@ -143,9 +151,16 @@ const UserActivationModal = ({userId}) => {
                 borderRadius: "10px",
                 textTransform: "uppercase",
               }}
-              onClick={()=>{
-               updateData(updateUserStatus);
-                swal("Done", "Update Successfully", "success");
+              onClick={async() => {
+               const response= await updateData(updateUserStatus);
+               console.log(response)
+               if(response.data.success === true){
+                swal("Done", `${response.data.message}`, "success");
+               }
+               else{
+                swal("Sorry!", `${response.data.message}`, "error");
+               }
+               
               }}
             >
               Update

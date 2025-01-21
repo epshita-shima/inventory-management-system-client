@@ -64,7 +64,7 @@ const GRNInfoList = ({ permission }) => {
     selectMonth: [],
   });
 
-  const [trigger, { data: filteredDatas, isFetching }] =
+  const [trigger, { data: filteredDatas, isLoading:isGRnLoading }] =
     useLazyGetFilteredGRNQuery();
 
   console.log({ filteredDatas });
@@ -88,7 +88,7 @@ const GRNInfoList = ({ permission }) => {
 
   const groupData = (filteredData) => {
     return filteredData?.reduce((acc, row) => {
-      const key = `${row.makeDate}`;
+      const key = `${row.receiveDate}`;
       if (!acc[key]) {
         acc[key] = [];
       }
@@ -98,37 +98,6 @@ const GRNInfoList = ({ permission }) => {
   };
 
   const groupedData = groupData(filteredData);
-
-  // useEffect(() => {
-  //   if (executeQuery) {
-  //     setIsTableDisplay(true);
-  //     trigger(filters);
-  //     setExecuteQuery(false);
-  //   }
-  // }, [executeQuery, trigger, filters]);
-
-  // useEffect(() => {
-  //   // Check if filteredDatas has been updated
-  //   if (filteredDatas && filteredDatas.length === 0) {
-  //     setIsTableDisplay(false);
-  //     swal({
-  //       title: "Sorry!",
-  //       text: "No data found for the selected filters",
-  //       icon: "warning",
-  //       button: "OK",
-  //     });
-  //   } else {
-  //     setFilteredData(filteredDatas || []); // Ensure filteredDatas is not null/undefined
-  //   }
-  // }, [filteredDatas]);
-
-  // useEffect(() => {
-  //   if (isFetchAfterDeleteData) {
-
-  //     handleApplyFilters();
-  //     setIsFetchAfterDeleteData(false);
-  //   }
-  // }, [isFetchAfterDeleteData]);
 
   const handleApplyFilters = async () => {
     // setExecuteQuery(true);
@@ -338,7 +307,6 @@ const GRNInfoList = ({ permission }) => {
       -1
   );
 
-  console.log({ filteredItems });
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -349,7 +317,9 @@ const GRNInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
+   <div>
+       {
+        filteredDatas.length ==0 ? '' :    <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">
@@ -415,8 +385,12 @@ const GRNInfoList = ({ permission }) => {
           />
         </div>
       </div>
+      }
+   </div>
+   
     );
   }, [
+    filteredDatas,
     filterText,
     filteredData,
     supplierInfo,
@@ -461,8 +435,6 @@ const GRNInfoList = ({ permission }) => {
   }, 0);
   const formattedDate = generateMonths(new Date());
 
-  console.log("Columns:", columns);
-  console.log("Filtered Items:", filteredItems);
   return (
     <div className="row px-5 mx-4">
       <div className="col userlist-table mt-4">
@@ -711,7 +683,7 @@ const GRNInfoList = ({ permission }) => {
               <button
                 className="border-0 "
                 style={{
-                  backgroundColor: isFetching ? "gray" : "#2DDC1B",
+                  backgroundColor: isGRnLoading ? "gray" : "#2DDC1B",
                   color: "white",
                   padding: "5px 10px",
                   fontSize: "14px",
@@ -720,7 +692,7 @@ const GRNInfoList = ({ permission }) => {
                   height: "38px",
                   marginTop: "25px",
                 }}
-                disabled={isFetching ? true : false}
+                disabled={isGRnLoading ? true : false}
                 onClick={handleApplyFilters}
               >
                 Show

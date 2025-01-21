@@ -52,7 +52,6 @@ import CombineReportTable from "./components/ReportManagement/CombineReport/Comb
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
 import useInactivityLogout from "./components/Customhook/useInactivityLogout";
-import Cookies from "js-cookie";
 
 function App() {
   // useInactivityLogout();
@@ -62,13 +61,7 @@ function App() {
   const [userIdForChangePassowrd, setUserIdForChangePassowrd] = useState([]);
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
-  const getToken = Cookies.get("token");
-  const testToken = document.cookie.match("token");
-  console.log("getToken", getToken);
-  console.log("Cookies", Cookies);
-  console.log("test",testToken);
-  // Cookies.set('test','test data')
-  console.log(Cookies.get());
+ 
   // http://localhost:3000/main-view/production-list/update-production-info/677a2c1f52e67d627de4f9f7
 
   return (

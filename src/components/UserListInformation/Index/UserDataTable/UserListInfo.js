@@ -93,6 +93,7 @@ const UserListInfo = ({
   }, [user]);
 
   const handleActiveStatus = (id) => {
+    console.log(id);
     setUserId(id._id);
   };
 
@@ -121,7 +122,6 @@ const UserListInfo = ({
                 <input
                   type="checkbox"
                   aria-label={`Checkbox for data item ${row.id}`}
-                  
                   onChange={(e) => {
                     handleCheckboxClick(row, setSelectedData);
                   }}
@@ -267,8 +267,16 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-                console.log(user._id)
-                if ((menuListData._id === user._id) || (menuListData._id===MenuIdCollection.supperAdmin)) {
+                console.log(user._id);
+                console.log(
+                  menuListData._id,
+                  user._id,
+                  menuListData._id,
+                  MenuIdCollection.userrole_supperadmin
+                );
+                if (
+                  menuListData._id === user._id || MenuIdCollection.userrole_supperadmin
+                ) {
                   setResetPassword(true);
                   setChangePassword(false);
                   setUserIdForChangePassowrd(user);

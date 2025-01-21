@@ -7,7 +7,8 @@ const authApi= api.injectEndpoints({
         url: "/api/v2/jwt",
         method: "POST",
         body: payload,
-      }),
+      }
+    ),
     }),
     userLoggedOut: builder.mutation({
       query: () => ({

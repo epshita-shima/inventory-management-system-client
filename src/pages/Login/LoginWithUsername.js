@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useUserLoginMutation } from "../../redux/api/apiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/features/user/userSlice";
-import logImage from "../../assets/images/logoimage.jpg";
+import logImage from "../../assets/images/reportlogo.png";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../redux/features/user/userApi";
@@ -46,8 +46,9 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
       if (response.data.success) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
+          localStorage.setItem("accesstoken",JSON.stringify(response.data.token))
           navigate("/main-view");
-      });
+        });
       } else {
         swal("Sorry!", `${response.data.message}`, "error");
       }
@@ -64,32 +65,35 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
   }, []);
 
   return (
-    <div className="row background-image">
-      <div
-        className="shadow-lg col-md-12 rounded-4"
-        style={{
-          top: "20%",
-          left: "35%",
-          backgroundColor: "rgba(21, 253, 4, 0.3)",
-          width: "30%",
-          height: "60%",
-        }}
-      >
+    <div
+      className="d-flex justify-content-center align-items-center shadow-lg  rounded-4"
+      style={{
+        backgroundColor: "rgba(21, 253, 4, 0.3)",
+        width: "40%",
+        height: "70%",
+        position: "absolute", // Or "fixed" if needed
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <div className="col-12 col-md-12 col-lg-10 col-xl-8">
         <div className="p-4">
           <div className="d-flex justify-content-center">
             <img
-              className="h-50 w-50"
               src={logImage}
               alt=""
               style={{
-                borderRadius: "20px",
+                height: "120px",
+                width: "120px",
+                borderRadius: "50%",
               }}
             />
           </div>
 
           <h2
             className="mb-3 text-center text-uppercase"
-            style={{ color: "#68F057" }}
+            style={{ color: "#68F057", fontWeight: "bold" }}
           >
             Login
           </h2>
@@ -156,6 +160,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     style={{
                       background: isButtonDisabled ? "gray" : "#68F057",
                       border: "none",
+                      fontWeight:'bold'
                     }}
                   >
                     Login

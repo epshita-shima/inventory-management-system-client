@@ -206,16 +206,16 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                     </Dropdown.Item>
                     <Dropdown.Item
                       href="#"
-                      style={{ fontWeight: "bold" }} 
+                      style={{ fontWeight: "bold" }}
                       onClick={async () => {
                         const response = await loggedoutUser();
-                        if (response.data.success === true) {
+                        console.log('response 1',response)
+                        if (response?.data?.success === true) {
                           swal("Done", `${response.data.message}`, "success");
                           localStorage.clear();
                           navigate("/");
-                        }
-                        else{
-console.log('something error')
+                        } else {
+                          console.log("something error");
                         }
                       }}
                     >
@@ -277,13 +277,16 @@ console.log('something error')
                     href="#"
                     onClick={async () => {
                       const response = await loggedoutUser();
-                      console.log(response.data.success)
-                      if (response.data.success === true) {
-                       
-                        swal("Done", `${response.data.message}`, "success").then(() => {
+                      console.log('response 2',response)
+                      if (response?.data?.success === true) {
+                        swal(
+                          "Done",
+                          `${response.data.message}`,
+                          "success"
+                        ).then(() => {
                           localStorage.clear();
-                          navigate('/');
-                      });
+                          navigate("/");
+                        });
                       }
                       console.log(response);
                     }}
