@@ -43,10 +43,11 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
     };
     try {
       const response = await loginUserValidation(loginUser);
+      console.log('res',response.data.token)
       if (response.data.success) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
-          localStorage.setItem("accesstoken",JSON.stringify(response.data.token))
+          localStorage.setItem("accesstoken",response.data.token)
           navigate("/main-view");
         });
       } else {

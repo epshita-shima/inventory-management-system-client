@@ -7,7 +7,7 @@ const userApi = api.injectEndpoints({
       onError: async (error) => {
         console.log("error", error);
         if (error.status === 401) {
-          const refreshResponse = await fetch("/api/v2/refresh-token", {
+          const refreshResponse = await fetch("http://localhost:5000/api/v2/refresh-token", {
             method: "POST",
             credentials: "include",
           });
