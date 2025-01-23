@@ -24,6 +24,7 @@
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "jwt-decode": "^4.0.0",
     "num-words": "^1.2.3",
     "number-to-words": "^1.2.4",
     "primereact": "^10.5.1",

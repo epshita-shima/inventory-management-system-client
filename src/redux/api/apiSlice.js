@@ -1,41 +1,53 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout } from "./authSlice";
+import { authActions, logout } from "./authSlice";
+import { scheduleTokenRefresh } from "./scheduleTokenRefresh";
 
-// const baseQuery = fetchBaseQuery({
-//   baseUrl: "http://localhost:5000",
-//   credentials: "include",
+const baseQuery = fetchBaseQuery({
+  baseUrl: "http://localhost:5000",
+  credentials: "include",
+  prepareHeaders: (headers, { getState }) => {
+    const accessToken = localStorage.getItem("accesstoken");
+    console.log("accessToken", accessToken);
+    if (accessToken) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+    return headers;
+  },
+});
 
-// });
+const baseQueryWithReauth = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+  console.log("result", result?.error?.status);
+  if (result?.error && result?.error?.status === 401) {
+    const refreshResult = await baseQuery(
+      {
+        url: "/api/v2/jwt/refresh-token",
+        method: "POST",
+        body: {},
+      },
+      api,
+      extraOptions
+    );
+    console.log(refreshResult);
+    if (refreshResult.data) {
+      const newToken = refreshResult.data.token;
+      localStorage.setItem("accesstoken", newToken);
+      api.dispatch(authActions.setToken(newToken));
+      scheduleTokenRefresh(newToken, api.dispatch);
 
-// const baseQueryWithReauth = async (args, api, extraOptions) => {
-//   let result = await baseQuery(args, api, extraOptions);
-//   console.log(result);
+      // Retry the original request
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      api.dispatch(authActions.logout());
+    }
+  }
 
-//   if (result.error && result.error.status === 401) {
-
-//     api.dispatch(logout());
-//     window.location.href = "/";
-
-//     return { error: { status: 401, data: "Token expired, logged out" } };
-//   }
-
-//   return result;
-// };
+  return result;
+};
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000",
-    credentials: "include",
-    prepareHeaders: (headers, { getState }) => {
-      const accessToken = localStorage.getItem('accesstoken');
-      console.log('accessToken',accessToken)
-      if (accessToken) {
-        headers.set("Authorization", `Bearer ${accessToken}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["createuser", "changestatus", "changesmanytatus", "deleteuser"],
   endpoints: (builder) => ({
     addNewUser: builder.mutation({
@@ -43,6 +55,12 @@ export const api = createApi({
         url: "/register",
         method: "POST",
         body: payload,
+      }),
+    }),
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: "/api/v2/jwt/refresh-token",
+        method: "POST",
       }),
     }),
     userLogin: builder.mutation({
@@ -55,12 +73,12 @@ export const api = createApi({
     getUser: builder.query({
       query: () => "/getuser",
     }),
-
-    // getUserRole:builder.query({
-    //   query:()=>"/get-user-role"
-    // })
   }),
 });
 
-export const { useAddNewUserMutation, useUserLoginMutation, useGetUserQuery } =
-  api;
+export const {
+  useAddNewUserMutation,
+  useUserLoginMutation,
+  useGetUserQuery,
+  useRefreshTokenMutation,
+} = api;

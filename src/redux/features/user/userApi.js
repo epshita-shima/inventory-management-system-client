@@ -4,18 +4,18 @@ const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllUser: builder.query({
       query: () => "/api/v1/users",
-      onError: async (error) => {
-        console.log("error", error);
-        if (error.status === 401) {
-          const refreshResponse = await fetch("http://localhost:5000/api/v2/refresh-token", {
-            method: "POST",
-            credentials: "include",
-          });
-          const data = await refreshResponse.json();
-          const newAccessToken = data.token;
-          console.log("newAccessToken", newAccessToken);
-        }
-      },
+      // onError: async (error) => {
+      //   console.log("error", error);
+      //   if (error.status === 401) {
+      //     const refreshResponse = await fetch("http://localhost:5000/api/v2/refresh-token", {
+      //       method: "POST",
+      //       credentials: "include",
+      //     });
+      //     const data = await refreshResponse.json();
+      //     const newAccessToken = data.token;
+      //     console.log("newAccessToken", newAccessToken);
+      //   }
+      // },
       providesTags: [
         "createuser",
         "updatedata",

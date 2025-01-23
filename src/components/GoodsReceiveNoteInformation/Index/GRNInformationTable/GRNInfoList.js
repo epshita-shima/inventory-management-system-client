@@ -64,7 +64,7 @@ const GRNInfoList = ({ permission }) => {
     selectMonth: [],
   });
 
-  const [trigger, { data: filteredDatas, isLoading:isGRnLoading }] =
+  const [trigger, { data: filteredDatas, isLoading: isGRnLoading }] =
     useLazyGetFilteredGRNQuery();
 
   console.log({ filteredDatas });
@@ -85,19 +85,6 @@ const GRNInfoList = ({ permission }) => {
   }, [purchaseInfoData]);
 
   const supplierOptions = supplierDropdown(supplierInfo);
-
-  const groupData = (filteredData) => {
-    return filteredData?.reduce((acc, row) => {
-      const key = `${row.receiveDate}`;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(row);
-      return acc;
-    }, {});
-  };
-
-  const groupedData = groupData(filteredData);
 
   const handleApplyFilters = async () => {
     // setExecuteQuery(true);
@@ -306,7 +293,25 @@ const GRNInfoList = ({ permission }) => {
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
-
+  
+  const groupData = (filteredData) => {
+    return filteredData?.reduce((acc, row) => {
+      const key = `${row.receiveDate}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(row);
+      return acc;
+    }, {});
+  };
+  
+  let groupedData = null;
+  if(filteredItems && filteredItems.length > 0){
+    groupedData=groupData(filteredItems);
+  }
+  else{
+    groupedData = []; 
+  }
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
@@ -317,82 +322,89 @@ const GRNInfoList = ({ permission }) => {
     };
 
     return (
-   <div>
-       {
-        filteredDatas.length ==0 ? '' :    <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadGRNPDF(
-                          filteredData,
-                          supplierInfo,
-                          rawItemInfo,
-                          fromDate,
-                          toDate,
-                          { companyinfo },
-                          reportTitle
-                        );
-                      }
-                    }}
+      <div>
+        {filteredDatas?.length == 0 ? (
+          ""
+        ) : (
+          <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
+            <div className="d-flex justify-content-end align-items-center">
+              <div className="table-head-icon d-flex">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-download dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      handleGRNDownload(
-                        filteredData,
-                        rawItemInfo,
-                        supplierInfo,
-                        purchaseInfoData,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
+                    <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                  </button>
+                  <ul
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton1"
                   >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        onClick={() => {
+                          console.log(companyinfo);
+                          console.log({ filteredItems });
+                          if (companyinfo?.length !== 0 || undefined) {
+                            downloadGRNPDF(
+                              filteredItems,
+                              supplierInfo,
+                              rawItemInfo,
+                              fromDate,
+                              toDate,
+                              { companyinfo },
+                              reportTitle
+                            );
+                          }
+                        }}
+                      >
+                        PDF
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="#"
+                        onClick={() => {
+                          handleGRNDownload(
+                            filteredData,
+                            rawItemInfo,
+                            supplierInfo,
+                            purchaseInfoData,
+                            companyinfo,
+                            reportTitle
+                          );
+                        }}
+                      >
+                        Excel
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+              <FilterComponent
+                onFilter={(e) => setFilterText(e.target.value)}
+                onClear={handleClear}
+                filterText={filterText}
+              />
             </div>
           </div>
-        </div>
-
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
-        </div>
+        )}
       </div>
-      }
-   </div>
-   
     );
   }, [
     filteredDatas,
     filterText,
     filteredData,
+    filteredItems,
     supplierInfo,
     rawItemInfo,
     resetPaginationToggle,
@@ -779,6 +791,7 @@ const GRNInfoList = ({ permission }) => {
         <tbody>
           {Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
+            console.log("group", group);
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
@@ -825,7 +838,7 @@ const GRNInfoList = ({ permission }) => {
                     ?.filter((poItem) => poItem._id === row.pOSingleId)
                     .map((filteredItem) => filteredItem.currencyId)
                     .join(",");
-
+                  console.log(currency);
                   return (
                     <tr key={row._id}>
                       {rowIndex === 0 && (
