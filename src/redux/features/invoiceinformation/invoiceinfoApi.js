@@ -2,8 +2,9 @@ import { api } from "../../api/apiSlice";
 
 const invoiceinfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getAllInvoiceInformation: builder.query({
-      query: () => "/invoiceinfo",
+    getAllInvoiceInformation: builder.query(
+      {
+      query: () => "/api/v1/invoiceinfo",
       providesTags: [
         "insertinvoiceinfo",
         "updateinvoiceinfo",
@@ -14,7 +15,8 @@ const invoiceinfoApi = api.injectEndpoints({
       ],
       refetchOnReconnect: true,
       refetchOnFocus: true,
-    }),
+    }
+  ),
 
     insertInvoiceInformation: builder.mutation({
       query: (payload) => ({

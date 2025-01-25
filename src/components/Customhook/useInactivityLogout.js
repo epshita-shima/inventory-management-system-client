@@ -1,4 +1,4 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { api } from "../../redux/api/apiSlice";
 import swal from "sweetalert";
@@ -10,18 +10,18 @@ const useInactivityLogout = () => {
   const dispatch = useDispatch();
   let inactivityTimer;
   const resetTimer = () => {
-   if(window.location.pathname !== "/"){
-    clearTimeout(inactivityTimer);
-    localStorage.setItem('lastActivityTime',Date.now())
-    inactivityTimer = setTimeout(() => {
-      swal("Session Expired!", "Plase Login again", "warning");
-      handleLogout();
-    }, 10 * 60 * 1000);
-   }
+    if (window.location.pathname !== "/") {
+      clearTimeout(inactivityTimer);
+      localStorage.setItem("isActiveTab", "true");
+      inactivityTimer = setTimeout(() => {
+        swal("Session Expired!", "Plase Login again", "warning");
+        handleLogout();
+      }, 1 * 60 * 1000);
+    }
   };
 
   const handleLogout = async () => {
-    if(window.location.pathname !== "/"){
+    if (window.location.pathname !== "/") {
       dispatch(api.util.resetApiState());
       const response = await loggedoutUser();
       if (response.data.success === true) {
@@ -39,23 +39,26 @@ const useInactivityLogout = () => {
     document.onkeypress = resetTimer;
     document.onclick = resetTimer;
 
-    const syncActivity=()=>{
-      const lastActivityTime=localStorage.getItem('lastActivityTime')
-
-      console.log('lastActivityTime && Date.now() - lastActivityTime',lastActivityTime && Date.now() - lastActivityTime)
-      if(lastActivityTime && Date.now() - lastActivityTime < 10*60*1000){
-        resetTimer()
+    const syncActivity = () => {
+      const isActive = localStorage.getItem("isActiveTab");
+      if (isActive) {
+        resetTimer();
       }
-    }
+    };
     window.addEventListener("storage", syncActivity);
     // Cleanup event listeners on unmount
     return () => {
+      const accessToken = localStorage.getItem("accesstoken");
+      if (!accessToken) {
+        handleLogout();
+        clearTimeout(inactivityTimer);
+      }
       clearTimeout(inactivityTimer);
       window.onload = null;
       document.onmousemove = null;
       document.onkeypress = null;
       document.onclick = null;
-      window.removeEventListener("storage",syncActivity)
+      window.removeEventListener("storage", syncActivity);
     };
   }, []);
 };

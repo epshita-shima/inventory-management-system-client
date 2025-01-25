@@ -6,14 +6,12 @@ const RequireAuth = ({ children }) => {
   const getUser = JSON.parse(getUserFromSession);
   const location = useLocation();
   const extractUrlsAndIsChecked = (userData) => {
-    console.log({ userData });
     const urlsAndIsChecked = [];
 
     userData?.menulist?.forEach((menuItem) => {
       // Recursively traverse nested items
       const traverseItems = (items) => {
         items.forEach((item) => {
-          console.log(item);
           urlsAndIsChecked.push({
             id: item.id,
             url: item.url,
@@ -40,39 +38,30 @@ const RequireAuth = ({ children }) => {
   const data = extractUrlsAndIsChecked(getUser);
   const currentUrl = window.location.href;
   const pathname = new URL(currentUrl).pathname;
-  console.log(pathname);
+
   const matchUrlWithData = (data, url) => {
-    console.log("data", data);
     const splitUrl = url.substr(1).split("/");
     const mainView = splitUrl[0];
     const getParentMenu = splitUrl[1];
     const childMenuName = splitUrl[2];
-    console.log(getParentMenu);
-    console.log(childMenuName);
 
     for (const item of data) {
-      console.log(item?.url);
-      console.log(`/${mainView}/${getParentMenu}`);
-
       if (item.url === url) {
-        console.log("item?.url", item?.url, "url:", url);
         return item;
       } else if (item?.url === `/${mainView}/${getParentMenu}`) {
         if (childMenuName.includes("update")) {
-          console.log("Child menu action: update");
           return item.isUpdated
             ? { status: "success", message: "Update action is allowed" }
             : null;
         } else {
           return null;
         }
-      } 
+      }
     }
-    return null
+    return null;
   };
 
   const matchedItem = matchUrlWithData(data, pathname);
-  console.log(matchedItem);
 
   if (!getUser || !matchedItem) {
     swal(

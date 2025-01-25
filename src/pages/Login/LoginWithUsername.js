@@ -1,23 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useUserLoginMutation } from "../../redux/api/apiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/features/user/userSlice";
 import logImage from "../../assets/images/reportlogo.png";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useGetAllUserQuery } from "../../redux/features/user/userApi";
 import swal from "sweetalert";
 import bcrypt from "bcryptjs";
 import "./LoginWithUsername.css";
-import { useInsertUserLoginMutation } from "../../redux/features/auth/authApi";
+import { useUserLoggedinMutation } from "../../redux/features/auth/authApi";
+
 
 const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
-  const [data] = useUserLoginMutation();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [loginUserValidation] = useInsertUserLoginMutation();
+  const [loginUserValidation] = useUserLoggedinMutation()
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const navigate = useNavigate();
@@ -41,10 +40,11 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
       username: username,
       password: password,
     };
+    console.log(loginUser)
     try {
       const response = await loginUserValidation(loginUser);
-      console.log('res',response.data.token)
-      if (response.data.success) {
+      console.log('res',response)
+      if (response.data.success===true) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
           localStorage.setItem("accesstoken",response.data.token)

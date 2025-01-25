@@ -55,7 +55,7 @@ import useInactivityLogout from "./components/Customhook/useInactivityLogout";
 
 function App() {
   
-  useInactivityLogout();
+  // useInactivityLogout();
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);

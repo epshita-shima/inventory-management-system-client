@@ -657,6 +657,9 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                     <tr key={row._id}>
                       {rowIndex === 0 && (
                         <>
+                        <td>
+                          {rowIndex +1}
+                        </td>
                           <td
                             rowSpan={rowSpan}
                             style={{
@@ -664,7 +667,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedOpeningDate}
+                            {items?.openingDate}
                           </td>
                           <td
                             rowSpan={rowSpan}
@@ -673,7 +676,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {items?.closingDate}
                           </td>
                         </>
                       )}
@@ -701,6 +704,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
         <tbody>
           {extractedInActiveDataForReport?.map((items, index) => {
             const group = items?.detailsData;
+            console.log(items?.openingDate)
             const formattedOpeningDate = formatDate(items?.openingDate);
             const formattedClosingDate = formatDate(items?.closingDate);
             const rowSpan = group?.length;
@@ -718,6 +722,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                     <tr key={row._id}>
                       {rowIndex === 0 && (
                         <>
+                        <td>{rowIndex+1}</td>
                           <td
                             rowSpan={rowSpan}
                             style={{
@@ -725,7 +730,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedOpeningDate}
+                            {items?.openingDate}
                           </td>
                           <td
                             rowSpan={rowSpan}
@@ -734,7 +739,7 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {items?.closingDate}
                           </td>
                         </>
                       )}

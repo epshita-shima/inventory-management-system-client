@@ -2,7 +2,7 @@ import { api } from "../../api/apiSlice";
 
 const authApi= api.injectEndpoints({
   endpoints: (builder) => ({
-    insertUserLogin: builder.mutation({
+    userLoggedin: builder.mutation({
       query: (payload) => ({
         url: "/api/v2/jwt",
         method: "POST",
@@ -18,4 +18,4 @@ const authApi= api.injectEndpoints({
     }),
   }),
 });
-export const { useInsertUserLoginMutation,useUserLoggedOutMutation} = authApi;
+export const { useUserLoggedinMutation,useUserLoggedOutMutation} = authApi;

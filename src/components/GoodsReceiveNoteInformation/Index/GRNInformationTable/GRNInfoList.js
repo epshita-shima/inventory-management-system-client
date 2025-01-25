@@ -67,7 +67,6 @@ const GRNInfoList = ({ permission }) => {
   const [trigger, { data: filteredDatas, isLoading: isGRnLoading }] =
     useLazyGetFilteredGRNQuery();
 
-  console.log({ filteredDatas });
 
   useEffect(() => {
     const createPODropdown = (options) => {
@@ -87,8 +86,6 @@ const GRNInfoList = ({ permission }) => {
   const supplierOptions = supplierDropdown(supplierInfo);
 
   const handleApplyFilters = async () => {
-    // setExecuteQuery(true);
-    console.log(filters);
     trigger(filters);
     setIsTableDisplay(true);
   };
@@ -348,8 +345,6 @@ const GRNInfoList = ({ permission }) => {
                         class="dropdown-item"
                         href="#"
                         onClick={() => {
-                          console.log(companyinfo);
-                          console.log({ filteredItems });
                           if (companyinfo?.length !== 0 || undefined) {
                             downloadGRNPDF(
                               filteredItems,
@@ -372,7 +367,7 @@ const GRNInfoList = ({ permission }) => {
                         href="#"
                         onClick={() => {
                           handleGRNDownload(
-                            filteredData,
+                            filteredItems,
                             rawItemInfo,
                             supplierInfo,
                             purchaseInfoData,
@@ -400,20 +395,7 @@ const GRNInfoList = ({ permission }) => {
         )}
       </div>
     );
-  }, [
-    filteredDatas,
-    filterText,
-    filteredData,
-    filteredItems,
-    supplierInfo,
-    rawItemInfo,
-    resetPaginationToggle,
-    fromDate,
-    purchaseInfoData,
-    toDate,
-    companyinfo,
-    reportTitle,
-  ]);
+  }, [filteredDatas, filterText, filteredItems, supplierInfo, rawItemInfo, resetPaginationToggle, fromDate, purchaseInfoData, toDate, companyinfo, reportTitle]);
 
   const generateMonths = (year) => {
     const getYear = year.getFullYear();
@@ -791,7 +773,6 @@ const GRNInfoList = ({ permission }) => {
         <tbody>
           {Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
-            console.log("group", group);
             const formattedDate = formatDate(group[0].makeDate);
             const supplierPONo = group[0].supplierPoNo;
             const rowSpan = group.length;
@@ -838,7 +819,6 @@ const GRNInfoList = ({ permission }) => {
                     ?.filter((poItem) => poItem._id === row.pOSingleId)
                     .map((filteredItem) => filteredItem.currencyId)
                     .join(",");
-                  console.log(currency);
                   return (
                     <tr key={row._id}>
                       {rowIndex === 0 && (
