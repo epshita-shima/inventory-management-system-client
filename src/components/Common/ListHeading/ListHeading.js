@@ -44,7 +44,6 @@ const ListHeading = ({
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
   const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
 
-  console.log(user);
   const traverse = (items) => {
     const urls = [];
     items?.forEach((item) => {
@@ -220,11 +219,7 @@ const ListHeading = ({
               data-target="#exampleModalCenter"
               onClick={() => {
                 const searchItem = mainData?.filter((x) => x.url === pathname);
-                console.log(
-                  "searchItem[0]?.menuId",
-                  searchItem[0]?.menuId,
-                  MenuIdCollection.purchaseorderapprove
-                );
+              
                 if (
                   searchItem[0]?.menuId !==
                     MenuIdCollection.purchaseorderapprove &&

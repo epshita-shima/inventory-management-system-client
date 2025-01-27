@@ -405,10 +405,7 @@ const UpdateMenu = () => {
                                                 const updatedItems = [
                                                   ...prevState.items,
                                                 ]; 
-                                                console.log('updatedItems[index].label',updatedItems[index].isParent,)
-                                                console.log('updatedItems[index].label with url',updatedItems[index].label
-                                                  .toLowerCase()
-                                                  .replace(/\s+/g, "-"))
+                                               
                                                 updatedItems[index] = {
                                                   ...updatedItems[index],
                                                   isParent: isToggled,
@@ -417,7 +414,7 @@ const UpdateMenu = () => {
                                                     .toLowerCase()
                                                     .replace(/\s+/g, "-") 
                                                 }; 
-                                                console.log(updatedItems)
+                                              
                                                 return {
                                                   ...prevState,
                                                   items: updatedItems,

@@ -18,7 +18,7 @@ import swal from "sweetalert";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
-import { downloadInvoiceSingleDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import { downloadInvoiceSingleDataPDF, downloadInvoiceUnapproveDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import './UnApproveInvoiceModal.css'
 import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
 import getMakebyUser from "../../../../Common/CommonMakeUser/CommonMakingUser";
@@ -271,7 +271,7 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
-                        downloadInvoiceSingleDataPDF(
+                        downloadInvoiceUnapproveDataPDF(
                           invoiceData,
                           customerInfo,
                           { companyinfo },

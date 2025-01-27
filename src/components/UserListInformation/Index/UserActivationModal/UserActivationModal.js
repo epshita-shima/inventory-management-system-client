@@ -15,7 +15,7 @@ const UserActivationModal = ({ userId }) => {
     setUpdateUserStatus(singleUser);
   }, [singleUser]);
 
-  console.log(updateUserStatus)
+
 
   return (
     <div
@@ -153,7 +153,7 @@ const UserActivationModal = ({ userId }) => {
               }}
               onClick={async() => {
                const response= await updateData(updateUserStatus);
-               console.log(response)
+          
                if(response.data.success === true){
                 swal("Done", `${response.data.message}`, "success");
                }

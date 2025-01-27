@@ -248,7 +248,7 @@ const downloadInvoicePDF = async (
     const imgWidth = 30; // Width of the image in the PDF
     const imgHeight = 20;
     const imageX = doc.internal.pageSize.width - 15 - imgWidth;
-    console.log(imageX);
+
     const footerImageY = footerY - imgHeight - 3;
     // Draw lines
     // Divide the width by 3 sections

@@ -93,7 +93,6 @@ const UserListInfo = ({
   }, [user]);
 
   const handleActiveStatus = (id) => {
-    console.log(id);
     setUserId(id._id);
   };
 
@@ -267,15 +266,9 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-                console.log(user._id);
-                console.log(
-                  menuListData._id,
-                  user._id,
-                  menuListData._id,
-                  MenuIdCollection.userrole_supperadmin
-                );
                 if (
-                  menuListData._id === user._id || MenuIdCollection.userrole_supperadmin
+                  menuListData._id === user._id ||
+                  MenuIdCollection.userrole_supperadmin
                 ) {
                   setResetPassword(true);
                   setChangePassword(false);

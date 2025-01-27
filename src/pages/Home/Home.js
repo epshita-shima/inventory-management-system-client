@@ -83,7 +83,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
 
   const handleRefreshData = async () => {
     await refetch().then(({ data }) => {
-      console.log(data);
       const userData = data?.filter(
         (item) =>
           item?.username === menuListData?.username &&
@@ -116,7 +115,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
         });
 
         const userObjectData = updatedUserData[0];
-        console.log(userObjectData);
         setAllMenuData(updatedUserData);
         localStorage.setItem("user", JSON.stringify(userObjectData));
       } else {
@@ -209,7 +207,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                       style={{ fontWeight: "bold" }}
                       onClick={async () => {
                         const response = await loggedoutUser();
-                        console.log('response 1',response)
                         if (response?.data?.success === true) {
                           swal("Done", `${response.data.message}`, "success");
                           localStorage.clear();
@@ -277,7 +274,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                     href="#"
                     onClick={async () => {
                       const response = await loggedoutUser();
-                      console.log('response 2',response)
                       if (response?.data?.success === true) {
                         swal(
                           "Done",
@@ -288,7 +284,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                           navigate("/");
                         });
                       }
-                      console.log(response);
                     }}
                   >
                     Logout

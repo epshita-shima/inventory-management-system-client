@@ -16,7 +16,7 @@ const useInactivityLogout = () => {
       inactivityTimer = setTimeout(() => {
         swal("Session Expired!", "Plase Login again", "warning");
         handleLogout();
-      }, 1 * 60 * 1000);
+      }, 10 * 60 * 1000);
     }
   };
 
@@ -24,7 +24,7 @@ const useInactivityLogout = () => {
     if (window.location.pathname !== "/") {
       dispatch(api.util.resetApiState());
       const response = await loggedoutUser();
-      if (response.data.success === true) {
+      if (response?.data?.success === true) {
         dispatch(authActions.logout());
         localStorage.clear();
         window.location.href = "/";

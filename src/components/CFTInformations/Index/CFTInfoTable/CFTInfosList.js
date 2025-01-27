@@ -704,7 +704,6 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
         <tbody>
           {extractedInActiveDataForReport?.map((items, index) => {
             const group = items?.detailsData;
-            console.log(items?.openingDate)
             const formattedOpeningDate = formatDate(items?.openingDate);
             const formattedClosingDate = formatDate(items?.closingDate);
             const rowSpan = group?.length;

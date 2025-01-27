@@ -10,9 +10,7 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useGetSingleUserQuery,
-} from "../../../redux/features/user/userApi";
+import { useGetSingleUserQuery } from "../../../redux/features/user/userApi";
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
 import TreeSingleUserView from "./TreeSingleUserView";
@@ -25,41 +23,35 @@ const SingleUserDisplay = () => {
   const { data: singleUser, isLoading: singleUSerLoading } =
     useGetSingleUserQuery(id);
 
-  const {
-    data: userRoleData,
- 
-  } = useGetUserRoleQuery();
-  const {
-    data: menuItems,
-    
-  } = useGetAllMenuItemsQuery();
+  const { data: userRoleData } = useGetUserRoleQuery();
+  const { data: menuItems } = useGetAllMenuItemsQuery();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const menulist = Array.isArray(singleUser?.menulist) ? singleUser.menulist : [];
+    const menulist = Array.isArray(singleUser?.menulist)
+      ? singleUser.menulist
+      : [];
     const menuItemsList = Array.isArray(menuItems) ? menuItems : [];
-    
+
     // Create a map to track existing items by id
-    const singleDataMap = new Map(menulist.map(item => [item.id, item]));
-    
+    const singleDataMap = new Map(menulist.map((item) => [item.id, item]));
+
     // Combine menulist and menuItems, avoiding duplicates
     const result = [
       ...menulist,
-      ...menuItemsList.filter(menu => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
+      ...menuItemsList.filter((menu) => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
     ];
-    
 
     if (Array.isArray(result)) {
       const updatedSingleUser = {
         ...singleUser,
         menulist: result,
       };
-  
+
       setSingleUserData(updatedSingleUser);
     } else {
-      console.error('Result is not an array');
+      console.error("Result is not an array");
     }
-
   }, [singleUser, menuItems]);
 
   const [validated, setValidated] = useState(false);
@@ -75,7 +67,6 @@ const SingleUserDisplay = () => {
   const updateDropdownList = (updatedChild, menuList) => {
     return menuList?.map((item) => {
       if (item.trackId === updatedChild.parentIds) {
-      
         return {
           ...item,
           items: updateDropdownListRecursive(updatedChild, item.items),
@@ -105,7 +96,6 @@ const SingleUserDisplay = () => {
   };
 
   const updateMenuItem = (menuItemID, updatedValues) => {
-
     const updatedMenuList = [...singleUserData.menulist];
     const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
     setSingleUserData((prevList) => {
@@ -115,9 +105,9 @@ const SingleUserDisplay = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    const checkedData = singleUserData?.menulist?.filter((x) => x.isChecked == true);
-    console.log(checkedData)
-    console.log(JSON.stringify(singleUserData));
+    const checkedData = singleUserData?.menulist?.filter(
+      (x) => x.isChecked == true
+    );
     // try {
     //   await updateUser(singleUserData);
     //   // Data has been successfully updated

@@ -123,7 +123,7 @@ const ProductionInfoList = ({ permission }) => {
   const handleApplyFilters = async () => {
     setExecuteQuery(true);
   };
-console.log(permission)
+
 
   const columns = [
     {

@@ -9,14 +9,12 @@ import bcrypt from "bcryptjs";
 import "./LoginWithUsername.css";
 import { useUserLoggedinMutation } from "../../redux/features/auth/authApi";
 
-
 const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [loginUserValidation] = useUserLoggedinMutation()
+  const [loginUserValidation] = useUserLoggedinMutation();
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const navigate = useNavigate();
@@ -40,14 +38,14 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
       username: username,
       password: password,
     };
-    console.log(loginUser)
+
     try {
       const response = await loginUserValidation(loginUser);
-      console.log('res',response)
-      if (response.data.success===true) {
+      console.log('response',response)
+      if (response.data.success === true) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
-          localStorage.setItem("accesstoken",response.data.token)
+          localStorage.setItem("accesstoken", response.data.token);
           navigate("/main-view");
         });
       } else {
@@ -161,7 +159,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     style={{
                       background: isButtonDisabled ? "gray" : "#68F057",
                       border: "none",
-                      fontWeight:'bold'
+                      fontWeight: "bold",
                     }}
                   >
                     Login

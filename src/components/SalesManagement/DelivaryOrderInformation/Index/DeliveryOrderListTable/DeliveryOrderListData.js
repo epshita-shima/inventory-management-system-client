@@ -19,7 +19,7 @@ import {
 import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
-import { downloadDeliveryOrderPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import { downloadDeliveryOrderListPDF, downloadDeliveryOrderPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 
@@ -269,6 +269,8 @@ const DeliveryOrderListData = ({ permission }) => {
       -1
   );
 
+
+
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -303,20 +305,22 @@ const DeliveryOrderListData = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      // if (companyinfo?.length !== 0 || undefined) {
-                      //   downloadInvoiceSingleDataPDF(
-                      //     deliveryOrderData,
-                      //     customerInfo,
-                      //     { companyinfo },
-                      //     reportTitle
-                      //   );
-                      // }
+                      if (companyinfo?.length !== 0 || undefined) {
+                        downloadDeliveryOrderListPDF(
+                          transformedDOData,
+                          clientInformation,
+                          finishGoodsInfo,
+                          itemsizeinfo,
+                          { companyinfo },
+                          reportTitle
+                        );
+                      }
                     }}
                   >
                     PDF
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a
                     class="dropdown-item"
                     href="#"
@@ -331,7 +335,7 @@ const DeliveryOrderListData = ({ permission }) => {
                   >
                     Excel
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -344,7 +348,7 @@ const DeliveryOrderListData = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch]);
+  }, [filterText, resetPaginationToggle, refetch, companyinfo, transformedDOData, clientInformation, finishGoodsInfo, itemsizeinfo]);
 
   return (
     <div

@@ -21,9 +21,10 @@ const ApproveInvoiceModal = ({permission}) => {
     const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
     const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
     const [filterUnapporovePiData,setfilterUnapporovePiData]=useState([])
-  
+  console.log({filterUnapporovePiData})
     useEffect(()=>{
       const filteredUnApproveData=invoiceData?.filter((x)=>x.isApproved==true)
+      console.log({filteredUnApproveData})
       setfilterUnapporovePiData(filteredUnApproveData)
     },[invoiceData])
   
@@ -150,6 +151,7 @@ const ApproveInvoiceModal = ({permission}) => {
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
+                       
                         if (companyinfo?.length !== 0 || undefined) {
                           downloadInvoiceSingleDataPDF(invoiceData,customerInfo,{ companyinfo }, reportTitle);
                         }

@@ -51,7 +51,6 @@ const ChangePasswordModal = ({
     if (!userIdForChangePassowrd) {
       setSingleUserData((prev) => {
         const temp_data = prev;
-        console.log(temp_data);
         temp_data["hashPassword"] = value;
         temp_data["password"] = value;
         return temp_data;

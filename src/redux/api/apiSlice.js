@@ -6,11 +6,10 @@ import { jwtDecode } from "jwt-decode";
 import isTokenExpired from "./isTokenExpired";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000",
+  baseUrl: process.env.REACT_APP_BASE_URL,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const accessToken = localStorage.getItem("accesstoken");
-    console.log("accessToken", accessToken);
     if (accessToken) {
       headers.set("Authorization", `Bearer ${accessToken}`);
     }
@@ -20,12 +19,13 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log('url',`${process.env.REACT_APP_BASE_URL}`)
+  console.log('args',args);
+  console.log('api',api);
+  console.log('extraOptions',extraOptions)
   const accessToken1 = localStorage.getItem("accesstoken");
-  console.log(accessToken1);
   if (accessToken1) {
     if (isTokenExpired(accessToken1)) {
-      console.log("Token has expired. Logging out...");
-      // if (result?.error && result?.error?.status === 401) {
       const refreshResult = await baseQuery(
         {
           url: "/api/v2/jwt/refresh-token",
@@ -35,7 +35,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         api,
         extraOptions
       );
-      console.log(refreshResult);
 
       if (refreshResult.data) {
         const newToken = refreshResult.data.token;
@@ -43,11 +42,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         api.dispatch(authActions.setToken(newToken));
         scheduleTokenRefresh(newToken, api.dispatch);
 
-        // Retry the original request
         result = await baseQuery(args, api, extraOptions);
       } else if (refreshResult.error) {
-        console.log("Refresh token invalid, logging out...");
-        console.log(refreshResult.error.data.message);
         swal(
           "Somthing went wrong!",
           `${refreshResult.error.data.message}`,
@@ -60,12 +56,17 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
         api.dispatch(authActions.logout());
       }
-      // }
-      // Redirect to login page or handle logout
     } else {
       console.log("Token is valid.");
     }
   } else {
+    swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
+      localStorage.clear("accesstoken");
+      localStorage.clear("user");
+      window.location.href = "/";
+    });
+
+    api.dispatch(authActions.logout());
     console.log("No access token found.");
   }
 

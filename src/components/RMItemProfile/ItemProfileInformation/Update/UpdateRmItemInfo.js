@@ -89,7 +89,7 @@ const UpdateRmItemInfo = () => {
       swal("Relax!", "An problem occurred while updating the data", "error");
     }
   };
-  console.log({ singleItemInfoData });
+
   return (
     <div className="row px-4 mx-4">
       {<LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>}
@@ -371,7 +371,6 @@ const UpdateRmItemInfo = () => {
                           id="flexCheckDefault"
                           checked={singleItemInfoData?.itemStatus}
                           onChange={(e) => {
-                            console.log(e.target.checked);
                             setSingleItemInfoData((prevData) => ({
                               ...prevData,
                               itemStatus: e.target.checked,

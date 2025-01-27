@@ -24,7 +24,7 @@ import {
   useGetSerialNoQuery,
 } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-import '../../../buttonStyle/style.css';
+import "../../../buttonStyle/style.css";
 
 const UserCreation = () => {
   const { id } = useParams();
@@ -68,7 +68,7 @@ const UserCreation = () => {
     lastname: "",
     mobileNo: "",
     password: "LC00",
-    hashPassword:"LC00",
+    hashPassword: "LC00",
     roleId: "",
     username: "",
     isactive: true,
@@ -149,7 +149,6 @@ const UserCreation = () => {
   const mergedArray = mergedData?.map((dataItem) => {
     const mergeCheckboxIntoDropdown = (items, clickedCheckboxes) => {
       return items?.map((item) => {
-        console.log(item._id);
         const clickedCheckbox = clickedCheckboxes.find(
           (checkbox) => checkbox.childId === item._id
         );
@@ -204,8 +203,6 @@ const UserCreation = () => {
       items: mergeCheckboxIntoDropdown(dataItem?.items || [], clickedCheckboxe), // Use empty array if items is undefined
     };
   });
-
-  console.log({ mergedArray });
 
   const filterCheckedItems = (data) =>
     data
