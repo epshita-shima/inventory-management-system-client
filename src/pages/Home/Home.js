@@ -16,21 +16,21 @@ import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCol
 
 import swal from "sweetalert";
 import { useUserLoggedOutMutation } from "../../redux/features/auth/authApi";
+import LoadingSpineer from "../../components/Common/LoadingSpinner/LoadingSpineer";
 
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
-  const { data: menus } = useGetAllMenuItemsQuery(undefined);
+  const { data: menus,isLoading:menuLoading } = useGetAllMenuItemsQuery(undefined);
 
   const getMenulistData = localStorage?.getItem("user");
 
   const menuListData = JSON.parse(getMenulistData);
   const [loggedoutUser] = useUserLoggedOutMutation();
+  const [setAllMenuData] = useUpdateMultipleUserFieldMutation();
+  const navigate = useNavigate();
   if (menuListData !== null) {
     var menuListSingleData = menuListData?.menulist;
   }
-
-  const [setAllMenuData] = useUpdateMultipleUserFieldMutation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -294,6 +294,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
           </div>
         </div>
       </div>
+      <LoadingSpineer isLoading={menuLoading }></LoadingSpineer>
     </div>
   );
 };

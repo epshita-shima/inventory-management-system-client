@@ -24,6 +24,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   console.log('api',api);
   console.log('extraOptions',extraOptions)
   const accessToken1 = localStorage.getItem("accesstoken");
+  console.log('accessToken12',accessToken1)
   if (accessToken1) {
     if (isTokenExpired(accessToken1)) {
       const refreshResult = await baseQuery(
@@ -65,7 +66,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       localStorage.clear("user");
       window.location.href = "/";
     });
-
     api.dispatch(authActions.logout());
     console.log("No access token found.");
   }
