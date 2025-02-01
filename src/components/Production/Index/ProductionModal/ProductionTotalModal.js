@@ -14,8 +14,8 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
   const reportTitle = "PRODUCTION REPORT";
-  const {data:finishGoods}=useGetAllItemInformationQuery(undefined)
-  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
+  const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
+  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined);
   const columns = [
     {
       name: "Sl.",

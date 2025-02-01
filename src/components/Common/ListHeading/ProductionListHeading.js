@@ -6,7 +6,8 @@ const ProductionListHeading = ({
   lastOneMonthProduction,
   lastOneWeekData,
   yesterdayData,
-  permission
+  permission,
+ 
 }) => {
   const [lastMonthModal, setLastMonthModal] = useState(false);
   const [totalProductionModal, setTotalProductionModal] = useState(false);

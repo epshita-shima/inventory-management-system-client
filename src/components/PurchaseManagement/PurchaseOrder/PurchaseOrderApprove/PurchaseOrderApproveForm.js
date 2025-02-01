@@ -5,13 +5,19 @@ import DatePicker from "react-datepicker";
 import swal from "sweetalert";
 import "./PurchaseOrderAproveForm.css";
 import {
+  useGetAllPurchaseOrderApproveInformationQuery,
+  useGetAllPurchaseOrderCashInformationQuery,
   useGetAllPurchaseOrderInformationQuery,
+  useGetAllPurchaseOrderLCInformationQuery,
+  useGetAllPurchaseOrderUnapproveInformationQuery,
   useUpdatePurchaseOrderInformationStatusMutation,
 } from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import PurchaseOrderStatusListTable from "../Index/PurchaseOrderStatusListTable";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
+import PurchaseHeading from './../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading';
+import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 
 const PurchaseOrderApproveForm = () => {
   const [approveStatus, setApproveStatus] = useState("");
@@ -19,7 +25,25 @@ const PurchaseOrderApproveForm = () => {
     useState(false);
   const [showPurchaseUnApproveListData, setShowPurchaseOrderUnApproveListData] =
     useState(false);
-
+      const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const {
+    data: purchaseInfoData,
+    isLoading: isPurchaseOrderLoading,
+    refetch,
+  } = useGetAllPurchaseOrderInformationQuery(undefined);
+  const {
+    data: purchaseCashInfoData
+  } = useGetAllPurchaseOrderCashInformationQuery(undefined);
+  const {
+    data: purchaseLCInfoData
+  } = useGetAllPurchaseOrderLCInformationQuery(undefined);
+  const {
+    data: purchaseApproveInfoData
+  } = useGetAllPurchaseOrderApproveInformationQuery(undefined);
+  const {
+    data: purchaseUnapproveInfoData
+  } = useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
+    const [purchaseInfosModal, setPurchaseInfosModal] = useState(false);
   const [purchaseApproveAllData, setPurchaseApproveAllData] = useState([]);
   const [purchaseUnApproveAllData, setPurchaseUnApproveAllData] = useState([]);
   const [purchaseFilterApproveAllData, setPurchaseFilterApproveAllData] =
@@ -33,8 +57,7 @@ const PurchaseOrderApproveForm = () => {
     new Date().toLocaleDateString("en-CA")
   );
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
-  const { data: purchaseInfoData,isLoading:isPurchaseOrderLoading, refetch } =
-    useGetAllPurchaseOrderInformationQuery(undefined);
+
   const { data: grnInfoData, refetch: grnRefetch } =
     useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
@@ -137,7 +160,7 @@ const PurchaseOrderApproveForm = () => {
       style={{ height: "calc(98vh - 120px)", overflowY: "scroll" }}
     >
       <div class="">
-        <ListHeading
+        {/* <ListHeading
           purchaseInCash={purchaseInCash}
           purchaseInLCAtSight={purchaseInLCAtSight}
           purchaseOrderApproveData={purchaseApproveAllData}
@@ -147,7 +170,19 @@ const PurchaseOrderApproveForm = () => {
           purchaseInfoData={purchaseInfoData}
           setPurchaseOrderList={setPurchaseOrderList}
           isLoading={isPurchaseOrderLoading}
-        ></ListHeading>
+        ></ListHeading> */}
+              <PurchaseHeading 
+       purchaseInCash={purchaseCashInfoData}
+       purchaseInLCAtSight={purchaseLCInfoData}
+       purchaseOrderApproveData={purchaseApproveInfoData}
+       purchaseOrderUnApproveData={purchaseUnapproveInfoData}
+       purchaseInfoData={purchaseInfoData}
+       purchaseOrderList={purchaseOrderList}
+       setPurchaseOrderList={setPurchaseOrderList}
+       isLoading={isPurchaseOrderLoading}
+       supplierInfo={supplierInfo}
+       setPurchaseInfosModal={setPurchaseInfosModal}
+       ></PurchaseHeading>
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
           <div class="row row-cols-2 row-cols-lg-2 w-75">

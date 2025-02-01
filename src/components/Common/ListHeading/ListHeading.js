@@ -31,6 +31,7 @@ const ListHeading = ({
   purchaseOrderApproveData,
   purchaseOrderUnApproveData,
   isLoading,
+  setPurchaseInfosModal,
 }) => {
   const [totalTitle, setTotalTitle] = useState("");
   const [totalActiveTitle, setTotalActiveTitle] = useState("");
@@ -219,14 +220,14 @@ const ListHeading = ({
               data-target="#exampleModalCenter"
               onClick={() => {
                 const searchItem = mainData?.filter((x) => x.url === pathname);
-              
+
                 if (
                   searchItem[0]?.menuId !==
                     MenuIdCollection.purchaseorderapprove &&
                   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
                 ) {
                   setActiveDataModal(true);
-                }
+                } 
               }}
             >
               <p

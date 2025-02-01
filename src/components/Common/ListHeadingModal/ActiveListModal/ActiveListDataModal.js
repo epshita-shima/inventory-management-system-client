@@ -32,6 +32,9 @@ const ActiveListDataModal = ({
   selectedData,
   setSelectedData,
 }) => {
+  const [filterText, setFilterText] = React.useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
   const [updateStatusForUserData, { isLoading:isLoadingUser}] =
     useUpdateMultipleUserStatusMutation();
   const [updateStatusForRawMeterial, { isLoading:isLoadingRawMaterial }] = useUpdateRawMaterialStatusMutation();
@@ -373,9 +376,7 @@ const ActiveListDataModal = ({
   if (window.matchMedia("(max-width: 768px)").matches) {
     customStyles.table.style.height = "150px"; // Adjust height for smaller screens
   }
-  const [filterText, setFilterText] = React.useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] =
-    React.useState(false);
+
   const filteredItems = listData?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
