@@ -89,7 +89,7 @@ const inActiveReportTitle="All Inactive User"
     {
       name: "Status",
       button: true,
-      width: "200px",
+      width: "100px",
       grow: 2,
       cell: (user) => (
         <div className="d-flex justify-content-between align-content-center">

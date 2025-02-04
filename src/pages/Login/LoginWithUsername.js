@@ -64,18 +64,17 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center shadow-lg  rounded-4"
+      className="d-flex justify-content-center align-items-center shadow-lg w-100 h-100 rounded-4"
       style={{
         backgroundColor: "rgba(21, 253, 4, 0.3)",
-        width: "40%",
-        height: "70%",
+      
         position: "absolute", // Or "fixed" if needed
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="col-12 col-md-12 col-lg-10 col-xl-8">
+      <div className="col-10 col-md-12 col-lg-5 col-xl-2">
         <div className="p-4">
           <div className="d-flex justify-content-center">
             <img
@@ -89,12 +88,6 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
             />
           </div>
 
-          <h2
-            className="mb-3 text-center text-uppercase"
-            style={{ color: "#68F057", fontWeight: "bold" }}
-          >
-            Login
-          </h2>
           {isLoggedIn ? (
             navigate("/project") // Render success message if isLoggedIn is true
           ) : (

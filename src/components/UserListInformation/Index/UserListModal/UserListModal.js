@@ -38,17 +38,19 @@ const UserListModal = ({ user }) => {
       sortable: true,
       center: true,
       filterable: true,
+      width: "150px",
     },
     {
       name: "Mobile No",
       selector: (user) => user?.mobileNo,
       sortable: true,
       center: true,
+      width: "200px",
     },
     {
       name: "Status",
       button: true,
-      width: "200px",
+      width: "100px",
       grow: 2,
       cell: (user) => (
         <div className="d-flex justify-content-between align-content-center">

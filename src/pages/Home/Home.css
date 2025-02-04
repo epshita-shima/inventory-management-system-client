@@ -24,10 +24,7 @@
 }
 .p-menuitem-content a{
     text-decoration: none;
-    /* margin-top: 8px; */
-    /* width: 150px; */
     color:#23302C;
-    /* color:#fff; */
     padding: 8px;
     text-align: center;
     white-space: nowrap;
@@ -37,7 +34,6 @@
 }
 .p-menuitem-content a:hover{
     color: #23302C;
-    /* color: #fff; */
     background-color: #2DDC1B;
     border-radius: 10px;
 }
@@ -47,12 +43,12 @@
         display:block !important
     } */
     .p-submenu-list{
-        background-color: rgba(21, 253, 4, 0.3);
+        background-color: #2DDC1B;
         border-radius: 10px;
         padding: 2px;
         margin-left: 4px ; 
         margin-top: 8px;
-        border:1px solid #1EDFBD;
+        border:1px solid black;
         /* display:inline-block !important */
     }
    .p-submenu-list li{

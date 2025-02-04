@@ -44,7 +44,7 @@ const UserActivationModal = ({ userId }) => {
           <div class="modal-body">
             <ul class="list-group rounded-4">
               <li class="list-group-item active">User Information</li>
-              <div className="mt-4">
+              <div className="mt-4 overflow-scroll">
                 <table class="table">
                   <thead>
                     <tr>

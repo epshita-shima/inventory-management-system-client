@@ -53,7 +53,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
     borderBottom: "1px solid #ccc",
   };
   const refreshBtnStyle = {
-    // backgroundColor: "#0A203F",
     backgroundColor: "#2DDC1B",
     color: "#000",
   };
@@ -139,7 +138,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                     variant="secondary"
                     id="dropdown-basic"
                     style={{
-                      backgroundColor: "#0A203F",
+                      backgroundColor: "#2DDC1B",
                       color: "white",
                       border: "none",
                       outline: "none",
@@ -155,7 +154,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                       overflowY: "auto",
                       height: "150px",
                       width: "250px",
-                      backgroundColor: "#CBF3F0",
+                      backgroundColor: "#B8FEB3",
                     }}
                   >
                     <Dropdown>
@@ -163,8 +162,8 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                         // variant="secondary"
                         id="dropdown-basic1"
                         style={{
-                          backgroundColor: "#0A203F",
-                          color: "white",
+                          backgroundColor: "#2DDC1B",
+                          color: "black",
                           border: "none",
                           outline: "none",
                           height: "28px",
@@ -177,7 +176,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                         style={{
                           overflowY: "auto",
                           height: "150px",
-                          // backgroundColor: "#CBF3F0",
                           backgroundColor: "#2DDC1B",
                         }}
                       >
@@ -254,7 +252,6 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                   variant="secondary"
                   id="dropdown-basic"
                   style={{
-                    // backgroundColor: "#0A203F",
                     backgroundColor: "#2DDC1B",
                     color: "black",
                     border: "none",

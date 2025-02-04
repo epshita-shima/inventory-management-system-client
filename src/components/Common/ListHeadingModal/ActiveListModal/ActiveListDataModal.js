@@ -367,12 +367,14 @@ const ActiveListDataModal = ({
     cells: {
       style: {
         borderRight: "1px solid gray",
+        width:'150px'
       },
     },
   };
 
   if (window.matchMedia("(max-width: 768px)").matches) {
-    customStyles.table.style.height = "150px"; // Adjust height for smaller screens
+    customStyles.table.style.height = "150px";
+    
   }
 
   const filteredItems = listData?.filter(
