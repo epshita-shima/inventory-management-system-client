@@ -26,7 +26,6 @@ import InsertClientInformation from "./components/ClientInformation/Insert/Inser
 import ClientInfoTableData from "./components/ClientInformation/Index/ClientInfoTableData";
 import PurchaseOrderListTable from "./components/PurchaseManagement/PurchaseOrder/Index/PurchaseOrderListTable";
 import CommonPurchaseOrderInfo from "./components/PurchaseManagement/PurchaseOrder/Common/CommonPurchaseOrderInfo";
-import PurchaseOrderApproveForm from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseOrderApproveForm";
 import InsertGRNInfo from "./components/GoodsReceiveNoteInformation/Insert/InsertGRNInfo";
 import GRNInfoTable from "./components/GoodsReceiveNoteInformation/Index/GRNInfoTable";
 import ProductionCommonPart from "./components/Production/Common/ProductionCommonPart";
@@ -51,10 +50,10 @@ import RawMaterialConsumptionTable from "./components/ReportManagement/RawMateri
 import CombineReportTable from "./components/ReportManagement/CombineReport/CombineReportTable";
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
-import useInactivityLogout from "./components/Customhook/useInactivityLogout";
+import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseStatusList";
 
 function App() {
-  // baseUrl: process.env.REACT_APP_BASE_URL,
+
   // useInactivityLogout();
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
@@ -63,8 +62,6 @@ function App() {
   const getMenulistData = localStorage.getItem("user");
   const menuListData = JSON.parse(getMenulistData);
  
-  // http://localhost:3000/main-view/production-list/update-production-info/677a2c1f52e67d627de4f9f7
-
   return (
     <div>
       <div className="app-container">
@@ -286,7 +283,7 @@ function App() {
                 path="/main-view/po-approval"
                 element={
                   <RequireAuth>
-                    <PurchaseOrderApproveForm />
+              <PurchaseStatusList></PurchaseStatusList>
                   </RequireAuth>
                 }
               ></Route>

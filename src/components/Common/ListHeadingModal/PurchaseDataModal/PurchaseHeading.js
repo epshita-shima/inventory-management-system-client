@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import PurchaseHeadingModal from "./PurchaseHeadingModal";
-import { useSearchParams } from "react-router-dom";
 
 const PurchaseHeading = ({
   purchaseInCash,
@@ -8,10 +7,6 @@ const PurchaseHeading = ({
   purchaseOrderApproveData,
   purchaseOrderUnApproveData,
   purchaseInfoData,
-  purchaseOrderList,
-  setPurchaseOrderList,
-  isLoading,
-  setPurchaseInfosModal,
   permission,
   supplierInfo,
 }) => {
@@ -22,7 +17,6 @@ const PurchaseHeading = ({
     useState(false);
   const [totalPurchaseUnApproveModal, setTotalPurchaseUnApproveModal] =
     useState(false);
-  console.log("totalPurchaseCashModal", totalPurchaseCashModal);
   return (
     <div>
       <div class="row">

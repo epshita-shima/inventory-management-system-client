@@ -21,10 +21,9 @@ const ApproveInvoiceModal = ({permission}) => {
     const { data: invoiceData } = useGetAllInvoiceInformationQuery(undefined);
     const { data: customerInfo } = useGetAllClientInformationQuery(undefined);
     const [filterUnapporovePiData,setfilterUnapporovePiData]=useState([])
-  console.log({filterUnapporovePiData})
+
     useEffect(()=>{
-      const filteredUnApproveData=invoiceData?.filter((x)=>x.isApproved==true)
-      console.log({filteredUnApproveData})
+      const filteredUnApproveData=invoiceData?.filter((x)=>x.isApproved===true)
       setfilterUnapporovePiData(filteredUnApproveData)
     },[invoiceData])
   

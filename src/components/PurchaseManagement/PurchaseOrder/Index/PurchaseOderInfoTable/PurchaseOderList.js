@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useDeletePurchaseOrderInformationMutation,
   useGetAllPurchaseOrderApproveInformationQuery,
@@ -9,7 +9,6 @@ import {
   useGetAllPurchaseOrderUnapproveInformationQuery,
 } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import DataTable from "react-data-table-component";
-import ListHeading from "../../../../Common/ListHeading/ListHeading";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,8 +26,6 @@ import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/i
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import "./PurchaseOderList.css";
-import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
-import PurchaseHeadingModal from "../../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeadingModal";
 import PurchaseHeading from "../../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading";
 
 const PurchaseOderList = ({ permission }) => {
@@ -39,30 +36,25 @@ const PurchaseOderList = ({ permission }) => {
   const {
     data: purchaseInfoData,
     isLoading: isPurchaseloading,
-    refetch,
+    refetch: purchaseRefetch,
   } = useGetAllPurchaseOrderInformationQuery(undefined);
-  const {
-    data: purchaseCashInfoData
-  } = useGetAllPurchaseOrderCashInformationQuery(undefined);
-  const {
-    data: purchaseLCInfoData
-  } = useGetAllPurchaseOrderLCInformationQuery(undefined);
-  const {
-    data: purchaseApproveInfoData
-  } = useGetAllPurchaseOrderApproveInformationQuery(undefined);
-  const {
-    data: purchaseUnapproveInfoData
-  } = useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
+  const { data: purchaseCashInfoData, refetch: purchaseCashRefetch } =
+    useGetAllPurchaseOrderCashInformationQuery(undefined);
+  const { data: purchaseLCInfoData, refetch: purchaseLCRefetch } =
+    useGetAllPurchaseOrderLCInformationQuery(undefined);
+  const { data: purchaseApproveInfoData, refetch: purchaseApproveRefetch } =
+    useGetAllPurchaseOrderApproveInformationQuery(undefined);
+  const { data: purchaseUnapproveInfoData, refetch: purchaseUnapproveRefetch } =
+    useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: rawMaterialItemInfo } =
     useGetAllRMItemInformationQuery(undefined);
+  const { data: grnDataInfo, refetch: grnRefetch } =
+    useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [deletePurchaseOrderInfo] = useDeletePurchaseOrderInformationMutation();
-  const { data: grnDataInfo, refetch: grnRefetch } =
-    useGetAllGRNInformationQuery(undefined);
-  const [purchaseInfosModal, setPurchaseInfosModal] = useState(false);
   const reportTitle = "PURCHASE ORDER";
 
   const columns = [
@@ -363,8 +355,12 @@ const PurchaseOderList = ({ permission }) => {
             style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
             icon={faRefresh}
             onClick={() => {
-              refetch();
+              purchaseRefetch();
               grnRefetch();
+              purchaseCashRefetch();
+              purchaseLCRefetch();
+              purchaseApproveRefetch();
+              purchaseUnapproveRefetch();
             }}
           ></FontAwesomeIcon>
           &nbsp;
@@ -379,26 +375,34 @@ const PurchaseOderList = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, grnRefetch, refetch]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    grnRefetch,
+    purchaseRefetch,
+    purchaseCashRefetch,
+    purchaseLCRefetch,
+    purchaseApproveRefetch,
+    purchaseUnapproveRefetch,
+  ]);
 
-  console.log(purchaseInfosModal)
   return (
     <div
       className="row px-5 mx-4"
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
-      <PurchaseHeading 
-     permission={permission}
-       purchaseInCash={purchaseCashInfoData}
-       purchaseInLCAtSight={purchaseLCInfoData}
-       purchaseOrderApproveData={purchaseApproveInfoData}
-       purchaseOrderUnApproveData={purchaseUnapproveInfoData}
-       purchaseInfoData={purchaseInfoData}
-       purchaseOrderList={purchaseOrderList}
-       setPurchaseOrderList={setPurchaseOrderList}
-       isLoading={isPurchaseloading}
-       supplierInfo={supplierInfo}
-       setPurchaseInfosModal={setPurchaseInfosModal}></PurchaseHeading>
+      <PurchaseHeading
+        permission={permission}
+        purchaseInCash={purchaseCashInfoData}
+        purchaseInLCAtSight={purchaseLCInfoData}
+        purchaseOrderApproveData={purchaseApproveInfoData}
+        purchaseOrderUnApproveData={purchaseUnapproveInfoData}
+        purchaseInfoData={purchaseInfoData}
+        purchaseOrderList={purchaseOrderList}
+        setPurchaseOrderList={setPurchaseOrderList}
+        isLoading={isPurchaseloading}
+        supplierInfo={supplierInfo}
+      ></PurchaseHeading>
       <div
         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
         style={{ display: isPurchaseloading ? "none" : "block" }}
@@ -415,9 +419,7 @@ const PurchaseOderList = ({ permission }) => {
             subHeaderComponent={subHeaderComponent}
           />
         </div>
-       
       </div>
-      
     </div>
   );
 };

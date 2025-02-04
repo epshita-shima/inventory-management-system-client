@@ -13,13 +13,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import UserListModal from "../UserListModal/UserListModal";
 import UserActivationModal from "../UserActivationModal/UserActivationModal";
-
-import { useNavigate } from "react-router-dom";
 import {
   useDeleteUserMutation,
   useGetAllUserQuery,
 } from "../../../../redux/features/user/userApi";
-import { Font } from "@react-pdf/renderer";
 import swal from "sweetalert";
 import "jspdf-autotable";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
@@ -36,8 +33,6 @@ const UserListInfo = ({
   setChangePassword,
   setResetPassword,
   setUserIdForChangePassowrd,
-  resetPassword,
-  changePassword,
   permission,
 }) => {
   const [userId, setUserId] = useState(null);
@@ -45,9 +40,7 @@ const UserListInfo = ({
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [activeUserModal, setActiveDataModal] = useState(false);
   const [inActiveUserModal, setInActiveUserModal] = useState(false);
-  const [deleteUser, { isLoading, isSuccess, isError }] =
-    useDeleteUserMutation();
-  const navigate = useNavigate();
+  const [deleteUser] = useDeleteUserMutation();
 
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
@@ -77,7 +70,6 @@ const UserListInfo = ({
       username: item.username,
       isactive: item.isactive ? "Active" : "InActive",
     }));
-
     const extractedInactiveFields = inActiveUser?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
@@ -98,7 +90,6 @@ const UserListInfo = ({
 
   const generateColumns = (data, fields) => {
     if (data?.length === 0) return [];
-
     return fields.map((field) => {
       if (field === "isactive") {
         return {
@@ -183,7 +174,6 @@ const UserListInfo = ({
               fontSize: "14px",
               textAlign: "center",
             }}
-            // href={`UpdateGroupName/${data?.GroupId}`}
           >
             {user?.isactive === true ? (
               <p className="text-success fw-bold">Active</p>
@@ -240,7 +230,6 @@ const UserListInfo = ({
               }}
               onClick={() => {
                 window.open(`user-list/user-update/${user?._id}`);
-                // handleActiveStatus(activeUser?._id);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -446,10 +435,7 @@ const UserListInfo = ({
       ></ListHeading>
       <div class="mt-5">
         <div class="row">
-          <div
-            className="col userlist-table main-table-view"
-            // style={{ height: 'calc(55vh - 120px)', overflowY: 'scroll' }}
-          >
+          <div className="col userlist-table main-table-view">
             <div className="shadow-lg overflow-x-auto flex-nowarp">
               <DataTable
                 columns={columns}
@@ -534,22 +520,12 @@ const UserListInfo = ({
       <UserListModal user={user}></UserListModal>
       <UserActivationModal userId={userId}></UserActivationModal>
       {activeUserModal ? (
-        // <UserActiveListModal
-        //   user={activeUser}
-        //   activeUserModal={activeUserModal}
-        //   setActiveDataModal={setActiveDataModal}
-        //   extractedData={extractedData}
-        //   companyinfo={companyinfo}
-        // ></UserActiveListModal>
         <ActiveListDataModal
           listData={activeUser}
           activeDataModal={activeUserModal}
-          // inActiveDataModal={inActiveUserModal}
-          // setInActiveDataModal={setInActiveUserModal}
           setActiveDataModal={setActiveDataModal}
           extractedData={extractedData}
           companyinfo={companyinfo}
-          // extractedInActiveData={extractedInActiveData}
           generateColumns={generateColumns}
           selectedData={selectedData}
           setSelectedData={setSelectedData}
@@ -569,13 +545,6 @@ const UserListInfo = ({
           setSelectedData={setSelectedData}
         ></ActiveListDataModal>
       ) : (
-        // <UserActiveListModal
-        //   user={inActiveUser}
-        //   inActiveUserModal={inActiveUserModal}
-        //   setInActiveUserModal={setInActiveUserModal}
-        //   extractedInActiveData={extractedInActiveData}
-        //   companyinfo={companyinfo}
-        // ></UserActiveListModal>
         ""
       )}
     </div>

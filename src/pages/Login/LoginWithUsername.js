@@ -38,10 +38,9 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
       username: username,
       password: password,
     };
-console.log(loginUser)
+
     try {
       const response = await loginUserValidation(loginUser);
-      console.log('response for login',response)
       if (response.data.success === true) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));

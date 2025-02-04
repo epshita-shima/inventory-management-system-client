@@ -19,12 +19,7 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log('url',`${process.env.REACT_APP_BASE_URL}`)
-  console.log('args',args);
-  console.log('api',api);
-  console.log('extraOptions',extraOptions)
   const accessToken1 = localStorage.getItem("accesstoken");
-  console.log('accessToken12',accessToken1)
   if (accessToken1) {
     if (isTokenExpired(accessToken1)) {
       const refreshResult = await baseQuery(
@@ -58,7 +53,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         api.dispatch(authActions.logout());
       }
     } else {
-      console.log("Token is valid.");
+      console.log("");
     }
   } else {
     swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
@@ -67,7 +62,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       window.location.href = "/";
     });
     api.dispatch(authActions.logout());
-    console.log("No access token found.");
+    console.log("");
   }
 
   return result;

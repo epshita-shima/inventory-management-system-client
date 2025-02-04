@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
 import {
   downloadAllPDF,
   downloadInactivePDF,
-  downloadPDF,
 } from "../../../ReportProperties/PDF/HeaderFooter";
 import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import { useUpdateMultipleUserStatusMutation } from "../../../../redux/features/user/userApi";
@@ -35,21 +34,27 @@ const ActiveListDataModal = ({
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const [updateStatusForUserData, { isLoading:isLoadingUser}] =
+  const [updateStatusForUserData, { isLoading: isLoadingUser }] =
     useUpdateMultipleUserStatusMutation();
-  const [updateStatusForRawMeterial, { isLoading:isLoadingRawMaterial }] = useUpdateRawMaterialStatusMutation();
-  const [updateStatusForFinishGood,{isLoading:isLoadingFinishGoods}] = useUpdateFinishGoodStatusMutation();
-  const [updateCFTInfoStatus,{isLoading:isLoadingCft}] = useUpdateCFTInfoStatusMutation();
-  const [updateSupplierInfoStatus,{isLoading:isLoadingSupplierInfo}]=useUpdateSupplierInfoStatusMutation();
-  const [updateClientInfoStatus,{isLoading:isLoadingClient}]=useUpdateClientInfoStatusMutation();
+  const [updateStatusForRawMeterial, { isLoading: isLoadingRawMaterial }] =
+    useUpdateRawMaterialStatusMutation();
+  const [updateStatusForFinishGood, { isLoading: isLoadingFinishGoods }] =
+    useUpdateFinishGoodStatusMutation();
+  const [updateCFTInfoStatus, { isLoading: isLoadingCft }] =
+    useUpdateCFTInfoStatusMutation();
+  const [updateSupplierInfoStatus, { isLoading: isLoadingSupplierInfo }] =
+    useUpdateSupplierInfoStatusMutation();
+  const [updateClientInfoStatus, { isLoading: isLoadingClient }] =
+    useUpdateClientInfoStatusMutation();
   const currentUrl = window.location.href;
   const pathname = new URL(currentUrl).pathname;
   const wordsURL = pathname.split("/");
   const repStr = wordsURL[2].replaceAll("-", " ");
-  const pathNameConvertCapitalize=repStr.charAt(0).toUpperCase() + repStr.slice(1)
+  const pathNameConvertCapitalize =
+    repStr.charAt(0).toUpperCase() + repStr.slice(1);
   const activeReportTitle = `All Active ${pathNameConvertCapitalize}`;
   const inActiveReportTitle = `All Inactive ${pathNameConvertCapitalize}`;
- 
+
   const getUserFromLocal = localStorage.getItem("user");
   const getUserFromLocalConvert = JSON.parse(getUserFromLocal);
   const getMenuListFromLOcalUser = getUserFromLocalConvert?.menulist;
@@ -76,7 +81,7 @@ const ActiveListDataModal = ({
 
   var columns;
   const searchItem = mainData?.filter((x) => x.url === pathname);
-  if (searchItem[0]?.menuId === MenuIdCollection.userSeting) {
+  if (searchItem[0]?.menuId === MenuIdCollection.userList) {
     const fieldsToDisplay = ["firstname", "mobileNo", "isactive"];
     columns = generateColumns(listData, fieldsToDisplay);
   } else if (searchItem[0]?.menuId === MenuIdCollection.rmItemList) {
@@ -91,19 +96,17 @@ const ActiveListDataModal = ({
   } else if (searchItem[0]?.menuId === MenuIdCollection.supplierinfolist) {
     const fieldsToDisplay = ["supplierName", "mobileNo", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
-  }
-   else if (searchItem[0]?.menuId === MenuIdCollection.clientinfolistId) {
+  } else if (searchItem[0]?.menuId === MenuIdCollection.clientinfolistId) {
     const fieldsToDisplay = ["clientName", "mobileNo", "isActive"];
     columns = generateColumns(listData, fieldsToDisplay);
   }
 
   const handleUpdate = async () => {
     try {
-      // Update the isactive field to true for all selected data items
 
       if (
         activeDataModal &&
-        searchItem[0]?.menuId === MenuIdCollection.userSeting
+        searchItem[0]?.menuId === MenuIdCollection.userList
       ) {
         const updatedData = selectedData.map((item) => ({
           ...item,
@@ -178,8 +181,7 @@ const ActiveListDataModal = ({
             "error"
           );
         }
-      }
-      else if (
+      } else if (
         activeDataModal &&
         searchItem[0]?.menuId === MenuIdCollection.supplierinfolist
       ) {
@@ -198,8 +200,7 @@ const ActiveListDataModal = ({
             "error"
           );
         }
-      }
-      else if (
+      } else if (
         activeDataModal &&
         searchItem[0]?.menuId === MenuIdCollection.clientinfolistId
       ) {
@@ -218,10 +219,9 @@ const ActiveListDataModal = ({
             "error"
           );
         }
-      }
-      if (
+      } else if (
         inActiveDataModal &&
-        searchItem[0]?.menuId === MenuIdCollection.userSeting
+        searchItem[0]?.menuId === MenuIdCollection.userList
       ) {
         const updatedData = selectedData.map((item) => ({
           ...item,
@@ -248,7 +248,7 @@ const ActiveListDataModal = ({
         }));
 
         const response = await updateStatusForRawMeterial(updateRawMeterial);
-   
+
         if (response.data.status === 200) {
           swal("Done", "Data Update status Successfully", "success");
           setSelectedData([]);
@@ -299,8 +299,7 @@ const ActiveListDataModal = ({
             "error"
           );
         }
-      }
-      else if (
+      } else if (
         inActiveDataModal &&
         searchItem[0]?.menuId === MenuIdCollection.supplierinfolist
       ) {
@@ -319,8 +318,7 @@ const ActiveListDataModal = ({
             "error"
           );
         }
-      }
-      else if (
+      } else if (
         inActiveDataModal &&
         searchItem[0]?.menuId === MenuIdCollection.clientinfolistId
       ) {
@@ -419,7 +417,10 @@ const ActiveListDataModal = ({
                           href="#"
                           onClick={() => {
                             if (companyinfo?.length !== 0 || undefined) {
-                              downloadAllPDF({ companyinfo }, activeReportTitle);
+                              downloadAllPDF(
+                                { companyinfo },
+                                activeReportTitle
+                              );
                             }
                           }}
                         >
@@ -525,8 +526,10 @@ const ActiveListDataModal = ({
     extractedInActiveData,
     listData?.length,
     inActiveReportTitle,
-    activeReportTitle
+    activeReportTitle,
   ]);
+
+
   return (
     <div
       class="modal fade"
@@ -535,7 +538,7 @@ const ActiveListDataModal = ({
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true"
-      style={{ overflow: "hidden"}}
+      style={{ overflow: "hidden" }}
     >
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -599,10 +602,26 @@ const ActiveListDataModal = ({
             <button
               type="button"
               class={`btn btn-primary ${
-                selectedData.length === 0 || isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft? "disabled-button" : ""
+                selectedData.length === 0 ||
+                isLoadingUser ||
+                isLoadingRawMaterial ||
+                isLoadingFinishGoods ||
+                isLoadingSupplierInfo ||
+                isLoadingClient ||
+                isLoadingCft
+                  ? "disabled-button"
+                  : ""
               }`}
               onClick={handleUpdate}
-              disabled={selectedData.length === 0 || isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft}
+              disabled={
+                selectedData.length === 0 ||
+                isLoadingUser ||
+                isLoadingRawMaterial ||
+                isLoadingFinishGoods ||
+                isLoadingSupplierInfo ||
+                isLoadingClient ||
+                isLoadingCft
+              }
               style={{
                 backgroundColor: "#2DDC1B",
                 border: "none",
@@ -610,9 +629,14 @@ const ActiveListDataModal = ({
                 textTransform: "uppercase",
               }}
             >
-            {
-              isLoadingUser || isLoadingRawMaterial || isLoadingFinishGoods || isLoadingSupplierInfo || isLoadingClient || isLoadingCft ? "Updating Status" :'Update Status'
-            }  
+              {isLoadingUser ||
+              isLoadingRawMaterial ||
+              isLoadingFinishGoods ||
+              isLoadingSupplierInfo ||
+              isLoadingClient ||
+              isLoadingCft
+                ? "Updating Status"
+                : "Update Status"}
             </button>
           </div>
         </div>

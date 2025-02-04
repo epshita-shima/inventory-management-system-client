@@ -18,16 +18,25 @@ import swal from "sweetalert";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import handleInvoiceExcel from "../../../../ReportProperties/Excel/handleInvoiceExcel";
-import { downloadInvoiceSingleDataPDF, downloadInvoiceUnapproveDataPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
-import './UnApproveInvoiceModal.css'
+import {
+  downloadInvoiceSingleDataPDF,
+  downloadInvoiceUnapproveDataPDF,
+} from "../../../../ReportProperties/PDF/HeaderFooter";
+import "./UnApproveInvoiceModal.css";
 import { downloadInvoicePDF } from "../../../../ReportProperties/PDF/InvoiceReportDownload";
 import getMakebyUser from "../../../../Common/CommonMakeUser/CommonMakingUser";
 
-const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsData,unitInfo,
+const UnApproveInvoiceModal = ({
+  permission,
+  userRoleId,
+  userRoles,
+  finishGoodsData,
+  unitInfo,
   sizeInfo,
   paymentInfo,
   base64Logo,
-  signature,}) => {
+  signature,
+}) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
@@ -167,45 +176,45 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
                     borderRadius: "5px",
                   }}
                   onClick={(e) => {
-                    handleApproveStatus(e,filterUnapporovePiData);
+                    handleApproveStatus(e, filterUnapporovePiData);
                   }}
                 >
                   <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
                 </a>
                 {permission?.isPDF ? (
-            <a
-              target="_blank"
-              className={` action-icon `}
-              data-toggle="tooltip"
-              data-placement="bottom"
-              title="Update item"
-              style={{
-                color: "orange",
-                border: "2px solid orange",
-                padding: "3px",
-                borderRadius: "5px",
-                marginLeft:"10px"
-              }}
-              onClick={() => {
-                downloadInvoicePDF(
-                  filterUnapporovePiData,
-                  finishGoodsData,
-                  customerInfo,
-                  unitInfo,
-                  sizeInfo,
-                  paymentInfo,
-                  base64Logo,
-                  signature,
-                  { companyinfo },
-                  reportTitle
-                );
-              }}
-            >
-              <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
-            </a>
-          ) : (
-            ""
-          )}
+                  <a
+                    target="_blank"
+                    className={` action-icon `}
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Update item"
+                    style={{
+                      color: "orange",
+                      border: "2px solid orange",
+                      padding: "3px",
+                      borderRadius: "5px",
+                      marginLeft: "10px",
+                    }}
+                    onClick={() => {
+                      downloadInvoicePDF(
+                        filterUnapporovePiData,
+                        finishGoodsData,
+                        customerInfo,
+                        unitInfo,
+                        sizeInfo,
+                        paymentInfo,
+                        base64Logo,
+                        signature,
+                        { companyinfo },
+                        reportTitle
+                      );
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+                  </a>
+                ) : (
+                  ""
+                )}
               </div>
             ),
           },
@@ -250,71 +259,84 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
     };
 
     return (
-    <div className={`${filterUnapporovePiData?.length === 0 ? 'd-none' : 'd-block'}`}>
-        <div className={`d-block d-sm-flex justify-content-between align-items-center mb-2 `}>
-        <div className={`d-flex justify-content-end align-items-center `}>
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadInvoiceUnapproveDataPDF(
+      <div
+        className={`${
+          filterUnapporovePiData?.length === 0 ? "d-none" : "d-block"
+        }`}
+      >
+        <div
+          className={`d-block d-sm-flex justify-content-between align-items-center mb-2 `}
+        >
+          <div className={`d-flex justify-content-end align-items-center `}>
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadInvoiceUnapproveDataPDF(
+                            invoiceData,
+                            customerInfo,
+                            { companyinfo },
+                            reportTitle
+                          );
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        handleInvoiceExcel(
                           invoiceData,
                           customerInfo,
-                          { companyinfo },
+                          companyinfo,
                           reportTitle
                         );
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      handleInvoiceExcel(
-                        invoiceData,
-                        customerInfo,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
+          <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>
         </div>
       </div>
-    </div>
     );
-  }, [filterUnapporovePiData, filterText, resetPaginationToggle, companyinfo, invoiceData, customerInfo]);
+  }, [
+    filterUnapporovePiData,
+    filterText,
+    resetPaginationToggle,
+    companyinfo,
+    invoiceData,
+    customerInfo,
+  ]);
 
   const handleApproveStatus = async (e, invoiceData) => {
     const updatedObject = {
@@ -323,7 +345,7 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
       approveBy: makebyUser,
       approveDate: new Date(),
     };
- 
+
     const response = await updatePIStatus(updatedObject);
     if (response.data.status === 200) {
       swal("Done", "Data Update status Successfully", "success");
@@ -339,49 +361,48 @@ const UnApproveInvoiceModal = ({ permission, userRoleId, userRoles ,finishGoodsD
   return (
     <>
       <div
-  class="modal fade"
-  id="unapproveInvoiceModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog fullscreen-modal" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">
-          Unapprove PI List
-        </h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div
-          className=""
-          style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
-        >
-          <DataTable
-            columns={columns}
-            data={filteredItems}
-            defaultSortField="name"
-            customStyles={customStyles}
-            striped
-            pagination
-            subHeader
-            subHeaderComponent={subHeaderComponent}
-          />
+        class="modal fade"
+        id="unapproveInvoiceModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog fullscreen-modal" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Unapprove PI List
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div
+                className=""
+                style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
+              >
+                <DataTable
+                  columns={columns}
+                  data={filteredItems}
+                  defaultSortField="name"
+                  customStyles={customStyles}
+                  striped
+                  pagination
+                  subHeader
+                  subHeaderComponent={subHeaderComponent}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
     </>
   );
 };

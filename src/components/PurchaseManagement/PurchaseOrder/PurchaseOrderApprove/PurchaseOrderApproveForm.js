@@ -13,13 +13,12 @@ import {
   useUpdatePurchaseOrderInformationStatusMutation,
 } from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import PurchaseOrderStatusListTable from "../Index/PurchaseOrderStatusListTable";
-import ListHeading from "../../../Common/ListHeading/ListHeading";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import PurchaseHeading from './../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading';
 import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 
-const PurchaseOrderApproveForm = () => {
+const PurchaseOrderApproveForm = ({permission}) => {
   const [approveStatus, setApproveStatus] = useState("");
   const [showPurchaseApproveListData, setShowPurchaseOrderApproveListData] =
     useState(false);
@@ -181,6 +180,7 @@ const PurchaseOrderApproveForm = () => {
        setPurchaseOrderList={setPurchaseOrderList}
        isLoading={isPurchaseOrderLoading}
        supplierInfo={supplierInfo}
+       permission={permission}
        setPurchaseInfosModal={setPurchaseInfosModal}
        ></PurchaseHeading>
 

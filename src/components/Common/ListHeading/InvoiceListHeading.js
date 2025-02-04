@@ -17,12 +17,7 @@ const InvoiceListHeading = ({
 }) => {
   const [showUnApprovePIModal, setShowUnApprovePIModal] = useState(false);
   const [showApprovePIModal, setShowApprovePIModal] = useState(false);
-  const [matchUserData, setMatchUserData] = useState([]);
 
-  useEffect(() => {
-    const matchUserRole = userRoles?.find((x) => x._id == userRoleId);
-    setMatchUserData(matchUserRole);
-  }, [userRoleId, userRoles]);
 
   return (
     <div>
