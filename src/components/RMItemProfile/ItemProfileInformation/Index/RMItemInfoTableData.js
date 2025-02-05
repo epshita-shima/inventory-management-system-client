@@ -29,7 +29,7 @@ const RMItemInfoTableData = () => {
     
     return (
       <div>
-        <LoadingSpineer isLoading={isUserloading}> </LoadingSpineer>
+        {/* <LoadingSpineer isLoading={isUserloading}> </LoadingSpineer> */}
        <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
        <RMItemInfoList
           permission={permission}

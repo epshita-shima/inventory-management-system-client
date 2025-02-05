@@ -154,7 +154,7 @@ const InsertBankInformation = () => {
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom"
-                          // style={{ height: "400px", overflowY: "auto" }}
+                         
 
                         >
                           <div className="table-responsive">

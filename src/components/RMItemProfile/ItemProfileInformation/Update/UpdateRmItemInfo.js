@@ -92,7 +92,7 @@ const UpdateRmItemInfo = () => {
 
   return (
     <div className="row px-4 mx-4">
-      {<LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>}
+      {/* {<LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>} */}
       <div class="shadow-lg  p-5 rounded-4">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
@@ -127,8 +127,8 @@ const UpdateRmItemInfo = () => {
               handleSubmit(e);
             }}
           >
-            <div className="d-flex justify-content-center align-items-center w-100 ">
-              <div className="card shadow-lg w-75 p-5">
+            <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-center align-items-center w-100 ">
+              <div className="card shadow-lg section-width p-0 p-md-5 p-lg-5 p-xl-5">
                 <div className="col-md-12">
                   <div className="row row-cols-1 row-cols-lg-3">
                     <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
@@ -392,35 +392,12 @@ const UpdateRmItemInfo = () => {
                   </div>
                 </div>
 
-                {/* 
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      checked={singleItemInfoData?.itemStatus}
-                      id="flexCheckDefault"
-                      onClick={(e) => {
-                        setSingleItemInfoData((prevData) => ({
-                          ...prevData,
-                          itemStatus: e.target.checked,
-                          updateBy: updatebyUser,
-                          updateDate: new Date(),
-                        }));
-                      }}
-                    />
-                  </div> */}
                 <div className="d-flex justify-content-center align-items-center mt-4 w-100">
                   <button
                     type="submit"
                     form="itemcreation-form"
-                    className="border-0 "
-                    style={{
-                      backgroundColor: "#2DDC1B",
-                      color: "white",
-                      padding: "7px 10px",
-                      fontSize: "14px",
-                      borderRadius: "5px",
-                      width: "20%",
-                    }}
+                    className="border-0  raw-submit-button"
+                    
                   >
                     {isLoading ? "Updating" : "Update"}
                   </button>

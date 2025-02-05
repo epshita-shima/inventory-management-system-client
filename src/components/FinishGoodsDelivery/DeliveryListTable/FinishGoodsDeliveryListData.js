@@ -19,7 +19,7 @@ import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import { downloadDeliveryOrderPDF } from "../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../Common/ListDataSearchBoxDesign/FilterComponent";
 import LoadingSpineer from "./../../Common/LoadingSpinner/LoadingSpineer";
-
+import './FinishGoodsDeliveryListData.css'
 const FinishGoodsDeliveryListData = ({ permission }) => {
   const reportTitle = "DELIVERY ORDER INFORMATION";
   const [filterText, setFilterText] = useState("");
@@ -267,7 +267,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
 
   return (
     <div className="row px-5 mx-4">
-      <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer> */}
       <div
         className={`col userlist-table ${
           isClientInfoLoading ? "d-none" : "d-block"
@@ -277,10 +277,10 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
           <h3 className="fw-bold mt-1">Finish Goods Delivery List</h3>
           <hr />
           <div
-            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
-            style={{ width: "75%" }}
+            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block finish-goods-delivery-parameter-width"
+            
           >
-            <div style={{ width: "35%" }}>
+            <div className="w-100">
               <label htmlFor="">Client Name</label>
               <div>
                 <Select
@@ -327,7 +327,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div style={{ width: "35%" }}>
+            <div className="w-100 ms-0 ms-lg-2 ms-xl-2">
               <label htmlFor="">Approve Type</label>
               <div>
                 <Select
@@ -374,7 +374,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div>
+            <div className="d-flex ms-0 ms-lg-2 ms-xl-2">
               <button
                 className="border-0 "
                 style={{
@@ -391,8 +391,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
               >
                 {isDeliveryLoading ? "Showing" : " Show"}
               </button>
-            </div>
-            <div>
               <button
                 className="border-0 "
                 style={{
@@ -404,6 +402,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                   width: "100px",
                   height: "38px",
                   marginTop: "15px",
+                  marginLeft:'5px'
                 }}
                 onClick={() => {
                   setFilters((prevFilters) => ({
@@ -416,6 +415,9 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
               >
                 Clear
               </button>
+            </div>
+            <div>
+              
             </div>
           </div>
         </div>

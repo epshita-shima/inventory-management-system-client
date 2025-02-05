@@ -462,7 +462,7 @@ const ProductionInfoList = ({ permission }) => {
               />
             </div>
 
-            <div>
+            <div className="d-flex">
               <button
                 className="border-0 "
                 style={{
@@ -479,8 +479,6 @@ const ProductionInfoList = ({ permission }) => {
               >
                 Show
               </button>
-            </div>
-            <div>
               <button
                 className="border-0 "
                 style={{
@@ -507,6 +505,9 @@ const ProductionInfoList = ({ permission }) => {
               >
                 Clear
               </button>
+            </div>
+            <div>
+             
             </div>
           </div>
           <div></div>

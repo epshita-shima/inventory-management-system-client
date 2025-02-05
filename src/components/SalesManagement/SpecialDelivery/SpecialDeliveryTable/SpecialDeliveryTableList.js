@@ -31,8 +31,8 @@ import {
   useGetAllPaymentReceiveInformationQuery,
   useInsertPaymentReceiveInformationMutation,
 } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
+import './SpecialDeliveryTableList.css'
 const SpecialDeliveryTableList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -501,16 +501,16 @@ const SpecialDeliveryTableList = ({ permission }) => {
 
   return (
     <div className={`row px-5 mx-4 `}>
-      <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer> */}
       <div className={`col userlist-table ${isCustomerLoading ? 'd-none' : 'd-block'}`}>
         <div>
           <h3 className="fw-bold mt-1">Special Approve For Delivery</h3>
           <hr />
           <div
-            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
-            style={{ width: "75%" }}
+            className="d-block d-xl-lg d-lg-flex justify-content-lg-between align-items-lg-center d-md-block special-parameter-width"
+          
           >
-            <div className="w-50">
+            <div className="w-100">
               <label htmlFor="">Client Name</label>
               <div>
                 <Select
@@ -581,7 +581,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div className="w-50 ms-2">
+            <div className="w-100 ms-0 ms-md-2 ms-lg-2 ms-xl-2">
               <label htmlFor="">PI Number</label>
               <div>
                 <Select
@@ -633,6 +633,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 ></Select>
               </div>
             </div>
+            <div className="d-flex">
             <div className="ms-2">
               <button
                 className="border-0 "
@@ -678,35 +679,8 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            {/* {(filteredDatas?.length !== 0 ||
-              filteredDatas?.length !== undefined) && (
-              <div className="ms-2">
-                {paymentStatusMood?.paymentMode === "Cash" ? (
-                  ""
-                ) : (
-                  <button
-                    className="border-0 "
-                    style={{
-                      backgroundColor:
-                        selectedData.length > 0 ? "#2DDC1B" : "#808080",
-                      color: "white",
-                      padding: "5px 10px",
-                      fontSize: "14px",
-                      borderRadius: "5px",
-                      width: "100px",
-                      height: "38px",
-                      marginTop: "15px",
-                      disabled: selectedData.length > 0 ? false : true,
-                    }}
-                    onClick={() => {
-                      handleSpecialApprove();
-                    }}
-                  >
-                    Approve
-                  </button>
-                )}
-              </div>
-            )} */}
+            </div>
+          
           </div>
           <div></div>
         </div>
@@ -717,7 +691,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
             style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
           >
             {
-              isFilterDataLoading? <LoadingSpineer isLoading={isFilterDataLoading}></LoadingSpineer> : ( <DataTable
+            <DataTable
                 columns={columns}
                 data={transformedProductionData}
                 defaultSortField="name"
@@ -726,7 +700,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                 pagination
                 subHeader
                 subHeaderComponent={subHeaderComponent}
-              />)
+              />
             }
            
           </div>

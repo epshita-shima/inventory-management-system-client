@@ -275,7 +275,7 @@ const PaymentMethodSingleEntry = () => {
       className= {`row mx-4 `}
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      <LoadingSpineer isLoading={isLoadingClientInfo}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isLoadingClientInfo}></LoadingSpineer> */}
       <div class={`overflow-hidden ${isLoadingClientInfo ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik

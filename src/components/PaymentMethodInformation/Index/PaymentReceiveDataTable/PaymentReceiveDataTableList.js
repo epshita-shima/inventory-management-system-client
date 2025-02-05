@@ -751,8 +751,8 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       <div>
         <h3 className="fw-bold mt-1">Payment Receive List</h3>
         <hr />
-        <div className="d-flex">
-          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-50">
+     
+          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-75">
             <div className="w-100">
               <label htmlFor="">Client Name</label>
               <br />
@@ -813,7 +813,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
               </div>
             </div>
 
-            <div className="w-100 ms-2">
+            <div className="w-100 ms-0 ms-lg-2 ms-xl-2">
               <label htmlFor="">PI Number</label>
               <br />
               <div className="w-100">
@@ -863,8 +863,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-          </div>
-          <div className="ms-4">
+            <div className="ms-0 ms-lg-4 ms-xl-4 d-flex">
             <button
               className="border-0 "
               style={{
@@ -909,7 +908,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
               Clear
             </button>
           </div>
-        </div>
+          </div>
+          
+       
       </div>
 
       {isTableDispaly ? (

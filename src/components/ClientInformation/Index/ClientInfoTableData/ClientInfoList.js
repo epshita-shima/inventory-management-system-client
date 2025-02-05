@@ -408,7 +408,6 @@ const ClientInfoList = ({ permission }) => {
   ]);
   return (
     <div className="row px-5 mx-4">
-      <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer>
       <ListHeading
         clientInfoData={clientInfoData}
         clientInfoActiveStatus={clientInfoActiveStatus}

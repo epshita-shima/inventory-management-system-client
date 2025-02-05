@@ -251,7 +251,7 @@ const InsertGRNInfo = () => {
       style={{ height: 'calc(98vh - 120px)', overflowY: 'hidden' }}
 
     >
-      <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer> */}
       <div class={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik

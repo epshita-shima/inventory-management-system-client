@@ -395,7 +395,7 @@ const [selectedData, setSelectedData] = useState([]);
 
   return (
     <div className="row px-5 mx-4">
-      <LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer> */}
       <ListHeading 
       finishGoodInItemInfoData={finishGoodInItemInfoData}
       finishGoodActiveStatus={finishGoodActiveStatus}

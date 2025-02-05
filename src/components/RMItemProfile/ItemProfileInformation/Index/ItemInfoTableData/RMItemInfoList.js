@@ -434,28 +434,10 @@ const RMItemInfoList = ({ permission }) => {
     reportTitle,
     refetch,
   ]);
-  // if (isRmItemLoading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         class="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           class="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
+
   return (
     <div className="row px-5 mx-4">
-      <LoadingSpineer isLoading={isRmItemLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isRmItemLoading}></LoadingSpineer> */}
       <ListHeading
         rmItemInfoData={rmItemInfoData}
         rmItemActiveStatus={rmItemActiveStatus}

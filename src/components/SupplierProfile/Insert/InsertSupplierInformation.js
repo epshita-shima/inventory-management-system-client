@@ -99,11 +99,8 @@ const InsertSupplierInformation = () => {
 
   return (
     <div
-      className=" row px-lg-4 mx-lg-4"
-      // style={{
-      //   overflowY: "scroll",
-      //   height: "calc(80vh - 120px)",
-      // }}
+      className=" row p-4 px-lg-4 mx-lg-4"
+     
     >
       <div class="">
         <div className="">

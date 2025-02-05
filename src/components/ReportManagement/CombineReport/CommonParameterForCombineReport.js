@@ -16,7 +16,7 @@ const CommonParameterForCombineReport = ({
     <div>
       <h3 className="fw-bold mt-1">Combine Report</h3>
 
-      <div className="d-flex justify-content-between align-items-center w-50">
+      <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center w-50">
         <div className="">
           <label htmlFor="">From Date</label>
           <br />
@@ -45,7 +45,7 @@ const CommonParameterForCombineReport = ({
           />
         </div>
 
-        <div className="ms-3">
+        <div className="ms-0 ms-lg-3 ms-xl-3">
           <label htmlFor="">To Date</label>
           <br />
           <DatePicker
@@ -66,7 +66,8 @@ const CommonParameterForCombineReport = ({
         </div>
 
 
-        <div>
+      <div className="d-flex ms-0 ms-lg-2">
+      <div>
           <button
             className="border-0 "
             style={{
@@ -78,7 +79,6 @@ const CommonParameterForCombineReport = ({
               width: "100px",
               height: "38px",
               marginTop: "25px",
-              marginLeft: "5px",
             }}
             onClick={() => {
               handleApplyFilters(filters)
@@ -116,6 +116,7 @@ const CommonParameterForCombineReport = ({
             Clear
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

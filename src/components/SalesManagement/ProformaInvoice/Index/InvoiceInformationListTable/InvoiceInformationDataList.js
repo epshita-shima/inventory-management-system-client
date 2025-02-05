@@ -477,7 +477,7 @@ const InvoiceInformationDataList = ({ permission }) => {
 
   return (
     <div>
-       <LoadingSpineer isLoading={isInvoiceLoading}></LoadingSpineer>
+       {/* <LoadingSpineer isLoading={isInvoiceLoading}></LoadingSpineer> */}
       <div
         className={`row px-5 mx-4 ${isInvoiceLoading ? "d-none" : "d-block"} `}
         style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}

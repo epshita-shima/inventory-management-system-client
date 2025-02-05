@@ -27,7 +27,7 @@ import { useGetAllItemInformationQuery } from "../../../../redux/features/itemin
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useInsertDeliveryOrderInformationMutation } from "../../../../redux/features/deliveryorderinformation/deliveryinfoApi";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../../redux/features/serialgenerate/serialApi";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+
 import '../../../../buttonStyle/style.css';
 
 const DelivaryOrderCommonInsertPart = () => {
@@ -294,7 +294,7 @@ const DelivaryOrderCommonInsertPart = () => {
       className={`row mx-2 `}
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      <LoadingSpineer isLoading={isPaymentLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isPaymentLoading}></LoadingSpineer> */}
       <div class={`${isPaymentLoading ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik

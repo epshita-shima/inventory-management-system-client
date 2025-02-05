@@ -33,10 +33,9 @@ import {
   useCreateSerialNoMutation,
   useGetSerialNoQuery,
 } from "../../../../redux/features/serialgenerate/serialApi";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import '../../../../buttonStyle/style.css';
-
+import './CommonPurchaseOrderInfo.css'
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
 
@@ -191,12 +190,12 @@ const CommonPurchaseOrderInfo = () => {
     <div
       className=" row px-4 mx-4"
       style={{
-        overflow: "hidden",
+        overflow: "auto",
         height: "calc(98vh - 120px)",
         zIndex: "9999",
       }}
     >
-      {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>}
+      {/* {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>} */}
 
       <div class={`${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
@@ -243,22 +242,13 @@ const CommonPurchaseOrderInfo = () => {
                     return (
                       <div
                         className=" shadow-lg py-2 px-5"
-                        // style={{
-                        //   overflowY: "hidden",
-                        //   height: "calc(95vh - 120px)",
-                        //   zIndex: "9999",
-                        // }}
+                      
                       >
                         <div class="container-fluid">
                           <div class="row justify-content-center">
                             <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
                               <div className="d-flex justify-content-between align-items-center">
-                                <h2
-                                  style={{
-                                    fontSize: "24px",
-                                    fontWeight: "bold",
-                                  }}
-                                >
+                                <h2 className="main-heading-title" >
                                   {id
                                     ? "Purchase Order Update Form"
                                     : "Purchase Order Insert Form"}
@@ -306,15 +296,12 @@ const CommonPurchaseOrderInfo = () => {
 
                               <div>
                                 <h2
-                                  style={{
-                                    fontSize: "20px",
-                                    fontWeight: "bold",
-                                  }}
+                                className="heading-title"
                                 >
                                   Details Information
                                 </h2>
-                                <div className="d-flex justify-content-between align-items-center mb-4">
-                                  <div className="d-flex justify-content-between">
+                                <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center mb-4">
+                                  <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between">
                                     <button
                                       type="submit"
                                       form="pocreation-form"
@@ -351,7 +338,7 @@ const CommonPurchaseOrderInfo = () => {
                                         : "Save"}
                                     </button>
                                     <div
-                                      className="border-0 "
+                                      className="border-0 ms-0 mt-2 mt-md-0 mt-lg-0 mt-xl-0 ms-md-2 ms-lg-2 ms-xl-2"
                                       style={{
                                         // backgroundColor: "#00B987",
                                         backgroundColor: "#B8FEB3",
@@ -359,7 +346,6 @@ const CommonPurchaseOrderInfo = () => {
                                         padding: "5px 10px",
                                         fontSize: "14px",
                                         borderRadius: "5px",
-                                        marginLeft: "5px",
                                         width: "100px",
                                       }}
                                       onClick={() => {
@@ -412,19 +398,14 @@ const CommonPurchaseOrderInfo = () => {
                                         name={`grandTotalQuantity`}
                                         placeholder="Grand Total Quantity"
                                         disabled
+                                        className='purchase-total-input'
                                         value={
                                           id
                                             ? purchaseOrderAllInformation?.grandTotalQuantity
                                             : totalGrandQuantity
                                         }
                                         style={{
-                                          border: "1px solid #2DDC1B",
-                                          padding: "5px",
-                                          width: "50%",
-                                          borderRadius: "5px",
-                                          textAlign: "center",
-                                          marginLeft: "10px",
-                                          height: "38px",
+                                     
                                         }}
                                       />
                                     </div>
@@ -440,20 +421,13 @@ const CommonPurchaseOrderInfo = () => {
                                         name={`grandTotalAmount`}
                                         placeholder="Grand Total Amount"
                                         disabled
+                                        className='purchase-total-input'
                                         value={
                                           id
                                             ? purchaseOrderAllInformation?.grandTotalAmount
                                             : totalGrandTotalAmount
                                         }
-                                        style={{
-                                          border: "1px solid #2DDC1B",
-                                          padding: "5px",
-                                          width: "50%",
-                                          borderRadius: "5px",
-                                          marginLeft: "10px",
-                                          textAlign: "center",
-                                          height: "38px",
-                                        }}
+                                    
                                       />
                                     </div>
                                   </div>

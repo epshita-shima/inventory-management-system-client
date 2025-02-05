@@ -187,7 +187,7 @@ const SalesManagementCommonPart = () => {
         zIndex: "9999",
       }}
     >
-      <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isCustomerLoading}></LoadingSpineer> */}
       <div class={` ${isCustomerLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik

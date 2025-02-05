@@ -13,3 +13,23 @@
   margin-left: 10px;
   color: #333;
 }
+.section-width {
+  width: 75%;
+}
+.raw-submit-button {
+  background-color: #2ddc1b;
+  color: white;
+  padding: 7px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 20%;
+}
+@media (max-width: 568px) {
+  /* md */
+  .section-width {
+    width: 100%;
+  }
+  .raw-submit-button{
+    width: 80%;
+  }
+}

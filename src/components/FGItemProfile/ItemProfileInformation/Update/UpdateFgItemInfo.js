@@ -21,7 +21,7 @@ import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/
 import { InputGroup, Form } from "react-bootstrap";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
-import '../../../../buttonStyle/style.css';
+import "../../../../buttonStyle/style.css";
 
 const UpdateFgItemInfo = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -31,7 +31,7 @@ const UpdateFgItemInfo = () => {
     useGetSingleItemQuery(id);
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
-  const [updateItemInfo] = useUpdateItemInfoMutation();
+  const [updateItemInfo, { isLoading }] = useUpdateItemInfoMutation();
   const navigate = useNavigate();
   const updatebyUser = getMakebyUser();
 
@@ -87,11 +87,8 @@ const UpdateFgItemInfo = () => {
   };
 
   return (
-    <div
-      className=" row px-4 mx-4"
-   
-    >
-      {<LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer>}
+    <div className=" row px-4 mx-4">
+      {/* {<LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer>} */}
       <div className="shadow-lg  p-5 rounded-4">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
@@ -119,7 +116,6 @@ const UpdateFgItemInfo = () => {
           </div>
         </div>
 
-
         <div className="mt-3 table-responsive-custom">
           <Form
             id="itemcreation-form"
@@ -128,7 +124,7 @@ const UpdateFgItemInfo = () => {
             }}
           >
             <div className="d-flex justify-content-center align-items-center w-100 ">
-              <div className="card shadow-lg w-75 p-5">
+              <div className="card shadow-lg section-width p-0 p-md-5 p-lg-5 p-xl-5">
                 <div className="col-md-12">
                   <div className="row row-cols-1 row-cols-lg-3">
                     <div className="col-sm-12 col-md-6 col-lg-4 mb-2">
@@ -156,11 +152,10 @@ const UpdateFgItemInfo = () => {
                             }));
                           }}
                           style={{
-                            
                             background: "white",
                             border: "1px solid #2DDC1B",
-                            height:'35px',
-                            borderRadius:'5px'
+                            height: "35px",
+                            borderRadius: "5px",
                           }}
                         />
                       </InputGroup>
@@ -352,8 +347,8 @@ const UpdateFgItemInfo = () => {
                           }}
                           style={{
                             border: "1px solid #2DDC1B",
-                            height:'35px',
-                            borderRadius:'5px',
+                            height: "35px",
+                            borderRadius: "5px",
                             background: "white",
                           }}
                         />
@@ -384,8 +379,8 @@ const UpdateFgItemInfo = () => {
                           }}
                           style={{
                             border: "1px solid #2DDC1B",
-                            height:'35px',
-                            borderRadius:'5px',
+                            height: "35px",
+                            borderRadius: "5px",
                             background: "white",
                           }}
                         />
@@ -396,42 +391,15 @@ const UpdateFgItemInfo = () => {
                     <button
                       type="submit"
                       form="itemcreation-form"
-                      className="border-0 "
-                      style={{
-                        backgroundColor: "#2DDC1B",
-                        color: "white",
-                        padding: "9px 10px",
-                        fontSize: "14px",
-                        borderRadius: "5px",
-                        width: "15%",
-                      }}
+                      className="border-0 raw-submit-button"
+                    
                     >
-                      Save
+                    {isLoading ? "Updating" : "Update"}
                     </button>
                   </div>
                 </div>
 
-                {/* <Form.Label
-                    htmlFor="inputPassword5"
-                    style={{ color: "#032339", letterSpacing: "1px" }}
-                  >
-                    Item Status
-                  </Form.Label>
-                  <div class="form-check">
-                    <input
-                      type="checkbox"
-                      checked={singleItemInfoData?.itemStatus}
-                      id="flexCheckDefault"
-                      onClick={(e) => {
-                        setSingleItemInfoData((prevData) => ({
-                          ...prevData,
-                          itemStatus: e.target.checked,
-                          updateBy: updatebyUser,
-                          updateDate: new Date(),
-                        }));
-                      }}
-                    />
-                  </div> */}
+            
               </div>
             </div>
           </Form>

@@ -1,0 +1,8 @@
+.item-batch-width{
+  width:65%
+}
+@media (max-width: 568px) { /* md */
+  .item-batch-width {
+    width: 75%;
+  }
+}

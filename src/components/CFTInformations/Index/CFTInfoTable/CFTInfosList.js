@@ -544,7 +544,6 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
 
   return (
     <div className="row px-5 mx-4">
-      <LoadingSpineer isLoading={isCFTInfoloading}></LoadingSpineer>
       <ListHeading
         cftInfosData={cftInfosData}
         cftInfoActiveStatus={cftInfoActiveStatus}
@@ -554,7 +553,6 @@ const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) =>
       ></ListHeading>
       <div
         className="col userlist-table mt-4 cftdata-main-view"
-        // style={{ height: 'calc(80vh - 120px)', overflowY: 'scroll' }}
       >
         <div className="shadow-lg">
           <DataTable

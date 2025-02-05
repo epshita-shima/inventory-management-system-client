@@ -21,7 +21,7 @@ const CommonParameter = ({
   setIsReturnSummaryReport,
   setIsReturnDetailsReport,
   setIsCombineReport,
-  setIsTableDisplay
+  setIsTableDisplay,
 }) => {
   const reportStatusOptions = [
     { value: "orderdetailsreport", label: "Order Details Report" },
@@ -38,10 +38,10 @@ const CommonParameter = ({
       <h3 className="fw-bold mt-1">Sales Report</h3>
       <hr />
 
-      <div className="d-flex justify-content-between align-items-center w-100">
+      <div className="d-block d-lg-flex justify-content-between align-items-center w-100">
         <div
           style={{ width: "34%" }}
-          className="d-flex justify-content-between align-items-center"
+          className="d-block d-md-flex d-lg d-xl-flex justify-content-between align-items-center"
         >
           <div className="">
             <label htmlFor="">From Date</label>
@@ -70,7 +70,7 @@ const CommonParameter = ({
               }}
             />
           </div>
-          <div className=" ">
+          <div className="mt-2 mt-md-0 mt-lg-0 mt-xl-0 ms-0 ms-md-2 ms-lg-2">
             <label htmlFor="">To Date</label>
             <br />
             <DatePicker
@@ -80,7 +80,6 @@ const CommonParameter = ({
               selected={toDate}
               required
               onChange={(toDate) => {
-
                 setFilters((prevFilters) => ({
                   ...prevFilters,
                   toDate: toDate?.toLocaleDateString("en-CA"),
@@ -92,9 +91,9 @@ const CommonParameter = ({
         </div>
         <div
           style={{ width: "65%" }}
-          className="d-flex justify-content-between align-items-center"
+          className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center mt-2 mt-lg-0 w-100 "
         >
-          <div className="w-100">
+          <div className="mt-2 mt-md-0 mt-lg-0 mt-xl-0 ms-md-3 ms-lg-3 w-100">
             <label htmlFor="">Item Name</label>
             <br />
             <div className="w-100">
@@ -142,7 +141,7 @@ const CommonParameter = ({
               ></Select>
             </div>
           </div>
-          <div className="w-100 ms-3">
+          <div className="mt-2 mt-md-0 mt-lg-0 mt-xl-0 w-100 ms-0 ms-md-3 ms-lg-3">
             <label htmlFor="">Client Name</label>
             <br />
             <div className="w-100">
@@ -191,7 +190,7 @@ const CommonParameter = ({
             </div>
           </div>
 
-          <div className="w-100 ms-3">
+          <div className="mt-2 mt-md-0 mt-lg-0 mt-xl-0 w-100  ms-0 ms-md-3 ms-lg-3">
             <label htmlFor="">PI Number</label>
             <br />
             <div className="w-100">
@@ -231,7 +230,6 @@ const CommonParameter = ({
                   },
                 })}
                 onChange={(e) => {
-                  
                   setFilters((prevFilters) => ({
                     ...prevFilters,
                     piId: e.value,
@@ -244,8 +242,7 @@ const CommonParameter = ({
       </div>
 
       <div
-        style={{ width: "100%" }}
-        className="d-flex justify-content-between align-items-center"
+        className="d-block d-md-flex d-lg-flex justify-content-between align-items-center w-100"
       >
         <div>
           <button
@@ -259,7 +256,6 @@ const CommonParameter = ({
               width: "100px",
               height: "38px",
               marginTop: "25px",
-
             }}
             onClick={() => {
               setIsTableDisplay(false);
@@ -280,10 +276,10 @@ const CommonParameter = ({
           </button>
         </div>
         <div
-          className=" d-flex mt-5 align-items-center justify-content-center"
+          className=" d-flex mt-3 mt-md-5 mt-lg-5 mt-xl-5 align-items-center justify-content-center"
           style={{ width: "40%" }}
         >
-          <label htmlFor="" className="w-50">
+          <label htmlFor="" className="w-50 ">
             Report Status
           </label>
           <div className="w-100">
@@ -390,10 +386,7 @@ const CommonParameter = ({
             ></Select>
           </div>
         </div>
-
-        
       </div>
-     
     </div>
   );
 };

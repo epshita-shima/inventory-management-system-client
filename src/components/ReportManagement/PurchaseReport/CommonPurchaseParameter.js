@@ -3,6 +3,7 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
+import './CommonPurchaseParameter.css'
 
 const CommonPurchaseParameter = ({
   fromDate,
@@ -28,10 +29,10 @@ const CommonPurchaseParameter = ({
       <h3 className="fw-bold mt-1">Purchase Report</h3>
       <hr />
 
-      <div className="d-flex justify-content-between align-items-center w-100">
+      <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div
           style={{ width: "34%" }}
-          className="d-flex justify-content-between align-items-center"
+          className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center"
         >
           <div className="">
             <label htmlFor="">From Date</label>
@@ -80,9 +81,7 @@ const CommonPurchaseParameter = ({
             />
           </div>
         </div>
-        <div
-          style={{ width: "65%" }}
-          className="d-flex justify-content-between align-items-center"
+        <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center items-purchase-width"
         >
           <div className="w-100">
             <label htmlFor="">Item Name</label>
@@ -132,7 +131,7 @@ const CommonPurchaseParameter = ({
               ></Select>
             </div>
           </div>
-          <div className="w-100 ms-3">
+          <div className="w-100 ms-0 ms-md-3 ms-lg-3 ms-xl-3">
             <label htmlFor="">Supplier Name</label>
             <br />
             <div className="w-100">
@@ -181,7 +180,7 @@ const CommonPurchaseParameter = ({
             </div>
           </div>
 
-          <div className="w-100 ms-3">
+          <div className="w-100 ms-0 ms-md-3 ms-lg-3 ms-xl-3">
             <label htmlFor="">PO Number</label>
             <br />
             <div className="w-100">
@@ -233,8 +232,7 @@ const CommonPurchaseParameter = ({
       </div>
 
       <div
-        style={{ width: "100%" }}
-        className="d-flex justify-content-between align-items-center"
+        className="d-block d-md-flex d-lg-flex d-xl-flexjustify-content-between align-items-center w-100"
       >
         <div>
           <button
@@ -268,8 +266,7 @@ const CommonPurchaseParameter = ({
           </button>
         </div>
         <div
-          className=" d-flex mt-5 align-items-center justify-content-center"
-          style={{ width: "40%" }}
+          className="d-flex mt-5 align-items-center justify-content-center report-status-width"
         >
           <label htmlFor="" className="w-50">
             Report Status

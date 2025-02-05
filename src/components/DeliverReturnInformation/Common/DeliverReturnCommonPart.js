@@ -81,7 +81,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
       detailsData: [],
     };
 
-    doDetailsFilteredData?.detailsData.map((item, index) => {
+    doDetailsFilteredData?.detailsData?.map((item, index) => {
       modelData.detailsData.push({
         piDetailsId: item?.piDetailsId,
         piId: item?.piId,
@@ -112,7 +112,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
         zIndex: "9999",
       }}
     >
-      <LoadingSpineer isLoading={isPiInfoLoading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isPiInfoLoading}></LoadingSpineer> */}
       <div class={`${isPiInfoLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
@@ -199,7 +199,12 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                   doInformation={doInformation}
                                 ></DeliverReturnSinglePart>
                               }
-                              <div>
+                              
+
+                              {isDisplay && (
+                                <>
+                               
+                                <div>
                                 <h2
                                   style={{
                                     fontSize: "20px",
@@ -208,7 +213,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                 >
                                   Details Information
                                 </h2>
-                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center mb-4">
                                   <div className="d-lg-flex justify-content-between">
                                     <button
                                       type="submit"
@@ -238,21 +243,12 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                       placeholder="Total Deliver Qty"
                                       value={totalQtyCalculate}
                                       disabled
-                                      style={{
-                                        border: "1px solid #2DDC1B",
-                                        padding: "5px",
-                                        width: "60%",
-                                        borderRadius: "5px",
-                                        height: "38px",
-                                        textAlign: "center",
-                                        marginLeft: "5px",
-                                      }}
+                                      className='total-qty-input'
+                                      
                                     />
                                   </div>
                                 </div>
                               </div>
-
-                              {isDisplay && (
                                 <InsertDeliverReturnDetails
                                   values={values}
                                   doDetailsFilteredData={doDetailsFilteredData}
@@ -263,6 +259,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                                   setFieldValue={setFieldValue}
                                   touched={touched}
                                 ></InsertDeliverReturnDetails>
+                                 </>
                               )}
                             </div>
                           </div>

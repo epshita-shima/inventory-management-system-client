@@ -28,8 +28,8 @@ const PurchaseOrderSingleInfo = ({
 }) => {
 
   return (
-    <div class="row row-cols-2 row-cols-lg-3">
-      <div class="col-6 col-lg-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="supplierId">Supplier Name</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <div className="w-100">
@@ -130,7 +130,7 @@ const PurchaseOrderSingleInfo = ({
           </div>
         </div>
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="paymentId">Payment</label>
         <div className="w-lg-75  w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <div className="w-100">
@@ -215,7 +215,7 @@ const PurchaseOrderSingleInfo = ({
           </div>
         </div>
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="bankId">Bank Information</label>
         <div className="w-100 d-flex justify-content-between mt-2">
           <div className="w-100">
@@ -301,7 +301,7 @@ const PurchaseOrderSingleInfo = ({
         </div>
       </div>
 
-      <div class="col-6 col-lg-4">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="">Delivery Date</label>
         <br />
         <DatePicker
@@ -335,7 +335,7 @@ const PurchaseOrderSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="Currency">Currency</label>
         <br />
         <div className="w-lg-75 w-md-100">
@@ -402,7 +402,7 @@ const PurchaseOrderSingleInfo = ({
               <div className="text-danger">{errors.currencyId}</div>
             )}
       </div>
-      <div class="col-6 col-lg-4">
+      <div class="col-md-6 col-sm-12 col-lg-4">
         <label htmlFor="remarks">Remarks</label>
         <br />
         <textarea

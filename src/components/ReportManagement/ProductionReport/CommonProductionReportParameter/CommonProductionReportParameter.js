@@ -3,15 +3,25 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
+import "./CommonProductionReportParameter.css";
 
-const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate,setToDate,itemsOptions,filters,handleApplyFilters,setIsProductionDatewiseDetailsReport,setIsTableDisplay,batchOptions,setIsProductionDatewiseSummaryReport,}) => {
+const CommonProductionReportParameter = ({
+  setFilters,
+  fromDate,
+  toDate,
+  setFromDate,
+  setToDate,
+  itemsOptions,
+  filters,
+  handleApplyFilters,
+  setIsProductionDatewiseDetailsReport,
+  setIsTableDisplay,
+  batchOptions,
+  setIsProductionDatewiseSummaryReport,
+}) => {
   const reportStatusOptions = [
     { value: "datewiseproductiondetails", label: "Production Details" },
     { value: "datewiseproductionsummary", label: "Production Summary" },
-    // { value: "batchwiseproductiondetails", label: "Batchwise Production Details" },
-    // { value: "batchwiseproductionsummary", label: "Batchwise Production Summary" },
-    // { value: "itemwiseproductiondetails", label: "Itemwise Production Details" },
-    // { value: "itemwiseproductionsummary", label: "Itemwise Production Semmary" },
   ];
 
   return (
@@ -19,10 +29,10 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
       <h3 className="fw-bold mt-1">Producton Report</h3>
       <hr />
 
-      <div className="d-flex justify-content-between align-items-center w-100">
+      <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div
           style={{ width: "34%" }}
-          className="d-flex justify-content-between align-items-center"
+          className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center"
         >
           <div className="">
             <label htmlFor="">From Date</label>
@@ -61,7 +71,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               selected={toDate}
               required
               onChange={(toDate) => {
-
                 setFilters((prevFilters) => ({
                   ...prevFilters,
                   toDate: toDate?.toLocaleDateString("en-CA"),
@@ -71,10 +80,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
             />
           </div>
         </div>
-        <div
-          style={{ width: "65%" }}
-          className="d-flex justify-content-between align-items-center"
-        >
+        <div className="d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center item-batch-width">
           <div className="w-100">
             <label htmlFor="">Item Name</label>
             <br />
@@ -123,9 +129,8 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               ></Select>
             </div>
           </div>
-       
 
-          <div className="w-100 ms-3">
+          <div className="w-100 ms-0 ms-md-3 ms-lg-3 ms-xl-3">
             <label htmlFor="">Batch No</label>
             <br />
             <div className="w-100">
@@ -176,10 +181,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
         </div>
       </div>
 
-      <div
-        style={{ width: "100%" }}
-        className="d-flex justify-content-between align-items-center"
-      >
+      <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div>
           <button
             className="border-0 "
@@ -192,7 +194,6 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
               width: "100px",
               height: "38px",
               marginTop: "25px",
-
             }}
             onClick={() => {
               setIsTableDisplay(false);
@@ -211,10 +212,7 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
             Clear
           </button>
         </div>
-        <div
-          className=" d-flex mt-5 align-items-center justify-content-center"
-          style={{ width: "40%" }}
-        >
+        <div className=" d-flex mt-5 align-items-center justify-content-center report-status-width">
           <label htmlFor="" className="w-50">
             Report Status
           </label>
@@ -257,13 +255,11 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
 
                 if (e.value === "datewiseproductiondetails") {
                   setIsProductionDatewiseDetailsReport(true);
-                  setIsProductionDatewiseSummaryReport(false)
-                }
-                else if(e.value ==="datewiseproductionsummary"){
+                  setIsProductionDatewiseSummaryReport(false);
+                } else if (e.value === "datewiseproductionsummary") {
                   setIsProductionDatewiseSummaryReport(true);
                   setIsProductionDatewiseDetailsReport(false);
-                }
-                else if(e.value ==="itemwiseproductiondetails"){
+                } else if (e.value === "itemwiseproductiondetails") {
                   setIsProductionDatewiseSummaryReport(false);
                   setIsProductionDatewiseDetailsReport(false);
                 }
@@ -274,12 +270,9 @@ const CommonProductionReportParameter = ({setFilters,fromDate,toDate,setFromDate
             ></Select>
           </div>
         </div>
-
-        
       </div>
-     
     </div>
   );
-}
+};
 
-export default CommonProductionReportParameter
+export default CommonProductionReportParameter;

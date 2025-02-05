@@ -1,0 +1,8 @@
+.do-approve-parameter-width{
+  width:45%
+}
+@media (max-width: 568px) { /* md */
+  .do-approve-parameter-width {
+    width: 100%;
+  }
+}

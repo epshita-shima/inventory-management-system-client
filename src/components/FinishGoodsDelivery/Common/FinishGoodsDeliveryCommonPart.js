@@ -91,7 +91,7 @@ const FinishGoodsDeliveryCommonPart = () => {
         zIndex: "9999",
       }}
     >
-      <LoadingSpineer isLoading={isLoadingDetDelivery}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isLoadingDetDelivery}></LoadingSpineer> */}
       <div class={isLoadingDetDelivery ? 'd-none' : 'd-block'}>
         <div className="px-4 rounded-4">
           <Formik

@@ -314,7 +314,7 @@ const CreateMenu = () => {
         overflowY: "hidden",
       }}
     >
-      <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer>
+      {/* <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer> */}
       <div class={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}>
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">

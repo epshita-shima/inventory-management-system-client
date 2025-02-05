@@ -15,34 +15,30 @@ import {
 import PurchaseOrderStatusListTable from "../Index/PurchaseOrderStatusListTable";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
-import PurchaseHeading from './../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading';
+import PurchaseHeading from "./../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading";
 import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 
-const PurchaseOrderApproveForm = ({permission}) => {
+const PurchaseOrderApproveForm = ({ permission }) => {
   const [approveStatus, setApproveStatus] = useState("");
   const [showPurchaseApproveListData, setShowPurchaseOrderApproveListData] =
     useState(false);
   const [showPurchaseUnApproveListData, setShowPurchaseOrderUnApproveListData] =
     useState(false);
-      const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const {
     data: purchaseInfoData,
     isLoading: isPurchaseOrderLoading,
     refetch,
   } = useGetAllPurchaseOrderInformationQuery(undefined);
-  const {
-    data: purchaseCashInfoData
-  } = useGetAllPurchaseOrderCashInformationQuery(undefined);
-  const {
-    data: purchaseLCInfoData
-  } = useGetAllPurchaseOrderLCInformationQuery(undefined);
-  const {
-    data: purchaseApproveInfoData
-  } = useGetAllPurchaseOrderApproveInformationQuery(undefined);
-  const {
-    data: purchaseUnapproveInfoData
-  } = useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
-    const [purchaseInfosModal, setPurchaseInfosModal] = useState(false);
+  const { data: purchaseCashInfoData } =
+    useGetAllPurchaseOrderCashInformationQuery(undefined);
+  const { data: purchaseLCInfoData } =
+    useGetAllPurchaseOrderLCInformationQuery(undefined);
+  const { data: purchaseApproveInfoData } =
+    useGetAllPurchaseOrderApproveInformationQuery(undefined);
+  const { data: purchaseUnapproveInfoData } =
+    useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
+  const [purchaseInfosModal, setPurchaseInfosModal] = useState(false);
   const [purchaseApproveAllData, setPurchaseApproveAllData] = useState([]);
   const [purchaseUnApproveAllData, setPurchaseUnApproveAllData] = useState([]);
   const [purchaseFilterApproveAllData, setPurchaseFilterApproveAllData] =
@@ -159,34 +155,23 @@ const PurchaseOrderApproveForm = ({permission}) => {
       style={{ height: "calc(98vh - 120px)", overflowY: "scroll" }}
     >
       <div class="">
-        {/* <ListHeading
-          purchaseInCash={purchaseInCash}
-          purchaseInLCAtSight={purchaseInLCAtSight}
-          purchaseOrderApproveData={purchaseApproveAllData}
-          purchaseOrderUnApproveData={purchaseUnApproveAllData}
-          purchaseApproveAllData={purchaseApproveAllData}
-          purchaseOrderList={purchaseOrderList}
+        <PurchaseHeading
+          purchaseInCash={purchaseCashInfoData}
+          purchaseInLCAtSight={purchaseLCInfoData}
+          purchaseOrderApproveData={purchaseApproveInfoData}
+          purchaseOrderUnApproveData={purchaseUnapproveInfoData}
           purchaseInfoData={purchaseInfoData}
+          purchaseOrderList={purchaseOrderList}
           setPurchaseOrderList={setPurchaseOrderList}
           isLoading={isPurchaseOrderLoading}
-        ></ListHeading> */}
-              <PurchaseHeading 
-       purchaseInCash={purchaseCashInfoData}
-       purchaseInLCAtSight={purchaseLCInfoData}
-       purchaseOrderApproveData={purchaseApproveInfoData}
-       purchaseOrderUnApproveData={purchaseUnapproveInfoData}
-       purchaseInfoData={purchaseInfoData}
-       purchaseOrderList={purchaseOrderList}
-       setPurchaseOrderList={setPurchaseOrderList}
-       isLoading={isPurchaseOrderLoading}
-       supplierInfo={supplierInfo}
-       permission={permission}
-       setPurchaseInfosModal={setPurchaseInfosModal}
-       ></PurchaseHeading>
+          supplierInfo={supplierInfo}
+          permission={permission}
+          setPurchaseInfosModal={setPurchaseInfosModal}
+        ></PurchaseHeading>
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
-          <div class="row row-cols-2 row-cols-lg-2 w-75">
-            <div className="col-12 col-lg-3 text-center mt-2">
+          <div class="row row-cols-1 row-cols-2 row-cols-lg-2 w-75">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-3 text-center mt-2">
               <label htmlFor="">Po Status</label>
               <div className="w-100">
                 <Select
@@ -227,7 +212,7 @@ const PurchaseOrderApproveForm = ({permission}) => {
                 ></Select>
               </div>
             </div>
-            <div className="col-6 col-lg-3 text-center mt-2">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-3 text-center mt-2">
               <label htmlFor="">From Date</label>
               <br />
               <DatePicker
@@ -251,7 +236,7 @@ const PurchaseOrderApproveForm = ({permission}) => {
                 }}
               />
             </div>
-            <div className="col-6 col-lg-3 text-center mt-2">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-3 text-center mt-2">
               <label htmlFor="">To Date</label>
               <br />
               <DatePicker
@@ -281,7 +266,7 @@ const PurchaseOrderApproveForm = ({permission}) => {
                 }}
               />
             </div>
-            <div className="col-6 col-lg-3 ms-sm-2 ms-lg-0 mt-2">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-3 ms-sm-2 ms-lg-0 mt-2">
               <label htmlFor=""></label>
               <br />
               <button

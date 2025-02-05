@@ -9,7 +9,7 @@ import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMe
 
 const CFTInfosTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
   const {
     data: cftInfosData,
     isLoading:isCFTInfoloading,
@@ -46,7 +46,7 @@ const CFTInfosTableData = () => {
             role="status"
             aria-hidden="true"
           ></span>
-          Loading...
+          Loading cft...
         </button>
       </div>
     );

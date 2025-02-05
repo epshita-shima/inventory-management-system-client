@@ -23,14 +23,13 @@ import { downloadDeliveryOrderPDF } from "../../../ReportProperties/PDF/HeaderFo
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
-
+import "./DeliveryOrderApproveListData.css";
 const DeliveryOrderApproveListData = ({ permission }) => {
   const reportTitle = "DELIVERY ORDER INFORMATION";
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [executeQuery, setExecuteQuery] = useState(false);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
-  const [selectedData, setSelectedData] = useState([]);
   const [filters, setFilters] = useState({
     approveStatus: "",
   });
@@ -91,9 +90,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
       setIsTableDisplay(true);
       trigger(filters)
         .unwrap()
-        .then((response) => {
-         
-        })
+        .then((response) => {})
         .catch((err) => {
           console.error("Error fetching data:", err);
         })
@@ -294,7 +291,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
 
     return (
       <div className="d-block d-sm-flex  justify-content-between align-items-center mb-2">
-        {filteredDatas?.length !==0 ? (
+        {filteredDatas?.length !== 0 ? (
           <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
@@ -302,7 +299,9 @@ const DeliveryOrderApproveListData = ({ permission }) => {
               filterText={filterText}
             />
           </div>
-        ) : ''}
+        ) : (
+          ""
+        )}
       </div>
     );
   }, [filterText, resetPaginationToggle, filteredDatas]);
@@ -313,11 +312,8 @@ const DeliveryOrderApproveListData = ({ permission }) => {
         <div>
           <h3 className="fw-bold mt-1">Delivery Order Approve Status</h3>
           <hr />
-          <div
-            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
-            style={{ width: "45%" }}
-          >
-            <div className="w-50">
+          <div className="d-block d-lg-flex justify-content-lg-between align-items-lg-center d-md-block do-approve-parameter-width">
+            <div className="w-100">
               <label htmlFor="">Approve Type</label>
               <div>
                 <Select
@@ -364,7 +360,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
                 ></Select>
               </div>
             </div>
-            <div>
+            <div className='d-flex ms-0 ms-lg-2 ms-xl-2'>
               <button
                 className="border-0 "
                 style={{
@@ -382,8 +378,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
               >
                 {isGetDataLoading ? "Showing" : "Show"}
               </button>
-            </div>
-            <div>
+
               <button
                 className="border-0 "
                 style={{
@@ -395,6 +390,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
                   width: "100px",
                   height: "38px",
                   marginTop: "15px",
+                  marginLeft:'5px'
                 }}
                 onClick={() => {
                   setFilters((prevFilters) => ({

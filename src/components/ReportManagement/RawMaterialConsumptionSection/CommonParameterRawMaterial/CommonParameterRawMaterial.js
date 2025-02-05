@@ -3,7 +3,7 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
-
+import "./CommonParameterRawMaterial.css";
 const CommonParameterRawMaterial = ({
   fromDate,
   setFilters,
@@ -33,10 +33,10 @@ const CommonParameterRawMaterial = ({
       <h3 className="fw-bold mt-1">Producton Report</h3>
       <hr />
 
-      <div className="d-flex justify-content-between align-items-center w-100">
+      <div className="d-block d-md-flex d-lg-flex justify-content-between align-items-center w-100">
         <div
-          style={{ width: "34%" }}
-          className="d-flex justify-content-between align-items-center"
+          style={{ width: "75%" }}
+          className="d-block d-md-flex d-lg-flex justify-content-between align-items-center"
         >
           <div className="">
             <label htmlFor="">From Date</label>
@@ -75,7 +75,6 @@ const CommonParameterRawMaterial = ({
               selected={toDate}
               required
               onChange={(toDate) => {
-
                 setFilters((prevFilters) => ({
                   ...prevFilters,
                   toDate: toDate?.toLocaleDateString("en-CA"),
@@ -84,12 +83,7 @@ const CommonParameterRawMaterial = ({
               }}
             />
           </div>
-        </div>
-        <div
-          style={{ width: "65%" }}
-          className="d-flex justify-content-between align-items-center"
-        >
-          <div className="w-50">
+          <div className="item-name-width">
             <label htmlFor="">Item Name</label>
             <br />
             <div className="w-100">
@@ -138,12 +132,10 @@ const CommonParameterRawMaterial = ({
             </div>
           </div>
         </div>
+       
       </div>
 
-      <div
-        style={{ width: "100%" }}
-        className="d-flex justify-content-between align-items-center"
-      >
+      <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div>
           <button
             className="border-0 "
@@ -175,10 +167,10 @@ const CommonParameterRawMaterial = ({
           </button>
         </div>
         <div
-          className=" d-flex mt-5 align-items-center justify-content-center"
-          style={{ width: "40%" }}
+          className=" d-flex mt-5 align-items-center justify-content-center report-status-width"
+          // style={{ width: "40%" }}
         >
-          <label htmlFor="" className="w-50">
+          <label htmlFor="" className="w-100">
             Report Status
           </label>
           <div className="w-100">

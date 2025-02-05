@@ -27,8 +27,9 @@ const UpdateProduction = ({
   }
 
   return (
-    <div className="">
-      <table className="table table-bordered">
+    <div className="flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom">
+      <div className=" table-responsive">
+      <table className="table table-bordered ">
         <thead className="w-100">
           <tr>
             <th className="bg-white text-center  align-items-center">Sl</th>
@@ -420,6 +421,7 @@ const UpdateProduction = ({
             : null}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };
