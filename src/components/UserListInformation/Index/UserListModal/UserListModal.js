@@ -15,6 +15,9 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 const UserListModal = ({ user }) => {
   const [extractedData, setExtractedData] = useState([]);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const [filterText, setFilterText] = React.useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
   var reportTitle="All User list"
   useEffect(() => {
     const extractedFields = user?.map((item) => ({
@@ -38,19 +41,16 @@ const UserListModal = ({ user }) => {
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
     },
     {
       name: "Mobile No",
       selector: (user) => user?.mobileNo,
       sortable: true,
       center: true,
-      width: "200px",
     },
     {
       name: "Status",
       button: true,
-      width: "100px",
       grow: 2,
       cell: (user) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -72,6 +72,7 @@ const UserListModal = ({ user }) => {
     },
   ];
   
+
   const customStyles = {
     table: {
       style: {
@@ -100,9 +101,7 @@ const UserListModal = ({ user }) => {
     },
   };
 
-  const [filterText, setFilterText] = React.useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] =
-    React.useState(false);
+
   const filteredItems = user?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
@@ -120,7 +119,7 @@ const UserListModal = ({ user }) => {
       <>
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon">
-            {/* <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp; */}
+          
             {
               user?.length > 0 ?( <div class="dropdown">
               <button

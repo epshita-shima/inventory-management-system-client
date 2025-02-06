@@ -17,6 +17,9 @@ import { useGetAllPaymentInformationQuery } from "../../../../redux/features/pay
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import PurchaseHeading from "./../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading";
 import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
+import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 
 const PurchaseOrderApproveForm = ({ permission }) => {
   const [approveStatus, setApproveStatus] = useState("");
@@ -53,6 +56,10 @@ const PurchaseOrderApproveForm = ({ permission }) => {
   );
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
 
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
+  const { data: rawMaterialItemInfo } =
+    useGetAllRMItemInformationQuery(undefined);
   const { data: grnInfoData, refetch: grnRefetch } =
     useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
@@ -167,6 +174,10 @@ const PurchaseOrderApproveForm = ({ permission }) => {
           supplierInfo={supplierInfo}
           permission={permission}
           setPurchaseInfosModal={setPurchaseInfosModal}
+          companyinfo={companyinfo}
+          bankInformation={bankInformation}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+        paymentData={paymentData}
         ></PurchaseHeading>
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
@@ -294,6 +305,7 @@ const PurchaseOrderApproveForm = ({ permission }) => {
           <div className="">
             {showPurchaseApproveListData && (
               <PurchaseOrderStatusListTable
+                permission={permission}
                 showPurchaseApproveListData={showPurchaseApproveListData}
                 purchaseFilterApproveAllData={purchaseFilterApproveAllData}
                 isPurchaseOrderLoading={isPurchaseOrderLoading}

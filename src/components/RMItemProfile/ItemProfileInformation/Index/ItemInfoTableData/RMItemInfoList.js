@@ -447,10 +447,6 @@ const RMItemInfoList = ({ permission }) => {
       ></ListHeading>
       <div
         className="col userlist-table mt-4 rawdata-main-view "
-        // style={{
-        //   overflow: "scroll",
-        //   height: "420px",
-        // }}
       >
         <div className="shadow-lg ">
           <DataTable

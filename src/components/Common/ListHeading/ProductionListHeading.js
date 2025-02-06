@@ -76,12 +76,7 @@ const ProductionListHeading = ({
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-                // const searchItem = mainData?.filter((x) => x.url === pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setActiveDataModal(true);
-                // }
+              
                 setLastMonthModal(true);
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(false)
@@ -126,12 +121,7 @@ const ProductionListHeading = ({
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(true)
                 setYesterdayProductionModal(false)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+               
               }}
             >
               <p
@@ -172,12 +162,7 @@ const ProductionListHeading = ({
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(false)
                 setYesterdayProductionModal(true)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+            
               }}
             >
               <p

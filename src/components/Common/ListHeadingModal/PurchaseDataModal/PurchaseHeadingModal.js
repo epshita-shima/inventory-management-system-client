@@ -2,6 +2,7 @@
 import {
   faCheckToSlot,
   faDownload,
+  faFilePdf,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +14,7 @@ import {
   useUpdatePurchaseOrderInformationStatusMutation,
 } from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { useGetAllGRNInformationQuery } from "../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
+import { downloadPOPDF } from "../../../ReportProperties/PDF/handlePurchaseOrderReport";
 const PurchaseHeadingModal = ({
   totalPurchase,
   supplierInfo,
@@ -23,6 +25,11 @@ const PurchaseHeadingModal = ({
   totalPurchaseApproveModal,
   totalPurchaseUnApproveModal,
   approveDataRefetch,
+  rawMaterialItemInfo,
+  bankInformation,
+  paymentData,
+  companyinfo,
+  reportTitle
 }) => {
   const { data: grnDataInfo, refetch: grnRefetch } =
     useGetAllGRNInformationQuery(undefined);
@@ -31,7 +38,7 @@ const PurchaseHeadingModal = ({
     useUpdatePurchaseOrderInformationStatusMutation();
 
   const [filterText, setFilterText] = useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+
   const columns = [
     {
       name: "Sl.",
@@ -106,7 +113,7 @@ const PurchaseHeadingModal = ({
               fontSize: "14px",
               textAlign: "center",
             }}
-            // href={`UpdateGroupName/${data?.GroupId}`}
+            
           >
             {totalPurchase?.approveStatus === true ? (
               <p className="text-success fw-bold">Approve</p>
@@ -125,6 +132,45 @@ const PurchaseHeadingModal = ({
       grow: 2,
       cell: (totalPurchase) => (
         <div className="d-flex justify-content-between align-content-center">
+            {permission?.isPDF &&  totalPurchase?.approveStatus === true ? (
+            <a
+              target="_blank"
+              className={` action-icon `}
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Update item"
+              style={{
+                color: `${
+                  totalPurchase?.items?.length === 0
+                    ? "gray"
+                    : "orange"
+                } `,
+                border: `${
+                  totalPurchase?.items?.length === 0
+                    ? "2px solid gray"
+                    : "2px solid orange"
+                }`,
+                padding: "3px",
+                borderRadius: "5px",
+              }}
+              onClick={() => {
+                downloadPOPDF(
+                  totalPurchase,
+                  rawMaterialItemInfo,
+                  bankInformation,
+                  paymentData,
+                  { companyinfo },
+                  reportTitle
+                );
+              }}
+            >
+           {
+             <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
+           }  
+            </a>
+          ) : (
+            ""
+          )}
           {totalPurchaseUnApproveModal && (
             <a
               target="_blank"
@@ -149,10 +195,11 @@ const PurchaseHeadingModal = ({
               <FontAwesomeIcon icon={faCheckToSlot}></FontAwesomeIcon>
             </a>
           )}
+
           {permission?.isRemoved && (
             <a
               target="_blank"
-              className="action-icon "
+              className="action-icon"
               data-toggle="tooltip"
               data-placement="bottom"
               title="Delete Item"
@@ -240,83 +287,6 @@ const PurchaseHeadingModal = ({
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
-  const subHeaderComponent = useMemo(
-    () => {
-      const handleClear = () => {
-        // if (filterText) {
-        //   setResetPaginationToggle(!resetPaginationToggle);
-        //   setFilterText("");
-        // }
-      };
-
-      return (
-        <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-          <div className="d-flex justify-content-end align-items-center">
-            <div className="table-head-icon d-flex">
-              <div class="dropdown">
-                <button
-                  class="btn btn-download dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      onClick={() => {
-                        // if (companyinfo?.length !== 0 || undefined) {
-                        //   downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
-                        // }
-                      }}
-                    >
-                      PDF
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      onClick={() => {
-                        //  handleProductionExcel(
-                        //     totalProduction,
-                        //     finishGoods,
-                        //     companyinfo,
-                        //     reportTitle
-                        //   );
-                      }}
-                    >
-                      Excel
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-            {/* <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          /> */}
-          </div>
-        </div>
-      );
-    },
-    [
-      // finishGoods,
-      // filterText,
-      // totalProduction,
-      // resetPaginationToggle,
-      // companyinfo,
-      // reportTitle,
-    ]
-  );
 
   const handleApproveData = async (data) => {
     const response = await updatePOApproveStatus(data);
@@ -378,7 +348,7 @@ const PurchaseHeadingModal = ({
               striped
               pagination
               subHeader
-              subHeaderComponent={subHeaderComponent}
+           
             />
           </div>
           <div class="modal-footer">

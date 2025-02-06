@@ -136,62 +136,66 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                     handleProductionExcel(
-                        totalProduction,
-                        finishGoods,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+      <>
+      {
+        totalProduction?.length > 0 && (<div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                       handleProductionExcel(
+                          totalProduction,
+                          finishGoods,
+                          companyinfo,
+                          reportTitle
+                        );
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
-        </div>
-      </div>
+  
+          <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>
+        </div>)
+  }</>
+      
     );
   }, [
     finishGoods,

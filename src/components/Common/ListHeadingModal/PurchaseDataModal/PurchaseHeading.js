@@ -9,6 +9,11 @@ const PurchaseHeading = ({
   purchaseInfoData,
   permission,
   supplierInfo,
+  rawMaterialItemInfo,
+  bankInformation,
+  paymentData,
+  companyinfo,
+  reportTitle
 }) => {
   const [totalPurchaseModal, setTotalPurchaseModal] = useState(false);
   const [totalPurchaseCashModal, setTotalPurchaseCashModal] = useState(false);
@@ -86,21 +91,13 @@ const PurchaseHeading = ({
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
-                // const searchItem = mainData?.filter((x) => x.url === pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setActiveDataModal(true);
-                // }
+              
                 setTotalPurchaseCashModal(true);
                 setTotalPurchaseModal(false);
                 setTotalPurchaseLCModal(false);
                 setTotalPurchaseApproveModal(false);
                 setTotalPurchaseUnApproveModal(false);
-                // setLastMonthModal(true);
-                // setTotalProductionModal(false);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(false)
+               
               }}
             >
               <p
@@ -146,16 +143,7 @@ const PurchaseHeading = ({
                 setTotalPurchaseLCModal(true);
                 setTotalPurchaseApproveModal(false);
                 setTotalPurchaseUnApproveModal(false);
-                // setLastMonthModal(false);
-                // setTotalProductionModal(false);
-                // setLastOneWeekProductionModal(true)
-                // setYesterdayProductionModal(false)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+             
               }}
             >
               <p
@@ -201,16 +189,7 @@ const PurchaseHeading = ({
                 setTotalPurchaseLCModal(false);
                 setTotalPurchaseApproveModal(true);
                 setTotalPurchaseUnApproveModal(false);
-                // setLastMonthModal(false);
-                // setTotalProductionModal(false);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(true)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+            
               }}
             >
               <p
@@ -256,16 +235,7 @@ const PurchaseHeading = ({
                 setTotalPurchaseLCModal(false);
                 setTotalPurchaseApproveModal(false);
                 setTotalPurchaseUnApproveModal(true);
-                // setLastMonthModal(false);
-                // setTotalProductionModal(false);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(true)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+              
               }}
             >
               <p
@@ -295,6 +265,11 @@ const PurchaseHeading = ({
           totalPurchaseModal={totalPurchaseModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
       {totalPurchaseCashModal && (
@@ -303,6 +278,11 @@ const PurchaseHeading = ({
           totalPurchaseCashModal={totalPurchaseCashModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
       {totalPurchaseLCModal && (
@@ -311,6 +291,11 @@ const PurchaseHeading = ({
           totalPurchaseLCModal={totalPurchaseLCModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
       {totalPurchaseLCModal && (
@@ -319,6 +304,11 @@ const PurchaseHeading = ({
           totalPurchaseLCModal={totalPurchaseLCModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
       {totalPurchaseApproveModal && (
@@ -328,6 +318,11 @@ const PurchaseHeading = ({
           totalPurchaseLCModal={totalPurchaseLCModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
       {totalPurchaseUnApproveModal && (
@@ -337,18 +332,13 @@ const PurchaseHeading = ({
           totalPurchaseLCModal={totalPurchaseLCModal}
           supplierInfo={supplierInfo}
           permission={permission}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          companyinfo={companyinfo}
+          reportTitle={reportTitle}
         />
       )}
-      {/*
-      {lastMonthModal && (
-        <ProductionTotalModal totalProduction={lastOneMonthProduction} permission={permission}/>
-      )}
-      {lastOneWeekProdactionModal && (
-        <ProductionTotalModal totalProduction={lastOneWeekData} permission={permission} />
-      )}
-      {yesterdayProductionModal && (
-        <ProductionTotalModal totalProduction={yesterdayData} permission={permission} />
-      )} */}
     </div>
   );
 };

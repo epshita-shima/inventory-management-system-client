@@ -52,6 +52,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:'150px'
     },
     {
       name: "PO Number",
@@ -60,6 +61,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:'200px'
     },
 
     {
@@ -73,6 +75,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:"200px"
     },
 
     {
@@ -209,25 +212,20 @@ const PurchaseOrderApproveList = ({
 
     return (
       <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
-        {/* <div>
-            <FontAwesomeIcon
-              style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
-              icon={faRefresh}
-              onClick={() => refetch()}
-            ></FontAwesomeIcon>
-            &nbsp;
-          </div> */}
-
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+      {
+        purchaseFilterApproveAllData?.length >0 ?  (<div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
             filterText={filterText}
           />
-        </div>
+        </div>) :''
+      }
+
+        
       </div>
     );
-  }, [filterText, resetPaginationToggle]);
+  }, [filterText, resetPaginationToggle,purchaseFilterApproveAllData]);
 
   return (
     <div

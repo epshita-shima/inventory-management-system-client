@@ -402,6 +402,11 @@ const PurchaseOderList = ({ permission }) => {
         setPurchaseOrderList={setPurchaseOrderList}
         isLoading={isPurchaseloading}
         supplierInfo={supplierInfo}
+        rawMaterialItemInfo={rawMaterialItemInfo}
+        bankInformation={bankInformation}
+        paymentData={paymentData}
+        companyinfo={companyinfo}
+        reportTitle={reportTitle}
       ></PurchaseHeading>
       <div
         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
