@@ -20,6 +20,7 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   const accessToken1 = localStorage.getItem("accesstoken");
+  console.log('accessToken',accessToken1)
   if (accessToken1) {
     if (isTokenExpired(accessToken1)) {
       const refreshResult = await baseQuery(
@@ -53,7 +54,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         api.dispatch(authActions.logout());
       }
     } else {
-      console.log("");
+      console.log("Token is  Valid");
     }
   } else {
     swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
@@ -62,7 +63,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       window.location.href = "/";
     });
     api.dispatch(authActions.logout());
-    console.log("");
+    console.log("Token is not here");
   }
 
   return result;

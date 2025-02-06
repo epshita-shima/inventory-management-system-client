@@ -74,8 +74,8 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="col-10 col-md-12 col-lg-5 col-xl-2">
-        <div className="p-4">
+      <div className="col-11 col-md-11 col-lg-4 col-xl-2 bg-white bg-opacity-25" >
+        <div className="px-4 py-5">
           <div className="d-flex justify-content-center">
             <img
               src={logImage}
@@ -111,7 +111,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     autoComplete="off"
                     onFocus={handleFocus}
                     onChange={(e) => setUsername(e.target.value)}
-                    style={{ border: "1px solid #B8FEB3", background: "white" }}
+                    style={{ border: "1px solid #B8FEB3", background: "white",borderRadius:'5px' }}
                   />
                 </InputGroup>
                 {/* <input type="username" placeholder="Email" value={username} onChange={(e) => setUsername(e.target.value)} required /> */}
@@ -138,7 +138,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     value={password}
                     autoComplete="off"
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{ border: "1px solid #B8FEB3", background: "white" }}
+                    style={{ border: "1px solid #B8FEB3", background: "white",borderRadius:'5px'  }}
                   />
                 </InputGroup>
 
@@ -147,7 +147,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     type="submit"
                     size="md"
                     disabled={isButtonDisabled ? true : false}
-                    className=" mt-2 w-50 mx-auto"
+                    className=" mt-2 w-100 mx-auto"
                     style={{
                       background: isButtonDisabled ? "gray" : "#68F057",
                       border: "none",
