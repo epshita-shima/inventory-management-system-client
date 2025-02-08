@@ -14,7 +14,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
   const [password, setPassword] = useState("");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [loginUserValidation] = useUserLoggedinMutation();
+  const [loginUserValidation,{isLoading}] = useUserLoggedinMutation();
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const navigate = useNavigate();
@@ -62,6 +62,25 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
     inputs.forEach((input) => input.setAttribute("autocomplete", "off"));
   }, []);
 
+   if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <button
+          class="btn"
+          style={{ backgroundColor: "#2DDC1B", color: "white" }}
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
+    );
+  }
   return (
     <div
       className="d-flex justify-content-center align-items-center shadow-lg w-100 h-100 rounded-4"

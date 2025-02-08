@@ -633,6 +633,7 @@ const CombineReport = ({
           </tr>
         </tbody>
       </table>
+      
     </div>
   );
 };
