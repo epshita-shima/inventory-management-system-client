@@ -23,12 +23,13 @@ import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterCompo
 import {
   downloadProductionPDF,
   downloadProductionPDFPERBatch,
-} from "../../../ReportProperties/HeaderFooter";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import ProductionListHeading from "../../../Common/ListHeading/ProductionListHeading";
-import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
+import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
-
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import '../../Common/ProductionDatePicker.css'
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -37,6 +38,7 @@ const ProductionInfoList = ({ permission }) => {
   const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
+  const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
   const [deleteProductionInfo] = useDeleteProductionInformationMutation();
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -122,6 +124,7 @@ const ProductionInfoList = ({ permission }) => {
     setExecuteQuery(true);
   };
 
+
   const columns = [
     {
       name: "Sl.",
@@ -174,10 +177,10 @@ const ProductionInfoList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                  filteredData?.detailsData?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  filteredData?.detailsData?.length == 0
+                  filteredData?.detailsData?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -189,6 +192,7 @@ const ProductionInfoList = ({ permission }) => {
                 downloadProductionPDFPERBatch(
                   filteredData,
                   finishGoods,
+                  itemSizeInfo,
                   rawItemInfo,
                   { companyinfo },
                   reportTitle
@@ -221,7 +225,7 @@ const ProductionInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-production-info/${filteredData?._id}`);
+                window.open(`production-list/update-production-info/${filteredData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -256,7 +260,6 @@ const ProductionInfoList = ({ permission }) => {
                     const response = await deleteProductionInfo(
                       filteredData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -324,7 +327,7 @@ const ProductionInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
+      <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">
@@ -343,7 +346,7 @@ const ProductionInfoList = ({ permission }) => {
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      console.log(filteredData, companyinfo);
+                      
                       if (companyinfo?.length !== 0 || undefined) {
                         downloadProductionPDF(
                           { companyinfo },
@@ -401,7 +404,7 @@ const ProductionInfoList = ({ permission }) => {
   return (
     <div className="row px-5 mx-4 ">
       <ProductionListHeading
-      permission={permission}
+        permission={permission}
         totalProduction={productionInitialData}
         lastOneMonthProduction={lastOneMonthProduction}
         lastOneWeekData={lastOneWeekData}
@@ -409,8 +412,6 @@ const ProductionInfoList = ({ permission }) => {
       ></ProductionListHeading>
       <div className="col userlist-table mt-4">
         <div>
-          {/* <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
-          <hr /> */}
           <div
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
             style={{ width: "55%" }}
@@ -420,12 +421,11 @@ const ProductionInfoList = ({ permission }) => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
+                className="text-center custom-datepicker-production "
+                calendarClassName="custom-calendar-production"
                 selected={fromDate}
                 required
                 onChange={(fromDate) => {
-                  console.log(fromDate);
                   if (fromDate > new Date()) {
                     swal({
                       title: "Select Valid Date",
@@ -448,8 +448,8 @@ const ProductionInfoList = ({ permission }) => {
               <br />
               <DatePicker
                 dateFormat="y-MM-dd"
-                className="text-center custom-datepicker2 "
-                calendarClassName="custom-calendar2"
+                className="text-center custom-datepicker-production "
+                calendarClassName="custom-calendar-production"
                 selected={toDate}
                 required
                 onChange={(toDate) => {
@@ -462,7 +462,7 @@ const ProductionInfoList = ({ permission }) => {
               />
             </div>
 
-            <div>
+            <div className="d-flex">
               <button
                 className="border-0 "
                 style={{
@@ -479,8 +479,6 @@ const ProductionInfoList = ({ permission }) => {
               >
                 Show
               </button>
-            </div>
-            <div>
               <button
                 className="border-0 "
                 style={{
@@ -507,6 +505,9 @@ const ProductionInfoList = ({ permission }) => {
               >
                 Clear
               </button>
+            </div>
+            <div>
+             
             </div>
           </div>
           <div></div>

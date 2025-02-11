@@ -6,10 +6,8 @@ const Dropdown = ({ item ,isRight,index}) => {
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-      console.log(index)
   };
 
-console.log(isOpen)
 
   return (
     <li className={`nav-item dropdown ${isOpen ? 'show' : ''}`}>

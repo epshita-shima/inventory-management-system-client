@@ -2,9 +2,19 @@ import { api } from "../../api/apiSlice";
 
 const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getAllUser: builder.query({
+      query: () => "/api/v1/users",
+      providesTags: [
+        "createuser",
+        "updatedata",
+        "changestatus",
+        "deleteuser",
+        "changesmanytatus",
+      ],
+    }),
     createUser: builder.mutation({
       query: (payload) => ({
-        url: "/user-create",
+        url: "/api/v1/users",
         method: "POST",
         body: payload,
       }),
@@ -14,20 +24,10 @@ const userApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
-    getAllUser: builder.query({
-      query: () => "/get-user",
-      providesTags: [
-        "createuser",
-        "updatedata",
-        "changestatus",
-        "deleteuser",
-        "changesmanytatus",
-      ],
-    }),
     getSingleUser: builder.query({
       query: (id) => {
         if (id) {
-          return `/user/${id}`;
+          return `/api/v1/users/${id}`;
         } else {
           throw new Error("User id is required");
         }
@@ -35,7 +35,7 @@ const userApi = api.injectEndpoints({
     }),
     updateUser: builder.mutation({
       query: (updatedData) => ({
-        url: `/user/update/${updatedData._id}`,
+        url: `/api/v1/users/update/${updatedData?._id}`,
         method: "PUT",
         body: updatedData,
       }),
@@ -43,7 +43,7 @@ const userApi = api.injectEndpoints({
     }),
     updateUserPassword: builder.mutation({
       query: (updatedData) => ({
-        url: `/user/change/password/${updatedData._id}`,
+        url: `/api/v1/users/change/password/${updatedData?._id}`,
         method: "PUT",
         body: updatedData,
       }),
@@ -51,7 +51,7 @@ const userApi = api.injectEndpoints({
     }),
     updateMultipleUserStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "user/status/updateStatus",
+        url: "/api/v1/users/status/updateStatus",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -61,17 +61,19 @@ const userApi = api.injectEndpoints({
         status: meta.response.status,
       }),
     }),
+
     updateMultipleUserField: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "user/updatestatus/updateMultiple",
+        url: "/api/v1/users/updatestatus/updateMultiple",
         method: "PUT",
         body: dataToUpdate,
       }),
       invalidatesTags: ["updatedata"],
     }),
+
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `user/delete/${id}`,
+        url: `/api/v1/users/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deleteuser"],
@@ -86,5 +88,5 @@ export const {
   useDeleteUserMutation,
   useUpdateMultipleUserStatusMutation,
   useUpdateMultipleUserFieldMutation,
-  useUpdateUserPasswordMutation
+  useUpdateUserPasswordMutation,
 } = userApi;

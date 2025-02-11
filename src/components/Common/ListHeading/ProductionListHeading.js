@@ -6,9 +6,9 @@ const ProductionListHeading = ({
   lastOneMonthProduction,
   lastOneWeekData,
   yesterdayData,
-  permission
+  permission,
+ 
 }) => {
-  console.log(JSON.stringify(totalProduction))
   const [lastMonthModal, setLastMonthModal] = useState(false);
   const [totalProductionModal, setTotalProductionModal] = useState(false);
   const [lastOneWeekProdactionModal,setLastOneWeekProductionModal]=useState(false)
@@ -17,6 +17,7 @@ const ProductionListHeading = ({
   const totalLastOneMonthProduction = lastOneMonthProduction?.reduce((total, report) => total + report.productionQty, 0);
   const totalLastlastOneWeekData = lastOneWeekData?.reduce((total, report) => total + report.productionQty, 0);
   const totalYesterdayData = yesterdayData?.reduce((total, report) => total + report.productionQty, 0);
+  
   return (
     <div>
       <div class="row">
@@ -75,12 +76,7 @@ const ProductionListHeading = ({
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
-                // const searchItem = mainData?.filter((x) => x.url === pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setActiveDataModal(true);
-                // }
+              
                 setLastMonthModal(true);
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(false)
@@ -125,12 +121,7 @@ const ProductionListHeading = ({
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(true)
                 setYesterdayProductionModal(false)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+               
               }}
             >
               <p
@@ -171,12 +162,7 @@ const ProductionListHeading = ({
                 setTotalProductionModal(false);
                 setLastOneWeekProductionModal(false)
                 setYesterdayProductionModal(true)
-                // const searchItem = mainData?.filter((x) => x.url == pathname);
-                // if (
-                //   searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist
-                // ) {
-                //   setInActiveDataModal(true);
-                // }
+            
               }}
             >
               <p

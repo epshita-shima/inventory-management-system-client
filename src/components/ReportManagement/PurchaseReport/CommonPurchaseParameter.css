@@ -1,0 +1,8 @@
+.items-purchase-width{
+  width:65%
+}
+@media (max-width: 568px) { /* md */
+  .items-purchase-width {
+    width: 75%;
+  }
+}

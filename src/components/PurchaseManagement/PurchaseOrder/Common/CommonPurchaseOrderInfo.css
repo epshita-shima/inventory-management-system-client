@@ -1,0 +1,31 @@
+.purchase-total-input{
+  border: 1px solid #2DDC1B;
+  padding: 5px;
+  width: 50%;
+  border-radius: 5px;
+  text-align: center;
+  margin-left: 10px;
+  height: 38px,
+}
+.heading-title{
+  font-size: 20px;
+  font-weight: bold;
+}
+.main-heading-title{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+@media (max-width: 568px) { 
+  .purchase-total-input {
+    width: 100%;
+    margin-left: 0;
+  }
+  .main-heading-title{
+    font-size: 18px;
+  }
+  .heading-title{
+    font-size: 18px;
+  
+  }
+}

@@ -1,0 +1,53 @@
+.accordion-fontsize{
+  font-size: 20px;
+}
+.accordion-body {
+  padding: 0;
+  margin: 0;
+  display: flex; /* Ensure proper layout */
+  flex-direction: column; 
+}
+
+.accordion-item {
+  margin: 0 !important;  /* Remove margins around accordion item */
+}
+ 
+.accordion-header {
+  margin: 0 !important;  /* Remove margins for header */
+  padding: 0 !important; /* Remove paddings for header */
+  font-family: "Nunito", sans-serif !important;
+  font-weight: bold;
+  /* display: flex !important;
+  justify-content: center; 
+  align-items: center; 
+  text-align: center !important; */
+  padding: 0; 
+}
+
+.table-container {
+  position: relative;
+  overflow: visible !important;
+}
+.hMFeQo {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 0 !important;
+  width: 100%;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  background-color: white;
+  min-height: 5px !important; 
+}
+/* .accordion-button{
+  background-color:#2DDC1B !important
+} */
+.accordion-button:not(.collapsed) {
+  color:black !important;
+  background-color:#2DDC1B !important;
+}
+.accordion-button::after {
+  display: none; /* Hides the down/up arrow */
+}

@@ -5,18 +5,20 @@ import "./UserListModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import DataTable from "react-data-table-component";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import {
   downloadAllPDF,
-  downloadPDF,
-} from "../../../ReportProperties/HeaderFooter";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 
 const UserListModal = ({ user }) => {
   const [extractedData, setExtractedData] = useState([]);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-var reportTitle="All User list"
+  const [filterText, setFilterText] = React.useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
+  var reportTitle="All User list"
   useEffect(() => {
     const extractedFields = user?.map((item) => ({
       firstname: item.firstname,
@@ -25,6 +27,7 @@ var reportTitle="All User list"
     }));
     setExtractedData(extractedFields);
   }, [user]);
+  
   const columns = [
     {
       name: "Sl.",
@@ -48,7 +51,6 @@ var reportTitle="All User list"
     {
       name: "Status",
       button: true,
-      width: "200px",
       grow: 2,
       cell: (user) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -70,6 +72,7 @@ var reportTitle="All User list"
     },
   ];
   
+
   const customStyles = {
     table: {
       style: {
@@ -97,9 +100,8 @@ var reportTitle="All User list"
       },
     },
   };
-  const [filterText, setFilterText] = React.useState("");
-  const [resetPaginationToggle, setResetPaginationToggle] =
-    React.useState(false);
+
+
   const filteredItems = user?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
@@ -117,7 +119,7 @@ var reportTitle="All User list"
       <>
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon">
-            {/* <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp; */}
+          
             {
               user?.length > 0 ?( <div class="dropdown">
               <button
@@ -148,7 +150,6 @@ var reportTitle="All User list"
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      console.log(reportTitle)
                       handleDownload(extractedData, companyinfo,reportTitle);
                     }}
                   >

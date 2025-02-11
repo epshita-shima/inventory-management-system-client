@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const cftInfosApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllCFTInfos: builder.query({
-      query: () => "/cftinfo",
+      query: () => "/api/v1/cftinfo",
       providesTags: [
         "insertcftinfos",
         "updatecftinfo",
@@ -16,7 +16,6 @@ const cftInfosApi = api.injectEndpoints({
 
     insertCFTInfo: builder.mutation({
       query: (payload) => {
-        console.log(payload);
         const formData = new FormData();
         formData.append(`openingDate`, payload[0].openingDate);
         formData.append(`isActive`, payload[0].isActive);
@@ -36,7 +35,7 @@ const cftInfosApi = api.injectEndpoints({
         });
 
         return {
-          url: "/cftinfo",
+          url: "/api/v1/cftinfo",
           method: "POST",
           body: formData,
         };
@@ -51,7 +50,7 @@ const cftInfosApi = api.injectEndpoints({
     getSingleCFTInfo: builder.query({
       query: (id) => {
         if (id) {
-          return `/cftinfo/${id}`;
+          return `/api/v1/cftinfo/${id}`;
         } else {
           throw new Error("CFT info id is required");
         }
@@ -61,7 +60,6 @@ const cftInfosApi = api.injectEndpoints({
     updateCFTInfo: builder.mutation({
       query: (payload) => {
         const data=payload;
-        console.log(data.id,data.payload.openingDate)
         const formData = new FormData();
         formData.append(`openingDate`, data.payload.openingDate);
         formData.append(`isActive`, data.payload.isActive);
@@ -83,21 +81,18 @@ const cftInfosApi = api.injectEndpoints({
             // Check if the file is a File object
             if (file instanceof File) {
               formData.append(`detailsData[${index}][image]`, file);
-              console.log(`Appending File: detailsData[${index}][image]`, file);
             } else {
               console.error(`Expected a File object but got:`, file);
             }
           } else {
             // Append existing image URL or other image data
             formData.append(`detailsData[${index}][image]`, detail.image);
-            console.log(`Appending image URL: detailsData[${index}][image]`, detail.image);
           }
         });
         for (const [key, value] of formData.entries()) {
-          console.log(`${key}: ${value}`);
         }
         return {
-          url: `/cftinfo/${data.id}`,
+          url: `/api/v1/cftinfo/${data.id}`,
           method: "PUT",
           body: formData,
         };
@@ -111,7 +106,7 @@ const cftInfosApi = api.injectEndpoints({
 
     updateCFTInfoStatus: builder.mutation({
       query: (dataToUpdate) => ({
-        url: "/cftinfo",
+        url: "/api/v1/cftinfo",
         method: "PUT",
         body: dataToUpdate,
       }),
@@ -124,7 +119,7 @@ const cftInfosApi = api.injectEndpoints({
 
     deleteCFTInfo: builder.mutation({
       query: (id) => ({
-        url: `/cftinfo/${id}`,
+        url: `/api/v1/cftinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletecftinfo"],

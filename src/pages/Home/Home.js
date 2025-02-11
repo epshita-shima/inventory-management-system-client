@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import "../../components/NestedDropdown.css";
-import { useGetAllUserQuery, useUpdateMultipleUserFieldMutation } from "../../redux/features/user/userApi";
+import {
+  useGetAllUserQuery,
+  useUpdateMultipleUserFieldMutation,
+} from "../../redux/features/user/userApi";
 import { useEffect } from "react";
 import { Menubar } from "primereact/menubar";
 import "./Home.css";
@@ -9,29 +12,33 @@ import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
+import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCollection";
+
+import swal from "sweetalert";
+import { useUserLoggedOutMutation } from "../../redux/features/auth/authApi";
+import LoadingSpineer from "../../components/Common/LoadingSpinner/LoadingSpineer";
+
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const { data: user, refetch } = useGetAllUserQuery(undefined);
-const {data:menus}=useGetAllMenuItemsQuery(undefined)
-console.log(menus)
+  const { data: menus,isLoading:menuLoading } = useGetAllMenuItemsQuery(undefined);
+
   const getMenulistData = localStorage?.getItem("user");
 
   const menuListData = JSON.parse(getMenulistData);
+  const [loggedoutUser] = useUserLoggedOutMutation();
+  const [setAllMenuData] = useUpdateMultipleUserFieldMutation();
+  const navigate = useNavigate();
   if (menuListData !== null) {
-    var menuListSingleData = menuListData[0]?.menulist;
+    var menuListSingleData = menuListData?.menulist;
   }
 
-  const [setAllMenuData]=useUpdateMultipleUserFieldMutation()
-  const navigate = useNavigate();
-
-  useEffect(()=>{
-    if(localStorage.length>0){
-
+  useEffect(() => {
+    if (localStorage.length > 0) {
+    } else {
+      navigate("/");
     }
-    else{
-      navigate('/')
-    }
-  },[navigate])
-  
+  }, [navigate]);
+
   const cardStyle = {
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -46,51 +53,46 @@ console.log(menus)
     borderBottom: "1px solid #ccc",
   };
   const refreshBtnStyle = {
-    // backgroundColor: "#0A203F",
     backgroundColor: "#2DDC1B",
     color: "#000",
   };
   // Define the menu items
   const filteredMenuItems = menuListSingleData?.map((menu) => {
-    // Function to recursively filter items and isUpdated parent isChecked status
     const filterItems = (items) => {
       return items.filter((item) => {
         if (item.items && item.items.length > 0) {
-          // Recursively filter nested items and isUpdated parent isChecked status
           item.items = filterItems(item.items);
-          item.isChecked = item.items.some((child) => child.isChecked); // Update parent isChecked status
+          item.isChecked = item.items.some((child) => child.isChecked);
         }
         return item.isChecked === true;
       });
     };
 
     const filteredItems = filterItems(menu.items);
-
     return { ...menu, items: filteredItems };
   });
-  console.log(filteredMenuItems);
+
   const handleClick = () => {
     // setShowComponent(true); // Set showComponent state to true to render MyComponent
     setChangePassword(true);
     setResetPassword(false);
-    const url = `change-password?reset=false&change=true`;
+    const url = `/main-view/change-password?reset=false&change=true`;
     window.open(url, "_blank");
   };
-
 
   const handleRefreshData = async () => {
     await refetch().then(({ data }) => {
       const userData = data?.filter(
         (item) =>
-          item?.username === menuListData[0]?.username &&
-          item.password === menuListData[0]?.password
+          item?.username === menuListData?.username &&
+          item.password === menuListData?.password
       );
- 
-      if (userData[0]?.roleId === "65d48768a106fcb4f5c28071") {
+
+      if (userData[0]?.roleId === MenuIdCollection.userrole_supperadmin) {
         const updateProperties = (item) => {
-          // Create a new object with the existing properties and set them to true
           const newItem = {
             ...item,
+            id: item._id,
             isChecked: true,
             isInserted: true,
             isUpdated: true,
@@ -107,15 +109,16 @@ console.log(menus)
 
         // Update properties for each item in the menulist
         const updatedUserData = userData.map((item) => {
-          const updatedMenuList = menus?.map((menu) =>
-            updateProperties(menu)
-          );
+          const updatedMenuList = menus?.map((menu) => updateProperties(menu));
           return { ...item, menulist: updatedMenuList };
         });
-        setAllMenuData(updatedUserData)
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
+
+        const userObjectData = updatedUserData[0];
+        setAllMenuData(updatedUserData);
+        localStorage.setItem("user", JSON.stringify(userObjectData));
       } else {
-        localStorage.setItem("user", JSON.stringify(userData));
+        const userObjectData = userData[0];
+        localStorage.setItem("user", JSON.stringify(userObjectData));
       }
     });
   };
@@ -129,14 +132,13 @@ console.log(menus)
         >
           <div class="d-block d-md-none">
             <div className="d-flex justify-content-between align-items-center">
-          
               <div className="position-relative">
                 <Dropdown>
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
                     style={{
-                      backgroundColor: "#0A203F",
+                      backgroundColor: "#2DDC1B",
                       color: "white",
                       border: "none",
                       outline: "none",
@@ -152,7 +154,7 @@ console.log(menus)
                       overflowY: "auto",
                       height: "150px",
                       width: "250px",
-                      backgroundColor: "#CBF3F0",
+                      backgroundColor: "#B8FEB3",
                     }}
                   >
                     <Dropdown>
@@ -160,8 +162,8 @@ console.log(menus)
                         // variant="secondary"
                         id="dropdown-basic1"
                         style={{
-                          backgroundColor: "#0A203F",
-                          color: "white",
+                          backgroundColor: "#2DDC1B",
+                          color: "black",
                           border: "none",
                           outline: "none",
                           height: "28px",
@@ -174,7 +176,6 @@ console.log(menus)
                         style={{
                           overflowY: "auto",
                           height: "150px",
-                          // backgroundColor: "#CBF3F0",
                           backgroundColor: "#2DDC1B",
                         }}
                       >
@@ -191,7 +192,6 @@ console.log(menus)
                         />
                       </Dropdown.Menu>
                     </Dropdown>
-              
 
                     <Dropdown.Item
                       href="#"
@@ -203,9 +203,15 @@ console.log(menus)
                     <Dropdown.Item
                       href="#"
                       style={{ fontWeight: "bold" }}
-                      onClick={() => {
-                        localStorage.clear();
-                        navigate("/");
+                      onClick={async () => {
+                        const response = await loggedoutUser();
+                        if (response?.data?.success === true) {
+                          swal("Done", `${response.data.message}`, "success");
+                          localStorage.clear();
+                          navigate("/");
+                        } else {
+                          console.log("something error");
+                        }
                       }}
                     >
                       Logout
@@ -213,10 +219,10 @@ console.log(menus)
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-             
+
               <span className="d-none d-md-block">
                 {menuListData !== null
-                  ? `Hello, ${menuListData[0]?.firstname} ${menuListData[0]?.lastname}`
+                  ? `Hello, ${menuListData?.firstname} ${menuListData?.lastname}`
                   : ""}
               </span>
             </div>
@@ -246,7 +252,6 @@ console.log(menus)
                   variant="secondary"
                   id="dropdown-basic"
                   style={{
-                    // backgroundColor: "#0A203F",
                     backgroundColor: "#2DDC1B",
                     color: "black",
                     border: "none",
@@ -254,7 +259,7 @@ console.log(menus)
                   }}
                 >
                   {menuListData !== null
-                    ? `Hello, ${menuListData[0]?.firstname} ${menuListData[0]?.lastname}`
+                    ? `Hello, ${menuListData?.firstname} ${menuListData?.lastname}`
                     : ""}
                 </Dropdown.Toggle>
 
@@ -264,9 +269,18 @@ console.log(menus)
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#"
-                    onClick={() => {
-                      localStorage.clear();
-                      navigate("/");
+                    onClick={async () => {
+                      const response = await loggedoutUser();
+                      if (response?.data?.success === true) {
+                        swal(
+                          "Done",
+                          `${response.data.message}`,
+                          "success"
+                        ).then(() => {
+                          localStorage.clear();
+                          navigate("/");
+                        });
+                      }
                     }}
                   >
                     Logout
@@ -277,6 +291,7 @@ console.log(menus)
           </div>
         </div>
       </div>
+      <LoadingSpineer isLoading={menuLoading }></LoadingSpineer>
     </div>
   );
 };

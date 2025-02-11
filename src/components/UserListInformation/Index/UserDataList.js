@@ -10,9 +10,10 @@ const UserDataList = ({
   setResetPassword,
   resetPassword,
   changePassword,
+  setUserIdForChangePassowrd
 }) => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
+  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
   const [permissionResult, setPermissionResult] = useState([]);
   const [userIdFromLocalStorage, setUserIdFromLocalStorage] = useState("");
   const navigate = useNavigate();
@@ -21,9 +22,9 @@ const UserDataList = ({
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       setPermissionResult(permidionData);
       setUserIdFromLocalStorage(userIdFromSession);
@@ -32,47 +33,47 @@ const UserDataList = ({
     }
   }, [navigate, user]);
 
-  if (isUserloading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <button
-          class="btn"
-          style={{ backgroundColor: "#2DDC1B", color: "white" }}
-          type="button"
-          disabled
-        >
-          <span
-            class="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Loading...
-        </button>
-      </div>
-    );
-  }
+  // if (isUserloading) {
+  //   return (
+  //     <div className="d-flex justify-content-center align-items-center">
+  //       <button
+  //         class="btn"
+  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
+  //         type="button"
+  //         disabled
+  //       >
+  //         <span
+  //           class="spinner-grow spinner-grow-sm"
+  //           role="status"
+  //           aria-hidden="true"
+  //         ></span>
+  //         Loading user...
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
   const extractUserListForCurrentUser = (userData, userId) => {
     let userList = null;
 
     // Find the user object matching the provided userId
     const currentUser = userData?.find((user) => user._id === userId);
-console.log(currentUser)
+
     if (currentUser) {
       // Loop through the menus of the current user
       currentUser?.menulist?.forEach((menu) => {
         menu?.items?.forEach((subMenu) => {
           
           if(subMenu.items.length <= 0){
-            if(subMenu.label=='User Setting'){
+            if(subMenu.label==='User List'){
               userList=subMenu
             }
           }
           if (subMenu?.label === subMenu?.label) {
             const userListSubMenu = subMenu?.items.find(
-              (subItem) => subItem?.label === 'User Setting'
+              (subItem) => subItem?.label === 'User List'
             );
-            console.log( userListSubMenu)
+         
             if (userListSubMenu) {
               // Set the user list property
               userList = userListSubMenu;
@@ -83,22 +84,20 @@ console.log(currentUser)
     }
 
     return userList;
-  };
+  }
 
-  // Call the function to get the user list for the current user
   const permission = extractUserListForCurrentUser(
     permissionResult,
     userIdFromLocalStorage
   );
 
-  // Output the user list for the current user
-  console.log(permission);
 
   return (
     <div>
       <UserListInfo
         setChangePassword={setChangePassword}
         setResetPassword={setResetPassword}
+        setUserIdForChangePassowrd={setUserIdForChangePassowrd}
         resetPassword={resetPassword}
         changePassword={changePassword}
         permission={permission}
@@ -107,7 +106,7 @@ console.log(currentUser)
       {permission?.isInserted ? (
         <div
           className={`position-absolute`}
-          style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
+          style={{ right: "10%", bottom: "4%", zIndex: "9999" }}
         >
           <div className="">
             <a

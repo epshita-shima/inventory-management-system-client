@@ -9,15 +9,18 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 
 import { useGetAllSupplierInformationQuery } from "../../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
-import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
+import { downloadPOPDF } from "../../../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
-import '../../PurchaseOrderApprove/PurchaseOrderAproveForm.css'
+import "../../PurchaseOrderApprove/PurchaseOrderAproveForm.css";
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
+
 const PurchaseOrderApproveList = ({
   permission,
   purchaseFilterApproveAllData,
+  isPurchaseOrderLoading,
 }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
@@ -49,6 +52,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:'150px'
     },
     {
       name: "PO Number",
@@ -57,6 +61,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:'200px'
     },
 
     {
@@ -70,6 +75,7 @@ const PurchaseOrderApproveList = ({
       sortable: true,
       center: true,
       filterable: true,
+      width:"200px"
     },
 
     {
@@ -135,12 +141,12 @@ const PurchaseOrderApproveList = ({
               title="Update item"
               style={{
                 color: `${
-                  purchaseFilterApproveAllData?.items?.length == 0
+                  purchaseFilterApproveAllData?.items?.length === 0
                     ? "gray"
                     : "orange"
                 } `,
                 border: `${
-                  purchaseFilterApproveAllData?.items?.length == 0
+                  purchaseFilterApproveAllData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -205,29 +211,29 @@ const PurchaseOrderApproveList = ({
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
-        {/* <div>
-            <FontAwesomeIcon
-              style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
-              icon={faRefresh}
-              onClick={() => refetch()}
-            ></FontAwesomeIcon>
-            &nbsp;
-          </div> */}
-
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
+      {
+        purchaseFilterApproveAllData?.length >0 ?  (<div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
             filterText={filterText}
           />
-        </div>
+        </div>) :''
+      }
+
+        
       </div>
     );
-  }, [filterText, resetPaginationToggle]);
+  }, [filterText, resetPaginationToggle,purchaseFilterApproveAllData]);
 
   return (
-    <div className="row">
+    <div
+      className={`row ${isPurchaseOrderLoading ? "d-none" : "block"} ${
+        filteredItems?.length === 0 ? "d-none" : "block"
+      }`}
+    >
+      <LoadingSpineer isLoading={isPurchaseOrderLoading}></LoadingSpineer>
       <div className="col userlist-table podata-main-view">
         <div className="shadow-lg ">
           <DataTable

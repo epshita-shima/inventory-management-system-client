@@ -17,18 +17,19 @@ import {
   downloadAllImage,
   downloadImage,
   downloadPDF,
-} from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+} from "../../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import { useDeleteCFTInfoMutation } from "../../../../redux/features/cftinformation/cftInfosApi";
 import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
-import handleCFTExcel from "../../../ReportProperties/handleCFTExcel";
-const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
+import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
+import { formatDate } from "../../../Uitilites/DateUtilities";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+
+const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  console.log(cftInfosData);
   const [filterText, setFilterText] = useState("");
   const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
@@ -53,19 +54,19 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
 
   useEffect(() => {
     const cftInfoActiveStatus = cftInfosData?.filter(
-      (item) => item.isActive == true
+      (item) => item.isActive === true
     );
     const cftInfoInActiveStatus = cftInfosData?.filter(
-      (item) => item.isActive == false
+      (item) => item.isActive === false
     );
     const cftInfoActiveStatusImage = cftInfosData?.filter(
-      (item) => item.isActive == true && item.image != undefined
+      (item) => item.isActive === true && item.image !== undefined
     );
     const cftInfoInActiveStatusWithImage = cftInfosData?.filter(
-      (item) => item.isActive == false && item.image != undefined
+      (item) => item.isActive === false && item.image !== undefined
     );
     const cftInfoAllStatusWithImage = cftInfosData?.filter(
-      (item) => item.image != undefined
+      (item) => item.image !== undefined
     );
 
     const extractedAllFields = cftInfosData?.map((item) => {
@@ -159,7 +160,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     const existing = cftInfosData?.filter(
                       (x) => x.isActive === true
                     );
-                    console.log(existing.length, existing.length > 1);
+                   
                     if (inActiveCFTInfosModal) {
                       if (existing.length > 0 || selectedData.length > 0) {
                         swal(
@@ -188,7 +189,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
           width: "250px",
           selector: (cftInfosData) => {
             const totalItems = cftInfosData.detailsData;
-            return totalItems.length == 0 ? "N/A" : totalItems.length;
+            return totalItems.length === 0 ? "N/A" : totalItems.length;
           },
         };
       } else {
@@ -220,7 +221,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       name: "Number OF Items",
       selector: (cftInfosData) => {
         const totalItems = cftInfosData.detailsData;
-        return totalItems.length == 0 ? "N/A" : totalItems.length;
+        return totalItems.length === 0 ? "N/A" : totalItems.length;
       },
       sortable: true,
       center: true,
@@ -261,7 +262,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
             }}
             //   href={`update-cft-info/${cftInfosData._id}`}
           >
-            {cftInfosData?.isActive == true ? (
+            {cftInfosData?.isActive === true ? (
               <p className="text-success fw-bold">Active</p>
             ) : (
               <p className="text-danger fw-bold">InActive</p>
@@ -286,10 +287,10 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
               title="Update item"
               style={{
                 color: `${
-                  cftInfosData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  cftInfosData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  cftInfosData?.items?.length == 0
+                  cftInfosData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -299,8 +300,8 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
               }}
               onClick={() => {
                 if (cftInfoActiveStatus.length > 0) {
-                  if (cftInfoActiveStatus[0]?._id == cftInfosData?._id) {
-                    window.open(`update-cft-info/${cftInfosData?._id}`);
+                  if (cftInfoActiveStatus[0]?._id === cftInfosData?._id) {
+                    window.open(`cft-info-list/update-cft-info/${cftInfosData?._id}`);
                   } else {
                     swal(
                       "Not Possible!",
@@ -309,7 +310,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     );
                   }
                 } else {
-                  window.open(`update-cft-info/${cftInfosData?._id}`);
+                  window.open(`cft-info-list/update-cft-info/${cftInfosData?._id}`);
                 }
               }}
             >
@@ -345,7 +346,6 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     const response = await deleteCFTInfoData(
                       cftInfosData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -410,7 +410,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2 ">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
@@ -541,13 +541,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
     rawItemInfo,
   ]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return isNaN(date.getTime())
-      ? "N/A"
-      : date.toLocaleDateString("en-US", options);
-  };
+
   return (
     <div className="row px-5 mx-4">
       <ListHeading
@@ -559,7 +553,6 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
       ></ListHeading>
       <div
         className="col userlist-table mt-4 cftdata-main-view"
-        // style={{ height: 'calc(80vh - 120px)', overflowY: 'scroll' }}
       >
         <div className="shadow-lg">
           <DataTable
@@ -585,17 +578,13 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
         </thead>
         <tbody>
           {cftInfosData?.map((items, key) => {
-            console.log(key, items);
             const group = items?.detailsData;
             const formattedOpeningDate = formatDate(items?.openingDate);
             const formattedClosingDate = formatDate(items?.closingDate);
-            console.log(formattedClosingDate);
             const rowSpan = group?.length;
-
             return (
               <>
                 {group?.map((row, rowIndex) => {
-                  console.log(row);
                   const itemNames = rawItemInfo
                     ?.filter((item) => row?.itemId === item._id)
                     .map((filteredItem) => filteredItem.itemName)
@@ -622,7 +611,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {formattedClosingDate ==='Invalid Date' ? '-' : formattedClosingDate}
                           </td>
                         </>
                       )}
@@ -651,13 +640,11 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
             const group = items?.detailsData;
             const formattedOpeningDate = formatDate(items?.openingDate);
             const formattedClosingDate = formatDate(items?.closingDate);
-            console.log(formattedClosingDate);
             const rowSpan = group?.length;
 
             return (
               <>
                 {group?.map((row, rowIndex) => {
-                  console.log(row);
                   const itemNames = rawItemInfo
                     ?.filter((item) => row?.itemId === item._id)
                     .map((filteredItem) => filteredItem.itemName)
@@ -668,6 +655,9 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     <tr key={row._id}>
                       {rowIndex === 0 && (
                         <>
+                        <td>
+                          {rowIndex +1}
+                        </td>
                           <td
                             rowSpan={rowSpan}
                             style={{
@@ -675,7 +665,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedOpeningDate}
+                            {items?.openingDate}
                           </td>
                           <td
                             rowSpan={rowSpan}
@@ -684,7 +674,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {items?.closingDate}
                           </td>
                         </>
                       )}
@@ -714,13 +704,11 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
             const group = items?.detailsData;
             const formattedOpeningDate = formatDate(items?.openingDate);
             const formattedClosingDate = formatDate(items?.closingDate);
-            console.log(formattedClosingDate);
             const rowSpan = group?.length;
 
             return (
               <>
                 {group?.map((row, rowIndex) => {
-                  console.log(row);
                   const itemNames = rawItemInfo
                     ?.filter((item) => row?.itemId === item._id)
                     .map((filteredItem) => filteredItem.itemName)
@@ -731,6 +719,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                     <tr key={row._id}>
                       {rowIndex === 0 && (
                         <>
+                        <td>{rowIndex+1}</td>
                           <td
                             rowSpan={rowSpan}
                             style={{
@@ -738,7 +727,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedOpeningDate}
+                            {items?.openingDate}
                           </td>
                           <td
                             rowSpan={rowSpan}
@@ -747,7 +736,7 @@ const CFTInfosList = ({ permission, cftInfosData, refetch }) => {
                               verticalAlign: "middle",
                             }}
                           >
-                            {formattedClosingDate}
+                            {items?.closingDate}
                           </td>
                         </>
                       )}

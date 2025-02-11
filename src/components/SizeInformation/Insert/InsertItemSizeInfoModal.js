@@ -6,12 +6,11 @@ import { Form, InputGroup } from "react-bootstrap";
 import swal from "sweetalert";
 import * as Yup from "yup";
 import { useInsertItemSizeMutation } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertItemSizeInfoModal = () => {
   const ArrayHelperRef = useRef();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const [existingUserRoles, setExistingUserRoles] = useState([]);
   const [insertItemsize] = useInsertItemSizeMutation();
   const [sizeInfoData, setSizeInfoData] = useState("");
@@ -29,14 +28,13 @@ const InsertItemSizeInfoModal = () => {
   };
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    console.log(values.detailsData);
+
     if (existingUserRoles.includes(sizeInfoData)) {
       alert("This size info already exists!");
       return;
     }
     try {
       const response = await insertItemsize(values.detailsData);
-      console.log(response.data.status);
       if (response.data.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();

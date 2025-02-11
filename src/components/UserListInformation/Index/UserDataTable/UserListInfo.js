@@ -13,107 +13,83 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import UserListModal from "../UserListModal/UserListModal";
 import UserActivationModal from "../UserActivationModal/UserActivationModal";
-
-import { useNavigate } from "react-router-dom";
 import {
   useDeleteUserMutation,
   useGetAllUserQuery,
 } from "../../../../redux/features/user/userApi";
-import { Font } from "@react-pdf/renderer";
 import swal from "sweetalert";
 import "jspdf-autotable";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import { downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
-import handleCheckboxClick from './../../../Common/ListHeadingModal/Function/handleCheckboxClick';
+import handleCheckboxClick from "./../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import './UserListInfo.js';
+import "./UserListInfo.js";
+import MenuIdCollection from "../../../Common/MenuIdCollection/MenuIdCollection.js";
 
 const UserListInfo = ({
   setChangePassword,
   setResetPassword,
-  resetPassword,
-  changePassword,
+  setUserIdForChangePassowrd,
   permission,
 }) => {
   const [userId, setUserId] = useState(null);
-  const { data: user } = useGetAllUserQuery(undefined);
+  const { data: user, refetch } = useGetAllUserQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [activeUserModal, setActiveDataModal] = useState(false);
   const [inActiveUserModal, setInActiveUserModal] = useState(false);
-  const [deleteUser, { isLoading, isSuccess, isError }] =
-    useDeleteUserMutation();
-  const navigate = useNavigate();
-  const activeUser = user?.filter((user) => user.isactive == true);
-  const inActiveUser = user?.filter((user) => user.isactive == false);
+  const [deleteUser] = useDeleteUserMutation();
+
   const [extractedData, setExtractedData] = useState([]);
   const [extractedInActiveData, setExtractedInActiveData] = useState([]);
   const [extractedAllData, setExtractedAllData] = useState([]);
-  const [demoData, setDemoData] = useState(null);
+  const [activeUser, setActiveUser] = useState([]);
+  const [inActiveUser, setinActiveUser] = useState([]);
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All User";
-  console.log(extractedData)
+  const getMenulistData = localStorage.getItem("user");
+  const menuListData = JSON.parse(getMenulistData);
 
   useEffect(() => {
-    const activeUsers = user?.filter((user) => user.isactive == true);
-    const inActiveUser = user?.filter((user) => user.isactive == false);
+    const activeUsers = user?.filter((user) => user.isactive === true);
+    const inActiveUser = user?.filter((user) => user.isactive === false);
     const extractedFieldsForAllData = user?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
 
     const extractedFields = activeUsers?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
-
     const extractedInactiveFields = inActiveUser?.map((item) => ({
       firstname: item.firstname,
       mobileNo: item.mobileNo,
       username: item.username,
-      isactive:item.isactive ? 'Active' : 'InActive'
+      isactive: item.isactive ? "Active" : "InActive",
     }));
-    
-    setExtractedAllData(extractedFieldsForAllData)
+
+    setActiveUser(activeUsers);
+    setinActiveUser(inActiveUser);
+    setExtractedAllData(extractedFieldsForAllData);
     setExtractedData(extractedFields);
     setExtractedInActiveData(extractedInactiveFields);
   }, [user]);
 
-  useEffect(() => {
-    // Fetch the JSON data
-    const fetchData = async () => {
-      try {
-        const response = await fetch("jsonData.json"); // Adjust the path to your JSON file
-        const data = await response.json();
-        setDemoData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  Font.register({
-    family: "Oswald",
-    src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
-  });
-
   const handleActiveStatus = (id) => {
-    setUserId(id);
+    setUserId(id._id);
   };
 
   const generateColumns = (data, fields) => {
     if (data?.length === 0) return [];
-
     return fields.map((field) => {
       if (field === "isactive") {
         return {
@@ -136,8 +112,9 @@ const UserListInfo = ({
                 <input
                   type="checkbox"
                   aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
-                  onChange={(e) => handleCheckboxClick(row,setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
+                  onChange={(e) => {
+                    handleCheckboxClick(row, setSelectedData);
+                  }}
                 />
               </a>
             </div>
@@ -197,9 +174,12 @@ const UserListInfo = ({
               fontSize: "14px",
               textAlign: "center",
             }}
-            // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {user?.isactive == true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {user?.isactive === true ? (
+              <p className="text-success fw-bold">Active</p>
+            ) : (
+              <p className="text-danger fw-bold">InActive</p>
+            )}
           </a>
         </div>
       ),
@@ -230,7 +210,7 @@ const UserListInfo = ({
               data-target="#exampleModalLong"
               icon={faEye}
               onClick={() => {
-                handleActiveStatus(activeUser?._id);
+                handleActiveStatus(user);
               }}
             ></FontAwesomeIcon>
           </a>
@@ -249,8 +229,7 @@ const UserListInfo = ({
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`user-update/${user?._id}`);
-                // handleActiveStatus(activeUser?._id);
+                window.open(`user-list/user-update/${user?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -276,10 +255,18 @@ const UserListInfo = ({
               title="Reset password"
               icon={faGear}
               onClick={() => {
-                setResetPassword(true);
-                setChangePassword(false);
-                const url = `/main-view/change-password?reset=true&change=false`;
-                window.open(url, "_blank");
+                if (
+                  menuListData._id === user._id ||
+                  MenuIdCollection.userrole_supperadmin
+                ) {
+                  setResetPassword(true);
+                  setChangePassword(false);
+                  setUserIdForChangePassowrd(user);
+                  const url = `/main-view/change-password?reset=true&change=false&userId=${user._id}`;
+                  window.open(url, "_blank");
+                } else {
+                  setUserIdForChangePassowrd(user._id);
+                }
               }}
             ></FontAwesomeIcon>
           </a>
@@ -363,11 +350,17 @@ const UserListInfo = ({
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex ">
+          <div className="table-head-icon d-flex">
             <div>
-              <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp;
+              <FontAwesomeIcon
+                icon={faRefresh}
+                onClick={() => {
+                  refetch();
+                }}
+              ></FontAwesomeIcon>{" "}
+              &nbsp;
             </div>
             <div class="dropdown">
               <button
@@ -398,7 +391,11 @@ const UserListInfo = ({
                     class="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleDownload(extractedAllData, companyinfo, reportTitle);
+                      handleDownload(
+                        extractedAllData,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -421,9 +418,10 @@ const UserListInfo = ({
   }, [
     filterText,
     resetPaginationToggle,
+    refetch,
     companyinfo,
     reportTitle,
-    extractedAllData
+    extractedAllData,
   ]);
 
   return (
@@ -435,12 +433,9 @@ const UserListInfo = ({
         setInActiveDataModal={setInActiveUserModal}
         inActiveUser={inActiveUser}
       ></ListHeading>
-      <div class=" mt-5">
+      <div class="mt-5">
         <div class="row">
-          <div
-            className="col userlist-table main-table-view"
-            // style={{ height: 'calc(55vh - 120px)', overflowY: 'scroll' }}
-          >
+          <div className="col userlist-table main-table-view">
             <div className="shadow-lg overflow-x-auto flex-nowarp">
               <DataTable
                 columns={columns}
@@ -525,22 +520,12 @@ const UserListInfo = ({
       <UserListModal user={user}></UserListModal>
       <UserActivationModal userId={userId}></UserActivationModal>
       {activeUserModal ? (
-        // <UserActiveListModal
-        //   user={activeUser}
-        //   activeUserModal={activeUserModal}
-        //   setActiveDataModal={setActiveDataModal}
-        //   extractedData={extractedData}
-        //   companyinfo={companyinfo}
-        // ></UserActiveListModal>
         <ActiveListDataModal
           listData={activeUser}
           activeDataModal={activeUserModal}
-          // inActiveDataModal={inActiveUserModal}
-          // setInActiveDataModal={setInActiveUserModal}
           setActiveDataModal={setActiveDataModal}
           extractedData={extractedData}
           companyinfo={companyinfo}
-          // extractedInActiveData={extractedInActiveData}
           generateColumns={generateColumns}
           selectedData={selectedData}
           setSelectedData={setSelectedData}
@@ -549,23 +534,16 @@ const UserListInfo = ({
         ""
       )}
       {inActiveUserModal ? (
-<ActiveListDataModal
-   listData={inActiveUser}
-   inActiveDataModal={inActiveUserModal}
-   setInActiveDataModal={setInActiveUserModal}
-   extractedInActiveData={extractedInActiveData}
-   generateColumns={generateColumns}
-     companyinfo={companyinfo}
-     selectedData={selectedData}
-     setSelectedData={setSelectedData}
-></ActiveListDataModal>
-        // <UserActiveListModal
-        //   user={inActiveUser}
-        //   inActiveUserModal={inActiveUserModal}
-        //   setInActiveUserModal={setInActiveUserModal}
-        //   extractedInActiveData={extractedInActiveData}
-        //   companyinfo={companyinfo}
-        // ></UserActiveListModal>
+        <ActiveListDataModal
+          listData={inActiveUser}
+          inActiveDataModal={inActiveUserModal}
+          setInActiveDataModal={setInActiveUserModal}
+          extractedInActiveData={extractedInActiveData}
+          generateColumns={generateColumns}
+          companyinfo={companyinfo}
+          selectedData={selectedData}
+          setSelectedData={setSelectedData}
+        ></ActiveListDataModal>
       ) : (
         ""
       )}

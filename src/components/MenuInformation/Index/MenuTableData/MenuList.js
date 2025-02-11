@@ -1,6 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useMemo } from "react";
-import { useDeleteMenuDataMutation, useGetAllMenuItemsQuery } from "../../../../redux/features/menus/menuApi";
+import {
+  useDeleteMenuDataMutation,
+  useGetAllMenuItemsQuery,
+} from "../../../../redux/features/menus/menuApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPenToSquare,
@@ -10,13 +13,19 @@ import {
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
 
-import './MenuList.css'
+import "./MenuList.css";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
-const MenuList = ({permission}) => {
-const [deleteMenu]=useDeleteMenuDataMutation()
-const [filterText, setFilterText] = React.useState("");
-const [resetPaginationToggle, setResetPaginationToggle] =React.useState(false);
-const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undefined);
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+const MenuList = ({ permission }) => {
+  const [deleteMenu] = useDeleteMenuDataMutation();
+  const [filterText, setFilterText] = React.useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
+  const {
+    data: menuItems,
+    isLoading: isMenuloading,
+    refetch,
+  } = useGetAllMenuItemsQuery(undefined);
 
   const flattenOptions = (options) => {
     const flattenRecursive = (options, parentLabel) => {
@@ -25,7 +34,7 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
         result.push({
           value: option._id,
           label: parentLabel ? `${option.label}` : option.label,
-          items: parentLabel ? `${option.items}` : option.items
+          items: parentLabel ? `${option.items}` : option.items,
         });
         if (option.items && option.items.length > 0) {
           result = result.concat(flattenRecursive(option.items, option.label));
@@ -67,16 +76,21 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
               data-toggle="tooltip"
               data-placement="bottom"
               title="Update menu"
-            
               style={{
-                color: `${flattenedOptions.items.length==0 ? 'gray' : '#2DDC1B'} `,
-                border:`${flattenedOptions.items.length==0 ? '2px solid gray' : '2px solid #2DDC1B'}`,
+                color: `${
+                  flattenedOptions.items.length == 0 ? "gray" : "#2DDC1B"
+                } `,
+                border: `${
+                  flattenedOptions.items.length == 0
+                    ? "2px solid gray"
+                    : "2px solid #2DDC1B"
+                }`,
                 padding: "3px",
                 borderRadius: "5px",
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-menu/${flattenedOptions?.value}`);
+                window.open(`menu-list/update-menu/${flattenedOptions?.value}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -100,7 +114,6 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(flattenedOptions?.value)
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",
@@ -150,7 +163,7 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
       },
     },
   };
- 
+
   const filteredItems = flattenedOptions?.filter(
     (item) =>
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
@@ -166,7 +179,7 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
     };
     return (
       <div className="d-flex justify-content-end align-items-center w-100">
-    <div className="d-flex justify-content-end align-items-center">
+        <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
               <FontAwesomeIcon
@@ -175,39 +188,39 @@ const { data: menuItems, isMenuloading,refetch } = useGetAllMenuItemsQuery(undef
               ></FontAwesomeIcon>{" "}
               &nbsp;
             </div>
-       
           </div>
-    
-        <FilterComponent
-          onFilter={(e) => setFilterText(e.target.value)}
-          onClear={handleClear}
-          filterText={filterText}
-        />
-      </div>
-      </div>
-    );
-  }, [filterText, resetPaginationToggle,refetch]);
 
-  return (
-      <div className="row p-5 mx-4">
-        <div
-          className="col userlist-table"
-          style={{ height: 'calc(90vh - 120px)', overflowY: 'scroll' }}
-        >
-          <div className="shadow-lg ">
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              defaultSortField="name"
-              customStyles={customStyles}
-              striped
-              pagination
-              subHeader
-              subHeaderComponent={subHeaderComponent}
-            />
-          </div>
+          <FilterComponent
+            onFilter={(e) => setFilterText(e.target.value)}
+            onClear={handleClear}
+            filterText={filterText}
+          />
         </div>
       </div>
+    );
+  }, [filterText, resetPaginationToggle, refetch]);
+
+  return (
+    <div className="row p-5 mx-4">
+      {/* {<LoadingSpineer isLoading={isMenuloading}></LoadingSpineer>} */}
+      <div
+        className="col userlist-table"
+        style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
+      >
+        <div className="shadow-lg ">
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            defaultSortField="name"
+            customStyles={customStyles}
+            striped
+            pagination
+            subHeader
+            subHeaderComponent={subHeaderComponent}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

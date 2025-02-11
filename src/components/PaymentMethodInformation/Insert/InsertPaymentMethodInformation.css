@@ -1,0 +1,14 @@
+.custom-modal .modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90%; /* Set the maximum width */
+    width: 50%; /* Set the width as needed */
+    height: 80%; /* Adjust the height as needed */
+    padding-top: 150px; /* Adjust the padding if needed */
+  }
+  
+  .custom-modal .modal-content {
+    width: 100%; /* Ensure the content takes full width */
+    height: 100%; /* Ensure the content takes full height */
+  }

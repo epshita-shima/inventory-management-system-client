@@ -1,15 +1,16 @@
-.custom-datepicker {
+.custom-datepicker-fgProduction {
     border: 1px solid #2DDC1B;
     padding: 5px;
     border-radius: 5px;
     outline: #2DDC1B;
+    width: 260px;
   }
-  .custom-datepicker-update{
+  .custom-datepicker-fgProduction{
     border: 1px solid #2DDC1B;
     padding: 8px;
     border-radius: 5px;
     outline: #2DDC1B;
-    width:540px;
+    width:260px;
   }
 .custom-calendar .react-datepicker__current-month,
 .custom-calendar .react-datepicker__day,
@@ -28,7 +29,7 @@
 }
   .custom-calendar {
     background-color: #B8FEB3;
-    width: 260px;
+    width: 200px;
   }
   .custom-calendar .react-datepicker__month-container {
     width: 100%; /* Ensure the month container takes the full width */
@@ -40,7 +41,7 @@
   
   .custom-calendar .react-datepicker__day,
 .custom-calendar .react-datepicker__day-name {
-  width: 13.28%; /* Each day takes 1/7th of the width */
+  width: 11.28%; /* Each day takes 1/7th of the width */
   display: inline-block;
   text-align: center;
   overflow: hidden; /* Hide overflow */

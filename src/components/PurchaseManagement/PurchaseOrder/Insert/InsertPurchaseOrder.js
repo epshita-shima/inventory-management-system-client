@@ -19,7 +19,7 @@ const InsertPurchaseOrder = ({
   totalGrandTotalAmount,
   arrayHelpers,
 }) => {
-  console.log(window.screen)
+
   return (
       <div className="insertpo-responsive-custom"
       //  style={{ height: 'calc(42vh - 120px)', overflowY: "auto" }}
@@ -206,7 +206,6 @@ const InsertPurchaseOrder = ({
                             textAlign: "center",
                           }}
                           onKeyUp={(e) => {
-                            console.log(e.target.value);
                             setFieldValue(
                               `detailsData.${index}.quantity`,
                               e.target.value

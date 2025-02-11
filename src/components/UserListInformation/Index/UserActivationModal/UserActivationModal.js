@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserActivationModal.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useGetSingleUserQuery, useUpdateUserMutation } from "../../../../redux/features/user/userApi";
+import {
+  useGetSingleUserQuery,
+  useUpdateUserMutation,
+} from "../../../../redux/features/user/userApi";
 import swal from "sweetalert";
-const UserActivationModal = ({userId}) => {
-  console.log(userId)
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+const UserActivationModal = ({ userId }) => {
   const { data: singleUser } = useGetSingleUserQuery(userId);
   const [updateData] = useUpdateUserMutation();
-  const [ updateUserStatus,setUpdateUserStatus]=useState([])
-  console.log(updateUserStatus)
-  console.log(singleUser)
+  const [updateUserStatus, setUpdateUserStatus] = useState([]);
+
+  useEffect(() => {
+    setUpdateUserStatus(singleUser);
+  }, [singleUser]);
+
+
+
   return (
     <div
       class="modal fade"
@@ -38,7 +44,7 @@ const UserActivationModal = ({userId}) => {
           <div class="modal-body">
             <ul class="list-group rounded-4">
               <li class="list-group-item active">User Information</li>
-              <div className="mt-4">
+              <div className="mt-4 overflow-scroll">
                 <table class="table">
                   <thead>
                     <tr>
@@ -72,7 +78,6 @@ const UserActivationModal = ({userId}) => {
                           value={singleUser?.firstname}
                           aria-describedby="basic-addon1"
                         />
-                        
                       </td>
                       <td>
                         <input
@@ -99,18 +104,19 @@ const UserActivationModal = ({userId}) => {
                       <td className="align-middle ">
                         <input
                           type="checkbox"
-                   
+                          checked={updateUserStatus?.isactive}
                           aria-label="Checkbox for following text input"
-                          onClick={async(e)=>{
-                            const {checked}=e.target
-                            const updatedUserData = { ...singleUser, isactive:false };
-                            setUpdateUserStatus(updatedUserData)
-                            // 
-                            // console.log('Data updated successfully:', response);
+                          onClick={async (e) => {
+                            const { checked } = e.target;
+
+                            setUpdateUserStatus((prevData) => ({
+                              ...prevData,
+                              isactive: checked,
+                              updateBy: getMakebyUser(),
+                              updateDate: new Date(),
+                            }));
                           }}
                         />
-
-                        {/* <FontAwesomeIcon style={{color:'#2DDC1B'}} icon={faEyeSlash}/> */}
                       </td>
                     </tr>
                   </tbody>
@@ -145,9 +151,16 @@ const UserActivationModal = ({userId}) => {
                 borderRadius: "10px",
                 textTransform: "uppercase",
               }}
-              onClick={()=>{
-               updateData(updateUserStatus);
-                swal("Done", "Update Successfully", "success");
+              onClick={async() => {
+               const response= await updateData(updateUserStatus);
+          
+               if(response.data.success === true){
+                swal("Done", `${response.data.message}`, "success");
+               }
+               else{
+                swal("Sorry!", `${response.data.message}`, "error");
+               }
+               
               }}
             >
               Update

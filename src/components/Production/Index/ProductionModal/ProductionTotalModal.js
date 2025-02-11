@@ -4,18 +4,18 @@ import DataTable from "react-data-table-component";
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { downloadHeadingProductionPDF, downloadProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/HeaderFooter";
+import { downloadHeadingProductionPDF, downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import handleProductionExcel from "../../../ReportProperties/handleProductionExcel";
-import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/iteminfoApi";
+import handleProductionExcel from "../../../ReportProperties/Excel/handleProductionExcel";
+import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 const ProductionTotalModal = ({ totalProduction,permission}) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const { data: companyinfo } = useGetCompanyInfoQuery();
   const reportTitle = "PRODUCTION REPORT";
-  const {data:finishGoods}=useGetAllItemInformationQuery(undefined)
-  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined)
+  const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
+  const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined);
   const columns = [
     {
       name: "Sl.",
@@ -68,10 +68,10 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
               title="Update item"
               style={{
                 color: `${
-                  filteredData?.detailsData?.length == 0 ? "gray" : "orange"
+                  filteredData?.detailsData?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  filteredData?.detailsData?.length == 0
+                  filteredData?.detailsData?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -136,64 +136,69 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-between align-items-center">
-        <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                     handleProductionExcel(
-                        totalProduction,
-                        finishGoods,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+      <>
+      {
+        totalProduction?.length > 0 && (<div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadHeadingProductionPDF(totalProduction,{ companyinfo }, reportTitle);
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                       handleProductionExcel(
+                          totalProduction,
+                          finishGoods,
+                          companyinfo,
+                          reportTitle
+                        );
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onClear={handleClear}
-            filterText={filterText}
-          />
-        </div>
-      </div>
+  
+          <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onClear={handleClear}
+              filterText={filterText}
+            />
+          </div>
+        </div>)
+  }</>
+      
     );
   }, [
+    finishGoods,
     filterText,
     totalProduction,
     resetPaginationToggle,
@@ -214,7 +219,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                All User List
+               Production List
               </h5>
               <button
                 type="button"
@@ -227,7 +232,6 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
             </div>
             <div class="modal-body">
               <div
-                className=" "
                 style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
               >
                 <DataTable

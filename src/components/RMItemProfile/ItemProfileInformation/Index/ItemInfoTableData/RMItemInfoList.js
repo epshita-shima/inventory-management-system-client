@@ -18,19 +18,20 @@ import {
   useDeleteRMItemInfoMutation,
   useGetAllRMItemInformationQuery,
 } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
-import { downloadPDF } from "../../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../../ReportProperties/Excel/HandelExcelDownload";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import "./RMItemInfoList.css"
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 const RMItemInfoList = ({ permission }) => {
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const {
     data: rmItemInfoData,
-    isRmItemLoading,
+    isLoading:isRmItemLoading,
     refetch,
   } = useGetAllRMItemInformationQuery(undefined);
   const [filterText, setFilterText] = useState("");
@@ -51,17 +52,16 @@ const RMItemInfoList = ({ permission }) => {
 
   useEffect(() => {
     const rmItemActiveStatus = rmItemInfoData?.filter(
-      (item) => item.itemStatus == true
+      (item) => item.itemStatus === true
     );
     const rmItemInActiveStatus = rmItemInfoData?.filter(
-      (item) => item.itemStatus == false
+      (item) => item.itemStatus === false
     );
-    console.log(rmItemActiveStatus);
-    console.log(rmItemInActiveStatus);
+
     const extractedFields = rmItemActiveStatus?.map((item) => {
       const category = categoryInfoData?.find((x) => x._id === item.categoryId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      console.log(category);
+
       return {
         openingDate: item.openingDate,
         itemName: item.itemName,
@@ -74,7 +74,7 @@ const RMItemInfoList = ({ permission }) => {
     const extractedFieldsForAllData = rmItemInfoData?.map((item) => {
       const category = categoryInfoData?.find((x) => x._id === item.categoryId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      console.log(category);
+
       return {
         openingDate: item.openingDate,
         itemName: item.itemName,
@@ -142,9 +142,9 @@ const RMItemInfoList = ({ permission }) => {
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
-                  onChange={(e) => handleCheckboxClick(row, setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
+                  onChange={(e) => handleCheckboxClick(row, setSelectedData)}
                 />
               </a>
             </div>
@@ -188,7 +188,6 @@ const RMItemInfoList = ({ permission }) => {
         const category = categoryInfoData?.find(
           (x) => x._id === rmItemInfoData?.categoryId
         );
-        console.log(category);
         return category ? category.categoryInfo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -240,7 +239,7 @@ const RMItemInfoList = ({ permission }) => {
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (rmItemInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -253,10 +252,10 @@ const RMItemInfoList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  rmItemInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  rmItemInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  rmItemInfoData?.items?.length == 0
+                  rmItemInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -265,7 +264,7 @@ const RMItemInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-items-raw-material/${rmItemInfoData?._id}`);
+                window.open(`raw-material-item-list/update-items-raw-material/${rmItemInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -300,7 +299,6 @@ const RMItemInfoList = ({ permission }) => {
                     const response = await deleteRMItemInfo(
                       rmItemInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -365,7 +363,7 @@ const RMItemInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
@@ -439,6 +437,7 @@ const RMItemInfoList = ({ permission }) => {
 
   return (
     <div className="row px-5 mx-4">
+      {/* <LoadingSpineer isLoading={isRmItemLoading}></LoadingSpineer> */}
       <ListHeading
         rmItemInfoData={rmItemInfoData}
         rmItemActiveStatus={rmItemActiveStatus}
@@ -448,10 +447,6 @@ const RMItemInfoList = ({ permission }) => {
       ></ListHeading>
       <div
         className="col userlist-table mt-4 rawdata-main-view "
-        // style={{
-        //   overflow: "scroll",
-        //   height: "420px",
-        // }}
       >
         <div className="shadow-lg ">
           <DataTable

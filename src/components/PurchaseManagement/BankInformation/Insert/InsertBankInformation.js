@@ -6,13 +6,12 @@ import * as Yup from "yup";
 import { useInsertBankInformationMutation } from "../../../../redux/features/bankinformation/bankInfoAPi";
 import swal from "sweetalert";
 import './InsertBankInformation.css'
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertBankInformation = () => {
   const ArrayHelperRef = useRef();
   const [insertBankingInfo, { isLoading }] = useInsertBankInformationMutation();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const initialValues = {
     detailsData: [
@@ -37,7 +36,6 @@ const InsertBankInformation = () => {
     e.preventDefault();
     try {
       const response = await insertBankingInfo(values.detailsData);
-      console.log(response?.error?.data?.message);
       if (response?.data?.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();
@@ -153,11 +151,10 @@ const InsertBankInformation = () => {
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(values);
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom"
-                          // style={{ height: "400px", overflowY: "auto" }}
+                         
 
                         >
                           <div className="table-responsive">

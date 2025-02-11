@@ -83,7 +83,7 @@ const PaymnetModeList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                console.log(paymentModeData?.value);
+           
                 swal({
                   title: "Are you sure?",
                   text: "Once deleted, you will not be able to recover this data!",
@@ -148,7 +148,7 @@ const PaymnetModeList = ({ permission }) => {
       }
     };
     return (
-      <div className="d-flex justify-content-end align-items-center w-100">
+      <div className="d-flex justify-content-end align-items-center w-100 mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>

@@ -1,0 +1,14 @@
+.report-status-width{
+  width:40%
+}
+.item-name-width{
+  width:45%
+}
+@media (max-width: 568px) { /* md */
+  .report-status-width {
+    width: 100%;
+  }
+  .item-name-width{
+    width:100%
+  }
+}

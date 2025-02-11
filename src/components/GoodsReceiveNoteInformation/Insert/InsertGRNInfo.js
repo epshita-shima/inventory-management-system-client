@@ -21,18 +21,16 @@ import {
   useGetAllGRNInformationQuery,
 } from "../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
-import {
-  useCreateSerialNoMutation,
-  useGetSerialNoQuery,
-} from "../../../redux/api/apiSlice";
+import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import LoadingSpineer from './../../Common/LoadingSpinner/LoadingSpineer';
+import '../../../buttonStyle/style.css';
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
-  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const makebyUser = getMakebyUser();
+  const { data: supplierInfo,isLoading:isLoadingSupplier } = useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseOrderInfo, isLoading } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rmItemInfo } = useGetAllRMItemInformationQuery(undefined);
@@ -50,7 +48,7 @@ const InsertGRNInfo = () => {
   const [updateGRNInfo] = useUpdateGRNInformationMutation();
   const { id } = useParams();
   const { data: singleGRNInfo } = useGetSingleGRNInformationQuery(id);
-  const { data: serialNo ,refetch: serialRefresh} = useGetSerialNoQuery(undefined);
+  const { data: serialNo ,refetch} = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
 
   const initialValues = {
@@ -92,7 +90,7 @@ const InsertGRNInfo = () => {
       purchaseOrderInfo.length > 0
     ) {
       setPOGrandTotalQuantity(purchaseOrderInfo[0]?.grandTotalQuantity);
-      console.log(purchaseOrderInfo[0]?.grandTotalQuantity);
+
     } else {
       console.log(
         "purchaseOrderInfo is not defined or is not an array or is empty"
@@ -133,7 +131,7 @@ const InsertGRNInfo = () => {
 
   const handleSelectSupplier = (e, setFieldValue) => {
     const matchPoNo = purchaseOrderInfo?.filter((item) => item.poNo === e.poNo);
-    console.log(matchPoNo);
+
     if (matchPoNo[0]?.approveStatus === false || matchPoNo.length === 0) {
       swal({
         title: "Sorry!",
@@ -164,7 +162,7 @@ const InsertGRNInfo = () => {
       pOSingleId: values.pOSingleId,
       supplierId: values.supplierId,
       grnSerialNo: `GRN-${
-        serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+        serialValue?.serialNo === undefined ? "1" : parseInt(serialValue?.serialNo) + 1
       }`,
       supplierPoNo: values.supplierPoNo,
       receiveDate: values.receiveDate,
@@ -197,7 +195,7 @@ const InsertGRNInfo = () => {
     if (id) {
       try {
         const response = await updateGRNInfo(grnSingleData);
-        console.log(response);
+   
         if (response.data.status === 200) {
           swal("Done", "Data Update Successfully", "success");
           navigate("/main-view/grn-list");
@@ -225,7 +223,7 @@ const InsertGRNInfo = () => {
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           await createSerialNo(serialData);
-          serialRefresh()
+          refetch()
           resetForm();
         } else {
           swal(
@@ -245,14 +243,16 @@ const InsertGRNInfo = () => {
   const supplier = supplierInfo?.find(
     (x) => x._id === grnSingleData?.supplierId
   );
-  const supplierName = supplier ? supplier.supplierName : "N/A";
+  const supplierName = supplier ? supplier?.supplierName : "N/A";
 
   return (
     <div
       className=" row mx-4"
       style={{ height: 'calc(98vh - 120px)', overflowY: 'hidden' }}
+
     >
-      <div class="overflow-hidden">
+      {/* <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer> */}
+      <div class={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={initialValues}
@@ -292,13 +292,13 @@ const InsertGRNInfo = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                    console.log(values);
+                 
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
                         <div>
                           <div className="d-flex justify-content-between align-items-center">
                             <h2 className="fs-sm fw-bold"
-                              // style={{ fontSize: "24px", fontWeight: "bold" }}
+                              style={{ fontSize: "24px", fontWeight: "bold" }}
                             >
                               {id
                                 ? "Goods Receive Note (GRN) Form"
@@ -306,13 +306,7 @@ const InsertGRNInfo = () => {
                             </h2>
                             <div>
                               <button
-                                style={{
-                                  backgroundColor: "#E55566",
-                                  outline: "none",
-                                  border: "none",
-                                  color: "white",
-                                  height: "25px",
-                                }}
+                              className="customBackToListButton"
                                 onClick={() => {
                                   navigate("/main-view/grn-list");
                                 }}

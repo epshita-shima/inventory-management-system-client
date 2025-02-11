@@ -9,8 +9,8 @@ import handleCheckboxClick from "../../../Common/ListHeadingModal/Function/handl
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faPenToSquare, faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
-import { downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 
 const SupplierInfoList = ({permission}) => {
@@ -106,8 +106,8 @@ const SupplierInfoList = ({permission}) => {
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
                   onChange={(e) => handleCheckboxClick(row, setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
                 />
               </a>
@@ -193,7 +193,7 @@ const SupplierInfoList = ({permission}) => {
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (supplierInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -218,7 +218,7 @@ const SupplierInfoList = ({permission}) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-supplier-info/${supplierInfoData?._id}`)
+                window.open(`supplier-list/update-supplier-info/${supplierInfoData?._id}`)
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -253,7 +253,6 @@ const SupplierInfoList = ({permission}) => {
                     const response = await deleteSupplierInfo(
                       supplierInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -318,7 +317,7 @@ const SupplierInfoList = ({permission}) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>

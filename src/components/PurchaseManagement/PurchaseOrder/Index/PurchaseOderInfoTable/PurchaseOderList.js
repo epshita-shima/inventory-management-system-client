@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useDeletePurchaseOrderInformationMutation,
+  useGetAllPurchaseOrderApproveInformationQuery,
+  useGetAllPurchaseOrderCashInformationQuery,
   useGetAllPurchaseOrderInformationQuery,
+  useGetAllPurchaseOrderLCInformationQuery,
+  useGetAllPurchaseOrderUnapproveInformationQuery,
 } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import DataTable from "react-data-table-component";
-import ListHeading from "../../../../Common/ListHeading/ListHeading";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,67 +20,42 @@ import {
 import swal from "sweetalert";
 import { useGetAllSupplierInformationQuery } from "../../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
-import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
+import { downloadPOPDF } from "../../../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllGRNInformationQuery } from "../../../../../redux/features/goodsreceivenoteinfo/grninfoApi";
-import './PurchaseOderList.css'
+import "./PurchaseOderList.css";
+import PurchaseHeading from "../../../../Common/ListHeadingModal/PurchaseDataModal/PurchaseHeading";
+
 const PurchaseOderList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
-  const [purchaseInCash, setPurchaseInCash] = useState([]);
-  const [purchaseInLCAtSight, setPurchaseInInLCAtSight] = useState([]);
   const [purchaseOrderList, setPurchaseOrderList] = useState(true);
-  const [purchaseOrderApproveData, setPurchaseOrderApproveData] = useState([]);
-  const [purchaseOrderUnApproveData, setPurchaseOrderUnApproveData] = useState(
-    []
-  );
+
   const {
     data: purchaseInfoData,
-    isPurchaseloading,
-    refetch,
+    isLoading: isPurchaseloading,
+    refetch: purchaseRefetch,
   } = useGetAllPurchaseOrderInformationQuery(undefined);
+  const { data: purchaseCashInfoData, refetch: purchaseCashRefetch } =
+    useGetAllPurchaseOrderCashInformationQuery(undefined);
+  const { data: purchaseLCInfoData, refetch: purchaseLCRefetch } =
+    useGetAllPurchaseOrderLCInformationQuery(undefined);
+  const { data: purchaseApproveInfoData, refetch: purchaseApproveRefetch } =
+    useGetAllPurchaseOrderApproveInformationQuery(undefined);
+  const { data: purchaseUnapproveInfoData, refetch: purchaseUnapproveRefetch } =
+    useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
   const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: rawMaterialItemInfo } =
     useGetAllRMItemInformationQuery(undefined);
+  const { data: grnDataInfo, refetch: grnRefetch } =
+    useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [deletePurchaseOrderInfo] = useDeletePurchaseOrderInformationMutation();
-  const { data: grnDataInfo, refetch: grnRefetch } =
-    useGetAllGRNInformationQuery(undefined);
   const reportTitle = "PURCHASE ORDER";
-
-  useEffect(() => {
-    const matches = purchaseInfoData
-      ?.map((ref) => {
-        return paymentData?.find((payment) => payment._id === ref.paymentId);
-      })
-      .filter((match) => match !== undefined);
-
-    const purchaseMatchedLCData = matches?.reduce((acc, curr) => {
-      if (!acc[curr.paymentType]) {
-        acc[curr.paymentType] = [];
-      }
-      acc[curr.paymentType].push(curr);
-      return acc;
-    }, {});
-    console.log(purchaseMatchedLCData)
-    setPurchaseInCash(purchaseMatchedLCData?.cash);
-    setPurchaseInInLCAtSight(purchaseMatchedLCData?.lcatsight);
-
-    const approvePurchaseData = purchaseInfoData?.filter(
-      (x) => x.approveStatus == true
-    );
-
-    const unApprovePurchaseData = purchaseInfoData?.filter(
-      (x) => x.approveStatus == false
-    );
-
-    setPurchaseOrderApproveData(approvePurchaseData);
-    setPurchaseOrderUnApproveData(unApprovePurchaseData);
-  }, [paymentData, purchaseInfoData]);
 
   const columns = [
     {
@@ -184,7 +162,7 @@ const PurchaseOderList = ({ permission }) => {
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {purchaseInfoData?.approveStatus == true ? (
+            {purchaseInfoData?.approveStatus === true ? (
               <p className="text-success fw-bold">Approve</p>
             ) : (
               <p className="text-danger fw-bold">UnApprove</p>
@@ -209,10 +187,10 @@ const PurchaseOderList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "orange"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
@@ -245,10 +223,10 @@ const PurchaseOderList = ({ permission }) => {
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -257,7 +235,9 @@ const PurchaseOderList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-purchaseinfo/${purchaseInfoData?._id}`);
+                window.open(
+                  `po-list/update-purchaseinfo/${purchaseInfoData?._id}`
+                );
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -266,7 +246,7 @@ const PurchaseOderList = ({ permission }) => {
             ""
           )}
 
-          {permission?.isRemoved ? (
+          {permission?.isRemoved && (
             <a
               target="_blank"
               className="action-icon "
@@ -282,9 +262,9 @@ const PurchaseOderList = ({ permission }) => {
               }}
               onClick={() => {
                 const matchData = grnDataInfo.find(
-                  (item) => item.pOSingleId == purchaseInfoData._id
+                  (item) => item.pOSingleId === purchaseInfoData._id
                 );
-                if(matchData && matchData.length !==0) {
+                if (matchData && matchData.length !== 0) {
                   swal(
                     "Can not Delete!",
                     "Because already received the goods.",
@@ -302,7 +282,6 @@ const PurchaseOderList = ({ permission }) => {
                       const response = await deletePurchaseOrderInfo(
                         purchaseInfoData?._id
                       ).unwrap();
-                      console.log(response);
                       if (response.status === 200) {
                         swal(
                           "Deleted!",
@@ -327,8 +306,6 @@ const PurchaseOderList = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
         </div>
       ),
@@ -372,14 +349,18 @@ const PurchaseOderList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div>
           <FontAwesomeIcon
             style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
             icon={faRefresh}
             onClick={() => {
-              refetch();
+              purchaseRefetch();
               grnRefetch();
+              purchaseCashRefetch();
+              purchaseLCRefetch();
+              purchaseApproveRefetch();
+              purchaseUnapproveRefetch();
             }}
           ></FontAwesomeIcon>
           &nbsp;
@@ -394,43 +375,42 @@ const PurchaseOderList = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, grnRefetch,refetch]);
-
-  if (isPurchaseloading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <button
-          class="btn"
-          style={{ backgroundColor: "#2DDC1B", color: "white" }}
-          type="button"
-          disabled
-        >
-          <span
-            class="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Loading...
-        </button>
-      </div>
-    );
-  }
+  }, [
+    filterText,
+    resetPaginationToggle,
+    grnRefetch,
+    purchaseRefetch,
+    purchaseCashRefetch,
+    purchaseLCRefetch,
+    purchaseApproveRefetch,
+    purchaseUnapproveRefetch,
+  ]);
 
   return (
-    <div className="row px-5 mx-4"
-     style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
-      <ListHeading
-        purchaseInCash={purchaseInCash}
-        purchaseInLCAtSight={purchaseInLCAtSight}
-        purchaseOrderApproveData={purchaseOrderApproveData}
-        purchaseOrderUnApproveData={purchaseOrderUnApproveData}
+    <div
+      className="row px-5 mx-4"
+      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+    >
+      <PurchaseHeading
+        permission={permission}
+        purchaseInCash={purchaseCashInfoData}
+        purchaseInLCAtSight={purchaseLCInfoData}
+        purchaseOrderApproveData={purchaseApproveInfoData}
+        purchaseOrderUnApproveData={purchaseUnapproveInfoData}
         purchaseInfoData={purchaseInfoData}
         purchaseOrderList={purchaseOrderList}
         setPurchaseOrderList={setPurchaseOrderList}
-      ></ListHeading>
+        isLoading={isPurchaseloading}
+        supplierInfo={supplierInfo}
+        rawMaterialItemInfo={rawMaterialItemInfo}
+        bankInformation={bankInformation}
+        paymentData={paymentData}
+        companyinfo={companyinfo}
+        reportTitle={reportTitle}
+      ></PurchaseHeading>
       <div
         className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
-        // style={{ height: 'calc(90vh - 120px)', overflowY: 'scroll' }}
+        style={{ display: isPurchaseloading ? "none" : "block" }}
       >
         <div className="shadow-lg">
           <DataTable

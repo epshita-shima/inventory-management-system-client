@@ -15,18 +15,18 @@
 
 @media (min-width: 769px) and (max-width: 1023px) {
   .podata-main-view  {
-    height: calc(36vh - 120px) !important; /* Default height for large screens */
+    height: calc(60vh - 120px) !important; /* Default height for large screens */
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1366px){
   .podata-main-view  {
-    height: calc(50vh - 120px) !important; 
+    height: calc(75vh - 120px) !important; 
   }
 }
 
 @media (min-width: 1367px) {
   .podata-main-view  {
-    height: calc(60vh - 120px) !important; /* Default height for large screens */
+    height: calc(80vh - 120px) !important; /* Default height for large screens */
   }
 }

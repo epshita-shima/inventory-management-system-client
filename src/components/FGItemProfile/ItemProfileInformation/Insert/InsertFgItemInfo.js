@@ -16,22 +16,21 @@ import InsertItemSizeInfoModal from "../../../SizeInformation/Insert/InsertItemS
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import InsertUnitInfoModal from "./../../../UnitInformation/Insert/InsertUnitInfoModal";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/iteminfoApi";
+import { useInsertItemInformationMutation } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useNavigate } from "react-router-dom";
+import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../../buttonStyle/style.css';
+
 const InsertFgItemInfo = () => {
   const ArrayHelperRef = useRef();
   const [startDate, setStartDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
-  // const [selectedSizeValue, setSelectedSizeValue] = useState(null);
-  // const [selectedUnitValue, setSelectedUnitValue] = useState(null);
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
-  const [insertIteminfo] = useInsertItemInformationMutation();
+  const [insertIteminfo,{isLoading}] = useInsertItemInformationMutation();
   const navigate = useNavigate();
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const itemSizeConvertSelectOption = (options) => {
     let result = [];
@@ -67,7 +66,7 @@ const InsertFgItemInfo = () => {
         unitId: "",
         openingStock: "",
         itemStatus: true,
-        productionQtyPerBatch: '',
+        productionQtyPerBatch: "",
         openingDate: startDate,
         ladgerApproveStatus: false,
         ladgerApproveDate: null,
@@ -86,7 +85,7 @@ const InsertFgItemInfo = () => {
   };
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
-    console.log(values.detailsData);
+
     resetForm();
     try {
       const response = await insertIteminfo(values.detailsData);
@@ -100,7 +99,7 @@ const InsertFgItemInfo = () => {
                 sizeId: "",
                 unitId: "",
                 openingStock: "",
-                productionQtyPerBatch: ""
+                productionQtyPerBatch: "",
               },
             ],
           },
@@ -117,7 +116,7 @@ const InsertFgItemInfo = () => {
       swal("Relax!", "An problem occurred while creating the data", "error");
     }
   };
-  
+
   return (
     <div
       className=" row px-4 mx-4"
@@ -130,23 +129,13 @@ const InsertFgItemInfo = () => {
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
+             
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
                   letterSpacing: ".5px",
+                  fontSize:'20px'
                 }}
               >
                 Create Finish Goods Item Info
@@ -154,13 +143,7 @@ const InsertFgItemInfo = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+              className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/finish-goods-item-list");
                 }}
@@ -182,7 +165,7 @@ const InsertFgItemInfo = () => {
                     sizeId: Yup.string().required("Required"),
                     unitId: Yup.string().required("Required"),
                     openingStock: Yup.string().required("Required"),
-                    productionQtyPerBatch: Yup.string().required("Required")
+                    productionQtyPerBatch: Yup.string().required("Required"),
                   })
                 ),
               })}
@@ -212,7 +195,7 @@ const InsertFgItemInfo = () => {
                       <label htmlFor="">Opening Stock Date</label>
                       <DatePicker
                         dateFormat="y-MM-dd"
-                        className="text-center custom-datepicker ms-2"
+                        className="text-center custom-datepicker-fgProduction ms-2"
                         //   value={isEdit ? updateOpeningStore?.OpeningDate : startDate}
                         calendarClassName="custom-calendar"
                         selected={startDate}
@@ -245,9 +228,9 @@ const InsertFgItemInfo = () => {
                           borderRadius: "5px",
                           width: "100px",
                         }}
-                        disabled={!(isValid && dirty)}
+                        disabled={!(isValid && dirty) || isLoading }
                       >
-                        Save
+                      {isLoading ? "Saving" : "Save"}  
                       </button>
 
                       <div
@@ -262,7 +245,6 @@ const InsertFgItemInfo = () => {
                           marginLeft: "5px",
                         }}
                         onClick={() => {
-                          console.log("ArrayHelperRef ");
                           ArrayHelperRef.current.push({
                             itemName: "",
                             sizeId: "",
@@ -270,7 +252,7 @@ const InsertFgItemInfo = () => {
                             openingStock: "",
                             openingDate: startDate,
                             itemStatus: true,
-                            productionQtyPerBatch: '',
+                            productionQtyPerBatch: "",
                             ladgerApproveStatus: false,
                             ladgerApproveDate: null,
                             vocuherNo: null,
@@ -294,70 +276,62 @@ const InsertFgItemInfo = () => {
                       const details = values.detailsData;
 
                       return (
-                        <div
-                          className=" flex-1 items-center d-flex-nowrap py-2"
-                        // style={{height: "calc(75vh - 120px)", overflowY: "auto" }}
-                        >
-                          <div class="container-fluid ">
-                            <div class="row justify-content-center">
-                              <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-                                <div
-                                  class="table-responsive table-responsive-custom"
+                        <div class="container-fluid ">
+                          <div class="row justify-content-center">
+                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                              <div class="table-responsive table-responsive-custom">
+                                <table className="table w-full table-bordered">
+                                  <thead className="w-100">
+                                    <tr>
+                                      <th className="bg-white text-center align-middle  ">
+                                        Sl
+                                      </th>
 
-                                >
-                                  <table className="table w-full table-bordered">
-                                    <thead className="w-100">
-                                      <tr>
-                                        <th className="bg-white text-center align-middle  ">
-                                          Sl
-                                        </th>
+                                      <th className="bg-white text-center align-middle ">
+                                        Item Name
+                                        <span className="text-danger fw-bold fs-2">
+                                          *
+                                        </span>
+                                      </th>
+                                      <th className="bg-white text-center align-middle ">
+                                        Size Info
+                                        <span className="text-danger fw-bold fs-2">
+                                          *
+                                        </span>
+                                      </th>
+                                      <th className="bg-white text-center align-middle ">
+                                        Unit
+                                        <span className="text-danger fw-bold fs-2">
+                                          *
+                                        </span>
+                                      </th>
+                                      <th className="bg-white text-center align-middle ">
+                                        Opening Stock
+                                        <span className="text-danger fw-bold fs-2">
+                                          *
+                                        </span>
+                                      </th>
 
-                                        <th className="bg-white text-center align-middle ">
-                                          Item Name
-                                          <span className="text-danger fw-bold fs-2">
-                                            *
-                                          </span>
-                                        </th>
-                                        <th className="bg-white text-center align-middle ">
-                                          Size Info
-                                          <span className="text-danger fw-bold fs-2">
-                                            *
-                                          </span>
-                                        </th>
-                                        <th className="bg-white text-center align-middle ">
-                                          Unit
-                                          <span className="text-danger fw-bold fs-2">
-                                            *
-                                          </span>
-                                        </th>
-                                        <th className="bg-white text-center align-middle ">
-                                          Opening Stock
-                                          <span className="text-danger fw-bold fs-2">
-                                            *
-                                          </span>
-                                        </th>
-
-                                        <th className="bg-white text-center align-middle ">
-                                          Production Qty(Per Batch)
-                                          <span className="text-danger fw-bold fs-2">
-                                            *
-                                          </span>
-                                        </th>
-                                        {/* <th className="bg-white text-center align-middle ">
+                                      <th className="bg-white text-center align-middle ">
+                                        Production Qty(Per Batch)
+                                        <span className="text-danger fw-bold fs-2">
+                                          *
+                                        </span>
+                                      </th>
+                                      {/* <th className="bg-white text-center align-middle ">
                                   Item Status
                                   <span className="text-danger fw-bold fs-2">
                                     *
                                   </span>
                                 </th> */}
-                                        <th className="bg-white text-center align-middle ">
-                                          Action
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {details && details.length > 0
-                                        ? details.map((detail, index) => {
-                                          console.log(detail.sizeId);
+                                      <th className="bg-white text-center align-middle ">
+                                        Action
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {details && details.length > 0
+                                      ? details.map((detail, index) => {
                                           return (
                                             <tr key={index}>
                                               <td className="text-center align-middle">
@@ -374,9 +348,9 @@ const InsertFgItemInfo = () => {
                                                     border: "1px solid #2DDC1B",
                                                     padding: "4px",
                                                     width: "95%",
-                                                    height: '38px',
+                                                    height: "38px",
                                                     borderRadius: "5px",
-                                                    textAlign: 'center'
+                                                    textAlign: "center",
                                                   }}
                                                   onClick={(e) => {
                                                     setFieldValue(
@@ -392,8 +366,9 @@ const InsertFgItemInfo = () => {
                                                     ?.itemName && (
                                                     <div className="text-danger">
                                                       {
-                                                        errors.detailsData[index]
-                                                          .itemName
+                                                        errors.detailsData[
+                                                          index
+                                                        ].itemName
                                                       }
                                                     </div>
                                                   )}
@@ -414,13 +389,16 @@ const InsertFgItemInfo = () => {
                                                         label: "Select Size",
                                                         value: 0,
                                                       }}
-                                                      // value={itemSizeConvertedOptions.find(
-                                                      //   (x) =>
-                                                      //     x.value == values.detailsData[index].sizeId
-                                                      // )}
-                                                      value={itemSizeConvertedOptions.filter(function (option) {
-                                                        return option.value === values.detailsData[index].sizeId;
-                                                      })}
+                                                      value={itemSizeConvertedOptions.filter(
+                                                        function (option) {
+                                                          return (
+                                                            option.value ===
+                                                            values.detailsData[
+                                                              index
+                                                            ].sizeId
+                                                          );
+                                                        }
+                                                      )}
                                                       styles={{
                                                         control: (
                                                           baseStyles,
@@ -428,10 +406,12 @@ const InsertFgItemInfo = () => {
                                                         ) => ({
                                                           ...baseStyles,
                                                           width: "100%",
-                                                          borderColor: state.isFocused
-                                                            ? "#fff"
-                                                            : "#fff",
-                                                          border: "1px solid #2DDC1B",
+                                                          borderColor:
+                                                            state.isFocused
+                                                              ? "#fff"
+                                                              : "#fff",
+                                                          border:
+                                                            "1px solid #2DDC1B",
                                                         }),
                                                         menu: (provided) => ({
                                                           ...provided,
@@ -449,20 +429,25 @@ const InsertFgItemInfo = () => {
                                                         },
                                                       })}
                                                       onChange={(e) => {
-                                                        handleChange(setFieldValue,
+                                                        handleChange(
+                                                          setFieldValue,
                                                           index,
-                                                          e.value)
+                                                          e.value
+                                                        );
                                                       }}
                                                     ></Select>
 
-                                                    {touched.detailsData?.[index]
-                                                      ?.sizeId &&
-                                                      errors.detailsData?.[index]
-                                                        ?.sizeId && (
+                                                    {touched.detailsData?.[
+                                                      index
+                                                    ]?.sizeId &&
+                                                      errors.detailsData?.[
+                                                        index
+                                                      ]?.sizeId && (
                                                         <div className="text-danger">
                                                           {
-                                                            errors.detailsData[index]
-                                                              .sizeId
+                                                            errors.detailsData[
+                                                              index
+                                                            ].sizeId
                                                           }
                                                         </div>
                                                       )}
@@ -499,8 +484,9 @@ const InsertFgItemInfo = () => {
                                                       value={itemUnitConvertedOptions.filter(
                                                         (x) =>
                                                           x.value ==
-                                                          values.detailsData[index]
-                                                            .unitId
+                                                          values.detailsData[
+                                                            index
+                                                          ].unitId
                                                       )}
                                                       styles={{
                                                         control: (
@@ -508,10 +494,12 @@ const InsertFgItemInfo = () => {
                                                           state
                                                         ) => ({
                                                           ...baseStyles,
-                                                          borderColor: state.isFocused
-                                                            ? "#fff"
-                                                            : "#fff",
-                                                          border: "1px solid #2DDC1B",
+                                                          borderColor:
+                                                            state.isFocused
+                                                              ? "#fff"
+                                                              : "#fff",
+                                                          border:
+                                                            "1px solid #2DDC1B",
                                                         }),
                                                         menu: (provided) => ({
                                                           ...provided,
@@ -559,9 +547,9 @@ const InsertFgItemInfo = () => {
                                                     border: "1px solid #2DDC1B",
                                                     padding: "4px",
                                                     width: "95%",
-                                                    height: '38px',
+                                                    height: "38px",
                                                     borderRadius: "5px",
-                                                    textAlign: 'center'
+                                                    textAlign: "center",
                                                   }}
                                                   onClick={(e) => {
                                                     setFieldValue(
@@ -578,21 +566,21 @@ const InsertFgItemInfo = () => {
                                                 </span>
                                               </td>
 
-
-
                                               <td className="text-center align-middle">
                                                 <Field
                                                   type="text"
                                                   name={`detailsData.${index}.productionQtyPerBatch`}
                                                   placeholder="production qty per batch"
-                                                  value={detail?.productionQtyPerBatch}
+                                                  value={
+                                                    detail?.productionQtyPerBatch
+                                                  }
                                                   style={{
                                                     border: "1px solid #2DDC1B",
                                                     padding: "4px",
                                                     width: "95%",
-                                                    height: '38px',
+                                                    height: "38px",
                                                     borderRadius: "5px",
-                                                    textAlign: 'center'
+                                                    textAlign: "center",
                                                   }}
                                                   onClick={(e) => {
                                                     setFieldValue(
@@ -629,7 +617,10 @@ const InsertFgItemInfo = () => {
                                                   type="button"
                                                   className=" border-0 rounded  bg-transparent"
                                                   onClick={() => {
-                                                    arrayHelpers.remove(index, 1);
+                                                    arrayHelpers.remove(
+                                                      index,
+                                                      1
+                                                    );
                                                   }}
                                                 >
                                                   <FontAwesomeIcon
@@ -641,14 +632,12 @@ const InsertFgItemInfo = () => {
                                             </tr>
                                           );
                                         })
-                                        : null}
-                                    </tbody>
-                                  </table>
-                                </div>
+                                      : null}
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
                           </div>
-
                         </div>
                       );
                     }}

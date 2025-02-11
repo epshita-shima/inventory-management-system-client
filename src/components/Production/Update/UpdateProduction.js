@@ -14,13 +14,12 @@ const UpdateProduction = ({
   touched,
   errors,
 }) => {
-  console.log(updateProductionData)
+
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
-        (detail) => detail.itemId == itemId
+        (detail) => detail.itemId === itemId
       );
-      console.log(itemData);
       if (itemData) {
         return itemData.cftPerKg;
       }
@@ -28,8 +27,9 @@ const UpdateProduction = ({
   }
 
   return (
-    <div className="">
-      <table className="table table-bordered">
+    <div className="flex-1 items-center d-flex-nowrap insertbankinfo-responsive-custom">
+      <div className=" table-responsive">
+      <table className="table table-bordered ">
         <thead className="w-100">
           <tr>
             <th className="bg-white text-center  align-items-center">Sl</th>
@@ -115,10 +115,10 @@ const UpdateProduction = ({
                             })}
                             onChange={(e) => {
                               if (
-                                updateProductionData?.receipeQtyRatio == 1000
+                                updateProductionData?.receipeQtyRatio === 1000
                               ) {
                                 const receipeData = receipeOptions.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label
@@ -146,21 +146,21 @@ const UpdateProduction = ({
                                   };
                                 });
                               } else if (
-                                updateProductionData?.receipeQtyRatio == 1000
+                                updateProductionData?.receipeQtyRatio === 1000
                               ) {
                                 const receipeData = receipeOptionsLessQty.find(
-                                  (x) => x.value == e.value
+                                  (x) => x.value === e.value
                                 );
                                 const labelData = receipeData
                                   ? receipeData.label
                                   : null;
-                                console.log(labelData);
+                                
                                 const findCFTPerKG = getCftPerKgByItemId(
                                   e.value
                                 );
-                                console.log(findCFTPerKG);
+                               
                                 const calculateAsPerRatio =
-                                  (labelData / findCFTPerKG == undefined
+                                  (labelData / findCFTPerKG === undefined
                                     ? 0
                                     : findCFTPerKG) *
                                   updateProductionData?.totalBatch;
@@ -421,6 +421,7 @@ const UpdateProduction = ({
             : null}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };

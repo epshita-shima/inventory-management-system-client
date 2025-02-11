@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import {
+  useGetAllUserQuery,
   useUpdateUserPasswordMutation,
 } from "../../redux/features/user/userApi";
-import { useNavigate } from 'react-router-dom';
-import './ChangePasswordModal.css'
+import { useNavigate, useParams } from "react-router-dom";
+import swal from "sweetalert";
+import "./ChangePasswordModal.css";
+
 const ChangePasswordModal = ({
   menuListData,
   singleUserData,
@@ -17,17 +20,25 @@ const ChangePasswordModal = ({
     confirmPassword: "",
   });
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [updateUserPassword] = useUpdateUserPasswordMutation();
   const queryParams = new URLSearchParams(window.location.search);
-  const reset = queryParams.get('reset');
-  const change = queryParams.get('change');
-  
-  console.log('Reset:', reset); // true
-  console.log('Change:', change);
+  const reset = queryParams.get("reset");
+  const change = queryParams.get("change");
+  const { data: users } = useGetAllUserQuery(undefined);
+
+  const userIdForChangePassowrd = queryParams.get("userId");
+
   useEffect(() => {
-    setSingleUserData(menuListData);
-  }, [setSingleUserData]);
+    const filteredUser = users?.filter(
+      (user) => user._id == userIdForChangePassowrd
+    );
+    if (!userIdForChangePassowrd) {
+      setSingleUserData(menuListData);
+    } else {
+      setSingleUserData(filteredUser);
+    }
+  }, [setSingleUserData, userIdForChangePassowrd, users]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;
@@ -37,18 +48,60 @@ const ChangePasswordModal = ({
       [name]: value,
     });
 
-    setSingleUserData((prev) => {
-      const temp_data = prev;
-      console.log(temp_data);
-      temp_data[0]["password"] = value;
-      return temp_data;
-    });
+    if (!userIdForChangePassowrd) {
+      setSingleUserData((prev) => {
+        const temp_data = prev;
+        temp_data["hashPassword"] = value;
+        temp_data["password"] = value;
+        return temp_data;
+      });
+    } else {
+      setSingleUserData((prev) => {
+        const temp_data = [...prev];
+        if (temp_data[0]) {
+          temp_data[0] = { ...temp_data[0], hashPassword: value };
+          temp_data[0] = { ...temp_data[0], password: value };
+        }
+        return temp_data;
+      });
+    }
   };
 
-  const handleSaveChangePassword = (e) => {
+  const handleSaveChangePassword = async (e) => {
     e.preventDefault();
-    updateUserPassword(singleUserData[0]);
-    console.log(JSON.stringify(singleUserData));
+    try {
+
+      if(!userIdForChangePassowrd){
+        const response = await updateUserPassword(singleUserData);
+        if (response.data.status === "success") {
+          swal("Done", `${response.data.message}`, "success");
+          navigate("/");
+          localStorage.clear()
+        } else {
+          swal(
+            "Not Possible!",
+            "An problem occurred while updating the data",
+            "error"
+          );
+        }
+      }
+      else{
+        const response = await updateUserPassword(singleUserData[0]);
+        if (response.data.status === "success") {
+          swal("Done", `${response.data.message}`, "success");
+          navigate("/main-view/user-list");
+        } else {
+          swal(
+            "Not Possible!",
+            "An problem occurred while updating the data",
+            "error"
+          );
+        }
+      }
+  
+    } catch (error) {
+      console.error("Error updating hashPassword:", error); // Handle any errors
+    }
   };
 
   return (
@@ -71,8 +124,8 @@ const ChangePasswordModal = ({
             fontWeight: "bold",
           }}
         >
-          {reset==='true' ? "Reset Password" : ""}
-          {change==='true' ? "Change Password" : ""}
+          {reset === "true" ? "Reset Password" : ""}
+          {change === "true" ? "Change Password" : ""}
         </h4>
         <div
           style={{
@@ -87,9 +140,9 @@ const ChangePasswordModal = ({
                   New Password
                 </Form.Label>
                 <Form.Control
-                  type="password"
+                  type="hashPassword"
                   name="newPassword"
-                  placeholder="Enter password"
+                  placeholder="Enter hashPassword"
                   onChange={(e) => handleChangePassword(e)}
                 />
               </Form.Group>
@@ -99,7 +152,7 @@ const ChangePasswordModal = ({
                   Confirm Password
                 </Form.Label>
                 <Form.Control
-                  type="password"
+                  type="hashPassword"
                   name="confirmPassword"
                   placeholder="Password"
                   onChange={(e) => handleChangePassword(e)}
@@ -119,8 +172,8 @@ const ChangePasswordModal = ({
                     fontWeight: "bold",
                     fontSize: "15px",
                   }}
-                  onClick={()=>{
-                    navigate('/main-view//main-view/user-list')
+                  onClick={() => {
+                    navigate("/main-view/user-list");
                   }}
                 >
                   Cancel
@@ -129,7 +182,11 @@ const ChangePasswordModal = ({
                   variant="primary"
                   type="submit"
                   className="btn-disabled"
-                  disabled={formData.newPassword !== formData.confirmPassword || formData.newPassword =='' || formData.confirmPassword ==''}
+                  disabled={
+                    formData.newPassword !== formData.confirmPassword ||
+                    formData.newPassword === "" ||
+                    formData.confirmPassword === ""
+                  }
                   style={{
                     backgroundColor: "#2DDC1B",
                     border: "none",

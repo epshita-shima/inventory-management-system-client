@@ -6,7 +6,6 @@ import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
 import PaymnetModeList from './PaymentModeTable/PaymnetModeList';
 
 const PaymentModeDataList = () => {
-    const clickhandler = (name) => console.log("delete", name);
   const { data: user } = useGetAllUserQuery(undefined);
  
   const [permission, setPermission] = useState();
@@ -52,7 +51,7 @@ const PaymentModeDataList = () => {
         permidionData,
         userIdFromSession
       );
-      console.log(permission);
+  
       setPermission(permission);
     } else {
       navigate("/");

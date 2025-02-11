@@ -7,7 +7,7 @@ import {
   finishGoodsWithSizeItemDropdown,
   rawMaterialItemDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
-import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/iteminfoApi";
+import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import "./ProductionDatePicker.css";
 import swal from "sweetalert";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
@@ -25,9 +25,12 @@ const ProductionSingleInfo = ({
   updateProductionData,
   setUpdateProductionData,
   makebyUser,
+  proStartDate,
+  setProStartDate,
+  endDate,
+  setEndDate
 }) => {
-  const [proStartDate, setProStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
   const finishGoodsOptions = finishGoodsWithSizeItemDropdown(
@@ -43,7 +46,7 @@ const ProductionSingleInfo = ({
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
       const itemData = entry.detailsData.find(
-        (detail) => detail.itemId == itemId
+        (detail) => detail.itemId === itemId
       );
       if (itemData) {
         return itemData.cftPerKg;
@@ -115,7 +118,7 @@ const ProductionSingleInfo = ({
     const removeDashFromDate = new Date(startDates).toLocaleDateString("en-CA");
     const removeDash = removeDashFromDate.replace(/-/g, "");
     const makeBatchNo = `MEB-${removeDash}-${
-      serialValue?.serialNo === undefined ? "1" : serialValue?.serialNo
+      serialValue?.serialNo === undefined ? "1" :parseInt(serialValue?.serialNo) + 1
     }`;
     setFieldValue(
       "productionDate",
@@ -137,7 +140,6 @@ const ProductionSingleInfo = ({
             selected={startDates}
             required
             onChange={(startDate) => {
-              console.log(startDate);
               if (id) {
                 const getBatchNo = updateProductionData?.batchNo;
                 const parts = getBatchNo.split("-");
@@ -162,7 +164,7 @@ const ProductionSingleInfo = ({
                 const makeBatchNo = `MEB-${removeDash}-${
                   serialValue?.serialNo === undefined
                     ? "1"
-                    : serialValue?.serialNo
+                    : parseInt(serialValue?.serialNo) + 1
                 }`;
 
                 setStartDates(startDate.toLocaleDateString("en-CA"));
@@ -278,19 +280,14 @@ const ProductionSingleInfo = ({
               const expectQty =
                 e.target.value *
                 updateProductionData?.expectedProductionQtyPerBatch;
-              console.log(expectQty);
               const excessOrLess =
                 updateProductionData?.productionQty - expectQty;
-              console.log(
-                updateProductionData?.productionQty,
-                expectQty,
-                excessOrLess
-              );
+       
               const calculateExcessOrLess = Math.abs(
                 updateProductionData?.productionQty - expectQty
               );
               // setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
-              if (excessOrLess == 0) {
+              if (excessOrLess === 0) {
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
                   totalBatch: e.target.value,
@@ -323,14 +320,11 @@ const ProductionSingleInfo = ({
                 const findCFTPerKG = getCftPerKgByItemId(detail.itemId);
                 const calculateAsPerRationBasedTotalBatch =
                   (detail.receipe / findCFTPerKG) * e.target.value;
-                console.log(
-                  detail.receipe , findCFTPerKG ,e.target.value,detail.itemId
-                );
+             
                 const value1 = parseFloat(detail.materialUsed);
                 const value2 = parseFloat(calculateAsPerRationBasedTotalBatch);
                 const calculateExcessOrLess = value1 - value2;
-                console.log(calculateExcessOrLess);
-                if (calculateExcessOrLess == 0) {
+                if (calculateExcessOrLess === 0) {
                   setUpdateProductionData((prev) => {
                     const temp_details = [...prev.detailsData];
                     const newDetail = { ...temp_details[index] };
@@ -409,12 +403,11 @@ const ProductionSingleInfo = ({
               setFieldValue("totalBatch", e.target.value);
               setFieldValue("expectedProductionQty", expectQty);
               const excessOrLess = values.productionQty - expectQty;
-              console.log(values.productionQty, expectQty, excessOrLess);
               const calculateExcessOrLess = Math.abs(
                 values.productionQty - expectQty
               );
               setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
-              if (excessOrLess == 0) {
+              if (excessOrLess === 0) {
                 setFieldValue("productionStatus", "No Change");
               } else if (excessOrLess < 0) {
                 setFieldValue("productionStatus", "Less");
@@ -431,8 +424,7 @@ const ProductionSingleInfo = ({
                     calculateAsPerRationBasedTotalBatch
                   );
                   const calculateExcessOrLess = value1 - value2;
-                  console.log(calculateExcessOrLess);
-                  if (calculateExcessOrLess == 0) {
+                  if (calculateExcessOrLess === 0) {
                     setFieldValue(`detailsData.${index}.less`, 0);
                     setFieldValue(`detailsData.${index}.excess`, 0);
                     setFieldValue(
@@ -520,6 +512,7 @@ const ProductionSingleInfo = ({
                 },
               })}
               onChange={(e) => {
+             
                 if (id) {
                   const expectQty =
                     updateProductionData?.totalBatch * e.productionQtyPerBatch;
@@ -536,7 +529,6 @@ const ProductionSingleInfo = ({
                     updateDate: new Date(),
                   }));
                 } else {
-                  console.log(e);
                   if (e.productionQtyPerBatch) {
                     const expectQty =
                       values.totalBatch * e.productionQtyPerBatch;
@@ -615,7 +607,7 @@ const ProductionSingleInfo = ({
               );
               setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
               setFieldValue("productionQty", e.target.value);
-              if (excessOrLess == 0) {
+              if (excessOrLess === 0) {
                 setFieldValue("productionStatus", "No Change");
               } else if (excessOrLess < 0) {
                 setFieldValue("productionStatus", "Less");

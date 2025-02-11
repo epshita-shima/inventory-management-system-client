@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const bankInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllBankInformation: builder.query({
-        query: () => "/bankinfo",
+        query: () => "/api/v1/bankinfo",
         providesTags: ["insertbankinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const bankInfoApi= api.injectEndpoints({
       
     insertBankInformation: builder.mutation({
       query: (payload) => ({
-        url: "/bankinfo",
+        url: "/api/v1/bankinfo",
         method: "POST",
         body: payload,
       }),

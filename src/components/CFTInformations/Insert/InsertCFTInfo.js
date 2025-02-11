@@ -20,6 +20,9 @@ import {
 import "./InsertCFTInfo.css";
 import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import '../../../buttonStyle/style.css'
+
 const InsertCFTInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
@@ -29,9 +32,7 @@ const InsertCFTInfo = () => {
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [insertCFTInfos, { isLoading }] = useInsertCFTInfoMutation();
   const { data: allCFTInfoData } = useGetAllCFTInfosQuery(undefined);
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
 
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   const initialValues = {
@@ -72,14 +73,10 @@ const InsertCFTInfo = () => {
 
     try {
       const matchData = allCFTInfoData.find((x) => x.isActive == true);
-      console.log(matchData);
       if (matchData) {
         swal("Not Possible!", "Plase Close the Active CFT", "error");
       } else if (matchData == undefined) {
-        console.log("test error");
         const response = await insertCFTInfos(payload);
-        console.log(response);
-        console.log(response.data.status);
 
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
@@ -109,37 +106,20 @@ const InsertCFTInfo = () => {
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
-              <FontAwesomeIcon
-                style={{
-                  fontSize: "14px",
-                  color: "#000",
-                  // backgroundColor: "#00B987",
-                  backgroundColor: "#2DDC1B",
-                  borderRadius: "50px",
-                  padding: "3px",
-                }}
-                icon={faPlus}
-              />
-              &nbsp;
               <span
                 style={{
                   color: "#000",
                   fontWeight: "700",
                   letterSpacing: ".5px",
+                  fontSize:'20px'
                 }}
               >
-                Create Finish Goods Item Info
+                Create CFT Info
               </span>
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+               className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/finish-goods-item-list");
                 }}
@@ -259,7 +239,6 @@ const InsertCFTInfo = () => {
                     render={(arrayHelpers) => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
-                      console.log(details);
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap py-2"
@@ -340,32 +319,24 @@ const InsertCFTInfo = () => {
                                                           }
                                                         )}
                                                         styles={{
-                                                          control: (
-                                                            baseStyles,
-                                                            state
-                                                          ) => ({
+                                                          control: (baseStyles, state) => ({
                                                             ...baseStyles,
                                                             width: "100%",
-                                                            borderColor:
-                                                              state.isFocused
-                                                                ? "#fff"
-                                                                : "#fff",
-                                                            border:
-                                                              "1px solid #2DDC1B",
+                                                            borderColor: state.isFocused ? "#fff" : "#fff",
+                                                            border: "1px solid #2DDC1B",
                                                           }),
                                                           menu: (provided) => ({
                                                             ...provided,
                                                             zIndex: 9999,
-                                                            // height:'200px',
-                                                            //  overflowY:'scroll'
+                                                            height: "auto",
+                                                            // overflowY: "scroll",
                                                           }),
                                                         }}
                                                         theme={(theme) => ({
                                                           ...theme,
                                                           colors: {
                                                             ...theme.colors,
-                                                            primary25:
-                                                              "#B8FEB3",
+                                                            primary25: "#B8FEB3",
                                                             primary: "#2DDC1B",
                                                           },
                                                         })}

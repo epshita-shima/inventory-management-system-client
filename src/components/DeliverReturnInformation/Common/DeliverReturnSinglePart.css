@@ -1,0 +1,95 @@
+
+.total-qty-input{
+  border: 1px solid #2DDC1B;
+  padding: 5px;
+  width: 60%;
+  border-radius: 5px;
+  height: 38px;
+  text-align: center;
+  margin-left: 5px;
+}
+.custom-datepicker-delivered-return {
+  border: 1px solid #2ddc1b;
+  padding: 5px;
+  border-radius: 5px;
+  outline: #2ddc1b;
+  width: 320px;
+  height: 38px;
+}
+.custom-datepicker-update {
+  border: 1px solid #2ddc1b;
+  padding: 8px;
+  border-radius: 5px;
+  outline: #2ddc1b;
+  width: 300px;
+}
+.custom-calendar .react-datepicker__current-month,
+.custom-calendar .react-datepicker__day,
+.custom-calendar .react-datepicker__day-name,
+.custom-calendar .react-datepicker__time-container {
+  font-size: 14px; /* Desired text size */
+}
+
+.custom-calendar .react-datepicker__header {
+  font-size: 18px; /* Change the header text size */
+}
+
+.custom-calendar .react-datepicker__day--selected,
+.custom-calendar .react-datepicker__day--keyboard-selected {
+  font-size: 14px; /* Change the selected day text size */
+}
+.custom-calendar {
+  background-color: #b8feb3;
+  width: 280px;
+}
+.custom-calendar .react-datepicker__month-container {
+  width: 100%; /* Ensure the month container takes the full width */
+}
+.custom-calendar .react-datepicker__header {
+  width: 100%;
+}
+
+.custom-calendar .react-datepicker__day,
+.custom-calendar .react-datepicker__day-name {
+  width: 13.28%; /* Each day takes 1/7th of the width */
+  display: inline-block;
+  text-align: center;
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.insertpo-responsive-custom {
+  overflow-y: auto;
+}
+
+@media (min-width: 333px) and (max-width: 577px) {
+  .custom-datepicker-delivered-return {
+    width: 168px;
+  }
+  .custom-calendar {
+    background-color: #b8feb3;
+    width: 200px;
+  }
+  .custom-calendar .react-datepicker__day,
+  .custom-calendar .react-datepicker__day-name {
+    width: 11.28%;
+  }
+  .custom-calendar .react-datepicker__day--selected,
+  .custom-calendar .react-datepicker__day--keyboard-selected {
+    font-size: 12px;
+  }
+}
+@media (max-width: 568px) { 
+  .total-qty-input {
+    width: 100%;
+  }
+}

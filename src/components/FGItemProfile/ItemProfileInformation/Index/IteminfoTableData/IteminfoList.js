@@ -7,17 +7,18 @@ import { faDownload, faPenToSquare, faRefresh, faTrash } from "@fortawesome/free
 import swal from "sweetalert";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import { useDeleteItemInfoMutation } from "../../../../../redux/features/iteminformation/iteminfoApi";
+import { useDeleteItemInfoMutation } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import ListHeading from "../../../../Common/ListHeading/ListHeading";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
-import { downloadPDF } from "../../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../../ReportProperties/Excel/HandelExcelDownload";
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import './IteminfoList.css'
+import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
-const IteminfoList = ({ permission, finishGoodInItemInfoData ,refetch}) => {
+const IteminfoList = ({ permission, finishGoodInItemInfoData ,isFGItemloading,refetch}) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -37,8 +38,8 @@ const [selectedData, setSelectedData] = useState([]);
   var reportTitle = "All Finish Good Item List";
 
   useEffect(() => {
-    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus==true);
-    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus == false);
+    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus===true);
+    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus === false);
     
     const extractedFieldsForAllData = finishGoodInItemInfoData?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
@@ -55,6 +56,7 @@ const [selectedData, setSelectedData] = useState([]);
     const extractedFields = finishGoodActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
+      
       return{
         openingDate:item.openingDate,
         itemName: item.itemName,
@@ -67,7 +69,8 @@ const [selectedData, setSelectedData] = useState([]);
 
     const extractedInactiveFields = finishGoodInActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
-      const unit = itemUnitInfo?.find((x) => x._id === finishGoodInItemInfoData?.unitId);
+      const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
+
       return{
         openingDate:item.openingDate,
         itemName: item.itemName,
@@ -122,8 +125,8 @@ const [selectedData, setSelectedData] = useState([]);
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
                   onChange={(e) => handleCheckboxClick(row, setSelectedData)} // Assuming handleCheckboxClick is defined elsewhere
                 />
               </a>
@@ -140,6 +143,7 @@ const [selectedData, setSelectedData] = useState([]);
       }
     });
   };
+  
   const columns = [
     {
       name: "Sl.",
@@ -192,7 +196,7 @@ const [selectedData, setSelectedData] = useState([]);
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {finishGoodInItemInfoData?.itemStatus == true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {finishGoodInItemInfoData?.itemStatus === true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
           </a>
         </div>
       ),
@@ -200,7 +204,7 @@ const [selectedData, setSelectedData] = useState([]);
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "150px",
       grow: 2,
       cell: (finishGoodInItemInfoData) => (
         <div className="d-flex justify-content-between align-content-center">
@@ -213,10 +217,10 @@ const [selectedData, setSelectedData] = useState([]);
               title="Update item"
               style={{
                 color: `${
-                  finishGoodInItemInfoData?.items?.length == 0 ? "gray" : "#2DDC1B"
+                  finishGoodInItemInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
                 } `,
                 border: `${
-                  finishGoodInItemInfoData?.items?.length == 0
+                  finishGoodInItemInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid #2DDC1B"
                 }`,
@@ -225,7 +229,7 @@ const [selectedData, setSelectedData] = useState([]);
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-finish-goods-items/${finishGoodInItemInfoData?._id}`);
+                window.open(`finish-goods-item-list/update-finish-goods-items/${finishGoodInItemInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -260,7 +264,6 @@ const [selectedData, setSelectedData] = useState([]);
                     const response = await deleteItemInfo(
                       finishGoodInItemInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -325,7 +328,7 @@ const [selectedData, setSelectedData] = useState([]);
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
       
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
@@ -392,6 +395,7 @@ const [selectedData, setSelectedData] = useState([]);
 
   return (
     <div className="row px-5 mx-4">
+      {/* <LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer> */}
       <ListHeading 
       finishGoodInItemInfoData={finishGoodInItemInfoData}
       finishGoodActiveStatus={finishGoodActiveStatus}

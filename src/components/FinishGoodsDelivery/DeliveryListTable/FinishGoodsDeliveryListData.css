@@ -1,0 +1,8 @@
+.finish-goods-delivery-parameter-width{
+  width:75%
+}
+@media (max-width: 568px) { /* md */
+  .finish-goods-delivery-parameter-width {
+    width: 100%;
+  }
+}

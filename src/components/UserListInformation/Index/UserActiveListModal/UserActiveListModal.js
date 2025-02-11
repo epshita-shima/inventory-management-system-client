@@ -5,8 +5,8 @@ import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useUpdateMultipleUserStatusMutation } from "../../../../redux/features/user/userApi";
 import swal from "sweetalert";
-import { downloadInactivePDF, downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadInactivePDF, downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import './UserActivationModal.css'
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 
@@ -21,12 +21,12 @@ const UserActiveListModal = ({
   extractedInActiveData
 }) => {
   const [selectedData, setSelectedData] = useState([]);
-  const [updateMultipleData, { isLoading, isError }] =
+  const [updateMultipleData, { isLoading }] =
     useUpdateMultipleUserStatusMutation();
 const activeReportTitle="All Active User"
 const inActiveReportTitle="All Inactive User"
   const handleCheckboxClick = (dataItem) => {
-    console.log(dataItem);
+
     setSelectedData((prevSelectedData) => {
       if (prevSelectedData?.includes(dataItem)) {
         // Deselect the data item if it's already selected
@@ -65,7 +65,7 @@ const inActiveReportTitle="All Inactive User"
       console.error("Error updating data:", error);
     }
   };
-console.log(user)
+
   const columns = [
     {
       name: "Sl.",
@@ -89,7 +89,7 @@ console.log(user)
     {
       name: "Status",
       button: true,
-      width: "200px",
+      width: "100px",
       grow: 2,
       cell: (user) => (
         <div className="d-flex justify-content-between align-content-center">

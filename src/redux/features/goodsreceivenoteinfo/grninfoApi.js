@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const grninfoApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllGRNInformation: builder.query({
-      query: () => "/grninfo",
+      query: () => "/api/v1/grninfo",
       providesTags: ["insertgrninfo", "updategrninfo,deletegrninfo"],
       refetchOnReconnect: true,
       refetchOnFocus: true,
@@ -12,7 +12,7 @@ const grninfoApi = api.injectEndpoints({
     getSingleGRNInformation: builder.query({
       query: (id) => {
         if (id) {
-          return `/grninfo/${id}`;
+          return `/api/v1/grninfo/${id}`;
         } else {
           throw new Error("GRN id is required");
         }
@@ -20,7 +20,7 @@ const grninfoApi = api.injectEndpoints({
     }),
     getFilteredGRN: builder.query({
       query: (queryParams) => ({
-        url: 'grninfo/filtered',
+        url: '/api/v1/grninfo/filtered',
         params: queryParams,
         providesTags: ["insertgrninfo", "updategrninfo,deletegrninfo"],
       refetchOnReconnect: true,
@@ -30,7 +30,7 @@ const grninfoApi = api.injectEndpoints({
 
     updateGRNInformation: builder.mutation({
       query: (payload) => ({
-        url: `/grninfo/${payload._id}`,
+        url: `/api/v1/grninfo/${payload._id}`,
         method: "PUT",
         body: payload,
       }),
@@ -43,7 +43,7 @@ const grninfoApi = api.injectEndpoints({
 
     insertGRNInformation: builder.mutation({
       query: (payload) => ({
-        url: "/grninfo",
+        url: "/api/v1/grninfo",
         method: "POST",
         body: payload,
       }),
@@ -56,7 +56,7 @@ const grninfoApi = api.injectEndpoints({
 
     deleteGRNInformation: builder.mutation({
       query: (id) => ({
-        url: `/grninfo/${id}`,
+        url: `/api/v1/grninfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletegrninfo"],

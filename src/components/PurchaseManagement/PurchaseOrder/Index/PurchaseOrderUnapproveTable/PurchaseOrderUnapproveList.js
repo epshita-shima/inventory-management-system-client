@@ -12,10 +12,8 @@ import {
 import { useGetAllSupplierInformationQuery } from "../../../../../redux/features/supplierInformation/supplierInfoApi";
 import { useGetAllPaymentInformationQuery } from "../../../../../redux/features/paymnetinformation/paymentInfoApi";
 import swal from "sweetalert";
-import {
-  useDeletePurchaseOrderInformationMutation
-} from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
-import { downloadPOPDF } from "../../../../ReportProperties/handlePurchaseOrderReport";
+import { useDeletePurchaseOrderInformationMutation } from "../../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
+import { downloadPOPDF } from "../../../../ReportProperties/PDF/handlePurchaseOrderReport";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 import { useGetAllBankInformationQuery } from "../../../../../redux/features/bankinformation/bankInfoAPi";
 import { useGetAllRMItemInformationQuery } from "../../../../../redux/features/iteminformation/rmItemInfoApi";
@@ -30,9 +28,10 @@ const PurchaseOrderUnapproveList = ({
   fromDate,
   toDate,
   refetch,
+  isPurchaseOrderLoading,
 }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  const {data:bankInformation}=useGetAllBankInformationQuery(undefined)
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const { data: rawMaterialItemInfo } =
     useGetAllRMItemInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
@@ -41,7 +40,7 @@ const PurchaseOrderUnapproveList = ({
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
   const reportTitle = "PURCHASE ORDER";
-  const {data:grnDataInfo}=useGetAllGRNInformationQuery(undefined)
+  const { data: grnDataInfo } = useGetAllGRNInformationQuery(undefined);
 
   const columns = [
     {
@@ -107,10 +106,13 @@ const PurchaseOrderUnapproveList = ({
     },
     {
       name: "Total Received Quantity",
-      selector: (purchaseInfoData) =>{
-        const totalReceiveQuantity =grnDataInfo
-        ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
-        .reduce((acc, cur) => acc + parseInt(cur.grandTotalReceivedQuantity, 10), 0);
+      selector: (purchaseInfoData) => {
+        const totalReceiveQuantity = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce(
+            (acc, cur) => acc + parseInt(cur.grandTotalReceivedQuantity, 10),
+            0
+          );
         return totalReceiveQuantity;
       },
       sortable: true,
@@ -120,10 +122,10 @@ const PurchaseOrderUnapproveList = ({
     },
     {
       name: "Total Received Amount",
-      selector: (purchaseInfoData) =>{
-        const totalReceiveQuantity =grnDataInfo
-        ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
-        .reduce((acc, cur) => acc + parseInt(cur.grandTotalAmount, 10), 0);
+      selector: (purchaseInfoData) => {
+        const totalReceiveQuantity = grnDataInfo
+          ?.filter((x) => x.supplierPoNo === purchaseInfoData?.poNo)
+          .reduce((acc, cur) => acc + parseInt(cur.grandTotalAmount, 10), 0);
         return totalReceiveQuantity;
       },
       sortable: true,
@@ -134,7 +136,7 @@ const PurchaseOrderUnapproveList = ({
     {
       name: "Action",
       button: true,
-      width: "200px",
+      width: "120px",
       grow: 2,
       cell: (purchaseFilterUnApproveAllData) => (
         <div className="d-flex justify-content-between align-items-center">
@@ -174,19 +176,26 @@ const PurchaseOrderUnapproveList = ({
               title="Update item"
               style={{
                 color: `${
-                  purchaseInfoData?.items?.length == 0 ? "gray" : "orange"
+                  purchaseInfoData?.items?.length === 0 ? "gray" : "orange"
                 } `,
                 border: `${
-                  purchaseInfoData?.items?.length == 0
+                  purchaseInfoData?.items?.length === 0
                     ? "2px solid gray"
                     : "2px solid orange"
                 }`,
                 padding: "3px",
                 borderRadius: "5px",
-                marginLeft:'10px'
+                marginLeft: "10px",
               }}
               onClick={() => {
-                downloadPOPDF(purchaseFilterUnApproveAllData, rawMaterialItemInfo, bankInformation,paymentData,{ companyinfo }, reportTitle);
+                downloadPOPDF(
+                  purchaseFilterUnApproveAllData,
+                  rawMaterialItemInfo,
+                  bankInformation,
+                  paymentData,
+                  { companyinfo },
+                  reportTitle
+                );
               }}
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
@@ -254,7 +263,6 @@ const PurchaseOrderUnapproveList = ({
                     const response = await deletePurchaseOrderInfo(
                       purchaseFilterUnApproveAllData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -319,16 +327,7 @@ const PurchaseOrderUnapproveList = ({
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
-        {/* <div>
-            <FontAwesomeIcon
-              style={{ fontSize: "24px", color: "#2DDC1B", fontWeight: "bold" }}
-              icon={faRefresh}
-              onClick={() => refetch()}
-            ></FontAwesomeIcon>
-            &nbsp;
-          </div> */}
-
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
@@ -341,7 +340,7 @@ const PurchaseOrderUnapproveList = ({
   }, [filterText, resetPaginationToggle]);
 
   return (
-    <div className="row">
+    <div className={`row ${isPurchaseOrderLoading ? 'd-none' : 'd-block'} ${filteredItems?.length===0 ? 'd-none' : 'd-block'}`}>
       <div className="col userlist-table">
         <div className="shadow-lg ">
           <DataTable

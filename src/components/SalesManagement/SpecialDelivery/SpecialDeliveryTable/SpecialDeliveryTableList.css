@@ -1,0 +1,9 @@
+.special-parameter-width{
+  width:75%
+}
+
+@media (max-width: 568px) { /* md */
+  .special-parameter-width {
+    width: 100%;
+  }
+}

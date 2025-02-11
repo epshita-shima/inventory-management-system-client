@@ -16,9 +16,12 @@ import "./CreateMenu.css";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import '../../../buttonStyle/style.css';
 
 const CreateMenu = () => {
-  const { data: menuItems, isMenuloading } = useGetAllMenuItemsQuery();
+  const { data: menuItems, isLoading: isMenuloading } =
+    useGetAllMenuItemsQuery();
   const ArrayHelperRef = useRef();
   const [parentMenuName, setParentMenuName] = useState("");
   const [menuType, setMenuType] = useState("");
@@ -32,28 +35,6 @@ const CreateMenu = () => {
       navigate("/");
     }
   }, [navigate]);
-
-  if (isMenuloading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <button
-          class="btn"
-          style={{ backgroundColor: "#2DDC1B", color: "white" }}
-          type="button"
-          disabled
-        >
-          <span
-            class="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Loading...
-        </button>
-      </div>
-    );
-  }
-
-  console.log(parentMenuName);
 
   const menuTypeOptions = [
     { value: "child", label: "Child" },
@@ -73,7 +54,7 @@ const CreateMenu = () => {
     const parentMenuRecursive = (options, parentLabel) => {
       let result = [];
       options?.forEach((option) => {
-        if (option.isParent == true) {
+        if (option.isParent === true) {
           result.push({
             value: option._id,
             label: option.label,
@@ -95,13 +76,12 @@ const CreateMenu = () => {
     return parentMenuRecursive(options);
   };
   const parentOptions = parentMenuOptions(menuItems);
-  console.log(parentOptions);
 
   const flattenOptionsData = (options) => {
     const parentMenuRecursive = (options, parentLabel) => {
       let result = [];
       options?.forEach((option) => {
-        if (option.isParent == true) {
+        if (option.isParent === true) {
           result.push({
             value: option._id,
             label: option.label,
@@ -151,14 +131,14 @@ const CreateMenu = () => {
 
     try {
       values.detailsData.forEach((item) => {
-        if (item.menu_name == "") {
+        if (item.menu_name === "") {
           swal("Not Possible!", "Data Not Found", {
             icon: "warning",
           });
           setSelectedTopParentValue(null);
           setMenuType("");
           return;
-        } else if (menuType == "child" && parentMenuName.value == undefined) {
+        } else if (menuType === "child" && parentMenuName.value === undefined) {
           swal("Not possible", "Please select parent name", "warning");
         }
       });
@@ -166,7 +146,7 @@ const CreateMenu = () => {
       if (parentMenuName) {
         var errorCount = 0;
         values.detailsData.forEach((item) => {
-          if (item.menu_name == "") {
+          if (item.menu_name === "") {
             errorCount++;
           }
           const convertmenuName = item?.menu_name
@@ -177,12 +157,12 @@ const CreateMenu = () => {
             children: [],
             label: item.menu_name,
             url: `${
-              menuType == "parent" ? "#" : `/main-view/${convertmenuName}`
+              menuType === "parent" ? "#" : `/main-view/${convertmenuName}`
             }`,
             permissions: [],
             items: [],
             trackId: parentMenuName.value,
-            isParent: menuType == "parent" ? true : false,
+            isParent: menuType === "parent" ? true : false,
             isInserted: false,
             isUpdated: false,
             isPDF: false,
@@ -190,12 +170,10 @@ const CreateMenu = () => {
             isChecked: false,
           });
         });
-        console.log(errorCount);
-        console.log(JSON.stringify(modelMenuInsert));
-        if (errorCount == 0) {
+
+        if (errorCount === 0) {
           try {
             const response = await updateMenu(modelMenuInsert);
-            console.log(response.data.status);
             if (response.data.status === 200) {
               swal("Done", "Data Updated Successfully", "success");
               resetForm({
@@ -231,14 +209,14 @@ const CreateMenu = () => {
         }
       } else {
         values.detailsData.forEach((item) => {
-          if (item.menu_name == "") {
+          if (item.menu_name === "") {
             swal("Not Possible!", "Data Not Found", {
               icon: "warning",
             });
             setMenuType("");
             setSelectedTopParentValue(null);
           } else {
-            if (menuType == "child" && parentMenuName.value == undefined) {
+            if (menuType === "child" && parentMenuName.value === undefined) {
               swal(
                 "Not Possible!",
                 "Please select parent name because you are select menu type as a child",
@@ -249,7 +227,6 @@ const CreateMenu = () => {
             } else {
               function convertToMenuItem(data) {
                 const { parentmenu, detailsData } = data;
-                console.log(detailsData);
                 const menuItems = detailsData?.map((item) => {
                   const convertmenuName = item?.menu_name
                     .toLowerCase()
@@ -291,7 +268,6 @@ const CreateMenu = () => {
                   const response = await createMenus(
                     convertedData.menuItems
                   ).unwrap();
-                  console.log(response);
                   if (response.status === 200) {
                     swal("Done", "Data Save Successfully", {
                       icon: "success",
@@ -338,7 +314,8 @@ const CreateMenu = () => {
         overflowY: "hidden",
       }}
     >
-      <div class="overflow-hidden">
+      {/* <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer> */}
+      <div class={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}>
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
@@ -366,13 +343,7 @@ const CreateMenu = () => {
             </div>
             <div>
               <button
-                style={{
-                  backgroundColor: "#E55566",
-                  outline: "none",
-                  border: "none",
-                  color: "white",
-                  height: "25px",
-                }}
+               className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/menu-list");
                 }}
@@ -402,9 +373,8 @@ const CreateMenu = () => {
                   onChange={(e) => {
                     setSelectedTopParentValue(e.value);
                     const filterData = flattenedOptionsData.find(
-                      (x) => x.value == e.value
+                      (x) => x.value === e.value
                     );
-                    console.log(filterData);
                     setParentMenuName(filterData);
                   }}
                   styles={{
@@ -457,8 +427,7 @@ const CreateMenu = () => {
                     },
                   })}
                   onChange={(e) => {
-                    console.log(e);
-                    if (e.value == "child") {
+                    if (e.value === "child") {
                       setMenuType(e.value);
                     } else {
                       setMenuType(e.value);
@@ -473,7 +442,7 @@ const CreateMenu = () => {
               type="submit"
               form="menucreation-form"
               className="border-0 "
-              disabled={menuType == "" && parentMenuName.value == undefined}
+              disabled={menuType === "" && parentMenuName.value === undefined}
               style={{
                 backgroundColor: `${
                   menuType === "" && parentMenuName.value === undefined
@@ -549,7 +518,7 @@ const CreateMenu = () => {
                               <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
                                 <div class="table-responsive table-responsive-design">
                                   <table className="table table-bordered">
-                                    <thead >
+                                    <thead>
                                       <tr>
                                         <th className="bg-white text-center align-middle  ">
                                           Sl
@@ -568,7 +537,6 @@ const CreateMenu = () => {
                                     </thead>
                                     {details && details.length > 0
                                       ? details.map((detail, index) => {
-                                          console.log(detail);
                                           return (
                                             <tbody>
                                               <tr key={index}>
@@ -590,7 +558,7 @@ const CreateMenu = () => {
                                                       borderRadius: "5px",
                                                     }}
                                                     onClick={(e) => {
-                                                      if (menuType == "") {
+                                                      if (menuType === "") {
                                                         swal(
                                                           "Not possible",
                                                           "Please select menu type",
@@ -598,7 +566,7 @@ const CreateMenu = () => {
                                                         );
                                                       } else {
                                                         if (
-                                                          menuType == "parent"
+                                                          menuType === "parent"
                                                         ) {
                                                           setFieldValue(
                                                             `detailsData.${index}.menu_name`,

@@ -16,15 +16,19 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
-import { downloadPDF } from "../../../ReportProperties/HeaderFooter";
-import handleDownload from "../../../ReportProperties/HandelExcelDownload";
+import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
+import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
+import LoadingSpineer from "./../../../Common/LoadingSpinner/LoadingSpineer";
 
 const ClientInfoList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  const { data: clientInfoData, refetch } =
-    useGetAllClientInformationQuery(undefined);
+  const {
+    data: clientInfoData,
+    isLoading: isClientInfoLoading,
+    refetch,
+  } = useGetAllClientInformationQuery(undefined);
   const [filterText, setFilterText] = useState("");
   const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
@@ -38,16 +42,15 @@ const ClientInfoList = ({ permission }) => {
   const [clientInfoActiveStatus, setClientInfoActiveStatus] = useState([]);
   const [clientInfoInActiveStatus, setClientInfoInActiveStatus] = useState([]);
   var reportTitle = "All Client List";
-  console.log(selectedData);
-  
+
   useEffect(() => {
     const clientInfoActiveStatus = clientInfoData?.filter(
-      (item) => item.isActive == true
+      (item) => item.isActive === true
     );
     const clientInfoInActiveStatus = clientInfoData?.filter(
-      (item) => item.isActive == false
+      (item) => item.isActive === false
     );
- 
+
     const extractedForAddDataFields = clientInfoData?.map((item) => {
       return {
         clientName: item.clientName,
@@ -55,7 +58,7 @@ const ClientInfoList = ({ permission }) => {
         mobileNo: item.mobileNo,
         contactPerson: item.contactPerson,
         address: item.address,
-        isActive:item.isActive ? 'Active' : 'InActive'
+        isActive: item.isActive ? "Active" : "InActive",
       };
     });
     const extractedFields = clientInfoActiveStatus?.map((item) => {
@@ -65,7 +68,7 @@ const ClientInfoList = ({ permission }) => {
         mobileNo: item.mobileNo,
         contactPerson: item.contactPerson,
         address: item.address,
-        isActive:item.isActive ? 'Active' : 'InActive'
+        isActive: item.isActive ? "Active" : "InActive",
       };
     });
 
@@ -76,10 +79,10 @@ const ClientInfoList = ({ permission }) => {
         mobileNo: item.mobileNo,
         contactPerson: item.contactPerson,
         address: item.address,
-        isActive:item.isActive ? 'Active' : 'InActive'
+        isActive: item.isActive ? "Active" : "InActive",
       };
     });
-    setExtractedAllDataReport(extractedForAddDataFields)
+    setExtractedAllDataReport(extractedForAddDataFields);
     setClientInfoActiveStatus(clientInfoActiveStatus);
     setClientInfoInActiveStatus(clientInfoInActiveStatus);
     setExtractedDataForReport(extractedFields);
@@ -110,8 +113,8 @@ const ClientInfoList = ({ permission }) => {
               >
                 <input
                   type="checkbox"
-                  aria-label={`Checkbox for data item ${row.id}`}
-                  checked={row.status} // Assuming status is a boolean field
+                  aria-label={`Checkbox for data item ${row._id}`}
+                  checked={selectedData.some((item) => item._id === row._id)}
                   onChange={(e) => {
                     handleCheckboxClick(row, setSelectedData);
                   }}
@@ -196,7 +199,11 @@ const ClientInfoList = ({ permission }) => {
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {clientInfoData?.isActive == true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {clientInfoData?.isActive == true ? (
+              <p className="text-success fw-bold">Active</p>
+            ) : (
+              <p className="text-danger fw-bold">InActive</p>
+            )}
           </a>
         </div>
       ),
@@ -229,7 +236,7 @@ const ClientInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`update-client-info/${clientInfoData?._id}`);
+                window.open(`client-list/update-client-info/${clientInfoData?._id}`);
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -264,7 +271,6 @@ const ClientInfoList = ({ permission }) => {
                     const response = await deleteClientInfo(
                       clientInfoData?._id
                     ).unwrap();
-                    console.log(response);
                     if (response.status === 200) {
                       swal("Deleted!", "Your selected item has been deleted!", {
                         icon: "success",
@@ -329,7 +335,7 @@ const ClientInfoList = ({ permission }) => {
     };
 
     return (
-      <div className="d-block d-sm-flex justify-content-center align-items-center ">
+      <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
@@ -416,7 +422,7 @@ const ClientInfoList = ({ permission }) => {
           height: "420px",
         }}
       >
-        <div className="shadow-lg ">
+        <div className="shadow-lg">
           <DataTable
             columns={columns}
             data={filteredItems}

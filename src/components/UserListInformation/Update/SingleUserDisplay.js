@@ -10,13 +10,11 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useGetSingleUserQuery,
-  useUpdateMultipleUserFieldMutation,
-} from "../../../redux/features/user/userApi";
+import { useGetSingleUserQuery } from "../../../redux/features/user/userApi";
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
 import TreeSingleUserView from "./TreeSingleUserView";
+import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
 
 const SingleUserDisplay = () => {
   const { id } = useParams();
@@ -24,18 +22,37 @@ const SingleUserDisplay = () => {
   const [singleUserData, setSingleUserData] = useState([]);
   const { data: singleUser, isLoading: singleUSerLoading } =
     useGetSingleUserQuery(id);
-  const [updateUser] = useUpdateMultipleUserFieldMutation();
-  const {
-    data: userRoleData,
-    isError: userRoleIsError,
-    isLoading: userRoleIsLoading,
-  } = useGetUserRoleQuery();
 
+  const { data: userRoleData } = useGetUserRoleQuery();
+  const { data: menuItems } = useGetAllMenuItemsQuery();
   const navigate = useNavigate();
-  useEffect(() => {
-    setSingleUserData(singleUser);
-  }, [singleUser]);
 
+  useEffect(() => {
+    const menulist = Array.isArray(singleUser?.menulist)
+      ? singleUser.menulist
+      : [];
+    const menuItemsList = Array.isArray(menuItems) ? menuItems : [];
+
+    // Create a map to track existing items by id
+    const singleDataMap = new Map(menulist.map((item) => [item.id, item]));
+
+    // Combine menulist and menuItems, avoiding duplicates
+    const result = [
+      ...menulist,
+      ...menuItemsList.filter((menu) => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
+    ];
+
+    if (Array.isArray(result)) {
+      const updatedSingleUser = {
+        ...singleUser,
+        menulist: result,
+      };
+
+      setSingleUserData(updatedSingleUser);
+    } else {
+      console.error("Result is not an array");
+    }
+  }, [singleUser, menuItems]);
 
   const [validated, setValidated] = useState(false);
   const parentIds = [];
@@ -49,17 +66,12 @@ const SingleUserDisplay = () => {
 
   const updateDropdownList = (updatedChild, menuList) => {
     return menuList?.map((item) => {
-      console.log(item.trackId === updatedChild.parentIds);
       if (item.trackId === updatedChild.parentIds) {
-        // If the current item matches the parent ID of the updated child
-        console.log("cant find parent");
         return {
           ...item,
           items: updateDropdownListRecursive(updatedChild, item.items),
         };
       } else if (item.items && item.items.length > 0) {
-        // If the current item has items items, recursively call updateDropdownList on them
-        console.log("cant find drpdown");
         return {
           ...item,
           items: updateDropdownList(updatedChild, item.items),
@@ -70,17 +82,10 @@ const SingleUserDisplay = () => {
   };
 
   const updateDropdownListRecursive = (updatedChild, dropdownList) => {
-    console.log(updatedChild);
     return dropdownList.map((child) => {
-      console.log(child, updatedChild);
       if (child.trackId === updatedChild.trackId) {
-        // If the current child matches the updated child, update it
-        console.log(child);
-        console.log(updatedChild);
         return { ...child, ...updatedChild };
       } else if (child.items && child.items.length > 0) {
-        // If the current child has items items, recursively call updateDropdownListRecursive on them
-        console.log("parent child");
         return {
           ...child,
           items: updateDropdownListRecursive(updatedChild, child.items),
@@ -89,8 +94,8 @@ const SingleUserDisplay = () => {
       return child; // Return unchanged child
     });
   };
+
   const updateMenuItem = (menuItemID, updatedValues) => {
-    console.log(menuItemID, updatedValues);
     const updatedMenuList = [...singleUserData.menulist];
     const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
     setSingleUserData((prevList) => {
@@ -100,16 +105,18 @@ const SingleUserDisplay = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    console.log(JSON.stringify(singleUserData));
-    try {
-      await updateUser(singleUserData);
-      // Data has been successfully updated
-      swal("Done", "Data Update Successfully", "success");
-      navigate("/main-view/user-setting");
-    } catch (error) {
-      // An error occurred while updating data
-      swal("Not possible", "Try again", "warning");
-    }
+    const checkedData = singleUserData?.menulist?.filter(
+      (x) => x.isChecked == true
+    );
+    // try {
+    //   await updateUser(singleUserData);
+    //   // Data has been successfully updated
+    //   swal("Done", "Data Update Successfully", "success");
+    //   navigate("/main-view/user-list");
+    // } catch (error) {
+    //   // An error occurred while updating data
+    //   swal("Not possible", "Try again", "warning");
+    // }
   };
 
   const handleChange = (e) => {
@@ -144,47 +151,22 @@ const SingleUserDisplay = () => {
 
   return (
     <div
-      className="container-fluid p-0 m-0"
+      className="container-fluid p-0 m-0 usercreation-table"
       style={{
-        alignItems: "center",
-        position: "absolute",
-        top: "10%",
-        overflow: "hidden",
+        overflowY: "scroll",
+        height: "500px",
       }}
     >
-      {/* <nav class="navbar navbar-expand-lg" style={{ background: "#CBF3F0" }}>
-        <div class="container">
-          <div
-            class="collapse navbar-collapse d-flex justify-content-start align-items-center"
-            id="navbarNav"
-          >
-            <ul class="navbar-nav ">
-              <li class="nav-item nav-button-active">
-                <a class="active nav-link text-uppercase">User List</a>
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link text-uppercase
-            "
-                  href="#"
-                >
-                  {isUpdate ? "Update User" : "Add User(s)"}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav> */}
       <div class="container">
         <div className="shadow-lg mt-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">
             <p>
               <FontAwesomeIcon
-                style={{ fontSize: "20px", color: "#00B987" }}
+                style={{ fontSize: "20px", color: "#2DDC1B" }}
                 icon={faUserAlt}
               />
               <FontAwesomeIcon
-                style={{ fontSize: "14px", color: "#00B987" }}
+                style={{ fontSize: "14px", color: "#2DDC1B" }}
                 icon={faPlus}
               />
               &nbsp;
@@ -195,7 +177,7 @@ const SingleUserDisplay = () => {
                   letterSpacing: ".5px",
                 }}
               >
-                {isUpdate ? "Update user" : "Add user(s)"}
+                Update user
               </span>
             </p>
             <p style={{ fontSize: "20px", color: "red" }}>
@@ -204,7 +186,7 @@ const SingleUserDisplay = () => {
           </div>
           <div className="mt-5">
             <Form validated={validated} onSubmit={handleUpdateUser}>
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-sm-block d-md-flex d-lg-flex justify-content-between align-items-centerd-flex justify-content-between align-items-center">
                 <div className="w-100">
                   <div>
                     <Form.Group controlId="formInput">
@@ -229,7 +211,7 @@ const SingleUserDisplay = () => {
                   </div>
                 </div>
 
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <div>
                     <Form.Group controlId="formInput">
                       <Form.Control
@@ -250,7 +232,7 @@ const SingleUserDisplay = () => {
                     </Form.Group>
                   </div>
                 </div>
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <Form.Group controlId="formInput">
                     <Form.Control
                       type="text"
@@ -266,7 +248,7 @@ const SingleUserDisplay = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <div className="w-100 ms-2">
+                <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <Form.Group controlId="formInput">
                     <Form.Control
                       type="text"
@@ -281,7 +263,7 @@ const SingleUserDisplay = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <div className="d-flex justify-content-between align-items-center w-100 ms-2">
+                <div className="d-flex justify-content-between align-items-center w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
                   <div className="w-100">
                     <Select
                       class="form-select"
@@ -294,15 +276,15 @@ const SingleUserDisplay = () => {
                           ...baseStyles,
                           borderColor: state.isFocused ? "#fff" : "#fff",
                           border: "none",
-                          borderBottom: "1px solid #00B987",
+                          borderBottom: "1px solid #2DDC1B",
                         }),
                       }}
                       theme={(theme) => ({
                         ...theme,
                         colors: {
                           ...theme.colors,
-                          primary25: "#CBF3F0",
-                          primary: "#00B987",
+                          primary25: "#B8FEB3",
+                          primary: "#2DDC1B",
                         },
                       })}
                       value={options?.find(
@@ -313,6 +295,7 @@ const SingleUserDisplay = () => {
                       onChange={(e) => {
                         setSingleUserData({
                           ...singleUserData,
+                          // eslint-disable-next-line no-useless-computed-key
                           ["roleId"]: e.value,
                         });
                       }}
@@ -327,7 +310,7 @@ const SingleUserDisplay = () => {
                   <div className=" ms-2">
                     <FontAwesomeIcon
                       className="border align-middle text-center p-2 fs-3 rounded-5 text-light"
-                      style={{ background: "#00B987" }}
+                      style={{ background: "#2DDC1B" }}
                       icon={faPlus}
                       data-toggle="modal"
                       data-target="#exampleModal"
@@ -342,6 +325,7 @@ const SingleUserDisplay = () => {
             {
               <TreeSingleUserView
                 singleUserData={singleUserData?.menulist}
+                // singleUserData={menuItems}
                 setSingleUserData={setSingleUserData}
                 parentIds={parentIds}
                 updateMenuItem={updateMenuItem}
@@ -356,8 +340,8 @@ const SingleUserDisplay = () => {
             <button
               className="btn text-uppercase rounded-4"
               style={{
-                border: "1px solid #00B987",
-                color: "#00B987",
+                border: "1px solid#2DDC1B",
+                color: "#2DDC1B",
                 fontWeight: "700",
                 outline: "none",
               }}
@@ -368,7 +352,7 @@ const SingleUserDisplay = () => {
             <button
               className="btn text-uppercase rounded-4"
               style={{
-                background: "#00B987",
+                background: "#2DDC1B",
                 color: "#fff",
                 fontWeight: "700",
                 outline: "none",

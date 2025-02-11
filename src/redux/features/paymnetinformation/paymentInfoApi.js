@@ -3,7 +3,7 @@ import { api } from "../../api/apiSlice";
 const paymentInfoApi= api.injectEndpoints({
   endpoints: (builder) => ({
     getAllPaymentInformation: builder.query({
-        query: () => "/paymentinfo",
+        query: () => "/api/v1/paymentinfo",
         providesTags: ["insertpaymentinfo","deletepaymentinfo"],
         refetchOnReconnect: true,
         refetchOnFocus: true,
@@ -11,7 +11,7 @@ const paymentInfoApi= api.injectEndpoints({
       
     insertPaymentInformation: builder.mutation({
       query: (payload) => ({
-        url: "/paymentinfo",
+        url: "/api/v1/paymentinfo",
         method: "POST",
         body: payload,
       }),
@@ -23,7 +23,7 @@ const paymentInfoApi= api.injectEndpoints({
     }),
     deletePaymentInformation: builder.mutation({
       query: (id) => ({
-        url: `/paymentinfo/${id}`,
+        url: `/api/v1/paymentinfo/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["deletepaymentinfo"],

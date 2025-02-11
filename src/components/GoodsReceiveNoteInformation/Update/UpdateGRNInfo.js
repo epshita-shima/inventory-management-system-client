@@ -161,7 +161,6 @@ const UpdateGRNInfo = ({
                                   textAlign: "center",
                                 }}
                                 onChange={(e) => {
-                                  console.log(e.target.value);
                                   setFieldValue(
                                     `detailsData.${index}.amount`,
                                     e.target.value

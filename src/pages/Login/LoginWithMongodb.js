@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useUserLoginMutation } from '../../redux/api/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/features/user/userSlice';
 import { Button, Form, InputGroup } from 'react-bootstrap';
@@ -7,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const LoginWithMongodb = () => {
-    const [data]=useUserLoginMutation()
+
     const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

@@ -1,0 +1,51 @@
+.custom-datepicker-order-details-report {
+  border: 1px solid #2DDC1B;
+  padding: 5px;
+  border-radius: 5px;
+  outline: #2DDC1B;
+  width: 210px;
+  height: 38px;
+}
+.custom-datepicker-update{
+  border: 1px solid #2DDC1B;
+  padding: 8px;
+  border-radius: 5px;
+  outline: #2DDC1B;
+  width:210px;
+}
+.custom-calendar-order-details-report .react-datepicker__current-month,
+.custom-calendar-order-details-report .react-datepicker__day,
+.custom-calendar-order-details-report .react-datepicker__day-name,
+.custom-calendar-order-details-report .react-datepicker__time-container {
+font-size: 14px; /* Desired text size */
+}
+
+.custom-calendar-order-details-report .react-datepicker__header {
+font-size: 18px; /* Change the header text size */
+}
+
+.custom-calendar-order-details-report .react-datepicker__day--selected,
+.custom-calendar-order-details-report .react-datepicker__day--keyboard-selected {
+font-size: 14px; /* Change the selected day text size */
+}
+.custom-calendar-order-details-report {
+  background-color: #B8FEB3;
+  width: 220px;
+}
+.custom-calendar-order-details-report .react-datepicker__month-container {
+  width: 100%; /* Ensure the month container takes the full width */
+
+}
+.custom-calendar-order-details-report .react-datepicker__header {
+  width: 100%;
+}
+
+.custom-calendar-order-details-report .react-datepicker__day,
+.custom-calendar-order-details-report .react-datepicker__day-name {
+width: 12.28%; /* Each day takes 1/7th of the width */
+display: inline-block;
+text-align: center;
+overflow: hidden; /* Hide overflow */
+text-overflow: ellipsis; /* Show ellipsis for overflow text */
+white-space: nowrap; /* Prevent text from wrapping */
+}

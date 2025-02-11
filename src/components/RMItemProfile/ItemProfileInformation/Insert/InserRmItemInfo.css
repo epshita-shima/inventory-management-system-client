@@ -1,14 +1,15 @@
-.custom-datepicker {
+.custom-datepicker-rmItem {
   border: 1px solid #2ddc1b;
   padding: 5px;
   border-radius: 5px;
   outline: #2ddc1b;
 }
-.custom-datepicker-update {
+.custom-datepicker-rmItem {
   border: 1px solid #2ddc1b;
   padding: 8px;
   border-radius: 5px;
   outline: #2ddc1b;
+  width: 250px;
 }
 .custom-calendar .react-datepicker__current-month,
 .custom-calendar .react-datepicker__day,

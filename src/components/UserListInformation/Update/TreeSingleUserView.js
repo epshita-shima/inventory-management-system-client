@@ -5,7 +5,8 @@ const TreeSingleUserView = ({ updateDropdownList, updateMenuItem ,parentIds,sing
       <div>
         {singleUserData?.map((node) => (
           <TreeSingleUserNode
-          key={node.trackId} node={node}
+          key={node.trackId} 
+          node={node}
           setSingleUserData={setSingleUserData}
           parentIds={parentIds} 
           updateMenuItem ={updateMenuItem }

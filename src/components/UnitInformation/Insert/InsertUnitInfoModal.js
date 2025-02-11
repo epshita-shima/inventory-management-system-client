@@ -5,15 +5,14 @@ import React, { useRef, useState } from "react";
 import swal from "sweetalert";
 import * as Yup from "yup";
 import { useInsertItemUnitMutation } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 
 const InsertUnitInfoModal = () => {
   const ArrayHelperRef = useRef();
   const [existingUserRoles, setExistingUserRoles] = useState([]);
   const [unitInfoData, setUnitInfoData] = useState("");
   const [insertunitinfo]=useInsertItemUnitMutation()
-  const getUser = localStorage.getItem("user");
-  const getUserParse = JSON.parse(getUser);
-  const makebyUser = getUserParse[0].username;
+  const makebyUser = getMakebyUser();
   const initialValues = {
     detailsData: [
       {
@@ -34,7 +33,7 @@ const InsertUnitInfoModal = () => {
     }
     try {
       const response = await insertunitinfo(values.detailsData);
-      console.log(response.data.status);
+
       if (response.data.status === 200) {
         swal("Done", "Data Save Successfully", "success");
         resetForm();
