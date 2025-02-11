@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import { addFooter } from "./footerUtility";
 
-const downloadRawMaterailConsumptionDetailsPDF = async (
+const downloadRawMaterailProductionConsumptionDetailsPDF = async (
   companyinfo,
   reportTitle
 ) => {
@@ -48,15 +48,6 @@ const downloadRawMaterailConsumptionDetailsPDF = async (
           data.cell.styles.textColor = [255, 255, 255];
         }
 
-        if (textContent?.trim().toLowerCase() === "datewise total") {
-          Object.values(data.row.cells).forEach((cell) => {
-            cell.styles = cell.styles || {};
-            cell.styles.fontStyle = "bold";
-            cell.styles.fillColor = [138, 138, 138]; // Gray line color
-            cell.styles.textColor = [255, 255, 255];
-          });
-          data.cell.styles.halign = "right";
-        }
         if (textContent?.trim().toLowerCase() === "grand total"){
           data.cell.styles.halign = "right";
          
@@ -72,4 +63,4 @@ const downloadRawMaterailConsumptionDetailsPDF = async (
   doc.save(`${reportTitle}.pdf`);
 };
 
-export { downloadRawMaterailConsumptionDetailsPDF };
+export { downloadRawMaterailProductionConsumptionDetailsPDF };

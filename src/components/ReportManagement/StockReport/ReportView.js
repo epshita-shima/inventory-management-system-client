@@ -5,6 +5,7 @@ import StockReportDataTable from "./StockReportDataTable";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
+import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 
 const StockReportView = ({ permission, dropdownMenuStyles }) => {
   const [fromDate, setFromDate] = useState(new Date());
@@ -18,7 +19,8 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
   const [filterText, setFilterText] = useState("");
   const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined);
   const {data:rawMaterialItem}=useGetAllRMItemInformationQuery(undefined)
-  const {data:companyInfo}=useGetCompanyInfoQuery(undefined)
+  const {data:companyInfo}=useGetCompanyInfoQuery(undefined);
+  const {data:itemUnitInfo}=useGetAllItemUnitQuery(undefined)
   const [
     triggerStockReport,
     {
@@ -38,6 +40,8 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
     setExecuteQuery(true);
     await triggerStockReport(updatedFilters);
   };
+
+  console.log('companyinfo 33',companyInfo)
 
   return (
     <div className="row px-5 mx-2">
@@ -62,6 +66,7 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
           itemSizeInfo={itemSizeInfo}
           rawMaterialItem={rawMaterialItem}
           companyInfo={companyInfo}
+          itemUnitInfo={itemUnitInfo}
           isTableDispaly={isTableDispaly}
         ></StockReportDataTable>
       )}

@@ -23,6 +23,7 @@ const RawMaterialConsumptionView = ({ permission }) => {
     itemId: "",
     reportStatus: "",
   });
+  console.log(window.location)
   const { data: itemUnitInformation } = useGetAllItemUnitQuery(undefined);
   const { data: rawMaterialDataInfo } =
     useGetAllRMItemInformationQuery(undefined);
@@ -55,13 +56,13 @@ const RawMaterialConsumptionView = ({ permission }) => {
       reportStatus: "",
     }));
     if (updatedFilters.reportStatus === "rawmaterialconsumptiondetails") {
+      console.log(updatedFilters)
       await triggerRawMaterialDetailsReport(updatedFilters);
     }
     if (updatedFilters.reportStatus === "rawmaterialconsumptiondsummary") {
       await triggerRawMaterialSummaryReport(updatedFilters);
     }
   };
-
 
   return (
     <div>

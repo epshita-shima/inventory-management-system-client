@@ -1,38 +1,46 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import DataTable from "react-data-table-component";
 import React, { useMemo, useState } from "react";
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import ProductionConsumptionModal from "./ProductionConsumptionModal";
-import { useLazyGetProductionDatewiseDetailsReportQuery } from "../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
+import PurchaseQuantityDetailsModal from "./PurchaseQuantityDetailsModal";
 // import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const StockReportDataTable = ({
   rawMaterialStockReportData,
   filterText,
   isTableDispaly,
-  companyinfo,
+  companyInfo,
   itemSizeInfo,
   rawMaterialItem,
   setFilterText,
+  itemUnitInfo,
   isRawMaterialStockDataLoading,
 }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [productionSingleItemId, setProductionSingleItemId] = useState("");
+  const [showProductionModal, setShowProductionModal] = useState(false);
+  const [showPurchaseModal, setShowPruchaseModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-    const [
-      triggerDatewiseDetailsReport,
-      { data: productionDatewiseDetailsData },
-    ] = useLazyGetProductionDatewiseDetailsReportQuery();
+  const [triggerDatewiseDetailsReport, { data: productionItemDetailsData }] =
+    useLazyGetRawMaterialDetailsConsumptionReportQuery();
 
-    console.log('productionDatewiseDetailsData',productionDatewiseDetailsData)
-  const handleRowClick = async(rowData) => {
-      await triggerDatewiseDetailsReport({itemId:rowData.itemId});
+  const handleRowClickForProduction = async (rowData) => {
+    await triggerDatewiseDetailsReport({ itemId: rowData.itemId });
     setSelectedRow(rowData);
-    console.log("rowData", rowData);
-    setShowModal(true); // Show modal when a row is clicked
+    setProductionSingleItemId(rowData.itemId);
+    setShowProductionModal(true); // Show modal when a row is clicked
+  };
+  const handleRowClickForPurchase = async (rowData) => {
+    await triggerDatewiseDetailsReport({ itemId: rowData.itemId });
+    setSelectedRow(rowData);
+    setProductionSingleItemId(rowData.itemId);
+    setShowPruchaseModal(true); // Show modal when a row is clicked
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    setShowProductionModal(false);
   };
 
   const columns = [
@@ -55,10 +63,21 @@ const StockReportDataTable = ({
     },
     {
       name: "Purchase Quantity",
-      selector: (row) => row.purchaseQuantity,
+      // selector: (row) => row.purchaseQuantity,
       sortable: true,
       center: true,
       filterable: true,
+      cell: (row) => (
+        <div
+          class="card-body"
+          data-toggle="modal"
+          data-target="#exampleModalLabelPurchaseRaw"
+          onClick={() => handleRowClickForPurchase(row)}
+        >
+          <a href="#" className="text-success fw-bold"> {row.purchaseQuantity}</a>
+          
+        </div>
+      ),
     },
 
     {
@@ -81,13 +100,12 @@ const StockReportDataTable = ({
           class="card-body"
           data-toggle="modal"
           data-target="#exampleModalLabelRaw"
-          onClick={() => handleRowClick(row)}
+          onClick={() => handleRowClickForProduction(row)}
         >
-          <p
-          // className="border-0 bg-transparent"
-          >
-            {row.purchaseConsumption}
-          </p>
+          <a href="#" className="text-success fw-bold">
+          {row.productionConsumption}
+          </a>
+        
         </div>
       ),
     },
@@ -138,12 +156,7 @@ const StockReportDataTable = ({
       -1
   );
   const subHeaderComponent = useMemo(() => {
-    const handleClear = () => {
-      if (filterText) {
-        // setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText("");
-      }
-    };
+
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {/* {
@@ -192,8 +205,7 @@ const StockReportDataTable = ({
         } */}
       </div>
     );
-  }, [companyinfo]);
-
+  }, []);
 
   return (
     <div>
@@ -217,7 +229,24 @@ const StockReportDataTable = ({
           </>
         </div>
       )}
-      {showModal && <ProductionConsumptionModal show={showModal}></ProductionConsumptionModal>}
+      {showProductionModal && (
+        <ProductionConsumptionModal
+          show={showProductionModal}
+          rawMaterialItem={rawMaterialItem}
+          companyinfo={companyInfo}
+          productionSingleItemId={productionSingleItemId}
+          productionItemDetailsData={productionItemDetailsData}
+          itemUnitInfo={itemUnitInfo}
+        ></ProductionConsumptionModal>
+      )}
+      {
+        showPurchaseModal && (
+          <PurchaseQuantityDetailsModal companyInfo={companyInfo}></PurchaseQuantityDetailsModal>
+        )
+      }
+{
+
+}
     </div>
   );
 };

@@ -92,7 +92,7 @@ const InsertProduction = ({
                               label: "Select Item Name",
                               value: 0,
                             }}
-                            value={rawMaterialsData.filter(function (option) {
+                            value={rawMaterialsData.find(function (option) {
                               return option.value === detail.itemId;
                             })}
                             styles={{
@@ -118,15 +118,19 @@ const InsertProduction = ({
                               },
                             })}
                             onChange={(e) => {
-                              if(values.receipeQtyRatio === ''  || values.totalBatch ==''){
+                              if(values.receipeQtyRatio === ''  || values.totalBatch ===''){
                                 swal("Not Possible", "Please select Receipe qty ratio OR Fill Total Batch", "warning");
                               }
+                          
                              else {
-                              if (values.receipeQtyRatio === 1000  ) {
+                              if (values.receipeQtyRatio.toString() === "1000"){
                                
                                 const receipeData = receipeOptions.find(
                                   (x) => x.value === e.value
                                 );
+
+                                console.log('receipeData',receipeData)
+
                                 if(receipeData){
                                   const labelData = receipeData
                                     ? receipeData.label
@@ -192,7 +196,8 @@ const InsertProduction = ({
                                 }
                               
                              
-                              } else if(values.receipeQtyRatio === 938) {
+                              }
+                               else if(values.receipeQtyRatio === 938) {
                                 const receipeData = receipeOptionsLessQty.find(
                                   (x) => x.value === e.value
                                 );
