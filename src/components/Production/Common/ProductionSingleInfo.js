@@ -31,8 +31,9 @@ const ProductionSingleInfo = ({
   setEndDate,
   receipeOptions1000,
   receipeOptionsLessQty938,
-  receipeOptionsLessQty900,
+  receipeOptionsLessQty900
 }) => {
+
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsItem } = useGetAllItemInformationQuery(undefined);
   const finishGoodsOptions = finishGoodsWithSizeItemDropdown(
@@ -43,7 +44,7 @@ const ProductionSingleInfo = ({
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
-    { value: "900", label: "900" },
+    {value:"900",label:"900"}
   ];
 
   function getCftPerKgByItemId(itemId) {
@@ -121,9 +122,7 @@ const ProductionSingleInfo = ({
     const removeDashFromDate = new Date(startDates).toLocaleDateString("en-CA");
     const removeDash = removeDashFromDate.replace(/-/g, "");
     const makeBatchNo = `MEB-${removeDash}-${
-      serialValue?.serialNo === undefined
-        ? "1"
-        : parseInt(serialValue?.serialNo) + 1
+      serialValue?.serialNo === undefined ? "1" :parseInt(serialValue?.serialNo) + 1
     }`;
     setFieldValue(
       "productionDate",
@@ -287,7 +286,7 @@ const ProductionSingleInfo = ({
                 updateProductionData?.expectedProductionQtyPerBatch;
               const excessOrLess =
                 updateProductionData?.productionQty - expectQty;
-
+       
               const calculateExcessOrLess = Math.abs(
                 updateProductionData?.productionQty - expectQty
               );
@@ -296,7 +295,7 @@ const ProductionSingleInfo = ({
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
                   totalBatch: e.target.value,
-                  productionStatus: "No Change",
+                  productionStatus:  "No Change",
                   updateBy: makebyUser,
                   excessOrLessProductionQty: calculateExcessOrLess,
                   updateDate: new Date(),
@@ -305,7 +304,7 @@ const ProductionSingleInfo = ({
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
                   totalBatch: e.target.value,
-                  productionStatus: "Less",
+                  productionStatus:  "Less",
                   updateBy: makebyUser,
                   excessOrLessProductionQty: calculateExcessOrLess,
                   updateDate: new Date(),
@@ -325,7 +324,7 @@ const ProductionSingleInfo = ({
                 const findCFTPerKG = getCftPerKgByItemId(detail.itemId);
                 const calculateAsPerRationBasedTotalBatch =
                   (detail.receipe / findCFTPerKG) * e.target.value;
-
+             
                 const value1 = parseFloat(detail.materialUsed);
                 const value2 = parseFloat(calculateAsPerRationBasedTotalBatch);
                 const calculateExcessOrLess = value1 - value2;
@@ -345,12 +344,11 @@ const ProductionSingleInfo = ({
                     };
                   });
                 } else if (calculateExcessOrLess < 0) {
+                
                   setUpdateProductionData((prev) => {
                     const temp_details = [...prev.detailsData];
                     const newDetail = { ...temp_details[index] };
-                    newDetail["less"] = Math.abs(
-                      Math.round(calculateExcessOrLess * 100) / 100
-                    );
+                    newDetail["less"] = Math.abs(Math.round(calculateExcessOrLess * 100) / 100);
                     newDetail["excess"] = 0;
                     newDetail["consumptionStatus"] = "Less";
                     temp_details[index] = newDetail;
@@ -362,12 +360,11 @@ const ProductionSingleInfo = ({
                     };
                   });
                 } else if (calculateExcessOrLess > 0) {
+                 
                   setUpdateProductionData((prev) => {
                     const temp_details = [...prev.detailsData];
                     const newDetail = { ...temp_details[index] };
-                    newDetail["excess"] = Math.abs(
-                      Math.round(calculateExcessOrLess * 100) / 100
-                    );
+                    newDetail["excess"] = Math.abs(Math.round(calculateExcessOrLess * 100) / 100);
                     newDetail["less"] = 0;
                     newDetail["consumptionStatus"] = "Excess";
                     temp_details[index] = newDetail;
@@ -379,7 +376,7 @@ const ProductionSingleInfo = ({
                     };
                   });
                 }
-
+               
                 setUpdateProductionData((prev) => {
                   const temp_details = [...prev.detailsData];
                   const newDetail = { ...temp_details[index] };
@@ -519,6 +516,7 @@ const ProductionSingleInfo = ({
                 },
               })}
               onChange={(e) => {
+             
                 if (id) {
                   const expectQty =
                     updateProductionData?.totalBatch * e.productionQtyPerBatch;
@@ -802,223 +800,43 @@ const ProductionSingleInfo = ({
                     updateDate: new Date(),
                   }));
                 } else {
-                  setFieldValue("receipeQtyRatio", e.value);
-                  console.log(JSON.stringify(values));
-                  if (values.receipeQtyRatio.toString() === "1000") {
-                    const receipeData = receipeOptions1000.find(
-                      (x) => x.value === e.value
-                    );
-
-                    console.log("receipeData", receipeData);
-
-                    if (receipeData) {
-                      const labelData = receipeData ? receipeData.label : null;
-                      const findCFTPerKG = getCftPerKgByItemId(e.value);
-                      if (findCFTPerKG) {
-                        const calculateAsPerRatio =
-                          (labelData / findCFTPerKG) * values.totalBatch;
-
-                        // setFieldValue(
-                        //   `detailsData.${index}.itemId`,
-                        //   e.value
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.receipeLabelData`,
-                        //   labelData
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.singleValueCFTPerKg`,
-                        //   findCFTPerKG
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.receipe`,
-                        //   labelData
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.asPerRatio`,
-                        //   Math.round(
-                        //     calculateAsPerRatio * 100
-                        //   ) / 100
-                        // );
-                      } else {
-                        swal(
-                          "Not Possible",
-                          "CFT PER KG Not Decleared,Please Contact with HO",
-                          "warning"
-                        );
+                  const itemIds = values.detailsData.map((detail) => detail.itemId);
+                  if (itemIds.length > 0) {
+                    const getRecipeOptions = (receipeQtyRatio) => {
+                      switch (receipeQtyRatio) {
+                        case "1000":
+                          return receipeOptions1000;
+                        case "938":
+                          return receipeOptionsLessQty938;
+                        case "900":
+                          return receipeOptionsLessQty900;
+                        default:
+                          return [];
                       }
-                    } else {
-                      swal(
-                        "Not Possible",
-                        "Ratio Qty Not Decleared,Please Contact with HO",
-                        "warning"
-                      );
-                      // setFieldValue(
-                      //   `detailsData.${index}.itemId`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.receipe`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.materialUsed`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.excess`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.less`,
-                      //   ""
-                      // );
-                    }
-                  } else if (values.receipeQtyRatio.toString() === "938") {
-                    const receipeData = receipeOptionsLessQty938.find(
-                      (x) => x.value === e.value
-                    );
-                    if (receipeData) {
-                      const labelData = receipeData ? receipeData.label : null;
-                      const findCFTPerKG = getCftPerKgByItemId(e.value);
-                      if (findCFTPerKG) {
-                        const calculateAsPerRatio =
-                          (labelData / findCFTPerKG) * values.totalBatch;
-
-                        // setFieldValue(
-                        //   `detailsData.${index}.itemId`,
-                        //   e.value
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.receipe`,
-                        //   labelData
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.asPerRatio`,
-                        //   Math.round(
-                        //     calculateAsPerRatio * 100
-                        //   ) / 100
-                        // );
-                      } else {
-                        swal(
-                          "Not Possible",
-                          "CFT PER KG Not Decleared,Please Contact with HO",
-                          "warning"
-                        );
-                      }
-                    } else {
-                      swal(
-                        "Not Possible",
-                        "Ratio Qty Not Decleared,Please Contact with HO",
-                        "warning"
-                      );
-                      // setFieldValue(
-                      //   `detailsData.${index}.itemId`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.receipe`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.materialUsed`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.excess`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.less`,
-                      //   ""
-                      // );
-                    }
-                  } else if (values.receipeQtyRatio.toString() === "900") {
-                    const receipeData = receipeOptionsLessQty900.find(
-                      (x) => x.value === e.value
-                    );
-                    if (receipeData) {
-                      const labelData = receipeData ? receipeData.label : null;
-                      console.log(labelData);
-                      const findCFTPerKG = getCftPerKgByItemId(e.value);
-                      console.log(findCFTPerKG);
-                      if (findCFTPerKG) {
-                        const calculateAsPerRatio =
-                          (labelData / findCFTPerKG) * values.totalBatch;
-
-                        // setFieldValue(
-                        //   `detailsData.${index}.itemId`,
-                        //   e.value
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.receipe`,
-                        //   labelData
-                        // );
-                        // setFieldValue(
-                        //   `detailsData.${index}.asPerRatio`,
-                        //   Math.round(
-                        //     calculateAsPerRatio * 100
-                        //   ) / 100
-                        // );
-                      } else {
-                        swal(
-                          "Not Possible",
-                          "CFT PER KG Not Decleared,Please Contact with HO",
-                          "warning"
-                        );
-                      }
-                    } else {
-                      swal(
-                        "Not Possible",
-                        "Ratio Qty Not Decleared,Please Contact with HO",
-                        "warning"
-                      );
-                      // setFieldValue(
-                      //   `detailsData.${index}.itemId`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.receipe`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.asPerRatio`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.materialUsed`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.excess`,
-                      //   ""
-                      // );
-                      // setFieldValue(
-                      //   `detailsData.${index}.less`,
-                      //   ""
-                      // );
-                    }
+                    };
+                    
+                    const selectedRecipeArray = getRecipeOptions(e.value); // Select correct array dynamically
+                    console.log(selectedRecipeArray)
+                    const updatedDetailsData = values.detailsData.map((detail) => {
+                    
+                      const matchedRecipe = selectedRecipeArray.find((option) => option.value === detail.itemId);
+                      console.log('matchedRecipe',matchedRecipe)
+                      return {
+                        ...detail,
+                        receipe: matchedRecipe ? matchedRecipe.label : 0,
+                        asPerRatio:
+                        detail.singleValueCFTPerKg > 0
+                          ? Math.round(
+                              ((matchedRecipe.label / detail.singleValueCFTPerKg) * values.totalBatch) * 100
+                            ) / 100
+                          : 0,
+                      };
+                    });
+                    
+                    setFieldValue("detailsData", updatedDetailsData);
                   }
+                  
+                  setFieldValue("receipeQtyRatio", e.value);
                 }
               }}
             ></Select>

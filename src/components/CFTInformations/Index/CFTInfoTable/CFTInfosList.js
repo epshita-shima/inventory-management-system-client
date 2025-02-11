@@ -21,14 +21,19 @@ import {
 import FilterComponent from "../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
-import { useDeleteCFTInfoMutation } from "../../../../redux/features/cftinformation/cftInfosApi";
+import { useDeleteCFTInfoMutation, useGetAllCFTInfosQuery } from "../../../../redux/features/cftinformation/cftInfosApi";
 import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
-const CFTInfosList = ({ permission, cftInfosData,isCFTInfoloading, refetch }) => {
+const CFTInfosList = ({ permission, }) => {
+    const {
+      data: cftInfosData,
+      isLoading:isCFTInfoloading,
+      refetch,
+    } = useGetAllCFTInfosQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [filterText, setFilterText] = useState("");
   const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);

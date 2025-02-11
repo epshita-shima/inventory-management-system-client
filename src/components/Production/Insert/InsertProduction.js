@@ -14,16 +14,41 @@ const InsertProduction = ({
   cftData,
   rawMaterialsData,
   receipeOptionsLessQty938,
-  receipeOptionsLessQty900
+  receipeOptionsLessQty900,
 }) => {
   function getCftPerKgByItemId(itemId) {
-    for (const entry of cftData) {
-      const itemData = entry.detailsData.find(
-        (detail) => detail.itemId === itemId
-      );
-      if (itemData) {
-        return itemData.cftPerKg;
+    console.log(rawMaterialsData, itemId);
+    const itemDatawithCftDeclaration = rawMaterialsData?.find(
+      (detail) =>
+        String(detail.value) === String(itemId) &&
+        detail?.cftDeclaration === true
+    );
+
+    const itemDataWithoutCftDeclaration = rawMaterialsData?.find(
+      (detail) =>
+        String(detail.value) === String(itemId) &&
+        detail?.cftDeclaration === false
+    );
+
+    if (itemDatawithCftDeclaration !== undefined) {
+      for (const entry of cftData) {
+        console.log(
+          "entry.isActive === true",
+          entry.isActive,
+          itemDatawithCftDeclaration.value
+        );
+        if (entry.isActive === true) {
+          const itemCft = entry.detailsData.find(
+            (detail) => detail.itemId === itemId
+          );
+          if (itemCft) {
+            return itemCft;
+          }
+        }
       }
+      return null;
+    } else {
+      return itemDataWithoutCftDeclaration;
     }
   }
 
@@ -73,6 +98,7 @@ const InsertProduction = ({
             <tbody>
               {details && details.length > 0
                 ? details.map((detail, index) => {
+                    console.log(detail);
                     return (
                       <tr key={index}>
                         <td className="text-center  align-middle">
@@ -140,9 +166,10 @@ const InsertProduction = ({
                                       values.receipeQtyRatio.toString() ===
                                       "1000"
                                     ) {
-                                      const receipeData = receipeOptions1000.find(
-                                        (x) => x.value === e.value
-                                      );
+                                      const receipeData =
+                                        receipeOptions1000.find(
+                                          (x) => x.value === e.value
+                                        );
 
                                       console.log("receipeData", receipeData);
 
@@ -150,34 +177,39 @@ const InsertProduction = ({
                                         const labelData = receipeData
                                           ? receipeData.label
                                           : null;
+                                        console.log(labelData);
                                         const findCFTPerKG =
                                           getCftPerKgByItemId(e.value);
+
                                         if (findCFTPerKG) {
                                           const calculateAsPerRatio =
-                                            (labelData / findCFTPerKG) *
+                                            (labelData /
+                                              findCFTPerKG?.cftPerKg) *
                                             values.totalBatch;
-
+                                          console.log(calculateAsPerRatio);
                                           setFieldValue(
                                             `detailsData.${index}.itemId`,
                                             e.value
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipeLabelData`,
-                                            labelData
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG
+                                            findCFTPerKG?.cftPerKg ? findCFTPerKG?.cftPerKg :0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipe`,
-                                            labelData
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.asPerRatio`,
-                                            Math.round(
-                                              calculateAsPerRatio * 100
-                                            ) / 100
+                                            calculateAsPerRatio
+                                              ? Math.round(
+                                                  calculateAsPerRatio * 100
+                                                ) / 100
+                                              : 0
                                           );
                                         } else {
                                           swal(
@@ -198,31 +230,30 @@ const InsertProduction = ({
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.receipe`,
-                                          ""
+                                          0
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.asPerRatio`,
-                                          ""
+                                          0
                                         );
-                                        setFieldValue(
-                                          `detailsData.${index}.asPerRatio`,
-                                          ""
-                                        );
+
                                         setFieldValue(
                                           `detailsData.${index}.materialUsed`,
                                           ""
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.excess`,
-                                          ""
+                                          0
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.less`,
-                                          ""
+                                          0
                                         );
                                       }
-                                    }
-                                     else if (values.receipeQtyRatio.toString() === "938") {
+                                    } else if (
+                                      values.receipeQtyRatio.toString() ===
+                                      "938"
+                                    ) {
                                       const receipeData =
                                         receipeOptionsLessQty938.find(
                                           (x) => x.value === e.value
@@ -235,7 +266,8 @@ const InsertProduction = ({
                                           getCftPerKgByItemId(e.value);
                                         if (findCFTPerKG) {
                                           const calculateAsPerRatio =
-                                            (labelData / findCFTPerKG) *
+                                            (labelData /
+                                              findCFTPerKG.cftPerKg) *
                                             values.totalBatch;
 
                                           setFieldValue(
@@ -244,13 +276,23 @@ const InsertProduction = ({
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipe`,
-                                            labelData
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.asPerRatio`,
-                                            Math.round(
-                                              calculateAsPerRatio * 100
-                                            ) / 100
+                                            calculateAsPerRatio
+                                              ? Math.round(
+                                                  calculateAsPerRatio * 100
+                                                ) / 100
+                                              : 0
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.receipeLabelData`,
+                                            labelData ? labelData :0
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.singleValueCFTPerKg`,
+                                            findCFTPerKG?.cftPerKg ? findCFTPerKG?.cftPerKg : 0
                                           );
                                         } else {
                                           swal(
@@ -259,9 +301,7 @@ const InsertProduction = ({
                                             "warning"
                                           );
                                         }
-                                      }
-                                      
-                                      else {
+                                      } else {
                                         swal(
                                           "Not Possible",
                                           "Ratio Qty Not Decleared,Please Contact with HO",
@@ -273,16 +313,13 @@ const InsertProduction = ({
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.receipe`,
-                                          ""
+                                          0
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.asPerRatio`,
-                                          ""
+                                       0
                                         );
-                                        setFieldValue(
-                                          `detailsData.${index}.asPerRatio`,
-                                          ""
-                                        );
+                                     
                                         setFieldValue(
                                           `detailsData.${index}.materialUsed`,
                                           ""
@@ -296,8 +333,10 @@ const InsertProduction = ({
                                           ""
                                         );
                                       }
-                                    }
-                                     else if (values.receipeQtyRatio.toString() === "900") {
+                                    } else if (
+                                      values.receipeQtyRatio.toString() ===
+                                      "900"
+                                    ) {
                                       const receipeData =
                                         receipeOptionsLessQty900.find(
                                           (x) => x.value === e.value
@@ -306,13 +345,13 @@ const InsertProduction = ({
                                         const labelData = receipeData
                                           ? receipeData.label
                                           : null;
-                                          console.log(labelData)
                                         const findCFTPerKG =
                                           getCftPerKgByItemId(e.value);
-                                          console.log(findCFTPerKG)
+
                                         if (findCFTPerKG) {
                                           const calculateAsPerRatio =
-                                            (labelData / findCFTPerKG) *
+                                            (labelData /
+                                              findCFTPerKG?.cftPerKg) *
                                             values.totalBatch;
 
                                           setFieldValue(
@@ -321,13 +360,23 @@ const InsertProduction = ({
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipe`,
-                                            labelData
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.asPerRatio`,
-                                            Math.round(
-                                              calculateAsPerRatio * 100
-                                            ) / 100
+                                            calculateAsPerRatio
+                                              ? Math.round(
+                                                  calculateAsPerRatio * 100
+                                                ) / 100
+                                              : 0
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.receipeLabelData`,
+                                            labelData ? labelData :0
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.singleValueCFTPerKg`,
+                                            findCFTPerKG?.cftPerKg ?  findCFTPerKG?.cftPerKg : 0
                                           );
                                         } else {
                                           swal(
@@ -336,9 +385,7 @@ const InsertProduction = ({
                                             "warning"
                                           );
                                         }
-                                      }
-                                      
-                                      else {
+                                      } else {
                                         swal(
                                           "Not Possible",
                                           "Ratio Qty Not Decleared,Please Contact with HO",
@@ -350,7 +397,7 @@ const InsertProduction = ({
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.receipe`,
-                                          ""
+                                         0
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.asPerRatio`,
@@ -374,7 +421,6 @@ const InsertProduction = ({
                                         );
                                       }
                                     }
-                                   
                                   }
                                 }}
                               ></Select>
