@@ -83,7 +83,7 @@ const ProductionCommonPart = () => {
       },
     ],
   };
-  const receipeOptions = [
+  const receipeOptions1000 = [
     { value: "677248c1a1a0d9059b94977e", label: "200" },
     { value: "677248c1a1a0d9059b94977c", label: "150" },
     { value: "677248c1a1a0d9059b94977d", label: "450" },
@@ -92,13 +92,22 @@ const ProductionCommonPart = () => {
     { value: "677248c1a1a0d9059b94977f", label: "200" },
   ];
 
-  const receipeOptionsLessQty = [
+  const receipeOptionsLessQty938 = [
     { value: "677248c1a1a0d9059b94977e", label: "188" },
     { value: "677248c1a1a0d9059b94977c", label: "150" },
     { value: "677248c1a1a0d9059b94977d", label: "450" },
     { value: "677248c1a1a0d9059b949780", label: "" },
     { value: "677248c1a1a0d9059b949781", label: "" },
     { value: "677248c1a1a0d9059b94977f", label: "150" },
+  ];
+
+  const receipeOptionsLessQty900 = [
+    { value: "677248c1a1a0d9059b94977e", label: "200" },
+    { value: "677248c1a1a0d9059b94977c", label: "144" },
+    { value: "677248c1a1a0d9059b94977d", label: "256" },
+    { value: "677248c1a1a0d9059b949780", label: "" },
+    { value: "677248c1a1a0d9059b949781", label: "" },
+    { value: "677248c1a1a0d9059b94977f", label: "300" },
   ];
 
   const areFieldsEmpty = () => {
@@ -314,6 +323,9 @@ const ProductionCommonPart = () => {
                                   setProStartDate={setProStartDate}
                                   endDate={endDate}
                                   setEndDate={setEndDate}
+                                  receipeOptions1000={receipeOptions1000}
+                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
+                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -423,11 +435,12 @@ const ProductionCommonPart = () => {
                                   cftData={cftData}
                                   updateProductionData={updateProductionData}
                                   rawMaterialsData={rawMaterialsData}
-                                  receipeOptions={receipeOptions}
+                                  receipeOptions1000={receipeOptions1000}
+                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
                                   setUpdateProductionData={
                                     setUpdateProductionData
                                   }
-                                  receipeOptionsLessQty={receipeOptionsLessQty}
+                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
                                   touched={touched}
                                   errors={errors}
                                 ></UpdateProduction>
@@ -439,9 +452,10 @@ const ProductionCommonPart = () => {
                                   errors={errors}
                                   arrayHelpers={arrayHelpers}
                                   values={values}
-                                  receipeOptions={receipeOptions}
+                                  receipeOptions1000={receipeOptions1000}
+                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
                                   cftData={cftData}
-                                  receipeOptionsLessQty={receipeOptionsLessQty}
+                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
                                   rawMaterialsData={rawMaterialsData}
                                 ></InsertProduction>
                               )}

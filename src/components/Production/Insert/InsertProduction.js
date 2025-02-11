@@ -10,10 +10,11 @@ const InsertProduction = ({
   errors,
   arrayHelpers,
   values,
-  receipeOptions,
+  receipeOptions1000,
   cftData,
   rawMaterialsData,
-  receipeOptionsLessQty,
+  receipeOptionsLessQty938,
+  receipeOptionsLessQty900
 }) => {
   function getCftPerKgByItemId(itemId) {
     for (const entry of cftData) {
@@ -139,7 +140,7 @@ const InsertProduction = ({
                                       values.receipeQtyRatio.toString() ===
                                       "1000"
                                     ) {
-                                      const receipeData = receipeOptions.find(
+                                      const receipeData = receipeOptions1000.find(
                                         (x) => x.value === e.value
                                       );
 
@@ -220,9 +221,10 @@ const InsertProduction = ({
                                           ""
                                         );
                                       }
-                                    } else if (values.receipeQtyRatio === 938) {
+                                    }
+                                     else if (values.receipeQtyRatio.toString() === "938") {
                                       const receipeData =
-                                        receipeOptionsLessQty.find(
+                                        receipeOptionsLessQty938.find(
                                           (x) => x.value === e.value
                                         );
                                       if (receipeData) {
@@ -257,7 +259,9 @@ const InsertProduction = ({
                                             "warning"
                                           );
                                         }
-                                      } else {
+                                      }
+                                      
+                                      else {
                                         swal(
                                           "Not Possible",
                                           "Ratio Qty Not Decleared,Please Contact with HO",
@@ -293,6 +297,84 @@ const InsertProduction = ({
                                         );
                                       }
                                     }
+                                     else if (values.receipeQtyRatio.toString() === "900") {
+                                      const receipeData =
+                                        receipeOptionsLessQty900.find(
+                                          (x) => x.value === e.value
+                                        );
+                                      if (receipeData) {
+                                        const labelData = receipeData
+                                          ? receipeData.label
+                                          : null;
+                                          console.log(labelData)
+                                        const findCFTPerKG =
+                                          getCftPerKgByItemId(e.value);
+                                          console.log(findCFTPerKG)
+                                        if (findCFTPerKG) {
+                                          const calculateAsPerRatio =
+                                            (labelData / findCFTPerKG) *
+                                            values.totalBatch;
+
+                                          setFieldValue(
+                                            `detailsData.${index}.itemId`,
+                                            e.value
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.receipe`,
+                                            labelData
+                                          );
+                                          setFieldValue(
+                                            `detailsData.${index}.asPerRatio`,
+                                            Math.round(
+                                              calculateAsPerRatio * 100
+                                            ) / 100
+                                          );
+                                        } else {
+                                          swal(
+                                            "Not Possible",
+                                            "CFT PER KG Not Decleared,Please Contact with HO",
+                                            "warning"
+                                          );
+                                        }
+                                      }
+                                      
+                                      else {
+                                        swal(
+                                          "Not Possible",
+                                          "Ratio Qty Not Decleared,Please Contact with HO",
+                                          "warning"
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.itemId`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.receipe`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.asPerRatio`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.asPerRatio`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.materialUsed`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.excess`,
+                                          ""
+                                        );
+                                        setFieldValue(
+                                          `detailsData.${index}.less`,
+                                          ""
+                                        );
+                                      }
+                                    }
+                                   
                                   }
                                 }}
                               ></Select>

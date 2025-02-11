@@ -95,6 +95,7 @@ const UpdateCFTInfo = () => {
           return {
             ...prev,
             detailsData: [...temp_details],
+            isActive:false,
             updateBy: updatebyUser,
             updateDate: new Date(),
           };
