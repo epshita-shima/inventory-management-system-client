@@ -232,7 +232,7 @@ const CommonPurchaseParameter = ({
       </div>
 
       <div
-        className="d-block d-md-flex d-lg-flex d-xl-flexjustify-content-between align-items-center w-100"
+        className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center w-100"
       >
         <div>
           <button

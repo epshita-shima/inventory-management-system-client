@@ -14,14 +14,14 @@ const PurchaseReportTable = () => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
       const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
+      const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
         (user) => user._id === userIdFromSession
       );
+
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
         const currentUser = userData?.find((user) => user._id === userId);
-     
         if (currentUser) {
           currentUser?.menulist?.forEach((menu) => {
             const userListSubMenu = menu?.items?.find(

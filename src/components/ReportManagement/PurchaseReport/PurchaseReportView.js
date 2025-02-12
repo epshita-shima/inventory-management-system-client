@@ -47,8 +47,7 @@ const PurchaseReportView = ({ permission }) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
-  const { data: supplierInformation } =
-    useGetAllSupplierInformationQuery(undefined);
+  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseInfoData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
@@ -57,14 +56,18 @@ const PurchaseReportView = ({ permission }) => {
     rawMaterialInfo,
     itemUnitInformation
   );
-  const supplierOptions = supplierDropdown(supplierInformation);
+  const supplierOptions = supplierDropdown(supplierInfo);
   const purchaseOptions = poInfoDropdown(purchaseInfoData);
 
-  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData ,isLoading:isPurchaseDetailsLoading}] =
-    useLazyGetPurchaseDetailsReportQuery();
+  const [
+    triggerPurchaseDetailsReport,
+    { data: purchaseDetailsData, isLoading: isPurchaseDetailsLoading },
+  ] = useLazyGetPurchaseDetailsReportQuery();
 
-  const [triggerPurchaseSummaryReport, { data: purchaseSummaryData,isLoading:isPurchaseSummaryLoading }] =
-    useLazyGetPurchaseSummaryReportQuery();
+  const [
+    triggerPurchaseSummaryReport,
+    { data: purchaseSummaryData, isLoading: isPurchaseSummaryLoading },
+  ] = useLazyGetPurchaseSummaryReportQuery();
 
   useEffect(() => {
     if (executeQuery) {
@@ -94,7 +97,7 @@ const PurchaseReportView = ({ permission }) => {
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <LoadingSpineer isLoading={isRawItemLoading}></LoadingSpineer>
-      <div className={`${isRawItemLoading ? 'd-none' : 'd-block'}`}>
+      <div className={`${isRawItemLoading ? "d-none" : "d-block"}`}>
         {
           <CommonPurchaseParameter
             fromDate={fromDate}
@@ -123,7 +126,7 @@ const PurchaseReportView = ({ permission }) => {
             filteredDatas={purchaseDetailsData}
             companyinfo={companyinfo}
             piInformation={piInformation}
-            supplierInformation={supplierInformation}
+            supplierInfo={supplierInfo}
             bankInformation={bankInformation}
             paymentData={paymentData}
             filters={filters}

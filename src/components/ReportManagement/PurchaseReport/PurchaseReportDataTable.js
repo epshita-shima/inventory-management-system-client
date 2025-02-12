@@ -15,7 +15,7 @@ const PurchaseReportDataTable = ({
   permission,
   itemUnitInformation,
   companyinfo,
-  supplierInformation,
+  supplierInfo,
   bankInformation,
   paymentData,
   filters,
@@ -32,7 +32,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
       detailsData: detail,
     }))
   );
-
+console.log('permission',supplierInfo)
   useEffect(() => {
     const processData = async () => {
       const data = await groupPurchaseDateByDetails(filteredDatas);
@@ -69,9 +69,9 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
     {
       name: "Supplier Name",
       selector: (poDetails) => {
-        const supplierName = supplierInformation?.find(
-          (x) => x._id === poDetails?.supplierId
-        );
+        const supplierName = supplierInfo?.find(
+          (x) => x._id === poDetails?.supplierId);
+        
         return supplierName ? supplierName.supplierName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -156,6 +156,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                   rawMaterialInfo,
                   bankInformation,
                   paymentData,
+                  supplierInfo,
                   {companyinfo},
                   reportPOTitle
                 )
@@ -231,7 +232,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                             filteredDatas,
                             rawMaterialInfo,
                             itemUnitInformation,
-                            supplierInformation,
+                            supplierInfo,
                             { companyinfo },
                             reportPurchaseTitle
                           );
@@ -251,7 +252,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                           filteredDatas,
                           rawMaterialInfo,
                           itemUnitInformation,
-                          supplierInformation,
+                          supplierInfo,
                           companyinfo,
                           reportPurchaseTitle
                         )
@@ -267,7 +268,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
         )}
       </div>
     );
-  }, [filteredDatas, companyinfo, rawMaterialInfo, groupedData,itemUnitInformation, supplierInformation, transformedData]);
+  }, [filteredDatas, companyinfo, rawMaterialInfo, groupedData,itemUnitInformation, supplierInfo, transformedData]);
 
   return (
     <div

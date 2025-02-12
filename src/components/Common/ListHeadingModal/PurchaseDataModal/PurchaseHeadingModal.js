@@ -158,7 +158,9 @@ const PurchaseHeadingModal = ({
                   totalPurchase,
                   rawMaterialItemInfo,
                   bankInformation,
+                 
                   paymentData,
+                  supplierInfo,
                   { companyinfo },
                   reportTitle
                 );

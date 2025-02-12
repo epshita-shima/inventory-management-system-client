@@ -7,10 +7,11 @@ const downloadPOPDF = async (
   rawMaterialItemInfo,
   bankInformation,
   paymentData,
+  supplierInfo,
   companyinfo,
   reportTitle
 ) => {
-
+  console.log("data", data);
   const numberInWords = toWords(parseInt(data?.grandTotalAmount));
   const companyContact = companyinfo.companyinfo[0].companyContact;
   const companyEmail = companyinfo.companyinfo[0].companyEmail;
@@ -21,8 +22,13 @@ const downloadPOPDF = async (
   const phoneNumber = companyContact.split(",")[0].split(": ")[1].trim();
   const contactEmail = companyEmail.split(",")[0].split(": ")[1].trim();
   const factoryConvertAddress = factoryAddress.replace("Factory Address:", "");
+  const supplierInfos = supplierInfo.find(
+    (supplier) => supplier._id == data.supplierId
+  );
+
+
   const filterBsnkInfo = (filterBsnkInfo) => {
-    const matchData = filterBsnkInfo.find((item) => item._id == data.bankId);
+    const matchData = filterBsnkInfo.find((item) => item._id === data.bankId);
     return matchData;
   };
   const filteredData = filterBsnkInfo(bankInformation);
@@ -57,17 +63,27 @@ const downloadPOPDF = async (
   const additionalTextY = vendorInfoHeaderY + 10;
   doc.text("Company", xCoordinate, additionalTextY);
   doc.text(
-    ":MSA Universal Textile Mill Limited",
+    `:${supplierInfos?.supplierName}`,
     xCoordinate + labelWidth,
     additionalTextY
   );
+
   doc.text("Address", xCoordinate, additionalTextY + 5);
-  doc.text(":N/A", xCoordinate + labelWidth, additionalTextY + 5);
+  doc.text(
+    `:${supplierInfos?.address}`,
+    xCoordinate + labelWidth,
+    additionalTextY + 5
+  );
   doc.text("Mobile", xCoordinate, additionalTextY + 10);
-  doc.text(":+880", xCoordinate + labelWidth, additionalTextY + 10);
+  doc.text(
+    `:${supplierInfos?.mobileNo
+    }`,
+    xCoordinate + labelWidth,
+    additionalTextY + 10
+  );
   doc.text("Email", xCoordinate, additionalTextY + 15);
   doc.text(
-    ":msa.universal@gmail.com",
+    `:${supplierInfos?.email}`,
     xCoordinate + labelWidth,
     additionalTextY + 15
   );
@@ -169,40 +185,46 @@ const downloadPOPDF = async (
         fontSize: 10,
       },
       didParseCell: function (data) {
-        // Check if it's the last row
-
         const rowIndex = data.row.index;
         const totalRows = data.table.body.length;
         const columnIndex = data.column.index;
-
+        const totalColumns = data.table.columns.length;
+    
+        console.log("Row Index:", rowIndex, "Total Rows:", totalRows); // Debugging
+    console.log(columnIndex === 5,columnIndex)
+        // Default center alignment
         data.cell.styles.halign = "center";
-
-        if (columnIndex === 3 || columnIndex === 5) {
-          data.cell.styles.halign = "center";
-        }
-
-        if (columnIndex === 1) {
-          data.cell.styles.halign = "left";
-        }
-
+    
+        // Left-align the entire last row
         if (rowIndex === totalRows - 1) {
-          data.cell.styles.fontStyle = "bold";
+            data.cell.styles.halign = "left"; 
+            data.cell.styles.fontStyle = "bold";
+            data.cell.styles.fontSize = 11;
         }
-
+    
+        // But right-align the last column in the last row
+        if (rowIndex === totalRows - 1 && columnIndex === totalColumns - 1) {
+            data.cell.styles.halign = "right";
+        }
+    
+        // Right-align the second last row (if applicable)
         if (rowIndex === totalRows - 2) {
-          data.cell.styles.fontStyle = "bold";
+            data.cell.styles.halign = "right";
+            data.cell.styles.fontStyle = "bold";
         }
-        if (rowIndex === totalRows - 2 && columnIndex === 0) {
-          data.cell.styles.halign = "right";
-          data.cell.styles.fontStyle = "bold";
+    
+        // Specific column alignments
+        if (columnIndex === 3 || columnIndex === 5) {
+            data.cell.styles.halign = "center";
         }
-
-        if (rowIndex === totalRows - 1) {
-          data.cell.styles.halign = "left";
-          data.cell.styles.fontStyle = "bold";
-          data.cell.styles.fontSize = "11";
+        if (columnIndex === 1) {
+            data.cell.styles.halign = "left";
         }
-      },
+        
+        if (columnIndex === 5) {
+            data.cell.styles.halign = "right";
+        }
+    }
     });
     return doc.previousAutoTable.finalY;
   }

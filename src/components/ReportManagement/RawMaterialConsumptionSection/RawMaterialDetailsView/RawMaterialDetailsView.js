@@ -324,7 +324,7 @@ const RawMaterialDetailsView = ({
                 filters.itemId ? '' : <th>Unit</th>
                }
                
-                <th>Material Used</th>
+                <th>Production Consumption</th>
               </tr>
             </thead>
             <tbody>
