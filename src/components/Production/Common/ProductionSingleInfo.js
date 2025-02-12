@@ -28,7 +28,10 @@ const ProductionSingleInfo = ({
   proStartDate,
   setProStartDate,
   endDate,
-  setEndDate
+  setEndDate,
+  receipeOptions1000,
+  receipeOptionsLessQty938,
+  receipeOptionsLessQty900
 }) => {
 
   const { data: sizeInfo } = useGetAllItemSizeQuery(undefined);
@@ -41,6 +44,7 @@ const ProductionSingleInfo = ({
   const receipeQtyDropdown = [
     { value: "1000", label: "1000" },
     { value: "938", label: "938" },
+    {value:"900",label:"900"}
   ];
 
   function getCftPerKgByItemId(itemId) {
@@ -796,6 +800,42 @@ const ProductionSingleInfo = ({
                     updateDate: new Date(),
                   }));
                 } else {
+                  const itemIds = values.detailsData.map((detail) => detail.itemId);
+                  if (itemIds.length > 0) {
+                    const getRecipeOptions = (receipeQtyRatio) => {
+                      switch (receipeQtyRatio) {
+                        case "1000":
+                          return receipeOptions1000;
+                        case "938":
+                          return receipeOptionsLessQty938;
+                        case "900":
+                          return receipeOptionsLessQty900;
+                        default:
+                          return [];
+                      }
+                    };
+                    
+                    const selectedRecipeArray = getRecipeOptions(e.value); // Select correct array dynamically
+                    console.log(selectedRecipeArray)
+                    const updatedDetailsData = values.detailsData.map((detail) => {
+                    
+                      const matchedRecipe = selectedRecipeArray.find((option) => option.value === detail.itemId);
+                      console.log('matchedRecipe',matchedRecipe)
+                      return {
+                        ...detail,
+                        receipe: matchedRecipe ? matchedRecipe.label : 0,
+                        asPerRatio:
+                        detail.singleValueCFTPerKg > 0
+                          ? Math.round(
+                              ((matchedRecipe.label / detail.singleValueCFTPerKg) * values.totalBatch) * 100
+                            ) / 100
+                          : 0,
+                      };
+                    });
+                    
+                    setFieldValue("detailsData", updatedDetailsData);
+                  }
+                  
                   setFieldValue("receipeQtyRatio", e.value);
                 }
               }}

@@ -17,11 +17,24 @@ const rawMaterialItemDropdown = (options) => {
       value: option._id,
       label: option.itemName,
       productionQtyPerBatch: option?.productionQtyPerBatch,
+      cftDeclaration:option.cftDeclaration
     });
   });
   return result;
 };
-
+const rawMaterialItemDropdownForCFT = (options) => {
+  return options?.reduce((acc, option) => {
+    if (option.cftDeclaration === true) {
+      acc.push({
+        value: option._id,
+        label: option.itemName,
+        productionQtyPerBatch: option?.productionQtyPerBatch,
+        cftDeclaration: option.cftDeclaration
+      });
+    }
+    return acc;
+  }, []);
+};
 const finishGoodsWithSizeItemDropdown = (options, sizeInfo) => {
   let result = [];
   options?.forEach((option) => {
@@ -197,5 +210,5 @@ export {
   deliveryOrderDropdown,
   rawMaterialWithUnitDropdown,
   productionBatchDropdown,
-  poInfoDropdown
+  poInfoDropdown,rawMaterialItemDropdownForCFT
 };

@@ -43,6 +43,8 @@ const StockReportDataTable = ({
     setShowProductionModal(false);
   };
 
+  console.log('ccompanyInfo',companyInfo)
+
   const columns = [
     {
       name: "Sl.",

@@ -10,11 +10,7 @@ import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMe
 const CFTInfosTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
-  const {
-    data: cftInfosData,
-    isLoading:isCFTInfoloading,
-    refetch,
-  } = useGetAllCFTInfosQuery(undefined);
+
   const [permission, setPermission] = useState();
   const navigate = useNavigate();
 
@@ -32,7 +28,7 @@ const CFTInfosTableData = () => {
       }
     }, [user, navigate, isUserloading]);
 
-  if (isCFTInfoloading) {
+  if (isUserloading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
         <button
@@ -56,9 +52,7 @@ const CFTInfosTableData = () => {
     <div>
       <CFTInfosList
         permission={permission}
-        cftInfosData={cftInfosData}
         click={clickhandler}
-        refetch={refetch}
       />
       {permission?.isInserted ? (
         <div

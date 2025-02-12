@@ -16,7 +16,7 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
-
+console.log('url',process.env.REACT_APP_BASE_URL)
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   const accessToken1 = localStorage.getItem("accesstoken");

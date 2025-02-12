@@ -18,7 +18,7 @@ import {
   useInsertCFTInfoMutation,
 } from "../../../redux/features/cftinformation/cftInfosApi";
 import "./InsertCFTInfo.css";
-import { rawMaterialItemDropdown } from "../../Common/CommonDropdown/CommonDropdown";
+import { rawMaterialItemDropdown, rawMaterialItemDropdownForCFT } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import '../../../buttonStyle/style.css'
@@ -34,7 +34,8 @@ const InsertCFTInfo = () => {
   const { data: allCFTInfoData } = useGetAllCFTInfosQuery(undefined);
   const makebyUser = getMakebyUser();
 
-  const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
+  const rawMaterialItemOptionsForCFT = rawMaterialItemDropdownForCFT(itemInfo);
+  console.log(rawMaterialItemOptionsForCFT)
   const initialValues = {
     detailsData: [
       {
@@ -297,7 +298,7 @@ const InsertCFTInfo = () => {
                                                         aria-label="Default select example"
                                                         name={`detailsData.${index}.itemId`}
                                                         options={
-                                                          rawMaterialItemOptions
+                                                          rawMaterialItemOptionsForCFT
                                                         }
                                                         defaultValue={{
                                                           label: "Select Size",
@@ -307,7 +308,7 @@ const InsertCFTInfo = () => {
                                                         //   (x) =>
                                                         //     x.value == values.detailsData[index].sizeId
                                                         // )}
-                                                        value={rawMaterialItemOptions.filter(
+                                                        value={rawMaterialItemOptionsForCFT?.filter(
                                                           function (option) {
                                                             return (
                                                               option.value ===

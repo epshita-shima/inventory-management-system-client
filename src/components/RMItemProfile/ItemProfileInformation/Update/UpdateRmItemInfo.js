@@ -68,6 +68,16 @@ const UpdateRmItemInfo = () => {
 
   const itemUnitConvertedOptions = itemUnitConvertSelectOption(itemUnitData);
 
+  const itemStatusOptions = [
+    { value: "true", label: "Active" },
+    { value: "false", label: "Inactive" },
+  ];
+
+  const cftPerDeclerationOptions = [
+    { value: "true", label: "Yes" },
+    { value: "false", label: "No" },
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -180,7 +190,7 @@ const UpdateRmItemInfo = () => {
                             name="categoryinfo"
                             options={categoryInfoConvertedOptions}
                             value={categoryInfoConvertedOptions.find(
-                              (x) => x.value == singleItemInfoData?.categoryId
+                              (x) => x.value === singleItemInfoData?.categoryId
                             )}
                             styles={{
                               control: (baseStyles, state) => ({
@@ -357,36 +367,124 @@ const UpdateRmItemInfo = () => {
                         />
                       </InputGroup>
                     </div>
-                    <div className="col-sm-12 col-md-6 col-lg-4 mt-4">
+                    <div className="col-sm-12 col-md-6 col-lg-4">
                       <Form.Label
                         htmlFor="inputPassword5"
                         style={{ color: "#032339", letterSpacing: "1px" }}
                       >
                         Item Status
                       </Form.Label>
-                      <div className="form-check form-switch">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="flexCheckDefault"
-                          checked={singleItemInfoData?.itemStatus}
-                          onChange={(e) => {
-                            setSingleItemInfoData((prevData) => ({
-                              ...prevData,
-                              itemStatus: e.target.checked,
-                              updateBy: updatebyUser,
-                              updateDate: new Date(),
-                            }));
-                          }}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="flexCheckDefault"
-                        >
-                          {singleItemInfoData?.itemStatus
-                            ? "Active"
-                            : "Inactive"}
-                        </label>
+                      <div className="d-flex justify-content-between">
+                        <div className="w-100">
+                          <Select
+                            class="form-select"
+                            className=" mb-3"
+                            aria-label="Default select example"
+                            name="categoryInfo"
+                            options={itemStatusOptions}
+                            value={itemStatusOptions.find(
+                              (x) =>
+                                String(x.value) ===
+                                String(singleItemInfoData?.itemStatus)
+                            )}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                width: "100%",
+                                borderColor: state.isFocused ? "#fff" : "#fff",
+                                border: "1px solid #2DDC1B",
+                              }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                                height: "90px",
+                                overflowY: "scroll",
+                              }),
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                              }),
+                            }}
+                            theme={(theme) => ({
+                              ...theme,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#B8FEB3",
+                                primary: "#2DDC1B",
+                              },
+                            })}
+                            menuPosition="fixed"
+                            menuPortalTarget={document.body}
+                            onChange={(e) => {
+                              setSingleItemInfoData((prevData) => ({
+                                ...prevData,
+                                itemStatus:e.value=="true"? true : false,
+                                updateBy: updatebyUser,
+                                updateDate: new Date(),
+                              }));
+                            }}
+                          ></Select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-12 col-md-6 col-lg-4">
+                      <Form.Label
+                        htmlFor="inputCft"
+                        style={{ color: "#032339", letterSpacing: "1px" }}
+                      >
+                        CFT Dcleration
+                      </Form.Label>
+                      <div className="w-100 d-flex justify-content-between mt-2">
+                        <div className="w-100">
+                          <Select
+                            class="form-select"
+                            className=" mb-3"
+                            aria-label="Default select example"
+                            name="unitinfo"
+                            options={cftPerDeclerationOptions}
+                            value={cftPerDeclerationOptions.find(
+                              (x) =>
+                                String(x.value) ===
+                                String(singleItemInfoData?.cftDeclaration)
+                            )}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                width: "100%",
+                                borderColor: state.isFocused ? "#fff" : "#fff",
+                                border: "1px solid #2DDC1B",
+                              }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                                height: "80px",
+                                overflowY: "scroll",
+                              }),
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                              }),
+                            }}
+                            theme={(theme) => ({
+                              ...theme,
+                              colors: {
+                                ...theme.colors,
+                                primary25: "#B8FEB3",
+                                primary: "#2DDC1B",
+                              },
+                            })}
+                            menuPosition="fixed"
+                            menuPortalTarget={document.body}
+                            onChange={(e) => {
+                              setSingleItemInfoData((prevData) => ({
+                                ...prevData,
+                                cftDeclaration:e.value=="true"? true : false,
+                                updateBy: updatebyUser,
+                                updateDate: new Date(),
+                              }));
+                            }}
+                          ></Select>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -397,7 +495,6 @@ const UpdateRmItemInfo = () => {
                     type="submit"
                     form="itemcreation-form"
                     className="border-0  raw-submit-button"
-                    
                   >
                     {isLoading ? "Updating" : "Update"}
                   </button>
