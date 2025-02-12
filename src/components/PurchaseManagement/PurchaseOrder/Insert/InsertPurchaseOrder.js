@@ -76,7 +76,9 @@ const InsertPurchaseOrder = ({
                       Math.round(calGrandTotalQuantity * 100) / 100;
                     calTotalAmount += +singleTotalAmount;
                     getCalTotalAmount = Math.round(calTotalAmount * 100) / 100;
+                    console.log('getCalGrandTotalQuantity=',getCalGrandTotalQuantity)
                     setTotalGrandQuantity(getCalGrandTotalQuantity);
+                    console.log('totalGrandTotalAmount=',totalGrandTotalAmount)
                     setTotalGrandTotalAmount(getCalTotalAmount);
                   }
                   return (

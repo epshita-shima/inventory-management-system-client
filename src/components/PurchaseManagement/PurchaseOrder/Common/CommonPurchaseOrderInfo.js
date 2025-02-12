@@ -34,8 +34,8 @@ import {
   useGetSerialNoQuery,
 } from "../../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
-import '../../../../buttonStyle/style.css';
-import './CommonPurchaseOrderInfo.css'
+import "../../../../buttonStyle/style.css";
+import "./CommonPurchaseOrderInfo.css";
 const CommonPurchaseOrderInfo = () => {
   const { id } = useParams();
 
@@ -50,7 +50,7 @@ const CommonPurchaseOrderInfo = () => {
   );
   const [purchaseOrderAllInformation, setPurchaseOrderAllInformation] =
     useState([]);
-  const { data: supplierInfo, isLoading:isLoadingSupplier } =
+  const { data: supplierInfo, isLoading: isLoadingSupplier } =
     useGetAllSupplierInformationQuery(undefined);
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
@@ -60,7 +60,7 @@ const CommonPurchaseOrderInfo = () => {
   const [totalGrandQuantity, setTotalGrandQuantity] = useState(0);
   const [totalGrandTotalAmount, setTotalGrandTotalAmount] = useState(0);
   const [serialValue, setSerialValue] = useState([]);
-  const { data: serialNo,refetch } = useGetSerialNoQuery(undefined);
+  const { data: serialNo, refetch } = useGetSerialNoQuery(undefined);
 
   const [createSerialNo] = useCreateSerialNoMutation();
   const [insertPurchaseOrderInfo, { isLoading: isLoadingCreatePO }] =
@@ -72,7 +72,8 @@ const CommonPurchaseOrderInfo = () => {
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   const paymentTypeOptions = paymentInfoDropdown(paymentTypeInfo);
   const bankInfoOptions = bankInformationDropdown(bankInfo);
-
+  console.log("totalGrandQuantity=", totalGrandQuantity);
+  console.log("totalGrandTotalAmount=", totalGrandTotalAmount);
   const initialValues = {
     poNo: "",
     supplierId: "",
@@ -148,6 +149,36 @@ const CommonPurchaseOrderInfo = () => {
 
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
+    const modelData = {
+      poNo: values.poNo,
+      supplierId: values.supplierId,
+      currencyId: values.currencyId,
+      paymentId: values.paymentId,
+      bankId: values.bankId,
+      deliveryDate: new Date(values.deliveryDate).toLocaleDateString("en-CA"),
+      grandTotalAmount: initialValues.grandTotalAmount,
+      grandTotalQuantity: initialValues.grandTotalQuantity,
+      approveStatus: values.approveStatus,
+      approveBy: "n/a",
+      approveDate: "n/a",
+      makeBy: makebyUser,
+      updateBy: null,
+      makeDate: new Date(),
+      updateDate: null,
+      remarks:values.remarks,
+      detailsData: [],
+    };
+    values?.detailsData?.map((item, index) => {
+      modelData.detailsData.push({
+        itemId: item.itemId,
+        itemDescription: item.itemDescription,
+        quantity:Number(item.quantity),
+        unitPrice:Number(item.unitPrice) ,
+        totalAmount:Number(item.totalAmount),
+      });
+    });
+
+    console.log("modelData", JSON.stringify(modelData));
     const serialData = {
       serialNo: serialNo?.serialNo,
       type: "po",
@@ -169,11 +200,12 @@ const CommonPurchaseOrderInfo = () => {
           swal("Not Possible!", response?.error?.data?.message, "error");
         }
       } else {
-        const response = await insertPurchaseOrderInfo(values);
+        const response = await insertPurchaseOrderInfo(modelData);
 
         if (response?.data?.status === 200) {
+          console.log(response)
           await createSerialNo(serialData);
-          refetch()
+          refetch();
           swal("Done", "Data Save Successfully", "success");
           resetForm();
         } else if (response?.error?.status === 400) {
@@ -197,7 +229,7 @@ const CommonPurchaseOrderInfo = () => {
     >
       {/* {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>} */}
 
-      <div class={`${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
+      <div class={`${isLoadingSupplier ? "d-none" : "d-block"}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -240,22 +272,19 @@ const CommonPurchaseOrderInfo = () => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
                     return (
-                      <div
-                        className=" shadow-lg py-2 px-5"
-                      
-                      >
+                      <div className=" shadow-lg py-2 px-5">
                         <div class="container-fluid">
                           <div class="row justify-content-center">
                             <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
                               <div className="d-flex justify-content-between align-items-center">
-                                <h2 className="main-heading-title" >
+                                <h2 className="main-heading-title">
                                   {id
                                     ? "Purchase Order Update Form"
                                     : "Purchase Order Insert Form"}
                                 </h2>
                                 <div>
                                   <button
-                                   className="customBackToListButton"
+                                    className="customBackToListButton"
                                     onClick={() => {
                                       navigate("/main-view/po-list");
                                     }}
@@ -295,9 +324,7 @@ const CommonPurchaseOrderInfo = () => {
                               ></PurchaseOrderSingleInfo>
 
                               <div>
-                                <h2
-                                className="heading-title"
-                                >
+                                <h2 className="heading-title">
                                   Details Information
                                 </h2>
                                 <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center mb-4">
@@ -311,8 +338,7 @@ const CommonPurchaseOrderInfo = () => {
                                           ? areFieldsEmpty()
                                             ? "gray"
                                             : "#2DDC1B"
-                                          : 
-                                            !(isValid && dirty)
+                                          : !(isValid && dirty)
                                           ? "gray"
                                           : "#2DDC1B",
 
@@ -327,8 +353,7 @@ const CommonPurchaseOrderInfo = () => {
                                           ? areFieldsEmpty()
                                             ? true
                                             : false
-                                          :
-                                          !(isValid && dirty)
+                                          : !(isValid && dirty)
                                       }
                                     >
                                       {id
@@ -398,15 +423,13 @@ const CommonPurchaseOrderInfo = () => {
                                         name={`grandTotalQuantity`}
                                         placeholder="Grand Total Quantity"
                                         disabled
-                                        className='purchase-total-input'
+                                        className="purchase-total-input"
                                         value={
                                           id
                                             ? purchaseOrderAllInformation?.grandTotalQuantity
                                             : totalGrandQuantity
                                         }
-                                        style={{
-                                     
-                                        }}
+                                        style={{}}
                                       />
                                     </div>
                                     <div className="mt-md-2">
@@ -421,13 +444,12 @@ const CommonPurchaseOrderInfo = () => {
                                         name={`grandTotalAmount`}
                                         placeholder="Grand Total Amount"
                                         disabled
-                                        className='purchase-total-input'
+                                        className="purchase-total-input"
                                         value={
                                           id
                                             ? purchaseOrderAllInformation?.grandTotalAmount
                                             : totalGrandTotalAmount
                                         }
-                                    
                                       />
                                     </div>
                                   </div>
