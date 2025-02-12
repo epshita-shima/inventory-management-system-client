@@ -3,14 +3,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { downloadRawMaterailConsumptionDetailsPDF } from "../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
 import { formatDate } from "../../Uitilites/DateUtilities";
-import handleRawMaterialConsumptionDetails from './../../ReportProperties/Excel/handleRawMaterialConsumptionDetails';
+import handleRawMaterialConsumptionDetails from "./../../ReportProperties/Excel/handleRawMaterialConsumptionDetails";
 
 const ProductionConsumptionDetailsModal = ({
   productionSingleItemDetailsData,
   rawMaterialItem,
   companyinfo,
   itemUnitInfo,
-  selectedRow
+  selectedRow,
 }) => {
   const itemNames = rawMaterialItem?.find(
     (item) => item._id === selectedRow.itemId
@@ -27,6 +27,7 @@ const ProductionConsumptionDetailsModal = ({
       }))
   );
 
+  console.log(transformedProductionData)
   const grandTotalProductionQuantity = productionSingleItemDetailsData?.reduce(
     (totalMaterialUsed, item) => {
       const detailsMaterialUsed = item.detailsData.reduce(
@@ -66,6 +67,7 @@ const ProductionConsumptionDetailsModal = ({
     processData();
   }, [productionSingleItemDetailsData]);
 
+  console.log(Object.values(groupedData))
   const columns = [
     {
       name: "Sl.",
@@ -89,7 +91,7 @@ const ProductionConsumptionDetailsModal = ({
       sortable: true,
       center: true,
       filterable: true,
-      width:'200px'
+      width: "200px",
     },
     {
       name: "Production Consumption",
@@ -97,7 +99,7 @@ const ProductionConsumptionDetailsModal = ({
       sortable: true,
       center: true,
       filterable: true,
-      width:'200px'
+      width: "200px",
     },
 
     {
@@ -112,7 +114,7 @@ const ProductionConsumptionDetailsModal = ({
       sortable: true,
       center: true,
       filterable: true,
-      width:'200px'
+      width: "200px",
     },
     {
       name: "Unit",
@@ -136,7 +138,7 @@ const ProductionConsumptionDetailsModal = ({
       sortable: true,
       center: true,
       filterable: true,
-      width:'200px'
+      width: "200px",
     },
   ];
 
@@ -231,9 +233,14 @@ const ProductionConsumptionDetailsModal = ({
         )}
       </div>
     );
-  }, [companyinfo, itemUnitInfo, productionSingleItemDetailsData, rawMaterialItem, reportTitleForSingle, transformedProductionData]);
-
-
+  }, [
+    companyinfo,
+    itemUnitInfo,
+    productionSingleItemDetailsData,
+    rawMaterialItem,
+    reportTitleForSingle,
+    transformedProductionData,
+  ]);
 
   return (
     <div>
@@ -286,7 +293,7 @@ const ProductionConsumptionDetailsModal = ({
                   <tr>
                     <th>Production Date</th>
                     <th>Batch No</th>
-                    <th>Material Used</th>
+                    <th>Production Consumption</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,7 +303,7 @@ const ProductionConsumptionDetailsModal = ({
                     Object.keys(groupedData)?.map((dateKey) => {
                       const batches = groupedData[dateKey]; // Get batches for this date
                       const formattedDate = formatDate(dateKey); // Format the date key
-
+console.log(batches)
                       // Calculate total material used for the entire date
                       const dateWiseTotalMaterialUsed = batches.reduce(
                         (total, batch) =>
@@ -318,13 +325,7 @@ const ProductionConsumptionDetailsModal = ({
                               <React.Fragment key={batch.batchNo}>
                                 {batch.detailsData.map(
                                   (detail, detailIndex) => {
-                                    const itemNames = rawMaterialItem?.find(
-                                      (item) => item._id === detail.itemId
-                                    );
-
-                                    const itemUnit = itemUnitInfo.find(
-                                      (size) => size._id === itemNames?.unitId
-                                    );
+                                
 
                                     return (
                                       <tr key={detail._id}>
@@ -359,8 +360,10 @@ const ProductionConsumptionDetailsModal = ({
                                             {batch.batchNo}
                                           </td>
                                         )}
+
+
                                         <td>
-                                          {detail.materialUsed.toLocaleString()}
+                                          {detail?.materialUsed.toLocaleString()}
                                         </td>
                                       </tr>
                                     );
@@ -373,7 +376,7 @@ const ProductionConsumptionDetailsModal = ({
                           {/* Date-wise Total Row */}
                           <tr>
                             <td
-                              colSpan={2}
+                              colSpan={ 2 }
                               style={{
                                 textAlign: "right",
                                 fontWeight: "bold",
@@ -407,7 +410,7 @@ const ProductionConsumptionDetailsModal = ({
                   {/* Grand Total Row */}
                   <tr>
                     <td
-                      colSpan={2}
+                      colSpan={2 }
                       style={{
                         textAlign: "right",
                         fontWeight: "bold",

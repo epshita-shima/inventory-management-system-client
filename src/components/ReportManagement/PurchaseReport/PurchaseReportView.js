@@ -47,7 +47,7 @@ const PurchaseReportView = ({ permission }) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
-  const {data:supplierInfo}=useGetAllSupplierInformationQuery(undefined)
+  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
   const { data: purchaseInfoData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
@@ -59,12 +59,16 @@ const PurchaseReportView = ({ permission }) => {
   const supplierOptions = supplierDropdown(supplierInfo);
   const purchaseOptions = poInfoDropdown(purchaseInfoData);
 
-  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData ,isLoading:isPurchaseDetailsLoading}] =
-    useLazyGetPurchaseDetailsReportQuery();
+  const [
+    triggerPurchaseDetailsReport,
+    { data: purchaseDetailsData, isLoading: isPurchaseDetailsLoading },
+  ] = useLazyGetPurchaseDetailsReportQuery();
 
-  const [triggerPurchaseSummaryReport, { data: purchaseSummaryData,isLoading:isPurchaseSummaryLoading }] =
-    useLazyGetPurchaseSummaryReportQuery();
-console.log(permission)
+  const [
+    triggerPurchaseSummaryReport,
+    { data: purchaseSummaryData, isLoading: isPurchaseSummaryLoading },
+  ] = useLazyGetPurchaseSummaryReportQuery();
+
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -93,7 +97,7 @@ console.log(permission)
       style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <LoadingSpineer isLoading={isRawItemLoading}></LoadingSpineer>
-      <div className={`${isRawItemLoading ? 'd-none' : 'd-block'}`}>
+      <div className={`${isRawItemLoading ? "d-none" : "d-block"}`}>
         {
           <CommonPurchaseParameter
             fromDate={fromDate}

@@ -6,9 +6,8 @@ import { Modal, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import ProductionConsumptionDetailsModal from "./ProductionConsumptionDetailsModal";
 import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
-import { downloadRawMaterailConsumptionDetailsPDF } from "../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
 import { formatDate } from "../../Uitilites/DateUtilities";
-import { downloadRawMaterailProductionConsumptionDetailsPDF } from "../../ReportProperties/PDF/handleItemwiseProsuctionConsumption";
+import { downloadRawMaterailProductionConsumptionDetailsPDF, downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary } from "../../ReportProperties/PDF/handleItemwiseProsuctionConsumption";
 
 const ProductionConsumptionModal = ({
   productionSingleItemId,
@@ -33,6 +32,8 @@ const ProductionConsumptionModal = ({
     triggerProductionDetailsReport,
     { data: productionSingleItemDetailsData },
   ] = useLazyGetRawMaterialDetailsConsumptionReportQuery();
+console.log('productionSingleItemDetailsData',productionSingleItemDetailsData)
+
 
   const groupData = (filteredData) => {
     const result = filteredData?.reduce((acc, row) => {
@@ -156,7 +157,7 @@ const ProductionConsumptionModal = ({
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadRawMaterailProductionConsumptionDetailsPDF(
+                          downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary(
                             { companyinfo },
                             reportTitleForSingle
                           );
@@ -217,7 +218,7 @@ const ProductionConsumptionModal = ({
               </div>
 
               <table
-                id="my-raw-material-consumption-details-table"
+                id="my-raw-material-consumption-details-table-itemwise-summary"
                 className="d-none"
               >
                 <thead>

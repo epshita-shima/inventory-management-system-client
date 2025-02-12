@@ -52,17 +52,20 @@ import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/Pu
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
 import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseStatusList";
 import StockReportDetails from "./components/ReportManagement/StockReport/StockReportDetails";
+import isTokenExpired from "./redux/api/isTokenExpired";
 
 function App() {
 
   // useInactivityLogout();
+
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
   const [userIdForChangePassowrd, setUserIdForChangePassowrd] = useState([]);
   const getMenulistData = localStorage.getItem("user");
+  const token= localStorage.getItem("accesstoken");
   const menuListData = JSON.parse(getMenulistData);
- 
+ isTokenExpired(token)
   return (
     <div>
       <div className="app-container">
