@@ -47,8 +47,7 @@ const PurchaseReportView = ({ permission }) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: piInformation } = useGetAllInvoiceInformationQuery(undefined);
-  const { data: supplierInformation } =
-    useGetAllSupplierInformationQuery(undefined);
+  const {data:supplierInfo}=useGetAllSupplierInformationQuery(undefined)
   const { data: purchaseInfoData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
@@ -57,7 +56,7 @@ const PurchaseReportView = ({ permission }) => {
     rawMaterialInfo,
     itemUnitInformation
   );
-  const supplierOptions = supplierDropdown(supplierInformation);
+  const supplierOptions = supplierDropdown(supplierInfo);
   const purchaseOptions = poInfoDropdown(purchaseInfoData);
 
   const [triggerPurchaseDetailsReport, { data: purchaseDetailsData ,isLoading:isPurchaseDetailsLoading}] =
@@ -65,7 +64,7 @@ const PurchaseReportView = ({ permission }) => {
 
   const [triggerPurchaseSummaryReport, { data: purchaseSummaryData,isLoading:isPurchaseSummaryLoading }] =
     useLazyGetPurchaseSummaryReportQuery();
-
+console.log(permission)
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -123,7 +122,7 @@ const PurchaseReportView = ({ permission }) => {
             filteredDatas={purchaseDetailsData}
             companyinfo={companyinfo}
             piInformation={piInformation}
-            supplierInformation={supplierInformation}
+            supplierInfo={supplierInfo}
             bankInformation={bankInformation}
             paymentData={paymentData}
             filters={filters}

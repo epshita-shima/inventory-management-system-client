@@ -158,7 +158,9 @@ const PurchaseOrderApproveList = ({
                   purchaseFilterApproveAllData,
                   rawMaterialItemInfo,
                   bankInformation,
+                 
                   paymentData,
+                  supplierInfo,
                   { companyinfo },
                   reportTitle
                 );

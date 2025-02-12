@@ -32,8 +32,6 @@ const PurchaseOderList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const [purchaseOrderList, setPurchaseOrderList] = useState(true);
-  const { data: supplierInformation } =
-    useGetAllSupplierInformationQuery(undefined);
   const {
     data: purchaseInfoData,
     isLoading: isPurchaseloading,
@@ -204,7 +202,7 @@ const PurchaseOderList = ({ permission }) => {
                   rawMaterialItemInfo,
                   bankInformation,
                   paymentData,
-                  supplierInformation,
+                  supplierInfo,
                   { companyinfo },
                   reportTitle
                 );

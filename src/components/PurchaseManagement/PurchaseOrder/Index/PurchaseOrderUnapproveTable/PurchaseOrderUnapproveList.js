@@ -193,6 +193,7 @@ const PurchaseOrderUnapproveList = ({
                   rawMaterialItemInfo,
                   bankInformation,
                   paymentData,
+                  supplierInfo,
                   { companyinfo },
                   reportTitle
                 );

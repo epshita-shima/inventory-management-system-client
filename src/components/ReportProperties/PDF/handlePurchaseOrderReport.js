@@ -7,7 +7,7 @@ const downloadPOPDF = async (
   rawMaterialItemInfo,
   bankInformation,
   paymentData,
-  supplierInformation,
+  supplierInfo,
   companyinfo,
   reportTitle
 ) => {
@@ -22,10 +22,10 @@ const downloadPOPDF = async (
   const phoneNumber = companyContact.split(",")[0].split(": ")[1].trim();
   const contactEmail = companyEmail.split(",")[0].split(": ")[1].trim();
   const factoryConvertAddress = factoryAddress.replace("Factory Address:", "");
-  const supplierInfo = supplierInformation.find(
+  const supplierInfos = supplierInfo.find(
     (supplier) => supplier._id == data.supplierId
   );
-  console.log("supplierInfo", supplierInfo);
+
 
   const filterBsnkInfo = (filterBsnkInfo) => {
     const matchData = filterBsnkInfo.find((item) => item._id === data.bankId);
@@ -63,27 +63,27 @@ const downloadPOPDF = async (
   const additionalTextY = vendorInfoHeaderY + 10;
   doc.text("Company", xCoordinate, additionalTextY);
   doc.text(
-    `:${supplierInfo?.supplierName}`,
+    `:${supplierInfos?.supplierName}`,
     xCoordinate + labelWidth,
     additionalTextY
   );
 
   doc.text("Address", xCoordinate, additionalTextY + 5);
   doc.text(
-    `:${supplierInfo?.address}`,
+    `:${supplierInfos?.address}`,
     xCoordinate + labelWidth,
     additionalTextY + 5
   );
   doc.text("Mobile", xCoordinate, additionalTextY + 10);
   doc.text(
-    `:${supplierInfo?.mobileNo
+    `:${supplierInfos?.mobileNo
     }`,
     xCoordinate + labelWidth,
     additionalTextY + 10
   );
   doc.text("Email", xCoordinate, additionalTextY + 15);
   doc.text(
-    `:${supplierInfo?.email}`,
+    `:${supplierInfos?.email}`,
     xCoordinate + labelWidth,
     additionalTextY + 15
   );
