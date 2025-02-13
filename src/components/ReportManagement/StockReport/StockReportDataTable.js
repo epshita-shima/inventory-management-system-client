@@ -2,11 +2,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import DataTable from "react-data-table-component";
 import React, { useMemo, useState } from "react";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import ProductionConsumptionModal from "./ProductionConsumptionModal";
 import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
-import PurchaseQuantityDetailsModal from "./PurchaseQuantityDetailsModal";
-// import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
+
+import { useLazyGetPurchaseSummaryReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
+import PurchaseQuantityModal from "./PurchaseQuantityModal";
+import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const StockReportDataTable = ({
   rawMaterialStockReportData,
@@ -20,22 +21,32 @@ const StockReportDataTable = ({
   isRawMaterialStockDataLoading,
 }) => {
   const [productionSingleItemId, setProductionSingleItemId] = useState("");
+  const [purchaseSingleItemId, setPurchaseSingleItemId] = useState("");
   const [showProductionModal, setShowProductionModal] = useState(false);
   const [showPurchaseModal, setShowPruchaseModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [triggerDatewiseDetailsReport, { data: productionItemDetailsData }] =
-    useLazyGetRawMaterialDetailsConsumptionReportQuery();
+  const [
+    triggerDatewiseDetailsProductionStockReport,
+    { data: productionItemDetailsData },
+  ] = useLazyGetRawMaterialDetailsConsumptionReportQuery();
+  const [
+    triggerDatewiseDetailsPurchaseStockReport,
+    { data: purchaseItemDetailsData },
+  ] = useLazyGetPurchaseSummaryReportQuery();
 
   const handleRowClickForProduction = async (rowData) => {
-    await triggerDatewiseDetailsReport({ itemId: rowData.itemId });
+    await triggerDatewiseDetailsProductionStockReport({
+      itemId: rowData.itemId,
+    });
     setSelectedRow(rowData);
     setProductionSingleItemId(rowData.itemId);
     setShowProductionModal(true); // Show modal when a row is clicked
   };
+
   const handleRowClickForPurchase = async (rowData) => {
-    await triggerDatewiseDetailsReport({ itemId: rowData.itemId });
+    await triggerDatewiseDetailsPurchaseStockReport({ itemId: rowData.itemId });
     setSelectedRow(rowData);
-    setProductionSingleItemId(rowData.itemId);
+    setPurchaseSingleItemId(rowData.itemId);
     setShowPruchaseModal(true); // Show modal when a row is clicked
   };
 
@@ -43,7 +54,7 @@ const StockReportDataTable = ({
     setShowProductionModal(false);
   };
 
-  console.log('ccompanyInfo',companyInfo)
+  console.log("purchaseItemDetailsData", purchaseItemDetailsData);
 
   const columns = [
     {
@@ -76,8 +87,10 @@ const StockReportDataTable = ({
           data-target="#exampleModalLabelPurchaseRaw"
           onClick={() => handleRowClickForPurchase(row)}
         >
-          <a href="#" className="text-success fw-bold"> {row.purchaseQuantity}</a>
-          
+          <a href="#" className="text-success fw-bold">
+            {" "}
+            {row.purchaseQuantity}
+          </a>
         </div>
       ),
     },
@@ -105,9 +118,8 @@ const StockReportDataTable = ({
           onClick={() => handleRowClickForProduction(row)}
         >
           <a href="#" className="text-success fw-bold">
-          {row.productionConsumption}
+            {row.productionConsumption}
           </a>
-        
         </div>
       ),
     },
@@ -158,7 +170,6 @@ const StockReportDataTable = ({
       -1
   );
   const subHeaderComponent = useMemo(() => {
-
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
         {/* {
@@ -211,25 +222,29 @@ const StockReportDataTable = ({
 
   return (
     <div>
-      {/* <LoadingSpineer isLoading={isRawMaterialStockDataLoading}></LoadingSpineer> */}
       {isTableDispaly && (
-        <div
-          // className={`${isRawMaterialStockDataLoading ? 'd-none' : 'd-block'} mt-4`}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-        >
-          <>
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              defaultSortField="name"
-              customStyles={customStyles}
-              subHeaderComponent={subHeaderComponent}
-              striped
-              pagination
-              subHeader
-            />
-          </>
-        </div>
+        <>
+          <LoadingSpineer
+            isLoading={isRawMaterialStockDataLoading}
+          ></LoadingSpineer>
+          <div
+            // className={`${isRawMaterialStockDataLoading ? 'd-none' : 'd-block'} mt-4`}
+            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+          >
+            <>
+              <DataTable
+                columns={columns}
+                data={filteredItems}
+                defaultSortField="name"
+                customStyles={customStyles}
+                subHeaderComponent={subHeaderComponent}
+                striped
+                pagination
+                subHeader
+              />
+            </>
+          </div>
+        </>
       )}
       {showProductionModal && (
         <ProductionConsumptionModal
@@ -241,14 +256,15 @@ const StockReportDataTable = ({
           itemUnitInfo={itemUnitInfo}
         ></ProductionConsumptionModal>
       )}
-      {
-        showPurchaseModal && (
-          <PurchaseQuantityDetailsModal companyInfo={companyInfo}></PurchaseQuantityDetailsModal>
-        )
-      }
-{
-
-}
+      {showPurchaseModal && (
+        <PurchaseQuantityModal
+          purchaseSingleItemId={purchaseSingleItemId}
+          filteredDatas={purchaseItemDetailsData}
+          companyinfo={companyInfo}
+          rawMaterialItem={rawMaterialItem}
+          itemUnitInfo={itemUnitInfo}
+        ></PurchaseQuantityModal>
+      )}
     </div>
   );
 };

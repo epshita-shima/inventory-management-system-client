@@ -32,7 +32,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
       detailsData: detail,
     }))
   );
-console.log('permission',supplierInfo)
+
   useEffect(() => {
     const processData = async () => {
       const data = await groupPurchaseDateByDetails(filteredDatas);

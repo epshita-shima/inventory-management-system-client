@@ -84,7 +84,7 @@ const downloadProductionGroupedDetailsPDF = async (
   const finalRows = [];
   const grandTotalPIQty = calculateProductionQuantity(filteredData);
 
-  Object.keys(groupedData).forEach((key) => {
+  Object.keys(groupedData)?.forEach((key) => {
     const group = groupedData[key];
     const rowSpan = group?.mainData.length;
     const dateWiseTotalQuantity = group.mainData.reduce(

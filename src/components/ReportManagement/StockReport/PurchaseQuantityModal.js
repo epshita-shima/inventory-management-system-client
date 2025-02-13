@@ -1,117 +1,87 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from 'react'
-import { groupPurchaseDateByDetails } from './../../Uitilites/reportDataGrouping';
-import {useGetAllPurchaseOrderInformationQuery} from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi"
-import { downloadGoupPurchaseDetailsPDF } from '../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF';
-import handlePurchaseDatewiseReportExcel from '../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
+import React, { useMemo } from "react";
 import DataTable from "react-data-table-component";
-const PurchaseQuantityDetailsModal = ({filteredDatas,companyinfo,  rawMaterialItem,
-  bankInformation,
-  paymentData,
-  supplierInfo,itemUnitInfo}) => {
-  
-  const [groupedData, setGroupedData] = useState({});
-  const reportPurchaseTitle = "PURCHASE ORDER INFORMATION";
-  const reportPOTitle="PO INFORMATION"
-const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
-  const transformedData = filteredDatas?.flatMap((piDetails) =>
-    piDetails.detailsData.map((detail) => ({
-      ...piDetails,
-      detailsData: detail,
-    }))
+import handlePurchaseDatewiseSummaryExcel from "./../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel";
+import { downloadGoupPurchaseSummaryPDF } from "../../ReportProperties/PDF/handlePurchaseDatewiseSummary";
+import { useLazyGetPurchaseDetailsReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
+import PurchaseQuantityDetailsModal from "./PurchaseQuantityDetailsModal";
+import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
+import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
+const PurchaseQuantityModal = ({
+  companyinfo,
+  filteredDatas,
+  purchaseSingleItemId,
+  rawMaterialItem,
+  itemUnitInfo,
+}) => {
+  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
+  const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
+  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
+  const itemNames = rawMaterialItem?.find(
+    (item) => item._id === purchaseSingleItemId
   );
+  const unitInfo = itemUnitInfo?.find((item) => item._id === itemNames?.unitId);
+  const reportTitleForSingle = `Itemwise Purchase Quantity of ${itemNames?.itemName}(${unitInfo.unitInfo})`;
 
-  useEffect(() => {
-    const processData = async () => {
-      const data = await groupPurchaseDateByDetails(filteredDatas);
-      // const convertObjectData=Object.values(data)
-      setGroupedData(data);
-    };
-    processData();
-  }, [filteredDatas]);
+  const [
+    triggerPurchaseDetailsReport,
+    { data: purchaseSingleItemDetailsData },
+  ] = useLazyGetPurchaseDetailsReportQuery();
 
+  const handleRowClickForPurchaseDetails = async (rowData) => {
+    await triggerPurchaseDetailsReport({
+      itemId: rowData.itemId,
+    });
+  };
+  console.log("purchaseSingleItemDetailsData", purchaseSingleItemDetailsData);
 
   const columns = [
     {
       name: "Sl.",
-      selector: (poDetails, index) => index + 1,
+      selector: (invoiceDetails, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
-      name: "Pi Date",
-      selector: (poDetails) =>
-        new Date(poDetails?.receiveDate).toLocaleDateString("en-CA"),
+      name: "Date",
+      // selector: (row) => new Date(row.receiveDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
-    },
-    {
-      name: "PO No",
-      selector: (poDetails) => poDetails?.supplierPoNo,
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "200px",
-    },
-    {
-      name: "Supplier Name",
-      selector: (poDetails) => {
-        const supplierName = supplierInfo?.find(
-          (x) => x._id === poDetails?.supplierId);
-        
-        return supplierName ? supplierName.supplierName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
-      },
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "220px",
+      cell: (row) => (
+        <div
+          class="card-body"
+          data-toggle="modal"
+          data-target="#exampleModalLabelProductionQtyDetails"
+          onClick={() => handleRowClickForPurchaseDetails(row)}
+        >
+          <p>{new Date(row.receiveDate).toLocaleDateString("en-CA")}</p>
+        </div>
+      ),
     },
 
     {
-      name: "Item Name",
-      selector: (poDetails) => {
-        const itemName = rawMaterialItem?.find(
-          (x) => poDetails?.detailsData.itemId == x._id
-        );
-        const itemSize = itemUnitInfo?.find(
-          (size) => size._id == itemName?.unitId
-        );
-        return itemName
-          ? itemName?.itemName + ` (${itemSize?.unitInfo})`
-          : "N/A";
-      },
+      name: "Total Quantity",
+      selector: (row) => row.totalPurchaseQty,
       sortable: true,
       center: true,
       filterable: true,
-      width: "230px",
     },
-
     {
-      name: "Quantity",
-      selector: (poDetails) => poDetails?.detailsData?.quantity,
+      name: "Rate in Avarage",
+      selector: (row) =>
+        Math.round(row.totalPurchaseAmount / row.totalPurchaseQty),
       sortable: true,
       center: true,
       filterable: true,
-      width: "150px",
     },
-
     {
-      name: "Unit Price",
-      selector: (poDetails) => poDetails?.detailsData.unitPrice,
+      name: "Total Amount",
+      selector: (row) => row.totalPurchaseAmount,
       sortable: true,
       center: true,
       filterable: true,
-      width: "120px",
-    },
-
-    {
-      name: "Amount",
-      selector: (poDetails) => poDetails?.detailsData.amount,
-      sortable: true,
-      center: true,
-      filterable: true,
-      width: "180px",
     },
   ];
 
@@ -170,14 +140,10 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadGoupPurchaseDetailsPDF(
-                            groupedData,
+                          downloadGoupPurchaseSummaryPDF(
                             filteredDatas,
-                            rawMaterialItem,
-                            itemUnitInfo,
-                            supplierInfo,
                             { companyinfo },
-                            reportPurchaseTitle
+                            reportTitleForSingle
                           );
                         }
                       }}
@@ -190,15 +156,11 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        handlePurchaseDatewiseReportExcel(
-                          transformedData,
+                        handlePurchaseDatewiseSummaryExcel(
                           filteredDatas,
-                          rawMaterialItem,
-                          itemUnitInfo,
-                          supplierInfo,
                           companyinfo,
-                          reportPurchaseTitle
-                        )
+                          reportTitleForSingle
+                        );
                       }}
                     >
                       Excel
@@ -211,14 +173,13 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
         )}
       </div>
     );
-  }, [filteredDatas, companyinfo, rawMaterialItem, groupedData,itemUnitInfo, supplierInfo, transformedData]);
-
+  }, [companyinfo, filteredDatas, reportTitleForSingle]);
 
   return (
     <div>
       <div
         class="modal fade"
-        id="exampleModalLabelProductionQtyDetails"
+        id="exampleModalLabelPurchaseRaw"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
@@ -227,11 +188,8 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
         <div class="modal-dialog modal-lg fullscreen-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="exampleModalLabelProductionQtyDetails"
-              >
-                {`Itemwise Production Consumption of  Details`}
+              <h5 class="modal-title" id="exampleModalLabelPurchaseRaw">
+                {`Itemwise Purchase Quantity ${itemNames?.itemName} (${unitInfo.unitInfo})`}
               </h5>
               <button
                 type="button"
@@ -248,7 +206,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
               >
                 <DataTable
                   columns={columns}
-                  data={transformedData}
+                  data={filteredDatas}
                   defaultSortField="name"
                   customStyles={customStyles}
                   striped
@@ -257,13 +215,23 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                   subHeaderComponent={subHeaderComponent}
                 />
               </div>
-            
             </div>
           </div>
         </div>
       </div>
+      {
+        <PurchaseQuantityDetailsModal
+          companyinfo={companyinfo}
+          rawMaterialItem={rawMaterialItem}
+          bankInformation={bankInformation}
+          paymentData={paymentData}
+          supplierInfo={supplierInfo}
+          itemUnitInfo={itemUnitInfo}
+          filteredDatas={purchaseSingleItemDetailsData}
+        ></PurchaseQuantityDetailsModal>
+      }
     </div>
   );
-}
+};
 
-export default PurchaseQuantityDetailsModal
+export default PurchaseQuantityModal;
