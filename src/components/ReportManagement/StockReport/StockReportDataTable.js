@@ -6,8 +6,9 @@ import ProductionConsumptionModal from "./ProductionConsumptionModal";
 import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
 
 import { useLazyGetPurchaseSummaryReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
-import PurchaseQuantityModal from "./PurchaseQuantityModal";
+
 import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import PurchaseQuantityModal from "./PurchaseQuantityModal";
 
 const StockReportDataTable = ({
   rawMaterialStockReportData,
