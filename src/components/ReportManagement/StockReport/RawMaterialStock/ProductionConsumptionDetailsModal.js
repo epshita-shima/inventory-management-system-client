@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
-import { downloadRawMaterailConsumptionDetailsPDF } from "../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
-import { formatDate } from "../../Uitilites/DateUtilities";
-import handleRawMaterialConsumptionDetails from "./../../ReportProperties/Excel/handleRawMaterialConsumptionDetails";
+import { formatDate } from "../../../Uitilites/DateUtilities";
+import { downloadRawMaterailConsumptionDetailsPDF } from "../../../ReportProperties/PDF/handleRawMaterialConsumptionDetailsPDF";
+import handleRawMaterialConsumptionDetails from "../../../ReportProperties/Excel/handleRawMaterialConsumptionDetails";
 
 const ProductionConsumptionDetailsModal = ({
   productionSingleItemDetailsData,

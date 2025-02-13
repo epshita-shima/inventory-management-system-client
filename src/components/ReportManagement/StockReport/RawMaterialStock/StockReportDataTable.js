@@ -3,11 +3,11 @@
 import DataTable from "react-data-table-component";
 import React, { useMemo, useState } from "react";
 import ProductionConsumptionModal from "./ProductionConsumptionModal";
-import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
+import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
 
-import { useLazyGetPurchaseSummaryReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
+import { useLazyGetPurchaseSummaryReportQuery } from "../../../../redux/features/purchasereport/purchasereportApi";
 
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
+import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import PurchaseQuantityModal from "./PurchaseQuantityModal";
 
 const StockReportDataTable = ({
@@ -55,7 +55,6 @@ const StockReportDataTable = ({
     setShowProductionModal(false);
   };
 
-  console.log("purchaseItemDetailsData", purchaseItemDetailsData);
 
   const columns = [
     {

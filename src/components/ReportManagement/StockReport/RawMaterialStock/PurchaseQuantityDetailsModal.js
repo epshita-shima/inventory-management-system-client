@@ -1,87 +1,117 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from 'react'
+import { groupPurchaseDateByDetails } from '../../../Uitilites/reportDataGrouping';
+import {useGetAllPurchaseOrderInformationQuery} from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi"
+import { downloadGoupPurchaseDetailsPDF } from '../../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF';
+import handlePurchaseDatewiseReportExcel from '../../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
 import DataTable from "react-data-table-component";
-import handlePurchaseDatewiseSummaryExcel from "./../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel";
-import { downloadGoupPurchaseSummaryPDF } from "../../ReportProperties/PDF/handlePurchaseDatewiseSummary";
-import { useLazyGetPurchaseDetailsReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
-import PurchaseQuantityDetailsModal from "./PurchaseQuantityDetailsModal";
-import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
-import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
-import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
-const PurchaseQuantityModal = ({
-  companyinfo,
-  filteredDatas,
-  purchaseSingleItemId,
-  rawMaterialItem,
-  itemUnitInfo,
-}) => {
-  const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
-  const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
-  const { data: supplierInfo } = useGetAllSupplierInformationQuery(undefined);
-  const itemNames = rawMaterialItem?.find(
-    (item) => item._id === purchaseSingleItemId
+const PurchaseQuantityDetailsModal = ({filteredDatas,companyinfo,  rawMaterialItem,
+  bankInformation,
+  paymentData,
+  supplierInfo,itemUnitInfo}) => {
+  
+  const [groupedData, setGroupedData] = useState({});
+  const reportPurchaseTitle = "PURCHASE ORDER INFORMATION";
+  const reportPOTitle="PO INFORMATION"
+const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
+  const transformedData = filteredDatas?.flatMap((piDetails) =>
+    piDetails.detailsData.map((detail) => ({
+      ...piDetails,
+      detailsData: detail,
+    }))
   );
-  const unitInfo = itemUnitInfo?.find((item) => item._id === itemNames?.unitId);
-  const reportTitleForSingle = `Itemwise Purchase Quantity of ${itemNames?.itemName}(${unitInfo.unitInfo})`;
 
-  const [
-    triggerPurchaseDetailsReport,
-    { data: purchaseSingleItemDetailsData },
-  ] = useLazyGetPurchaseDetailsReportQuery();
+  useEffect(() => {
+    const processData = async () => {
+      const data = await groupPurchaseDateByDetails(filteredDatas);
+      // const convertObjectData=Object.values(data)
+      setGroupedData(data);
+    };
+    processData();
+  }, [filteredDatas]);
 
-  const handleRowClickForPurchaseDetails = async (rowData) => {
-    await triggerPurchaseDetailsReport({
-      itemId: rowData.itemId,
-    });
-  };
-  console.log("purchaseSingleItemDetailsData", purchaseSingleItemDetailsData);
 
   const columns = [
     {
       name: "Sl.",
-      selector: (invoiceDetails, index) => index + 1,
+      selector: (poDetails, index) => index + 1,
       center: true,
       width: "60px",
     },
     {
-      name: "Date",
-      // selector: (row) => new Date(row.receiveDate).toLocaleDateString("en-CA"),
+      name: "Pi Date",
+      selector: (poDetails) =>
+        new Date(poDetails?.receiveDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
-      cell: (row) => (
-        <div
-          class="card-body"
-          data-toggle="modal"
-          data-target="#exampleModalLabelProductionQtyDetails"
-          onClick={() => handleRowClickForPurchaseDetails(row)}
-        >
-          <p>{new Date(row.receiveDate).toLocaleDateString("en-CA")}</p>
-        </div>
-      ),
+    },
+    {
+      name: "PO No",
+      selector: (poDetails) => poDetails?.supplierPoNo,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "200px",
+    },
+    {
+      name: "Supplier Name",
+      selector: (poDetails) => {
+        const supplierName = supplierInfo?.find(
+          (x) => x._id === poDetails?.supplierId);
+        
+        return supplierName ? supplierName.supplierName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
+      },
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "220px",
     },
 
     {
-      name: "Total Quantity",
-      selector: (row) => row.totalPurchaseQty,
+      name: "Item Name",
+      selector: (poDetails) => {
+        const itemName = rawMaterialItem?.find(
+          (x) => poDetails?.detailsData.itemId == x._id
+        );
+        const itemSize = itemUnitInfo?.find(
+          (size) => size._id == itemName?.unitId
+        );
+        return itemName
+          ? itemName?.itemName + ` (${itemSize?.unitInfo})`
+          : "N/A";
+      },
       sortable: true,
       center: true,
       filterable: true,
+      width: "230px",
     },
+
     {
-      name: "Rate in Avarage",
-      selector: (row) =>
-        Math.round(row.totalPurchaseAmount / row.totalPurchaseQty),
+      name: "Quantity",
+      selector: (poDetails) => poDetails?.detailsData?.quantity,
       sortable: true,
       center: true,
       filterable: true,
+      width: "150px",
     },
+
     {
-      name: "Total Amount",
-      selector: (row) => row.totalPurchaseAmount,
+      name: "Unit Price",
+      selector: (poDetails) => poDetails?.detailsData.unitPrice,
       sortable: true,
       center: true,
       filterable: true,
+      width: "120px",
+    },
+
+    {
+      name: "Amount",
+      selector: (poDetails) => poDetails?.detailsData.amount,
+      sortable: true,
+      center: true,
+      filterable: true,
+      width: "180px",
     },
   ];
 
@@ -140,10 +170,14 @@ const PurchaseQuantityModal = ({
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadGoupPurchaseSummaryPDF(
+                          downloadGoupPurchaseDetailsPDF(
+                            groupedData,
                             filteredDatas,
+                            rawMaterialItem,
+                            itemUnitInfo,
+                            supplierInfo,
                             { companyinfo },
-                            reportTitleForSingle
+                            reportPurchaseTitle
                           );
                         }
                       }}
@@ -156,11 +190,15 @@ const PurchaseQuantityModal = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        handlePurchaseDatewiseSummaryExcel(
+                        handlePurchaseDatewiseReportExcel(
+                          transformedData,
                           filteredDatas,
+                          rawMaterialItem,
+                          itemUnitInfo,
+                          supplierInfo,
                           companyinfo,
-                          reportTitleForSingle
-                        );
+                          reportPurchaseTitle
+                        )
                       }}
                     >
                       Excel
@@ -173,13 +211,14 @@ const PurchaseQuantityModal = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, reportTitleForSingle]);
+  }, [filteredDatas, companyinfo, rawMaterialItem, groupedData,itemUnitInfo, supplierInfo, transformedData]);
+
 
   return (
     <div>
       <div
         class="modal fade"
-        id="exampleModalLabelPurchaseRaw"
+        id="exampleModalLabelProductionQtyDetails"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
@@ -188,8 +227,11 @@ const PurchaseQuantityModal = ({
         <div class="modal-dialog modal-lg fullscreen-modal" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabelPurchaseRaw">
-                {`Itemwise Purchase Quantity ${itemNames?.itemName} (${unitInfo.unitInfo})`}
+              <h5
+                class="modal-title"
+                id="exampleModalLabelProductionQtyDetails"
+              >
+                {`Itemwise Production Consumption of  Details`}
               </h5>
               <button
                 type="button"
@@ -206,7 +248,7 @@ const PurchaseQuantityModal = ({
               >
                 <DataTable
                   columns={columns}
-                  data={filteredDatas}
+                  data={transformedData}
                   defaultSortField="name"
                   customStyles={customStyles}
                   striped
@@ -215,23 +257,13 @@ const PurchaseQuantityModal = ({
                   subHeaderComponent={subHeaderComponent}
                 />
               </div>
+            
             </div>
           </div>
         </div>
       </div>
-      {
-        <PurchaseQuantityDetailsModal
-          companyinfo={companyinfo}
-          rawMaterialItem={rawMaterialItem}
-          bankInformation={bankInformation}
-          paymentData={paymentData}
-          supplierInfo={supplierInfo}
-          itemUnitInfo={itemUnitInfo}
-          filteredDatas={purchaseSingleItemDetailsData}
-        ></PurchaseQuantityDetailsModal>
-      }
     </div>
   );
-};
+}
 
-export default PurchaseQuantityModal;
+export default PurchaseQuantityDetailsModal

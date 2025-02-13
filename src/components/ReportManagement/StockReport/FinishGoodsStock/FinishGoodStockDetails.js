@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
-import { useNavigate } from "react-router-dom";
-import StockReportView from "./ReportView";
+import React, { useEffect, useState } from 'react'
+import FinishGoodsStockView from './FinishGoodsStockView';
+import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
+import { useNavigate } from 'react-router-dom';
 
-const StockReportDetails = () => {
+const FinishGoodStockDetails = () => {
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState();
@@ -32,7 +32,7 @@ const StockReportDetails = () => {
               menu?.items?.forEach((subMenu) => {
                 if (subMenu?.label === subMenu?.label) {
                   const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "raw-material-stock"
+                    (subItem) => subItem?.label === "Finish Goods Stock"
                   );
                   if (userListSubMenu) {
                     userList = userListSubMenu;
@@ -78,9 +78,9 @@ const StockReportDetails = () => {
 
   return (
       <div>
-        <StockReportView permission={permission}></StockReportView>
+        <FinishGoodsStockView permission={permission}></FinishGoodsStockView>
       </div>
     );
 }
 
-export default StockReportDetails 
+export default FinishGoodStockDetails

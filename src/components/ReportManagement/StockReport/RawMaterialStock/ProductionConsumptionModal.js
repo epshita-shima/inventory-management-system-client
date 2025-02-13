@@ -5,9 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import ProductionConsumptionDetailsModal from "./ProductionConsumptionDetailsModal";
-import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../redux/features/productionreport/productionreportApi";
-import { formatDate } from "../../Uitilites/DateUtilities";
-import { downloadRawMaterailProductionConsumptionDetailsPDF, downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary } from "../../ReportProperties/PDF/handleItemwiseProsuctionConsumption";
+import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
+import { formatDate } from "../../../Uitilites/DateUtilities";
+import {downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary} from "../../../ReportProperties/PDF/handleItemwiseProsuctionConsumption"
 
 const ProductionConsumptionModal = ({
   productionSingleItemId,

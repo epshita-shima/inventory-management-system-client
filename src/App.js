@@ -51,8 +51,9 @@ import CombineReportTable from "./components/ReportManagement/CombineReport/Comb
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
 import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseStatusList";
-import StockReportDetails from "./components/ReportManagement/StockReport/StockReportDetails";
 import isTokenExpired from "./redux/api/isTokenExpired";
+import StockReportDetails from "./components/ReportManagement/StockReport/RawMaterialStock/StockReportDetails";
+import FinishGoodStockDetails from "./components/ReportManagement/StockReport/FinishGoodsStock/FinishGoodStockDetails";
 
 function App() {
 
@@ -561,6 +562,14 @@ function App() {
                 element={
                   <RequireAuth>
                     <StockReportDetails />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path="finish-goods-stock"
+                element={
+                  <RequireAuth>
+                    <FinishGoodStockDetails />
                   </RequireAuth>
                 }
               ></Route>

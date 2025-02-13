@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import CommonParameter from "./CommonParameter";
-import { useLazyGetRawMaterialStockReportQuery } from "../../../redux/features/stockreport/stockreportApi";
+import { useLazyGetRawMaterialStockReportQuery } from "../../../../redux/features/stockreport/stockreportApi";
 import StockReportDataTable from "./StockReportDataTable";
-import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
-import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
-import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
+import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
+import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 
 const StockReportView = ({ permission, dropdownMenuStyles }) => {
   const [fromDate, setFromDate] = useState(new Date());
@@ -41,7 +41,6 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
     await triggerStockReport(updatedFilters);
   };
 
-  console.log('companyinfo 33',companyInfo)
 
   return (
     <div className="row px-5 mx-2">
