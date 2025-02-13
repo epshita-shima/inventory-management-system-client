@@ -54,18 +54,18 @@ const downloadGoupPurchaseDetailsPDF = (
           .map((filteredItem) => filteredItem.supplierName)
           .join(", ");
       
-          const itemNames = finishGoodsItemInfo.find(
+          const itemNames = finishGoodsItemInfo?.find(
             (item) => item._id === detail.itemId
           );
-          const itemUnit = itemUnitInformation.find(
-            (size) => size._id === itemNames.unitId
+          const itemUnit = itemUnitInformation?.find(
+            (size) => size._id === itemNames?.unitId
           );
           const row = [
             formattedDate,
-            supplierName, 
+            supplierName ?supplierName : 'N/A' , 
             group.supplierPoNo, 
-            `${itemNames.itemName}`, 
-            `${itemUnit.unitInfo}`,
+            `${itemNames?.itemName}`, 
+            `${itemUnit?.unitInfo}`,
             detail.quantity.toLocaleString(), 
             detail.unitPrice.toLocaleString(), 
             detail.amount.toLocaleString(), 
@@ -82,8 +82,8 @@ const downloadGoupPurchaseDetailsPDF = (
           else{
             finalRows[finalRows.length - 1][0] = supplierName;
             finalRows[finalRows.length - 1][1] = group.supplierPoNo;
-            finalRows[finalRows.length - 1][2] =  `${itemNames.itemName}`;
-            finalRows[finalRows.length - 1][3] =  `${itemUnit.unitInfo}`;
+            finalRows[finalRows.length - 1][2] =  `${itemNames?.itemName}`;
+            finalRows[finalRows.length - 1][3] =  `${itemUnit?.unitInfo}`;
             finalRows[finalRows.length - 1][4] = detail.quantity.toLocaleString();
             finalRows[finalRows.length - 1][5] = detail.unitPrice.toLocaleString();
             finalRows[finalRows.length - 1][6] = detail.amount.toLocaleString();

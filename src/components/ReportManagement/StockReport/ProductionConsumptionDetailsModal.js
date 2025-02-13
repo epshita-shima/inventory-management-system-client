@@ -67,7 +67,6 @@ const ProductionConsumptionDetailsModal = ({
     processData();
   }, [productionSingleItemDetailsData]);
 
-  console.log(Object.values(groupedData))
   const columns = [
     {
       name: "Sl.",
