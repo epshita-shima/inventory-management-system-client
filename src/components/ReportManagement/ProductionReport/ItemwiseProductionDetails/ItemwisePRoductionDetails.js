@@ -244,7 +244,6 @@ filters}) => {
                         href="#"
                         onClick={() => {
                           handleProductionDatewiseExcel(
-                            transformedProductionData,
                             filteredDatas,
                             finishGoodsItemInfo,
                             itemSizeInfo,
@@ -263,7 +262,7 @@ filters}) => {
           )}
         </div>
       );
-    }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, transformedProductionData]);
+    }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, reportTitle]);
   
     return (
       <div>

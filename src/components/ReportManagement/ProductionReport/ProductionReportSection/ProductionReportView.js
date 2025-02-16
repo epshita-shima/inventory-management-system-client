@@ -51,6 +51,7 @@ const ProductionReportView = ({ permission }) => {
     { data: productionDatewiseSummaryData },
   ] = useLazyGetProductionDatewiseSummaryReportQuery();
 
+  console.log('productionDatewiseDetailsData',productionDatewiseDetailsData)
   const itemsOptions = finishGoodsWithSizeItemDropdown(
     finishGoodsItemInfo,
     itemSizeInfo

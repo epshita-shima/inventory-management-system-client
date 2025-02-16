@@ -6,8 +6,9 @@ import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/c
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 import { useLazyGetFinishgGoodsStockReportQuery } from "../../../../redux/features/stockreport/stockreportApi";
 import FinishGoodsStockDatatable from "./FinishGoodsStockDatatable";
+import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 
-const FinishGoodsStockView = () => {
+const FinishGoodsStockView = ({permission}) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);
@@ -20,7 +21,8 @@ const FinishGoodsStockView = () => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishItemInfo } = useGetAllItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-
+  const {data:rawMaterialItemInfo}=useGetAllRMItemInformationQuery(undefined)
+  const {data:itemUnitInfo}=useGetAllItemUnitQuery(undefined)
   const [
     triggerFinishGoodsStockReport,
     {
@@ -65,6 +67,11 @@ const FinishGoodsStockView = () => {
           filterText={filterText}
           isFinishGoodsStockDataLoading={isFinishGoodsStockDataLoading}
           companyinfo={companyinfo}
+          rawMaterialItemInfo={rawMaterialItemInfo}
+          itemUnitInfo={itemUnitInfo}
+          permission={permission}
+          fromDate={fromDate}
+          toDate={toDate}
         ></FinishGoodsStockDatatable>
       )}
     </div>

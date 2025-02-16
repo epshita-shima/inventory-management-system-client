@@ -56,7 +56,7 @@ const PurchaseQuantityModal = ({
           data-target="#exampleModalLabelProductionQtyDetails"
           onClick={() => handleRowClickForPurchaseDetails(row)}
         >
-          <p>{new Date(row.receiveDate).toLocaleDateString("en-CA")}</p>
+          <a href="#" className="text-success fw-bold">{new Date(row.receiveDate).toLocaleDateString("en-CA")}</a>
         </div>
       ),
     },

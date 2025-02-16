@@ -97,7 +97,7 @@ const StockReportDataTable = ({
 
     {
       name: "Purchase Return Qty",
-      selector: (row) => <span>0</span>,
+      selector: (row) => <span>-</span>,
       sortable: true,
       center: true,
       filterable: true,
@@ -172,8 +172,8 @@ const StockReportDataTable = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        {/* {
-          groupedResult?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
+     {
+          rawMaterialStockReportData?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex">
             <div class="dropdown">
               <button
@@ -215,7 +215,7 @@ const StockReportDataTable = ({
             </div>
           </div>
         </div>)
-        } */}
+        } 
       </div>
     );
   }, []);

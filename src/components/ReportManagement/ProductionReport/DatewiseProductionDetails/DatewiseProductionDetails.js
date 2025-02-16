@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
 import { downloadProductionPDFPERBatch } from "../../../ReportProperties/PDF/HeaderFooter";
 import { downloadProductionDatewiseDetailsInfoPDF } from "../../../ReportProperties/PDF/handleProductionDatewiseDetailsPDF";
-import handleProductionDatewiseExcel from './../../../ReportProperties/Excel/handleProductionDatewiseExcel';
+import handleProductionDatewiseExcel from "./../../../ReportProperties/Excel/handleProductionDatewiseExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
 import { groupProductionDateByDetails } from "../../../Uitilites/reportDataGrouping";
 import { calculateProductionQuantity } from "../../../Uitilites/CalculationUtilities/calculation";
@@ -30,7 +30,10 @@ const DatewiseProductionDetails = ({
     }))
   );
 
-  const grandTotalProductionQuantity = calculateProductionQuantity(filteredDatas)
+  console.log("transformedProductionData", transformedProductionData);
+
+  const grandTotalProductionQuantity =
+    calculateProductionQuantity(filteredDatas);
 
   useEffect(() => {
     const processData = async () => {
@@ -69,7 +72,7 @@ const DatewiseProductionDetails = ({
         const itemName = finishGoodsItemInfo?.find(
           (x) => row?.productionItemName === x._id
         );
-       
+
         const itemSize = itemSizeInfo?.find(
           (size) => size._id === itemName?.sizeId
         );
@@ -91,9 +94,7 @@ const DatewiseProductionDetails = ({
         const itemUnit = itemUnitInformation?.find(
           (size) => size._id === itemName?.unitId
         );
-        return itemName
-          ? ` (${itemUnit?.unitInfo})`
-          : "N/A";
+        return itemName ? ` (${itemUnit?.unitInfo})` : "N/A";
       },
       sortable: true,
       center: true,
@@ -132,7 +133,7 @@ const DatewiseProductionDetails = ({
                 const singleReturnData = filteredDatas.find(
                   (returnItem) => returnItem._id == row._id
                 );
-              
+
                 downloadProductionPDFPERBatch(
                   singleReturnData,
                   finishGoodsItemInfo,
@@ -222,7 +223,6 @@ const DatewiseProductionDetails = ({
                       href="#"
                       onClick={() => {
                         handleProductionDatewiseExcel(
-                          transformedProductionData,
                           filteredDatas,
                           finishGoodsItemInfo,
                           itemSizeInfo,
@@ -241,14 +241,12 @@ const DatewiseProductionDetails = ({
         )}
       </div>
     );
-  }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo, transformedProductionData]);
+  }, [companyinfo, filteredDatas, finishGoodsItemInfo, itemSizeInfo]);
 
   return (
     <div>
       {isTableDispaly && (
-        <div
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-        >
+        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
           <DataTable
             // title={
             //   <h2
@@ -263,7 +261,7 @@ const DatewiseProductionDetails = ({
             // }
             subHeaderComponent={subHeaderComponent}
             columns={columns}
-            data={transformedProductionData}
+            data={filteredDatas}
             defaultSortField="name"
             customStyles={customStyles}
             striped
@@ -298,7 +296,7 @@ const DatewiseProductionDetails = ({
                         const itemNames = finishGoodsItemInfo?.find(
                           (item) => item._id === detail.productionItemName
                         );
-                       
+
                         const itemSize = itemSizeInfo.find(
                           (size) => size._id === itemNames?.sizeId
                         );
@@ -320,10 +318,8 @@ const DatewiseProductionDetails = ({
                               </td>
                             )}
 
-                            <td>
-                              {detail.batchNo}
-                            </td>
-                            <td >{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
+                            <td>{detail.batchNo}</td>
+                            <td>{`${itemNames.itemName} (${itemSize.sizeInfo})`}</td>
                             <td>{itemUnit?.unitInfo}</td>
                             <td>{detail.productionQty.toLocaleString()}</td>
                           </tr>
@@ -384,10 +380,9 @@ const DatewiseProductionDetails = ({
                   }}
                 >
                   {grandTotalProductionQuantity != null
-                ? grandTotalProductionQuantity.toLocaleString()
-                : 0}
+                    ? grandTotalProductionQuantity.toLocaleString()
+                    : 0}
                 </td>
-           
               </tr>
             </tbody>
           </table>

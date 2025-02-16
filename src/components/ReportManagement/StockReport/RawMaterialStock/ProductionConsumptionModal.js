@@ -88,7 +88,7 @@ console.log('productionSingleItemDetailsData',productionSingleItemDetailsData)
           data-target="#exampleModalLabelProductionConsumptionDetails"
           onClick={() => handleRowClickForProductionDetails(row)}
         >
-          <p>{new Date(row.productionDate).toLocaleDateString("en-CA")}</p>
+          <a href="#" className="text-success fw-bold">{new Date(row.productionDate).toLocaleDateString("en-CA")}</a>
         </div>
       ),
     },

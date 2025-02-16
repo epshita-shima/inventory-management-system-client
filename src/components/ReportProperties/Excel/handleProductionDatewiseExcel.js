@@ -2,7 +2,6 @@ import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
 const handleProductionDatewiseExcel = (
-  data,
   mainData,
   finishGoodsInfo,
   itemSizeInfo,
@@ -104,7 +103,7 @@ const handleProductionDatewiseExcel = (
   });
 
 
-  data.forEach((item) => {
+  mainData.forEach((item) => {
     const itemName = finishGoodsInfo?.filter(
       (items) => item?.productionItemName === items._id
     );
