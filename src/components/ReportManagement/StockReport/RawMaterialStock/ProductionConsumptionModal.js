@@ -32,8 +32,6 @@ const ProductionConsumptionModal = ({
     triggerProductionDetailsReport,
     { data: productionSingleItemDetailsData },
   ] = useLazyGetRawMaterialDetailsConsumptionReportQuery();
-console.log('productionSingleItemDetailsData',productionSingleItemDetailsData)
-
 
   const groupData = (filteredData) => {
     const result = filteredData?.reduce((acc, row) => {

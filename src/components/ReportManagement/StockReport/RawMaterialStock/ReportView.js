@@ -19,7 +19,7 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
   const [filterText, setFilterText] = useState("");
   const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined);
   const {data:rawMaterialItem}=useGetAllRMItemInformationQuery(undefined)
-  const {data:companyInfo}=useGetCompanyInfoQuery(undefined);
+  const {data:companyinfo}=useGetCompanyInfoQuery(undefined);
   const {data:itemUnitInfo}=useGetAllItemUnitQuery(undefined)
   const [
     triggerStockReport,
@@ -28,7 +28,7 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
       isLoading: isRawMaterialStockDataLoading,
     },
   ] = useLazyGetRawMaterialStockReportQuery();
-  console.log({ rawMaterialStockReportData });
+
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
@@ -40,7 +40,6 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
     setExecuteQuery(true);
     await triggerStockReport(updatedFilters);
   };
-
 
   return (
     <div className="row px-5 mx-2">
@@ -64,7 +63,7 @@ const StockReportView = ({ permission, dropdownMenuStyles }) => {
           setFilterText={setFilterText}
           itemSizeInfo={itemSizeInfo}
           rawMaterialItem={rawMaterialItem}
-          companyInfo={companyInfo}
+          companyinfo={companyinfo}
           itemUnitInfo={itemUnitInfo}
           isTableDispaly={isTableDispaly}
         ></StockReportDataTable>

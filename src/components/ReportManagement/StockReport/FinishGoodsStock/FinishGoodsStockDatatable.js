@@ -10,6 +10,8 @@ import {
 } from "../../../../redux/features/salesreport/allreportApi";
 import FinishGoodsReturnQtyDetailsModal from "./FinishGoodsReturnQtyDetailsModal";
 import FinishGoodsDeliveredQtyDetailsModal from "./FinishGoodsDeliveredQtyDetailsModal";
+import downloadFinishGoodsStockReportPDF from "../../../ReportProperties/PDF/handleFinishGoodsStockReport";
+import handleFinishGoodsStockReportExcel from "../../../ReportProperties/Excel/handleFinishGoodsStockReportExcel";
 
 const FinishGoodsStockDatatable = ({
   finishItemInfo,
@@ -25,20 +27,17 @@ const FinishGoodsStockDatatable = ({
   fromDate,
   toDate,
 }) => {
+  const reportTitle = "FINISH GOODS STOCK REPORT";
   const [productionSingleItemId, setProductionSingleItemId] = useState("");
   const [deliveredSingleItemId, setDeliveredSingleItemId] = useState("");
   const [returnSingleItemId, setReturnSingleItemId] = useState("");
   const [showProductionModal, setShowProductionModal] = useState(false);
   const [showDeliveredModal, setShowDeliveredModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
-  const [
-    triggerReturnDetailsReport,
-    { data: returnDetailsData },
-  ] = useLazyGetReturnDetailsReportQuery();
-  const [
-    triggerDeliveredDetailsReport,
-    { data: deliveredDetailsData},
-  ] = useLazyGetSalesDetailsReportQuery();
+  const [triggerReturnDetailsReport, { data: returnDetailsData }] =
+    useLazyGetReturnDetailsReportQuery();
+  const [triggerDeliveredDetailsReport, { data: deliveredDetailsData }] =
+    useLazyGetSalesDetailsReportQuery();
   const [
     triggerDatewiseFinishGoodProductionStockReport,
     { data: productionFinishGoodsData },
@@ -83,6 +82,22 @@ const FinishGoodsStockDatatable = ({
       : setShowReturnModal(false);
   };
 
+  const grandTotalProductionQuantity = finishGoodsStockReportData?.reduce(
+    (sum, detail) => sum + detail.productionQty,
+    0
+  );
+  const grandTotalDeliveredQuantity = finishGoodsStockReportData?.reduce(
+    (sum, detail) => sum + detail.deliveredQty,
+    0
+  );
+  const grandTotalReturnQuantity = finishGoodsStockReportData?.reduce(
+    (sum, detail) => sum + detail.returnQty,
+    0
+  );
+  const grandTotalStockInHand = finishGoodsStockReportData?.reduce(
+    (sum, detail) => sum + detail.stockInHand,
+    0
+  );
   const columns = [
     {
       name: "Sl.",
@@ -239,16 +254,25 @@ const FinishGoodsStockDatatable = ({
                       class="dropdown-item"
                       href="#"
                       onClick={() => {
-                        // if (companyinfo?.length !== 0 || undefined) {
-                        //   downloadCombineReportPDF({ companyinfo }, reportTitle);
-                        // }
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadFinishGoodsStockReportPDF(
+                            { companyinfo },
+                            reportTitle
+                          );
+                        }
                       }}
                     >
                       PDF
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#" onClick={() => {}}>
+                    <a class="dropdown-item" href="#" onClick={() => {
+                      handleFinishGoodsStockReportExcel(  finishGoodsStockReportData,
+                        finishItemInfo,
+                        itemSizeInfo,
+                        companyinfo,
+                        reportTitle)
+                    }}>
                       Excel
                     </a>
                   </li>
@@ -259,10 +283,10 @@ const FinishGoodsStockDatatable = ({
         )}
       </div>
     );
-  }, [finishGoodsStockReportData]);
+  }, [companyinfo, finishGoodsStockReportData]);
 
   return (
-    <div>
+    <div className="mt-3">
       {isTableDispaly && (
         <>
           <LoadingSpineer
@@ -285,6 +309,107 @@ const FinishGoodsStockDatatable = ({
               />
             </>
           </div>
+
+          <table id="my-finish-goods-stock-table" className="d-none">
+            <thead>
+              <tr>
+                <th>Sl.</th>
+                <th>Item Name</th>
+                <th>Production Quantity</th>
+                <th>Delivered Quantity</th>
+                <th>Return Quantity</th>
+                <th>Stock In Hand</th>
+              </tr>
+            </thead>
+            <tbody>
+              {finishGoodsStockReportData?.map((detail, detailIndex) => {
+                const itemNames = finishItemInfo?.find(
+                  (item) => item._id === detail.itemId
+                );
+                const itemSize = itemSizeInfo.find(
+                  (size) => size._id === itemNames?.sizeId
+                );
+
+                return (
+                  <tr key={detail._id}>
+                    {/* <td
+                                  style={{
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                  }}
+                                >
+                                  {formattedDate}
+                                </td> */}
+                    <td>{detailIndex + 1}</td>
+                    <td>{`${itemNames?.itemName} (${itemSize.sizeInfo})`}</td>
+                    <td>{detail?.productionQty===0 ? "-": detail?.productionQty.toLocaleString()}</td>
+                    <td>{detail.deliveredQty ===0 ? "-": detail.deliveredQty.toLocaleString()}</td>
+                    <td>{detail.returnQty ===0 ? "-":detail.returnQty.toLocaleString()}</td>
+                    <td>{detail.stockInHand ===0 ? "-":detail.stockInHand.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+
+              <tr>
+                <td
+                  colSpan={2}
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    padding: "8px",
+                    border: "1px solid black",
+                  }}
+                >
+                  Grand Total
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalProductionQuantity != null
+                    ? grandTotalProductionQuantity?.toLocaleString()
+                    : 0}
+                </td>
+               
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalDeliveredQuantity != null
+                    ? grandTotalDeliveredQuantity?.toLocaleString()
+                    : 0}
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalReturnQuantity != null
+                    ? grandTotalReturnQuantity?.toLocaleString()
+                    : 0}
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalStockInHand != null
+                    ? grandTotalStockInHand?.toLocaleString()
+                    : 0}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </>
       )}
       {showProductionModal && (

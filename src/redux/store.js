@@ -9,7 +9,9 @@ const store = configureStore({
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(api.middleware),
 });
 setupListeners(store.dispatch);
 export default store;

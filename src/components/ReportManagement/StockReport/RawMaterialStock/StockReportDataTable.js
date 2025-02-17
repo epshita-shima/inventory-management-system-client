@@ -9,18 +9,21 @@ import { useLazyGetPurchaseSummaryReportQuery } from "../../../../redux/features
 
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import PurchaseQuantityModal from "./PurchaseQuantityModal";
+import downloadRawStockReportPDF from "../../../ReportProperties/PDF/handleRawMaterialStockPReport";
+import handleRaxMaterialStockReportExcel from "../../../ReportProperties/Excel/handleRaxMaterialStockReportExcel";
 
 const StockReportDataTable = ({
   rawMaterialStockReportData,
   filterText,
   isTableDispaly,
-  companyInfo,
+  companyinfo,
   itemSizeInfo,
   rawMaterialItem,
   setFilterText,
   itemUnitInfo,
   isRawMaterialStockDataLoading,
 }) => {
+  const reportTitle = "RAW MATERIAL STOCK REPORT";
   const [productionSingleItemId, setProductionSingleItemId] = useState("");
   const [purchaseSingleItemId, setPurchaseSingleItemId] = useState("");
   const [showProductionModal, setShowProductionModal] = useState(false);
@@ -55,6 +58,21 @@ const StockReportDataTable = ({
     setShowProductionModal(false);
   };
 
+  const grandTotalPurchaseQuantity = rawMaterialStockReportData?.reduce(
+    (sum, detail) => sum + detail.purchaseQuantity,
+    0
+  );
+  console.log(grandTotalPurchaseQuantity);
+  const grandTotalProductionConsumption = rawMaterialStockReportData?.reduce(
+    (sum, detail) => sum + detail.productionConsumption,
+    0
+  );
+  console.log(grandTotalPurchaseQuantity);
+  const grandTotalStockInhand = rawMaterialStockReportData?.reduce(
+    (sum, detail) => sum + detail.stockInHand,
+    0
+  );
+  console.log(grandTotalPurchaseQuantity);
 
   const columns = [
     {
@@ -172,65 +190,64 @@ const StockReportDataTable = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-     {
-          rawMaterialStockReportData?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div class="dropdown">
-              <button
-                class="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Download
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      // if (companyinfo?.length !== 0 || undefined) {
-                      //   downloadCombineReportPDF({ companyinfo }, reportTitle);
-                      // }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-               
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+        {rawMaterialStockReportData?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div class="dropdown">
+                <button
+                  class="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Download
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadRawStockReportPDF(
+                            { companyinfo },
+                            reportTitle
+                          );
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" onClick={() => {
+                      handleRaxMaterialStockReportExcel(  rawMaterialStockReportData,
+                        rawMaterialItem,
+                        itemUnitInfo,
+                        companyinfo,
+                        reportTitle)
+                    }}>
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>)
-        } 
+        )}
       </div>
     );
-  }, []);
+  }, [companyinfo, itemUnitInfo, rawMaterialItem, rawMaterialStockReportData]);
 
   return (
-    <div>
+    <div className="mt-3">
       {isTableDispaly && (
         <>
           <LoadingSpineer
             isLoading={isRawMaterialStockDataLoading}
           ></LoadingSpineer>
-          <div
-            // className={`${isRawMaterialStockDataLoading ? 'd-none' : 'd-block'} mt-4`}
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-          >
+          <div style={{ height: "calc(80vh - 120px)", overflowY: "scroll" }}>
             <>
               <DataTable
                 columns={columns}
@@ -244,13 +261,110 @@ const StockReportDataTable = ({
               />
             </>
           </div>
+          <table id="my-raw-material-stock-table" className="d-none">
+            <thead>
+              <tr>
+                <th>Sl.</th>
+                <th>Item Name</th>
+                <th>Purchase Quantity</th>
+                <th>Purchase Return Qty</th>
+                <th>Production Consumption</th>
+                <th>Stock In Hand</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rawMaterialStockReportData?.map((detail, detailIndex) => {
+                const itemNames = rawMaterialItem?.find(
+                  (item) => item._id === detail.itemId
+                );
+                const itemUnit = itemUnitInfo.find(
+                  (size) => size._id === itemNames?.unitId
+                );
+
+                return (
+                  <tr key={detail._id}>
+                    {/* <td
+                                  style={{
+                                    textAlign: "center",
+                                    verticalAlign: "middle",
+                                  }}
+                                >
+                                  {formattedDate}
+                                </td> */}
+                                <td>{detailIndex+1}</td>
+                    <td >{`${itemNames?.itemName} (${itemUnit.unitInfo})`}</td>
+                    <td>{detail?.purchaseQuantity.toLocaleString()}</td>
+                    <td>-</td>
+                    <td>{detail.productionConsumption.toLocaleString()}</td>
+                    <td>{detail.stockInHand.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+
+              <tr>
+                <td
+                  colSpan={2}
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    padding: "8px",
+                    border: "1px solid black",
+                  }}
+                >
+                  Grand Total
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalPurchaseQuantity != null
+                    ? grandTotalPurchaseQuantity?.toLocaleString()
+                    : 0}
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  -
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalProductionConsumption != null
+                    ? grandTotalProductionConsumption?.toLocaleString()
+                    : 0}
+                </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                  }}
+                >
+                  {grandTotalStockInhand != null
+                    ? grandTotalStockInhand?.toLocaleString()
+                    : 0}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </>
       )}
       {showProductionModal && (
         <ProductionConsumptionModal
           show={showProductionModal}
           rawMaterialItem={rawMaterialItem}
-          companyinfo={companyInfo}
+          companyinfo={companyinfo}
           productionSingleItemId={productionSingleItemId}
           productionItemDetailsData={productionItemDetailsData}
           itemUnitInfo={itemUnitInfo}
@@ -260,7 +374,7 @@ const StockReportDataTable = ({
         <PurchaseQuantityModal
           purchaseSingleItemId={purchaseSingleItemId}
           filteredDatas={purchaseItemDetailsData}
-          companyinfo={companyInfo}
+          companyinfo={companyinfo}
           rawMaterialItem={rawMaterialItem}
           itemUnitInfo={itemUnitInfo}
         ></PurchaseQuantityModal>
