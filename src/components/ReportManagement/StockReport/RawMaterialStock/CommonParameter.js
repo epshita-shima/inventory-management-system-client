@@ -3,6 +3,7 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
+
 const CommonParameter = ({
   fromDate,
   setFromDate,
@@ -11,7 +12,7 @@ const CommonParameter = ({
   setToDate,
   filters,
   handleApplyFilters,
-  setIsTableDisplay,
+  setIsTableDisplay
 }) => {
   return (
     <div>

@@ -8,6 +8,7 @@ const TreeSingleUserNode = ({
   updateMenuItem, 
   updateDropdownList,
 }) => {
+  console.log('updateMenuItem',updateMenuItem)
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = (e) => {
     e.stopPropagation();
@@ -15,6 +16,7 @@ const TreeSingleUserNode = ({
   };
 
   const handleCheckboxClick = (subNode, parentId, checked) => {
+    console.log(subNode, parentId, checked)
     if (checked) {
       const updatedChild = {
         ...subNode,
@@ -37,6 +39,7 @@ const TreeSingleUserNode = ({
   };
 
   const handleCheckboxClickInsert = (subNode, parentId, checked) => {
+    console.log(subNode, parentId, checked)
     const updatedChild = {
       ...subNode,
       isInserted: checked,
@@ -54,12 +57,13 @@ const TreeSingleUserNode = ({
     updateMenuItem(updatedChild);
   };
   const handleCheckboxClickDelete = (subNode, parentId, checked) => {
+    console.log(subNode, parentId, checked)
     const updatedChild = {
       ...subNode,
       isRemoved: checked,
       parentIds: parentId,
     };
-    updateMenuItem(updatedChild);
+    updateMenuItem(subNode.id, updatedChild)
   };
   const handleCheckboxClickPDF = (subNode, parentId, checked) => {
     const updatedChild = { ...subNode, isPDF: checked, parentIds: parentId };

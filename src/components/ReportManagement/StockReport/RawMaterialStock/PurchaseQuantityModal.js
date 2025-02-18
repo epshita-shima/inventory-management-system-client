@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useMemo } from "react";
 import DataTable from "react-data-table-component";
-import handlePurchaseDatewiseSummaryExcel from "./../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel";
-import { downloadGoupPurchaseSummaryPDF } from "../../ReportProperties/PDF/handlePurchaseDatewiseSummary";
-import { useLazyGetPurchaseDetailsReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
+import handlePurchaseDatewiseSummaryExcel from "../../../ReportProperties/Excel/handlePurchaseDatewiseSummaryExcel";
+import { downloadGoupPurchaseSummaryPDF } from "../../../ReportProperties/PDF/handlePurchaseDatewiseSummary";
+import { useLazyGetPurchaseDetailsReportQuery } from "../../../../redux/features/purchasereport/purchasereportApi";
 import PurchaseQuantityDetailsModal from "./PurchaseQuantityDetailsModal";
-import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
-import { useGetAllPaymentInformationQuery } from "../../../redux/features/paymnetinformation/paymentInfoApi";
-import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
+import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
+import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
+import { useGetAllSupplierInformationQuery } from "../../../../redux/features/supplierInformation/supplierInfoApi";
 const PurchaseQuantityModal = ({
   companyinfo,
   filteredDatas,
@@ -56,7 +56,7 @@ const PurchaseQuantityModal = ({
           data-target="#exampleModalLabelProductionQtyDetails"
           onClick={() => handleRowClickForPurchaseDetails(row)}
         >
-          <p>{new Date(row.receiveDate).toLocaleDateString("en-CA")}</p>
+          <a href="#" className="text-success fw-bold">{new Date(row.receiveDate).toLocaleDateString("en-CA")}</a>
         </div>
       ),
     },

@@ -137,7 +137,6 @@ export const getProductionColumns = (
                           }))
                       );
                       handleProductionDatewiseExcel(
-                        transformedProductionData,
                         filteredData,
                         finishGoodsInfo,
                         itemSizeInfo,

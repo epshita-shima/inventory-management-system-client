@@ -1,29 +1,31 @@
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-const handleProductionDatewiseExcel = (
-  mainData,
-  finishGoodsInfo,
-  itemSizeInfo,
+const handleRaxMaterialStockReportExcel = (
+  data,
+  rawMaterialItem,
+  itemUnitInfo,
   companyinfo,
   reportTitle
 ) => {
   const fileName = reportTitle?.toLowerCase().replace(/\s+/g, "");
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Order Details Report");
+  const worksheet = workbook.addWorksheet("Order Summary Report");
 
   const columnsToInclude = [
-    "productionDate",
-    "batchNo",
     "itemName",
-    "productionQty",
+    "purchaseQuantity",
+    "purchaseReturnQty",
+    "productionConsumption",
+    "stockInHand",
   ];
 
   let dynamicColumns = [
-    { header: "Production Date", key: "productionDate", width: 15 },
-    { header: "Batch No", key: "batchNo", width: 15 },
-    { header: "Item Name", key: "itemName", width: 20 },
-    { header: "Production Quantity", key: "productionQty", width: 20 },
+    { header: "Item Name", key: "itemName", width: 15 },
+    { header: "Purchase Quantity", key: "purchaseQuantity", width: 20 },
+    { header: "Purchase ReturnQty", key: "purchaseReturnQty", width: 15 },
+    { header: "Production Consumption", key: "productionConsumption", width: 20 },
+    { header: "Stock In Hand", key: "stockInHand", width: 20 },
   ];
 
   columnsToInclude.forEach((item, index) => {
@@ -103,18 +105,20 @@ const handleProductionDatewiseExcel = (
   });
 
 
-  mainData.forEach((item) => {
-    const itemName = finishGoodsInfo?.filter(
-      (items) => item?.productionItemName === items._id
+  data.forEach((item) => {
+    const itemName = rawMaterialItem?.filter(
+      (items) => item?.itemId === items._id
     );
-    const itemSize = itemSizeInfo.find(
-      (size) => size._id === itemName[0]?.sizeId
+
+    const itemUnit = itemUnitInfo.find(
+      (size) => size._id === itemName[0]?.unitId
     );
     const values = {
-      productionDate: new Date(item.productionDate).toLocaleDateString("en-CA"),
-      batchNo: item.batchNo,
-      itemName: `${itemName[0]?.itemName || ""} (${itemSize?.sizeInfo || ""})`,
-      productionQty: item.productionQty,
+      itemName: `${itemName[0]?.itemName || ""} (${itemUnit?.unitInfo || ""})`,
+      purchaseQuantity:item.purchaseQuantity,
+      purchaseReturnQty: "-",
+      productionConsumption: item.productionConsumption,
+      stockInHand: item.stockInHand,
     };
 
     const singleRow = worksheet.addRow(
@@ -132,12 +136,15 @@ const handleProductionDatewiseExcel = (
   });
 
 
-  const productionQty= mainData.reduce((totalQty,item)=>totalQty+item.productionQty,0);
+  const totalPurchaseQty= data.reduce((totalQty,item)=>totalQty+item.purchaseQuantity,0);
+  const totalProductionConsumnption= data.reduce((totalQty,item)=>totalQty+item.productionConsumption,0);
+  const totalStockInHand= data.reduce((totalQty,item)=>totalQty+item.stockInHand,0);
   const datas = {
-    productionDate: "",
-    batchNo: "",
-    itemName: "Grand Total",
-    productionQty: productionQty,
+    itemName:"Grand Total",
+    purchaseQuantity: totalPurchaseQty,
+    purchaseReturnQty:'-' ,
+    productionConsumption: totalProductionConsumnption,
+    stockInHand:totalStockInHand
   };
 
   const footerRow = worksheet.addRow(columnsToInclude.map((col) => datas[col]));
@@ -157,4 +164,4 @@ const handleProductionDatewiseExcel = (
   });
 };
 
-export default handleProductionDatewiseExcel;
+export default handleRaxMaterialStockReportExcel;

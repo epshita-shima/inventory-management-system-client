@@ -33,21 +33,22 @@ const SalesDetailsTable = ({
         Object.keys(groupedData).length > 0 ? (
           Object.keys(groupedData)?.map((key) => {
             const group = groupedData[key];
+            console.log(group)
             const formattedDate = formatDate(group.finishGoodsDeliveryDate);
             const rowSpan = group?.detailsData.length;
 
-            const piNumber = piInformation.find(
+            const piNumber = piInformation?.find(
               (pi) => pi._id === group.piId
             );
 
-            const dateWiseTotalQuantity = group.detailsData.reduce(
+            const dateWiseTotalQuantity = group?.detailsData.reduce(
               (cur, acc) => cur + acc.deliverQty,
               0
             );
 
-            const dateWiseTotalAmount = group.detailsData.reduce(
+            const dateWiseTotalAmount = group?.detailsData.reduce(
               (total, detail) => {
-                const item = piNumber.detailsData.find(
+                const item = piNumber?.detailsData.find(
                   (item) => item.itemId === detail.itemId
                 );
                 const itemTotal = detail.deliverQty * (item?.unitPrice || 0);
@@ -63,7 +64,7 @@ const SalesDetailsTable = ({
                     (item) => item._id === detail.itemId
                   );
 
-                  const itemSize = itemSizeInfo.find(
+                  const itemSize = itemSizeInfo?.find(
                     (size) => size._id === itemNames.sizeId
                   );
                   const itemUnit = itemUnitInformation?.find(
@@ -85,7 +86,7 @@ const SalesDetailsTable = ({
                     .join(",");
 
                   const calCulateAmount =
-                    unitPrice.unitPrice * detail.deliverQty;
+                    unitPrice?.unitPrice * detail.deliverQty;
 
                   const calculateAvgPrice =
                     calCulateAmount / detail.deliverQty;
@@ -122,7 +123,7 @@ const SalesDetailsTable = ({
                             verticalAlign: "middle",
                           }}
                         >
-                          {piNumber.invoiceNo}
+                          {piNumber?.invoiceNo}
                         </td>
                       )}
 

@@ -10,9 +10,19 @@ const stockreportApi = api.injectEndpoints({
         refetchOnReconnect: true,
         refetchOnFocus: true,
       }),
+    }),
+    getFinishgGoodsStockReport: builder.query({
+      query: (queryParams) => ({
+        url: "/api/v1/stock-report/finish-goods-stock-report",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
     })
   })})
     export const {
-     useLazyGetRawMaterialStockReportQuery
+     useLazyGetRawMaterialStockReportQuery,
+     useLazyGetFinishgGoodsStockReportQuery
 
     }=stockreportApi

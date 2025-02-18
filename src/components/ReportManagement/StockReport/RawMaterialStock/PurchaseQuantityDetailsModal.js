@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo, useState } from 'react'
-import { groupPurchaseDateByDetails } from './../../Uitilites/reportDataGrouping';
-import {useGetAllPurchaseOrderInformationQuery} from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi"
-import { downloadGoupPurchaseDetailsPDF } from '../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF';
-import handlePurchaseDatewiseReportExcel from '../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
+import { groupPurchaseDateByDetails } from '../../../Uitilites/reportDataGrouping';
+import {useGetAllPurchaseOrderInformationQuery} from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi"
+import { downloadGoupPurchaseDetailsPDF } from '../../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF';
+import handlePurchaseDatewiseReportExcel from '../../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
 import DataTable from "react-data-table-component";
 const PurchaseQuantityDetailsModal = ({filteredDatas,companyinfo,  rawMaterialItem,
   bankInformation,

@@ -430,18 +430,21 @@ const downloadProductionPDFPERBatch = (
   const finalY = doc.previousAutoTable.finalY || 80;
 
   // Second table
-  const finalRows = data?.detailsData?.map((row, index) => [
-    index + 1,
-    rawItemInfo
-      ?.filter((rawItem) => rawItem._id === row.itemId)
-      .map((filteredItem) => filteredItem.itemName)
-      .join(", "),
-    row.receipe,
-    row.materialUsed,
-    row.asPerRatio,
-    row.excess,
-    row.less,
-  ]);
+  const finalRows = data?.detailsData?.map((row, index) => {
+    return [
+      index + 1,
+      rawItemInfo
+        ?.filter((rawItem) => rawItem._id === row.itemId)
+        .map((filteredItem) => filteredItem.itemName)
+        .join(", "),
+      row.receipe === "0" ? "-" : row.receipe,
+      row.materialUsed === 0 ? "-" : row.materialUsed,
+      row.asPerRatio === 0 ? "-" : row.asPerRatio,
+      row.excess === 0 ? "-" : row.excess,
+      row.less === 0 ? "-" : row.excess,
+    ];
+  });
+
   doc.autoTable({
     head: [
       [
@@ -891,9 +894,10 @@ const downloadDeliveryOrderPDF = (
   reportTitle,
   doInformation
 ) => {
+  console.log(row);
   const piInfo = invoiceInformation?.find((x) => x._id === row?.piId);
   const customerName = customerInfo?.find((x) => x._id === piInfo?.customerID);
-
+  const doNo = doInformation?.find((doNo) => doNo._id == row.doId);
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc = new jsPDF();
 
@@ -926,7 +930,7 @@ const downloadDeliveryOrderPDF = (
   doc.text("DO Number", xCoordinate, textY + 18);
   doc.setFontSize(11);
   doc.setFont("times", "normal");
-  doc.text(`:${row.doNo}`, xCoordinate + labelWidth, textY + 18);
+  doc.text(`:${doNo?.doNo}`, xCoordinate + labelWidth, textY + 18);
 
   // Calculate the position for the second table
   const finalY = doc.previousAutoTable.finalY || 80;
@@ -1026,20 +1030,23 @@ const downloadDeliveryOrderListPDF = (
   const fileName = reportTitle.toLowerCase().replace(/\s+/g, "");
   const doc1 = new jsPDF();
 
-  const finalRows = data?.map((row, index) => [
-    index + 1,
-    row?.doNo,
-    customerInfo
-      ?.filter((rawItem) => rawItem._id === row.clientId)
-      .map((filteredItem) => filteredItem.clientName)
-      .join(", "),
+  const finalRows = data?.map((row, index) => {
+    return [
+      index + 1,
+      row?.doNo,
+      customerInfo
+        ?.filter((rawItem) => rawItem._id === row.clientId)
+        .map((filteredItem) => filteredItem.clientName)
+        .join(", "),
 
-    row.detailsData.previousDelivaryQty
-    ,
-    row.detailsData.deliverQty,
-  ]);
+      row.detailsData.previousDelivaryQty,
+      row.detailsData.deliverQty,
+    ];
+  });
   doc1.autoTable({
-    head: [["Sl.", "DO No", "Client Name", "Previous DelivaryQty","Delivered Qty"]],
+    head: [
+      ["Sl.", "DO No", "Client Name", "Previous DelivaryQty", "Delivered Qty"],
+    ],
     body: finalRows,
     startY: 55,
     margin: { top: 50, bottom: 32 },
@@ -1060,7 +1067,6 @@ const downloadDeliveryOrderListPDF = (
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
       1: { cellWidth: "auto" }, // Example for the second column
-
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
@@ -1856,15 +1862,10 @@ const addFooterForDOListData = (doc, companyinfo, reportTitle) => {
 
     doc.setFontSize(14);
     doc.setFont("times", "bold");
-    doc.text(
-      `${reportTitle}`,
-      doc.internal.pageSize.width / 2,
-      headerY + 35,
-      {
-        align: "center",
-        width: companyDetailsWidth,
-      }
-    );
+    doc.text(`${reportTitle}`, doc.internal.pageSize.width / 2, headerY + 35, {
+      align: "center",
+      width: companyDetailsWidth,
+    });
 
     // Footer content
     doc.setFontSize(10);
