@@ -25,7 +25,7 @@ const TreeNode = ({
       if (clickedCheckboxes === undefined) {
         setClickedCheckboxes((prevData) => [
           ...prevData,
-          {
+          { 
             childId: subNode?._id,
             isInserted: subNode.isInserted,
             isUpdated: subNode.isUpdated,

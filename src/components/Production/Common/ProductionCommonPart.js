@@ -101,14 +101,24 @@ const ProductionCommonPart = () => {
     { value: "677248c1a1a0d9059b94977f", label: "150" },
   ];
 
-  const receipeOptionsLessQty900 = [
-    { value: "677248c1a1a0d9059b94977e", label: "200" },
-    { value: "677248c1a1a0d9059b94977c", label: "144" },
-    { value: "677248c1a1a0d9059b94977d", label: "256" },
+  // recipe version v1
+  // const receipeOptionsLessQty900 = [
+  //   { value: "677248c1a1a0d9059b94977e", label: "200" },
+  //   { value: "677248c1a1a0d9059b94977c", label: "144" },
+  //   { value: "677248c1a1a0d9059b94977d", label: "256" },
+  //   { value: "677248c1a1a0d9059b949780", label: "" },
+  //   { value: "677248c1a1a0d9059b949781", label: "" },
+  //   { value: "677248c1a1a0d9059b94977f", label: "300" },
+  // ];
+const receipeOptionsLessQty900=[
+      { value: "677248c1a1a0d9059b94977e", label: "275" },
+    { value: "677248c1a1a0d9059b94977c", label: "150" },
+    { value: "677248c1a1a0d9059b94977d", label: "255" },
     { value: "677248c1a1a0d9059b949780", label: "" },
-    { value: "677248c1a1a0d9059b949781", label: "" },
-    { value: "677248c1a1a0d9059b94977f", label: "300" },
-  ];
+    { value: "677248c1a1a0d9059b949781", label: "12.5" },
+    { value: "677248c1a1a0d9059b94977f", label: "250" },
+]
+
 
   const areFieldsEmpty = () => {
     return (

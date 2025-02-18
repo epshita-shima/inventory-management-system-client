@@ -660,7 +660,7 @@ const ProductionSingleInfo = ({
           type="text"
           name={`expectedProductionQtyPerBatch`}
           placeholder="Expected Production Qty (Per Batch)"
-          disabled
+          
           value={
             id
               ? updateProductionData?.expectedProductionQtyPerBatch
@@ -673,6 +673,22 @@ const ProductionSingleInfo = ({
             borderRadius: "5px",
             textAlign: "center",
             height: "38px",
+          }}
+          onChange={(e) => {
+            const expectQty =
+            values.totalBatch * e.target.value;
+            console.log(expectQty)
+            
+            setFieldValue('expectedProductionQtyPerBatch',Number(e.target.value))
+            setFieldValue("expectedProductionQty", expectQty);
+            const calculateExcessOrLess = Math.abs(
+              values.productionQty - expectQty
+            );
+            console.log(calculateExcessOrLess)
+            setFieldValue(
+              "excessOrLessProductionQty",
+              calculateExcessOrLess
+            );
           }}
         />
       </div>

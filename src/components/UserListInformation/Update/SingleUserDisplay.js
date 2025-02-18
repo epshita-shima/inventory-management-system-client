@@ -97,12 +97,13 @@ const SingleUserDisplay = () => {
 
   const updateMenuItem = (menuItemID, updatedValues) => {
     const updatedMenuList = [...singleUserData.menulist];
+
     const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
     setSingleUserData((prevList) => {
       return { ...prevList, menulist: updatedMenuLists };
     });
   };
-
+console.log('singleUserData',JSON.stringify(singleUserData))
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     const checkedData = singleUserData?.menulist?.filter(
