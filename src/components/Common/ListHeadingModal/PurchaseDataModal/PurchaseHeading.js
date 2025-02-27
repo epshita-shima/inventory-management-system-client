@@ -24,14 +24,14 @@ const PurchaseHeading = ({
     useState(false);
   return (
     <div>
-      <div class="row">
+      <div className="row">
         <div
-          class={
+          className={
             "col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -40,7 +40,7 @@ const PurchaseHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
@@ -54,7 +54,7 @@ const PurchaseHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -64,7 +64,7 @@ const PurchaseHeading = ({
                 Total PO
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {purchaseInfoData?.length}
@@ -73,12 +73,12 @@ const PurchaseHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             "col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid  #B8FEB3",
               borderRadius: "10px",
@@ -87,7 +87,7 @@ const PurchaseHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
@@ -101,7 +101,7 @@ const PurchaseHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -111,7 +111,7 @@ const PurchaseHeading = ({
                 Total PO in Cash
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {purchaseInCash?.length}
@@ -120,12 +120,12 @@ const PurchaseHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             "col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid red",
               borderRadius: "10px",
@@ -134,7 +134,7 @@ const PurchaseHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
@@ -147,7 +147,7 @@ const PurchaseHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -157,7 +157,7 @@ const PurchaseHeading = ({
                 Total PO in LC
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {purchaseInLCAtSight?.length}
@@ -166,12 +166,12 @@ const PurchaseHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             "col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -180,7 +180,7 @@ const PurchaseHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
@@ -193,7 +193,7 @@ const PurchaseHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -203,7 +203,7 @@ const PurchaseHeading = ({
                 Total Approve PO
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {purchaseOrderApproveData?.length}
@@ -212,12 +212,12 @@ const PurchaseHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             "col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -226,7 +226,7 @@ const PurchaseHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#purchaseModal"
               onClick={() => {
@@ -239,7 +239,7 @@ const PurchaseHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -249,7 +249,7 @@ const PurchaseHeading = ({
                 Total Unapprove PO
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {purchaseOrderUnApproveData?.length}

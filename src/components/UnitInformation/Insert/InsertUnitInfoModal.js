@@ -48,29 +48,29 @@ const InsertUnitInfoModal = () => {
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="exampleModal3"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel3"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel3">
+      <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel3">
               Unit Entry
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body shadow-lg p-5 m-5">
+          <div className="modal-body shadow-lg p-5 m-5">
             <div className="d-flex justify-content-end mb-2">
               <button
                 className="border-0 "
@@ -252,7 +252,7 @@ const InsertUnitInfoModal = () => {
               </Formik>
             </div>
           </div>
-          <div class="modal-footer"></div>
+          <div className="modal-footer"></div>
         </div>
       </div>
     </div>

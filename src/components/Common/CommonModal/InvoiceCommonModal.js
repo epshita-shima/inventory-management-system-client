@@ -58,26 +58,26 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="commonInsertInvoiceModalCenter"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="commonInsertModalCenterTitle"
       aria-hidden="true"
       style={{ overflow: "hidden" }}
     >
       <div
-        class="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
+        className="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
         role="document"
       >
-        <div class="modal-content">
-          <div class="modal-header">
+        <div className="modal-content">
+          <div className="modal-header">
             <h5 className="modal-title" id="commonInsertModalCenterLongTitle">
               {acivePaymentModal && "Insert Payment Information"}
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
@@ -97,7 +97,7 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
             }}
           >
             <div className=" row px-lg-4 mx-lg-4">
-              <div class="overflow-hidden">
+              <div className="overflow-hidden">
                 <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
                   <div className="mt-3">
                     <Formik
@@ -274,7 +274,7 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
                                                 <td className="text-center align-items-center">
                                                   <div className="w-100">
                                                     <Select
-                                                      class="form-select"
+                                                      className="form-select"
                                                       className="w-100"
                                                       aria-label="Default select example"
                                                       name={`detailsData.${index}.paymentType`}

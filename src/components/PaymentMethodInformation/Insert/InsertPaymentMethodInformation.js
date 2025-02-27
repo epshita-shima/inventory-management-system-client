@@ -65,10 +65,10 @@ const InsertPaymentMethodInformation = ({
       className="shadow-lg p-4 grninsertdata-main-view"
       // style={{ height: "300px", overflowY: "auto" }}
     >
-      <div class="container-fluid">
-        <div class="row justify-content-center">
-          <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-            <div class="table-responsive">
+      <div className="container-fluid">
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
+            <div className="table-responsive">
               <table className="table table-bordered">
                 <thead className="w-100">
                   <tr>

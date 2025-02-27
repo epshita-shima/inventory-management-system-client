@@ -10,52 +10,55 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetSingleUserQuery } from "../../../redux/features/user/userApi";
+import {
+  useGetSingleUserQuery,
+  useUpdateUserInformationMutation,
+} from "../../../redux/features/user/userApi";
 import { useGetUserRoleQuery } from "../../../redux/features/userrole/userroleApi";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
 import TreeSingleUserView from "./TreeSingleUserView";
 import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  filterCheckedMenuItems,
+  mergeAndUpdateUserMenu,
+  setMenuItems,
+  setSingleUser,
+  updateSingleUserField,
+} from "../../../redux/features/user/updateUserSlice";
+import store from "../../../redux/store";
 
 const SingleUserDisplay = () => {
   const { id } = useParams();
-  var [isUpdate] = useState(id ? true : false);
-  const [singleUserData, setSingleUserData] = useState([]);
+  const dispatch = useDispatch();
   const { data: singleUser, isLoading: singleUSerLoading } =
     useGetSingleUserQuery(id);
 
   const { data: userRoleData } = useGetUserRoleQuery();
   const { data: menuItems } = useGetAllMenuItemsQuery();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const menulist = Array.isArray(singleUser?.menulist)
-      ? singleUser.menulist
-      : [];
-    const menuItemsList = Array.isArray(menuItems) ? menuItems : [];
-
-    // Create a map to track existing items by id
-    const singleDataMap = new Map(menulist.map((item) => [item.id, item]));
-
-    // Combine menulist and menuItems, avoiding duplicates
-    const result = [
-      ...menulist,
-      ...menuItemsList.filter((menu) => !singleDataMap.has(menu._id)), // Use `menu.id` (or `_id` if necessary)
-    ];
-
-    if (Array.isArray(result)) {
-      const updatedSingleUser = {
-        ...singleUser,
-        menulist: result,
-      };
-
-      setSingleUserData(updatedSingleUser);
-    } else {
-      console.error("Result is not an array");
-    }
-  }, [singleUser, menuItems]);
-
   const [validated, setValidated] = useState(false);
   const parentIds = [];
+  const navigate = useNavigate();
+  const [updateUser, { isLoading: updateUserLoading }] =
+    useUpdateUserInformationMutation();
+
+  useEffect(() => {
+    if (singleUser) {
+      dispatch(setSingleUser(singleUser));
+    }
+    if (menuItems) {
+      dispatch(setMenuItems(menuItems));
+    }
+  }, [singleUser, menuItems, dispatch]);
+
+  useEffect(() => {
+    if (singleUser) {
+      dispatch(mergeAndUpdateUserMenu());
+    }
+  }, [dispatch, singleUser]);
+
+  const singleUserData = useSelector((state) => state.menu.singleUser);
+  console.log(singleUserData);
 
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -64,83 +67,28 @@ const SingleUserDisplay = () => {
     }
   }, [navigate]);
 
-  const updateDropdownList = (updatedChild, menuList) => {
-    return menuList?.map((item) => {
-      if (item.trackId === updatedChild.parentIds) {
-        return {
-          ...item,
-          items: updateDropdownListRecursive(updatedChild, item.items),
-        };
-      } else if (item.items && item.items.length > 0) {
-        return {
-          ...item,
-          items: updateDropdownList(updatedChild, item.items),
-        };
-      }
-      return item; // Return unchanged item
-    });
-  };
-
-  const updateDropdownListRecursive = (updatedChild, dropdownList) => {
-    return dropdownList.map((child) => {
-      if (child.trackId === updatedChild.trackId) {
-        return { ...child, ...updatedChild };
-      } else if (child.items && child.items.length > 0) {
-        return {
-          ...child,
-          items: updateDropdownListRecursive(updatedChild, child.items),
-        };
-      }
-      return child; // Return unchanged child
-    });
-  };
-
-  const updateMenuItem = (menuItemID, updatedValues) => {
-    const updatedMenuList = [...singleUserData.menulist];
-
-    const updatedMenuLists = updateDropdownList(menuItemID, updatedMenuList);
-    setSingleUserData((prevList) => {
-      return { ...prevList, menulist: updatedMenuLists };
-    });
-  };
-console.log('singleUserData',JSON.stringify(singleUserData))
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    const checkedData = singleUserData?.menulist?.filter(
-      (x) => x.isChecked == true
-    );
-    // try {
-    //   await updateUser(singleUserData);
-    //   // Data has been successfully updated
-    //   swal("Done", "Data Update Successfully", "success");
-    //   navigate("/main-view/user-list");
-    // } catch (error) {
-    //   // An error occurred while updating data
-    //   swal("Not possible", "Try again", "warning");
-    // }
+    try {
+      await dispatch(filterCheckedMenuItems());
+      const updatedUserData = store.getState().menu.singleUser;
+      await updateUser(updatedUserData);
+      // Data has been successfully updated
+      swal("Done", "Data Update Successfully", "success");
+      navigate("/main-view/user-list");
+    } catch (error) {
+      // An error occurred while updating data
+      swal("Not possible", "Try again", "warning");
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // if (isUpdate) {
-    //   // if (!(name in singleUserData)) {
-
-    //   //   return;
-    //   // }
-    //   // setSingleUserData({
-    //   //   ...singleUserData,
-    //   //   [name]: value,
-    //   // });
-    // } else {
-    //   // if (!(name in formData)) {
-    //   //   console.error(`Field "${name}" does not exist in formData state.`);
-    //   //   return;
-    //   // }
-    setSingleUserData({
-      ...singleUserData,
-      [name]: value,
-    });
-    // }
+    dispatch(updateSingleUserField({ field: name, value }));
+  };
+  const handleSelectChange = (e) => {
+    console.log(e.value);
+    dispatch(updateSingleUserField({ field: "roleId", value: e.value }));
   };
 
   const options = userRoleData?.map(({ _id, userrolename }) => ({
@@ -155,10 +103,10 @@ console.log('singleUserData',JSON.stringify(singleUserData))
       className="container-fluid p-0 m-0 usercreation-table"
       style={{
         overflowY: "scroll",
-        height: "500px",
+        height: "80vh",
       }}
     >
-      <div class="container">
+      <div className="container">
         <div className="shadow-lg mt-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">
             <p>
@@ -196,7 +144,7 @@ console.log('singleUserData',JSON.stringify(singleUserData))
                         name="firstname"
                         placeholder="User's first name"
                         className="input-with-bottom-border"
-                        value={singleUserData?.firstname}
+                        value={singleUserData?.firstname || ""}
                         onChange={(e) => handleChange(e)}
                         isInvalid={
                           validated && singleUserData?.firstname === ""
@@ -220,7 +168,7 @@ console.log('singleUserData',JSON.stringify(singleUserData))
                         name="lastname"
                         placeholder="User's last name"
                         className="input-with-bottom-border"
-                        value={singleUserData?.lastname}
+                        value={singleUserData?.lastname || ""}
                         onChange={handleChange}
                         isInvalid={validated && singleUserData?.lastname === ""}
                       />
@@ -240,7 +188,7 @@ console.log('singleUserData',JSON.stringify(singleUserData))
                       name="mobileNo"
                       placeholder="Mobile no"
                       className="input-with-bottom-border"
-                      value={singleUserData?.mobileNo}
+                      value={singleUserData?.mobileNo || ""}
                       onChange={handleChange}
                       isInvalid={validated && singleUserData?.mobileNo === ""}
                     />
@@ -255,7 +203,7 @@ console.log('singleUserData',JSON.stringify(singleUserData))
                       type="text"
                       placeholder="Password"
                       className="input-with-bottom-border"
-                      value={singleUserData?.password}
+                      value={singleUserData?.password || ""}
                       style={{ background: "transparent" }}
                       isInvalid={validated && singleUserData?.password === ""}
                     />
@@ -291,14 +239,8 @@ console.log('singleUserData',JSON.stringify(singleUserData))
                       value={options?.find(
                         (x) => x.value == singleUserData?.roleId
                       )}
-                      // style={{ border: "1px solid #00B987" }}
-                      // value={typeOption.find((x)=>x.value==itemInformation.itemType)}
                       onChange={(e) => {
-                        setSingleUserData({
-                          ...singleUserData,
-                          // eslint-disable-next-line no-useless-computed-key
-                          ["roleId"]: e.value,
-                        });
+                        handleSelectChange(e);
                       }}
                     ></Select>
 
@@ -326,43 +268,39 @@ console.log('singleUserData',JSON.stringify(singleUserData))
             {
               <TreeSingleUserView
                 singleUserData={singleUserData?.menulist}
-                // singleUserData={menuItems}
-                setSingleUserData={setSingleUserData}
                 parentIds={parentIds}
-                updateMenuItem={updateMenuItem}
-                updateDropdownList={updateDropdownList}
               />
             }
           </div>
-        </div>
-
-        <div className="d-flex justify-content-end mt-5">
-          <div className="d-flex justify-content-end">
-            <button
-              className="btn text-uppercase rounded-4"
-              style={{
-                border: "1px solid#2DDC1B",
-                color: "#2DDC1B",
-                fontWeight: "700",
-                outline: "none",
-              }}
-            >
-              Reset
-            </button>
-            &nbsp;&nbsp;&nbsp;
-            <button
-              className="btn text-uppercase rounded-4"
-              style={{
-                background: "#2DDC1B",
-                color: "#fff",
-                fontWeight: "700",
-                outline: "none",
-                border: "none",
-              }}
-              onClick={handleUpdateUser}
-            >
-              Submit
-            </button>
+          <div className="d-flex justify-content-end mt-5">
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn text-uppercase rounded-4"
+                style={{
+                  border: "1px solid#2DDC1B",
+                  color: "#2DDC1B",
+                  fontWeight: "700",
+                  outline: "none",
+                }}
+              >
+                Reset
+              </button>
+              &nbsp;&nbsp;&nbsp;
+              <button
+                className="btn text-uppercase rounded-4"
+                style={{
+                  background: updateUserLoading ? "gray" : "#2DDC1B",
+                  color: "#fff",
+                  fontWeight: "700",
+                  outline: "none",
+                  border: "none",
+                }}
+                disabled={updateUserLoading ? true : false}
+                onClick={handleUpdateUser}
+              >
+                {updateUserLoading ? "Updating" : "Update"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -167,9 +167,9 @@ const inActiveReportTitle="All Inactive User"
             {/* <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon> &nbsp; */}
             {activeUserModal ? (
               <>
-              { user?.length > 0 ? (<div class="dropdown">
+              { user?.length > 0 ? (<div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -177,10 +177,10 @@ const inActiveReportTitle="All Inactive User"
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
@@ -193,7 +193,7 @@ const inActiveReportTitle="All Inactive User"
                   </li>
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         handleDownload(extractedData, companyinfo,activeReportTitle);
@@ -208,9 +208,9 @@ const inActiveReportTitle="All Inactive User"
               
             ) : (
               <>
-              { user?.length > 0 ? (<div class="dropdown">
+              { user?.length > 0 ? (<div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -218,10 +218,10 @@ const inActiveReportTitle="All Inactive User"
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
@@ -234,7 +234,7 @@ const inActiveReportTitle="All Inactive User"
                   </li>
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         handleDownload( extractedInActiveData, companyinfo,inActiveReportTitle);
@@ -273,24 +273,24 @@ const inActiveReportTitle="All Inactive User"
   ]);
   return (
     <div
-    class="modal fade"
+    className="modal fade"
     id="exampleModalCenter"
-    tabindex="-1"
+    tabIndex="-1"
     role="dialog"
     aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true"
     style={{overflow:'hidden'}}
 
     >
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">
+      <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLongTitle">
               {activeUserModal ? "All Active User" : "All Inactive User"}
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
@@ -337,10 +337,10 @@ const inActiveReportTitle="All Inactive User"
               </tbody>
             </table>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              className="btn btn-secondary"
               data-dismiss="modal"
               onClick={() => {
                 if (activeUserModal) {
@@ -362,7 +362,7 @@ const inActiveReportTitle="All Inactive User"
             </button>
             <button
               type="button"
-              class={`btn btn-primary ${selectedData.length === 0 || isLoading ? 'disabled-button' : ''}`}
+              className={`btn btn-primary ${selectedData.length === 0 || isLoading ? 'disabled-button' : ''}`}
               onClick={handleUpdate}
               disabled={selectedData.length === 0 || isLoading}
               style={{

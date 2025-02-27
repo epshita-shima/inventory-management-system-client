@@ -82,9 +82,9 @@ export const getReturnColumns = (
       <div className="d-flex justify-content-between align-content-center">
         {permission?.isPDF && (
           <div className="table-head-icon d-flex">
-            <div class="dropdown dropup">
+            <div className="dropdown dropup">
               <button
-                class="btn btn-download dropdown-toggle"
+                className="btn btn-download dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
@@ -92,10 +92,10 @@ export const getReturnColumns = (
               >
                 Download
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={async () => {
                       const result = await triggerReturnDetailsReport(filters);
@@ -151,7 +151,7 @@ export const getReturnColumns = (
                 </li>
                 <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={async () => {
                       const result = await triggerReturnDetailsReport(filters);

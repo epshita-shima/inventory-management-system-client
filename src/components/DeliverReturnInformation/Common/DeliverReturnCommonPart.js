@@ -113,7 +113,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
       }}
     >
       {/* <LoadingSpineer isLoading={isPiInfoLoading}></LoadingSpineer> */}
-      <div class={`${isPiInfoLoading ? 'd-none' : 'd-block'}`}>
+      <div className={`${isPiInfoLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -154,9 +154,9 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
                  
                     return (
                       <div className=" shadow-lg py-2 px-5">
-                        <div class="container-fluid">
-                          <div class="row justify-content-center">
-                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                        <div className="container-fluid">
+                          <div className="row justify-content-center">
+                            <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
                               <div className="d-lg-flex justify-content-between align-items-center">
                                 <h2
                                   style={{

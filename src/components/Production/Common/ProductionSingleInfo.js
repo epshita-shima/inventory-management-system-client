@@ -132,8 +132,8 @@ const ProductionSingleInfo = ({
   }, [serialValue?.serialNo, setFieldValue, startDates]);
 
   return (
-    <div class="row row-cols-1 row-cols-lg-3">
-      <div class="col-sm-12 col-md-6 col-lg-3">
+    <div className="row row-cols-1 row-cols-lg-3">
+      <div className="col-sm-12 col-md-6 col-lg-3">
         <label htmlFor="productionDate">Production Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
@@ -182,7 +182,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionStart">Production Start</label>
         <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
           <input
@@ -201,7 +201,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="supplierId">Production End</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <input
@@ -220,7 +220,7 @@ const ProductionSingleInfo = ({
           />
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Total Hour</label>
         <br />
         <Field
@@ -245,7 +245,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6col-lg-3 d-none">
+      <div className="col-sm-12 col-md-6col-lg-3 d-none">
         <label htmlFor="paymentId">Batch NO</label>
         <br />
         <Field
@@ -264,7 +264,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="totalBatch">Total Batch</label>
         <Field
           type="number"
@@ -467,7 +467,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionItemName">Production Item Name</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -570,7 +570,7 @@ const ProductionSingleInfo = ({
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-2">
         <label htmlFor="productionQty">Production Qty</label>
         <br />
         <Field
@@ -623,7 +623,7 @@ const ProductionSingleInfo = ({
         />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Wastage Qty</label>
         <br />
         <Field
@@ -653,7 +653,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty (Per Batch)</label>
         <br />
         <Field
@@ -692,7 +692,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Expected Production Qty</label>
         <br />
         <Field
@@ -715,7 +715,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Excess Or Less Production Qty</label>
         <br />
         <Field
@@ -738,7 +738,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3 d-none">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3 d-none">
         <label htmlFor="paymentId">Production Status</label>
         <Field
           type="text"
@@ -760,7 +760,7 @@ const ProductionSingleInfo = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="receipeQtyRatio">Receipe Qty Ratio</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">

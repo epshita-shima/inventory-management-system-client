@@ -5,29 +5,29 @@ const InvoiceFinishGoodsItemsEntryModal = () => {
   return (
     <>
       <div
-        class="modal fade"
+        className="modal fade"
         id="finishGoodsInsertInvoiceModalCenter"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="commonInsertModalCenterTitle"
         aria-hidden="true"
       >
-        <div class="modal-dialog fullscreen-modal-insertItem" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="commonInsertModalCenterLongTitle">
+        <div className="modal-dialog fullscreen-modal-insertItem" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="commonInsertModalCenterLongTitle">
                 Insert Finish Goods Item
               </h5>
               <button
                 type="button"
-                class="close"
+                className="close"
                 data-dismiss="modal"
                 aria-label="Close"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div className="">{<InsertFgItemInfo></InsertFgItemInfo>}</div>
             </div>
           </div>

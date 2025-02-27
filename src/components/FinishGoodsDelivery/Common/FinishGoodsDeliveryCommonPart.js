@@ -92,7 +92,7 @@ const FinishGoodsDeliveryCommonPart = () => {
       }}
     >
       {/* <LoadingSpineer isLoading={isLoadingDetDelivery}></LoadingSpineer> */}
-      <div class={isLoadingDetDelivery ? 'd-none' : 'd-block'}>
+      <div className={isLoadingDetDelivery ? 'd-none' : 'd-block'}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -138,9 +138,9 @@ const FinishGoodsDeliveryCommonPart = () => {
                    
                     return (
                       <div className=" shadow-lg py-2 px-5">
-                        <div class="container-fluid">
-                          <div class="row justify-content-center">
-                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                        <div className="container-fluid">
+                          <div className="row justify-content-center">
+                            <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
                               <div className="d-lg-flex justify-content-between align-items-center">
                                 <h2
                                   style={{

@@ -20,10 +20,10 @@ const ProductionListHeading = ({
   
   return (
     <div>
-      <div class="row">
-        <div class={"col-md-4 col-lg-3"}>
+      <div className="row">
+        <div className={"col-md-4 col-lg-3"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -32,7 +32,7 @@ const ProductionListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -43,7 +43,7 @@ const ProductionListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -53,7 +53,7 @@ const ProductionListHeading = ({
                 Total Production
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalProductionQty}
@@ -61,9 +61,9 @@ const ProductionListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid  #B8FEB3",
               borderRadius: "10px",
@@ -72,7 +72,7 @@ const ProductionListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -84,7 +84,7 @@ const ProductionListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -94,7 +94,7 @@ const ProductionListHeading = ({
                 Last One Month Production
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalLastOneMonthProduction}
@@ -102,9 +102,9 @@ const ProductionListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid red",
               borderRadius: "10px",
@@ -113,7 +113,7 @@ const ProductionListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -125,7 +125,7 @@ const ProductionListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -135,7 +135,7 @@ const ProductionListHeading = ({
                 Last One Week Production
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalLastlastOneWeekData}
@@ -143,9 +143,9 @@ const ProductionListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -154,7 +154,7 @@ const ProductionListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -166,7 +166,7 @@ const ProductionListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -176,7 +176,7 @@ const ProductionListHeading = ({
                 Yeasterday Production
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalYesterdayData}

@@ -7,10 +7,7 @@ const TreeSingleUserView = ({ updateDropdownList, updateMenuItem ,parentIds,sing
           <TreeSingleUserNode
           key={node.trackId} 
           node={node}
-          setSingleUserData={setSingleUserData}
           parentIds={parentIds} 
-          updateMenuItem ={updateMenuItem }
-          updateDropdownList={updateDropdownList}
           />
         ))}
       </div>

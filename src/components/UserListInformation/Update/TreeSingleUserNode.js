@@ -1,14 +1,14 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import swal from "sweetalert";
+import { updateMenuItem } from "../../../redux/features/user/updateUserSlice";
 
 const TreeSingleUserNode = ({
   node,
   parentIds,
-  setSingleUserData,
-  updateMenuItem, 
-  updateDropdownList,
+
 }) => {
-  console.log('updateMenuItem',updateMenuItem)
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = (e) => {
     e.stopPropagation();
@@ -16,14 +16,13 @@ const TreeSingleUserNode = ({
   };
 
   const handleCheckboxClick = (subNode, parentId, checked) => {
-    console.log(subNode, parentId, checked)
     if (checked) {
       const updatedChild = {
         ...subNode,
         isChecked: checked,
         parentIds: parentId,
       };
-      updateMenuItem(updatedChild);
+      dispatch(updateMenuItem(updatedChild));
     } else {
       const updatedChild = {
         ...subNode,
@@ -34,40 +33,38 @@ const TreeSingleUserNode = ({
         isPDF: checked,
         parentIds: parentId,
       };
-      updateMenuItem(updatedChild);
+      dispatch(updateMenuItem(updatedChild));
     }
   };
 
   const handleCheckboxClickInsert = (subNode, parentId, checked) => {
-    console.log(subNode, parentId, checked)
     const updatedChild = {
       ...subNode,
       isInserted: checked,
-      parentIds: parentId,
+      parentIds:  parentId,
     };
-
-    updateMenuItem(updatedChild);
+    dispatch(updateMenuItem(updatedChild));
   };
   const handleCheckboxClickUpdate = (subNode, parentId, checked) => {
     const updatedChild = {
       ...subNode,
       isUpdated: checked,
-      parentIds: parentId,
+      parentIds:  parentId,
     };
-    updateMenuItem(updatedChild);
+    dispatch(updateMenuItem(updatedChild));
   };
+
   const handleCheckboxClickDelete = (subNode, parentId, checked) => {
-    console.log(subNode, parentId, checked)
     const updatedChild = {
       ...subNode,
       isRemoved: checked,
       parentIds: parentId,
     };
-    updateMenuItem(subNode.id, updatedChild)
+    dispatch(updateMenuItem(updatedChild));
   };
   const handleCheckboxClickPDF = (subNode, parentId, checked) => {
-    const updatedChild = { ...subNode, isPDF: checked, parentIds: parentId };
-    updateMenuItem(updatedChild);
+    const updatedChild = { ...subNode, isPDF: checked, parentIds:  parentId };
+    dispatch(updateMenuItem(updatedChild));
   };
 
   return (
@@ -100,9 +97,6 @@ const TreeSingleUserNode = ({
                         <TreeSingleUserNode
                           node={subNode}
                           parentIds={[...parentIds, node.trackId]}
-                          setSingleUserData={setSingleUserData}
-                          updateMenuItem={updateMenuItem}
-                          updateDropdownList={updateDropdownList}
                         />
                       ) : (
                         <>
@@ -111,6 +105,7 @@ const TreeSingleUserNode = ({
                             id={`${subNode?.trackId}`}
                             checked={subNode?.isChecked}
                             name="check"
+                            readOnly
                             className="form-check-input border-success me-2"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -139,6 +134,7 @@ const TreeSingleUserNode = ({
                             id={`${subNode?._id}`}
                             checked={subNode?.isInserted}
                             className="form-check-input border-success me-2"
+                            readOnly
                             onClick={(e) => {
                               const { checked } = e.target;
                               if (subNode.isChecked) {
@@ -164,6 +160,7 @@ const TreeSingleUserNode = ({
                             type="checkbox"
                             checked={subNode?.isUpdated}
                             className="form-check-input border-success me-2"
+                            readOnly
                             onClick={(e) => {
                               const { checked } = e.target;
                               if (subNode.isChecked) {
@@ -189,6 +186,7 @@ const TreeSingleUserNode = ({
                             type="checkbox"
                             checked={subNode?.isRemoved}
                             className="form-check-input border-success me-2"
+                            readOnly
                             onClick={(e) => {
                               const { checked } = e.target;
                               if (subNode.isChecked) {
@@ -214,6 +212,7 @@ const TreeSingleUserNode = ({
                             type="checkbox"
                             checked={subNode?.isPDF}
                             className="form-check-input border-success me-2"
+                            readOnly
                             onClick={(e) => {
                               const { checked } = e.target;
                               if (subNode.isChecked) {

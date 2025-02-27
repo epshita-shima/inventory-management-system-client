@@ -130,7 +130,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
           className="col-md d-flex justify-content-between align-items-center"
           style={cardStyle}
         >
-          <div class="d-block d-md-none">
+          <div className="d-block d-md-none">
             <div className="d-flex justify-content-between align-items-center">
               <div className="position-relative">
                 <Dropdown>

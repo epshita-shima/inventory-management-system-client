@@ -125,7 +125,7 @@ const InsertFgItemInfo = () => {
         height: "calc(98vh - 120px)",
       }}
     >
-      <div class="overflow-hidden">
+      <div className="overflow-hidden">
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
@@ -276,10 +276,10 @@ const InsertFgItemInfo = () => {
                       const details = values.detailsData;
 
                       return (
-                        <div class="container-fluid ">
-                          <div class="row justify-content-center">
-                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-                              <div class="table-responsive table-responsive-custom">
+                        <div className="container-fluid ">
+                          <div className="row justify-content-center">
+                            <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                              <div className="table-responsive table-responsive-custom">
                                 <table className="table w-full table-bordered">
                                   <thead className="w-100">
                                     <tr>
@@ -597,7 +597,7 @@ const InsertFgItemInfo = () => {
                                                 </span>
                                               </td>
                                               {/* <td className="text-center align-middle">
-                                          <div class="form-check">
+                                          <div className="form-check">
                                             <input
                                               type="checkbox"
                                               id="flexCheckDefault"

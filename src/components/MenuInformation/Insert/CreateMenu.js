@@ -315,7 +315,7 @@ const CreateMenu = () => {
       }}
     >
       {/* <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer> */}
-      <div class={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}>
+      <div className={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}>
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
@@ -513,10 +513,10 @@ const CreateMenu = () => {
                         // style={{
                         //   height: "calc(60vh - 120px)",overflowY: "auto" }}
                         >
-                          <div class="container-fluid">
-                            <div class="row justify-content-center">
-                              <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-                                <div class="table-responsive table-responsive-design">
+                          <div className="container-fluid">
+                            <div className="row justify-content-center">
+                              <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                                <div className="table-responsive table-responsive-design">
                                   <table className="table table-bordered">
                                     <thead>
                                       <tr>

@@ -300,18 +300,18 @@ const PurchaseHeadingModal = ({
   };
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="purchaseModal"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true"
       style={{ overflow: "hidden" }}
     >
-      <div class="modal-dialog modal-dialog-centered modal-lg " role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">
+      <div className="modal-dialog modal-dialog-centered modal-lg " role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLongTitle">
               {totalPurchaseModal
                 ? "Total PO"
                 : totalPurchaseCashModal
@@ -326,7 +326,7 @@ const PurchaseHeadingModal = ({
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
@@ -353,10 +353,10 @@ const PurchaseHeadingModal = ({
            
             />
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              className="btn btn-secondary"
               data-dismiss="modal"
               onClick={() => {
                 // if (activeDataModal) {

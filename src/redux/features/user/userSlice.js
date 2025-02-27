@@ -91,12 +91,13 @@ import {
 //   })
 //   export const {setUser,setLoading}=userSlice.actions
 //   export default userSlice.reducer;
+
 const initialState = {
   token: null,
   status: "idle",
   error: null,
   isError: false,
-  isLoggedIn: false, // Add new state variable
+  isLoggedIn: false,
   isRegistered: false,
 };
 
@@ -184,5 +185,4 @@ const userSlice = createSlice({
   },
 });
 
-// export const {setUser,setLoading}=userSlice.actions
 export default userSlice.reducer;

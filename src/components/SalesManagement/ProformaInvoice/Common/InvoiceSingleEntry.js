@@ -51,8 +51,8 @@ const InvoiceSingleEntry = ({
   const username = user ? user.username : "";
 
   return (
-    <div class="row row-cols-1 ">
-      <div class="col-sm-12 col-md-6 col-lg-4">
+    <div className="row row-cols-1 ">
+      <div className="col-sm-12 col-md-6 col-lg-4">
         <label htmlFor="piDate">PI Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
@@ -94,7 +94,7 @@ const InvoiceSingleEntry = ({
         </div>
       </div>
       
-      <div class="col-sm-12 col-md-6 col-lg-4">
+      <div className="col-sm-12 col-md-6 col-lg-4">
         <label htmlFor="piDate"> PI Expire Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
@@ -145,7 +145,7 @@ const InvoiceSingleEntry = ({
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-4  d-none">
+      <div className="col-sm-12 col-md-6 col-lg-4  d-none">
         <label htmlFor="invoiceNo">Invoice No</label>
         <br />
         <Field
@@ -165,7 +165,7 @@ const InvoiceSingleEntry = ({
         />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-2">
         <label htmlFor="customerName">Customer Name</label>
         <div className=" w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -259,7 +259,7 @@ const InvoiceSingleEntry = ({
         </div>
       </div>
 
-      <div class="col-6 col-lg-4">
+      <div className="col-6 col-lg-4">
         <label htmlFor="paymentId">Payment Mode</label>
         <div className="d-flex justify-content-between mt-2">
           <div className="w-100">
@@ -343,7 +343,7 @@ const InvoiceSingleEntry = ({
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-2">
         <label htmlFor="receipeQtyRatio">Currency</label>
         <div className="w-lg-100 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -405,7 +405,7 @@ const InvoiceSingleEntry = ({
         </div>
       </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-2">
         <label htmlFor="receipeQtyRatio">Marketing Person</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           {superAdminId === "65d48768a106fcb4f5c28071" ||

@@ -48,29 +48,29 @@ const InsertCategoryInformationModal = () => {
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="categoryInfoModal"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="categoryInfoModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="categoryInfoModalLabel">
+      <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="categoryInfoModalLabel">
               Category Info Entry
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body shadow-lg p-5 m-5">
+          <div className="modal-body shadow-lg p-5 m-5">
             <div className="d-flex justify-content-end mb-2">
               <button
                 className="border-0 "
@@ -251,7 +251,7 @@ const InsertCategoryInformationModal = () => {
               </Formik>
             </div>
           </div>
-          <div class="modal-footer"></div>
+          <div className="modal-footer"></div>
         </div>
       </div>
     </div>

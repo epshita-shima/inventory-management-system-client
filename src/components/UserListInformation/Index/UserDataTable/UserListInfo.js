@@ -362,9 +362,9 @@ const UserListInfo = ({
               ></FontAwesomeIcon>{" "}
               &nbsp;
             </div>
-            <div class="dropdown">
+            <div className="dropdown">
               <button
-                class="btn btn-download dropdown-toggle"
+                className="btn btn-download dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
@@ -372,10 +372,10 @@ const UserListInfo = ({
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
@@ -388,7 +388,7 @@ const UserListInfo = ({
                 </li>
                 <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={() => {
                       handleDownload(
@@ -433,8 +433,8 @@ const UserListInfo = ({
         setInActiveDataModal={setInActiveUserModal}
         inActiveUser={inActiveUser}
       ></ListHeading>
-      <div class="mt-5">
-        <div class="row">
+      <div className="mt-5">
+        <div className="row">
           <div className="col userlist-table main-table-view">
             <div className="shadow-lg overflow-x-auto flex-nowarp">
               <DataTable

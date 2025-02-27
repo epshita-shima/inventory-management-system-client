@@ -81,7 +81,7 @@ const ProductionConsumptionModal = ({
       filterable: true,
       cell: (row) => (
         <div
-          class="card-body"
+          className="card-body"
           data-toggle="modal"
           data-target="#exampleModalLabelProductionConsumptionDetails"
           onClick={() => handleRowClickForProductionDetails(row)}
@@ -138,9 +138,9 @@ const ProductionConsumptionModal = ({
         {productionItemDetailsData?.length > 0 && (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
-              <div class="dropdown">
+              <div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -148,10 +148,10 @@ const ProductionConsumptionModal = ({
                 >
                   Download
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
@@ -177,29 +177,29 @@ const ProductionConsumptionModal = ({
   return (
     <div>
       <div
-        class="modal fade"
+        className="modal fade"
         id="exampleModalLabelRaw"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-lg fullscreen-modal" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabelRaw">
+        <div className="modal-dialog modal-lg fullscreen-modal" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabelRaw">
                 {`Itemwise Production Consumption ${itemNames?.itemName} (${unitInfo?.unitInfo})`}
               </h5>
               <button
                 type="button"
-                class="close"
+                className="close"
                 data-dismiss="modal"
                 aria-label="Close"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body w-100">
+            <div className="modal-body w-100">
               <div
               // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
               >

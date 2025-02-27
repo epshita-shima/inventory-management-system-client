@@ -57,7 +57,7 @@ const InsertBankInformation = () => {
       //   height: "500px",
       // }}
     >
-      <div class="overflow-hidden">
+      <div className="overflow-hidden">
         <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
           <div className="mt-3">
             <Formik

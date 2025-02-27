@@ -102,7 +102,7 @@ const InsertSupplierInformation = () => {
       className=" row p-4 px-lg-4 mx-lg-4"
      
     >
-      <div class="">
+      <div className="">
         <div className="">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">

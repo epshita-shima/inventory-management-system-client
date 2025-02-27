@@ -21,10 +21,10 @@ const InvoiceListHeading = ({
 
   return (
     <div>
-      <div class="row">
-        <div class={"col-md-4 col-lg-3"}>
+      <div className="row">
+        <div className={"col-md-4 col-lg-3"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -33,7 +33,7 @@ const InvoiceListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#approveInvoiceModal"
               onClick={() => {
@@ -42,7 +42,7 @@ const InvoiceListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -52,7 +52,7 @@ const InvoiceListHeading = ({
                 Total Approve PI
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalApprovedPi}
@@ -60,9 +60,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid  #B8FEB3",
               borderRadius: "10px",
@@ -71,7 +71,7 @@ const InvoiceListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -82,7 +82,7 @@ const InvoiceListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -92,7 +92,7 @@ const InvoiceListHeading = ({
                 Total Approve PI Amount
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalApprovePiAmount?.toLocaleString()}
@@ -100,9 +100,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid red",
               borderRadius: "10px",
@@ -111,7 +111,7 @@ const InvoiceListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#unapproveInvoiceModal"
               onClick={() => {
@@ -120,7 +120,7 @@ const InvoiceListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -130,7 +130,7 @@ const InvoiceListHeading = ({
                 Total Unpprove PI
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalUnApprovePi}
@@ -138,9 +138,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div class={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -149,7 +149,7 @@ const InvoiceListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
               onClick={() => {
@@ -157,7 +157,7 @@ const InvoiceListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -167,7 +167,7 @@ const InvoiceListHeading = ({
                 Total Unapprove PI Amount
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "25px", fontWeight: "700" }}
               >
                 {totalUnApprovePiAmount?.toLocaleString()}

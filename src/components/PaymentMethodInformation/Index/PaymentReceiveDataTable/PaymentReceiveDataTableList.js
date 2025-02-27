@@ -669,9 +669,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         {filteredDatas?.length > 0 ? (
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex align-items-center me-2">
-              <div class="dropdown">
+              <div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -679,10 +679,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
@@ -700,7 +700,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                   </li>
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         handelPaymentReceiveExcel(

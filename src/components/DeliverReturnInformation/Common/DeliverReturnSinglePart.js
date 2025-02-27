@@ -29,8 +29,8 @@ const DeliverReturnSinglePart = ({
   const deliveryOptions = deliveryOrderDropdown(matchedDeliverInfo);
 
   return (
-    <div class="row row-cols-1 row-cols-lg-4">
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+    <div className="row row-cols-1 row-cols-lg-4">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-2">
         <label htmlFor="paymentId">Return Date</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between mt-2">
           <DatePicker
@@ -50,7 +50,7 @@ const DeliverReturnSinglePart = ({
           />
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-3">
         <label htmlFor="paymentId">PI Number</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
@@ -108,7 +108,7 @@ const DeliverReturnSinglePart = ({
           </div>
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-4 mt-3">
         <label htmlFor="paymentId">DO Number</label>
         <div className="w-lg-75 w-md-100 w-sm-100 d-flex justify-content-between">
           <div className="w-100">
