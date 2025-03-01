@@ -21,7 +21,6 @@ import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   filterCheckedMenuItems,
-  mergeAndUpdateUserMenu,
   setMenuItems,
   setSingleUser,
   updateSingleUserField,
@@ -31,34 +30,25 @@ import store from "../../../redux/store";
 const SingleUserDisplay = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { data: singleUser, isLoading: singleUSerLoading } =
-    useGetSingleUserQuery(id);
-
   const { data: userRoleData } = useGetUserRoleQuery();
   const { data: menuItems } = useGetAllMenuItemsQuery();
   const [validated, setValidated] = useState(false);
   const parentIds = [];
   const navigate = useNavigate();
+  const { data: singleUser, isLoading: singleUSerLoading } =
+    useGetSingleUserQuery(id);
+  const singleUserData = useSelector((state) => state.menu.singleUser);
   const [updateUser, { isLoading: updateUserLoading }] =
     useUpdateUserInformationMutation();
-
+console.log(singleUserData)
   useEffect(() => {
-    if (singleUser) {
-      dispatch(setSingleUser(singleUser));
-    }
     if (menuItems) {
       dispatch(setMenuItems(menuItems));
     }
-  }, [singleUser, menuItems, dispatch]);
-
-  useEffect(() => {
     if (singleUser) {
-      dispatch(mergeAndUpdateUserMenu());
+      dispatch(setSingleUser(singleUser));
     }
-  }, [dispatch, singleUser]);
-
-  const singleUserData = useSelector((state) => state.menu.singleUser);
-  console.log(singleUserData);
+  }, [singleUser, menuItems, dispatch]);
 
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -72,10 +62,11 @@ const SingleUserDisplay = () => {
     try {
       await dispatch(filterCheckedMenuItems());
       const updatedUserData = store.getState().menu.singleUser;
-      await updateUser(updatedUserData);
+      console.log(updatedUserData)
+      // await updateUser(updatedUserData);
       // Data has been successfully updated
       swal("Done", "Data Update Successfully", "success");
-      navigate("/main-view/user-list");
+      // navigate("/main-view/user-list");
     } catch (error) {
       // An error occurred while updating data
       swal("Not possible", "Try again", "warning");

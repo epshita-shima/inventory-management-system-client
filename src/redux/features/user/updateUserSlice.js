@@ -7,6 +7,8 @@ const initialState={
 }
 
 const mergeMenus = (menuList, menuItemsList) => {
+  console.log(menuList)
+  console.log(menuItemsList)
   const mergeItems = (menuItems, refItems) => {
     return refItems.map((refItem) => {
       const matchingItem = menuItems.find(
@@ -32,16 +34,31 @@ const mergeMenus = (menuList, menuItemsList) => {
 
 const updateDropdownList = (updatedChild, menuList) => {
   console.log(updatedChild);
+  
   return menuList.map((item) => {
-    console.log(item.trackId, updatedChild.trackId, updatedChild.isChecked);
-    if ((item.id === updatedChild.trackId && item.isParent === true) || (item.id === updatedChild.parentIds)) {
+    const filteredList = menuList
+    .map((item) => {
+      if (item.id === updatedChild.parentIds) {
+        const filteredItems = item.items?.filter(child => child.id === updatedChild.trackId);  
+        // Only return the parent with the filtered child if it exists
+        if (filteredItems.length > 0) {
+          return { ...item, items: filteredItems };
+        }
+      }
+      return null;
+    })
+    .filter(Boolean); 
+  
+  console.log(JSON.parse(JSON.stringify(filteredList)));
+  
+
+    if ((item.id === updatedChild.trackId && item.isParent === true) || (item.id === updatedChild.parentIds)) { 
       return {
         ...item,
-        isChecked: updatedChild.isChecked ,
+        isChecked: filteredList ? filteredList.isChecked : false,
         items: updateDropdownListRecursive(updatedChild, item.items),
       };
     } else if (item.items && item.items.length > 0) {
-      console.log("else");
       return {
         ...item,
         items: updateDropdownList(updatedChild, item.items),
@@ -52,66 +69,66 @@ const updateDropdownList = (updatedChild, menuList) => {
   });
 };
 
-const updateDropdownListRecursive = (updatedChild, dropdownList) => {
-  console.log(updatedChild, dropdownList);
-  return dropdownList.map((child) => {
-    console.log(child._id, updatedChild._id)
-    if (child._id === updatedChild._id) {
-      return { ...child, ...updatedChild };
-    } else if (child.items && child.items.length > 0) {
-      const updatedItems = updateDropdownListRecursive(
-        updatedChild,
-        child.items
-      );
-      console.log(updatedItems);
-      return {
-        ...child,
-        items: updatedItems,
-        isChecked: updatedItems.some((subChild) => subChild.isChecked), // Ensure parent isChecked if any child is checked
-      };
-    }
-    return child;
-  });
-};
+  const updateDropdownListRecursive = (updatedChild, dropdownList) => {
+    console.log(updatedChild, dropdownList);
+    return dropdownList.map((child) => {
+      console.log(child._id, updatedChild._id)
+      if (child._id === updatedChild._id) {
+        return { ...child, ...updatedChild };
+      } else if (child.items && child.items.length > 0) {
+        const updatedItems = updateDropdownListRecursive(
+          updatedChild,
+          child.items
+        );
+        console.log(updatedItems);
+        return {
+          ...child,
+          items: updatedItems,
+          isChecked: updatedItems.some((subChild) => subChild.isChecked), // Ensure parent isChecked if any child is checked
+        };
+      }
+      return child;
+    });
+  };
 
 const userUpdateSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
+    setMenuItems: (state, action) => {
+       state.menuItems = action.payload;
+     },
     setSingleUser: (state, action) => {
-      console.log(action.payload)
       state.singleUser = action.payload;
-      state.menulist = action.payload?.menulist || [];
+      if (state.singleUser && Array.isArray(state.singleUser.menulist)) {
+        const updatedMenuList = mergeMenus(state.singleUser.menulist, state.menuItems);
+        if (JSON.stringify(state.singleUser.menulist) !== JSON.stringify(updatedMenuList)) {
+          state.singleUser = {
+            ...state.singleUser,
+            menulist: updatedMenuList
+          };
+          state.menulist = updatedMenuList;
+        }
+      }
     },
+
     updateSingleUserField: (state, action) => {
       const { field, value } = action.payload;
       if (state.singleUser) {
         state.singleUser[field] = value;
       }
     },
-    setMenuItems: (state, action) => {
-      state.menuItems = action.payload;
-    },
-    mergeAndUpdateUserMenu: (state) => {
-      
-      if (state.singleUser && Array.isArray(state.singleUser.menulist)) {
-        state.singleUser.menulist = mergeMenus(state.singleUser.menulist, state.menuItems);
-        state.menulist = state.singleUser.menulist;
-      }
-    },
+ 
     updateMenuItem: (state, action) => {
       const updatedChild = action.payload;
-      console.log(updatedChild)
+      console.log(JSON.parse(JSON.stringify(updatedChild)))
       state.menulist = updateDropdownList(updatedChild, state.menulist);
-      console.log(JSON.stringify(state.menulist, null, 2));
       if (state.singleUser) {
         state.singleUser.menulist = state.menulist;
       }
       
     },
-    setMenuList: (state, action) => {
-      state.menulist = action.payload;
-    },
+
     filterCheckedMenuItems: (state) => {
       const filterCheckedItems = (data) =>
         data
@@ -127,5 +144,5 @@ const userUpdateSlice = createSlice({
     },
   }
 })
-export const { updateMenuItem, setMenuList,setSingleUser, setMenuItems, mergeAndUpdateUserMenu,updateSingleUserField ,filterCheckedMenuItems} = userUpdateSlice.actions;
+export const { updateMenuItem,setSingleUser, setMenuItems,updateSingleUserField ,filterCheckedMenuItems} = userUpdateSlice.actions;
 export default userUpdateSlice.reducer;
