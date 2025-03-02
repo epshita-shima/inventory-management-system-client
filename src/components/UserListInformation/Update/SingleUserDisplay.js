@@ -63,10 +63,10 @@ console.log(singleUserData)
       await dispatch(filterCheckedMenuItems());
       const updatedUserData = store.getState().menu.singleUser;
       console.log(updatedUserData)
-      // await updateUser(updatedUserData);
+      await updateUser(updatedUserData);
       // Data has been successfully updated
       swal("Done", "Data Update Successfully", "success");
-      // navigate("/main-view/user-list");
+      navigate("/main-view/user-list");
     } catch (error) {
       // An error occurred while updating data
       swal("Not possible", "Try again", "warning");
