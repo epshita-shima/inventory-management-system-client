@@ -1,0 +1,13 @@
+.btn-stay{
+  background-color:#2DDC1B;
+  color:black !important;
+  border:1px solid #2DDC1B
+} 
+.btn-stay.active{
+  background-color:#2DDC1B;
+  color:black !important
+}
+.btn-stay:hover{
+  background-color:#2DDC1B;
+  color:black !important
+}

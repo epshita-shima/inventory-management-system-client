@@ -54,10 +54,11 @@ import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/Pu
 import isTokenExpired from "./redux/api/isTokenExpired";
 import StockReportDetails from "./components/ReportManagement/StockReport/RawMaterialStock/StockReportDetails";
 import FinishGoodStockDetails from "./components/ReportManagement/StockReport/FinishGoodsStock/FinishGoodStockDetails";
+import useInactivityLogout from './components/Customhook/useInactivityLogout';
 
-function App() {
+const App =()=> {
 
-  // useInactivityLogout();
+  useInactivityLogout();
 
   const [singleUserData, setSingleUserData] = useState([]);
   const [changePassword, setChangePassword] = useState(false);
