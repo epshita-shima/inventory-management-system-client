@@ -295,7 +295,7 @@ const DelivaryOrderCommonInsertPart = () => {
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
       {/* <LoadingSpineer isLoading={isPaymentLoading}></LoadingSpineer> */}
-      <div class={`${isPaymentLoading ? 'd-none' : 'd-block'}`}>
+      <div className={`${isPaymentLoading ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={formValues}
@@ -361,8 +361,8 @@ const DelivaryOrderCommonInsertPart = () => {
                             </div>
                           </div>
 
-                          <div class="row row-cols-1  row-cols-md-2 row-cols-lg-4">
-                            <div class="col col-md-6 col-lg-3">
+                          <div className="row row-cols-1  row-cols-md-2 row-cols-lg-4">
+                            <div className="col col-md-6 col-lg-3">
                               <label
                                 htmlFor="supplierId"
                                 className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"
@@ -438,7 +438,7 @@ const DelivaryOrderCommonInsertPart = () => {
                                 </div>
                               </div>
                             </div>
-                            <div class="col col-md-6 col-lg-3">
+                            <div className="col col-md-6 col-lg-3">
                               <label
                                 htmlFor="supplierId"
                                 className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"

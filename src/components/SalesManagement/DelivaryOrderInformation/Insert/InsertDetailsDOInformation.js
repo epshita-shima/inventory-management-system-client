@@ -48,8 +48,8 @@ const InsertDetailsDOInformation = ({
 
   return (
     <div className="shadow-lg  doinsertdata-main-view">
-      <div class="col-12 col-md-12 col-lg-12 py-2">
-        <div class="table-responsive">
+      <div className="col-12 col-md-12 col-lg-12 py-2">
+        <div className="table-responsive">
           <table className="table table-bordered">
             <thead className="w-100">
               <tr>

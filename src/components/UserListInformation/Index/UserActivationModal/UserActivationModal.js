@@ -15,37 +15,35 @@ const UserActivationModal = ({ userId }) => {
     setUpdateUserStatus(singleUser);
   }, [singleUser]);
 
-
-
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="exampleModalLong"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalLongTitle"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">
+      <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLongTitle">
               User Information
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <ul class="list-group rounded-4">
-              <li class="list-group-item active">User Information</li>
+          <div className="modal-body">
+            <ul className="list-group rounded-4">
+              <li className="list-group-item active">User Information</li>
               <div className="mt-4 overflow-scroll">
-                <table class="table">
+                <table className="table">
                   <thead>
                     <tr>
                       <th className="text-center" scope="col">
@@ -71,7 +69,7 @@ const UserActivationModal = ({ userId }) => {
                       <td>
                         <input
                           type="text"
-                          class="form-control bg-light text-center"
+                          className="form-control bg-light text-center"
                           placeholder=""
                           aria-label=""
                           readOnly
@@ -82,7 +80,7 @@ const UserActivationModal = ({ userId }) => {
                       <td>
                         <input
                           type="text"
-                          class="form-control bg-light text-center"
+                          className="form-control bg-light text-center"
                           placeholder=""
                           aria-label=""
                           value={singleUser?.lastname}
@@ -93,7 +91,7 @@ const UserActivationModal = ({ userId }) => {
                       <td>
                         <input
                           type="text"
-                          class="form-control bg-light text-center"
+                          className="form-control bg-light text-center"
                           placeholder=""
                           aria-label=""
                           value={singleUser?.mobileNo}
@@ -124,10 +122,10 @@ const UserActivationModal = ({ userId }) => {
               </div>
             </ul>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn"
+              className="btn"
               data-dismiss="modal"
               style={{
                 background: "transparent",
@@ -142,7 +140,7 @@ const UserActivationModal = ({ userId }) => {
             </button>
             <button
               type="button"
-              class="btn"
+              className="btn"
               data-dismiss="modal"
               style={{
                 background: "#2DDC1B",

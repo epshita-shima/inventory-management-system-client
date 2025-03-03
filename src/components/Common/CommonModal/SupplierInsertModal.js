@@ -18,20 +18,20 @@ const SupplierInsertModal = ({
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="commonInsertModalCenter"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="commonInsertModalCenterTitle"
       aria-hidden="true"
       style={{ overflow: "hidden" }}
     >
       <div
-        class="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
+        className="modal-dialog modal-dialog-centered  modal-lg  modal-xl"
         role="document"
       >
-        <div class="modal-content">
-          <div class="modal-header">
+        <div className="modal-content">
+          <div className="modal-header">
             <h5 className="modal-title" id="commonInsertModalCenterLongTitle">
               {activeSupplierModal && "Insert Supplier Information"}
               {activeItemInfoModal && "Insert Raw Material Item Information"}
@@ -40,7 +40,7 @@ const SupplierInsertModal = ({
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {

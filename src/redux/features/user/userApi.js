@@ -41,6 +41,16 @@ const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ["changestatus"],
     }),
+
+    updateUserInformation: builder.mutation({
+      query: (updatedData) => ({
+        url: `/api/v1/users/updateinfo/${updatedData?._id}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+      invalidatesTags: ["changestatus"],
+    }),
+
     updateUserPassword: builder.mutation({
       query: (updatedData) => ({
         url: `/api/v1/users/change/password/${updatedData?._id}`,
@@ -85,6 +95,7 @@ export const {
   useGetAllUserQuery,
   useGetSingleUserQuery,
   useUpdateUserMutation,
+  useUpdateUserInformationMutation,
   useDeleteUserMutation,
   useUpdateMultipleUserStatusMutation,
   useUpdateMultipleUserFieldMutation,

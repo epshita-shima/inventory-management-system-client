@@ -143,7 +143,7 @@ const UpdateCFTInfo = () => {
       }}
     >
       <LoadingSpineer isLoading={isCFTInfoloading}></LoadingSpineer>
-      <div class="overflow-hidden">
+      <div className="overflow-hidden">
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
@@ -331,10 +331,10 @@ const UpdateCFTInfo = () => {
                           className=" flex-1 items-center d-flex-nowrap py-2"
                           // style={{height: "calc(75vh - 120px)", overflowY: "auto" }}
                         >
-                          <div class="container-fluid">
-                            <div class="row justify-content-center">
-                              <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-                                <div class="table-responsive table-responsive-custom">
+                          <div className="container-fluid">
+                            <div className="row justify-content-center">
+                              <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                                <div className="table-responsive table-responsive-custom">
                                   <table className="table w-full table-bordered">
                                     <thead className="w-100">
                                       <tr>

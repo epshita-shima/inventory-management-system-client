@@ -86,13 +86,13 @@ const UserCreation = () => {
     return (
       <div className="d-flex justify-content-center align-items-center">
         <button
-          class="btn"
+          className="btn"
           style={{ backgroundColor: "#2DDC1B", color: "white" }}
           type="button"
           disabled
         >
           <span
-            class="spinner-grow spinner-grow-sm"
+            className="spinner-grow spinner-grow-sm"
             role="status"
             aria-hidden="true"
           ></span>
@@ -295,10 +295,10 @@ const UserCreation = () => {
       className="container-fluid p-0 m-0 usercreation-table"
       style={{
         overflowY: "scroll",
-        height: "500px",
+        maxHeight: "80vh",
       }}
     >
-      <div class="container">
+      <div className="container">
         <div className="shadow-lg mt-2 mt-sm-5 mt-md-5 mt-lg-5 p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center border-bottom">
             <p>
@@ -481,9 +481,7 @@ const UserCreation = () => {
               />
             }
           </div>
-        </div>
-
-        <div className="d-flex justify-content-end mt-5">
+          <div className="d-flex justify-content-end mt-5">
           <div className="d-flex justify-content-end">
             <button
               className="btn text-uppercase rounded-4"
@@ -512,6 +510,9 @@ const UserCreation = () => {
             </button>
           </div>
         </div>
+        </div>
+
+      
       </div>
       <UserRoleEntryModal></UserRoleEntryModal>
     </div>

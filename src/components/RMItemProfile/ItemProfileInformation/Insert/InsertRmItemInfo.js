@@ -287,7 +287,7 @@ const InsertRmItemInfo = () => {
                         }}
                       >
                         <table
-                          class="table table-bordered"
+                          className="table table-bordered"
                           style={{
                             width: "100%",
                             tableLayout: "fixed",
@@ -626,7 +626,7 @@ const InsertRmItemInfo = () => {
                                           )}
                                       </td>
                                       <td className="text-center align-middle">
-                                        {/* <div class="form-check">
+                                        {/* <div className="form-check">
                                             <input
                                               type="checkbox"
                                               id="flexCheckDefault"

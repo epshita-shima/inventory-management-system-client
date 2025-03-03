@@ -42,29 +42,29 @@ const UserRoleEntryModal = () => {
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="exampleModal"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+      <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
               User Entry
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body shadow-lg p-5 m-5">
+          <div className="modal-body shadow-lg p-5 m-5">
             <div className="w-100 ms-2">
               <Form submit={handleUserRoleHandle}>
                 <Form.Label htmlFor="inputPassword5" className="text-dark">
@@ -85,7 +85,7 @@ const UserRoleEntryModal = () => {
               </Form>
             </div>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               className="btn text-uppercase rounded-4"
               data-dismiss="modal"

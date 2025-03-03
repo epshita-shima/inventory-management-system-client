@@ -161,7 +161,7 @@ const PurchaseOrderApproveForm = ({ permission }) => {
       className=" row px-4 mx-4"
       style={{ height: "calc(98vh - 120px)", overflowY: "scroll" }}
     >
-      <div class="">
+      <div className="">
         <PurchaseHeading
           purchaseInCash={purchaseCashInfoData}
           purchaseInLCAtSight={purchaseLCInfoData}
@@ -181,7 +181,7 @@ const PurchaseOrderApproveForm = ({ permission }) => {
         ></PurchaseHeading>
 
         <div className="mt-2 mt-sm-4 mt-md-4 mt-lg-4 rounded-4 ">
-          <div class="row row-cols-1 row-cols-2 row-cols-lg-2 w-75">
+          <div className="row row-cols-1 row-cols-2 row-cols-lg-2 w-75">
             <div className="col-12 col-sm-12 col-md-6 col-lg-3 text-center mt-2">
               <label htmlFor="">Po Status</label>
               <div className="w-100">

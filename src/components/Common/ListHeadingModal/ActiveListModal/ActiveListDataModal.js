@@ -399,9 +399,9 @@ const ActiveListDataModal = ({
             {activeDataModal ? (
               <>
                 {listData?.length > 0 ? (
-                  <div class="dropdown">
+                  <div className="dropdown">
                     <button
-                      class="btn btn-download dropdown-toggle"
+                      className="btn btn-download dropdown-toggle"
                       type="button"
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
@@ -410,12 +410,12 @@ const ActiveListDataModal = ({
                       <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                     </button>
                     <ul
-                      class="dropdown-menu"
+                      className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
                       <li>
                         <a
-                          class="dropdown-item"
+                          className="dropdown-item"
                           href="#"
                           onClick={() => {
                             if (companyinfo?.length !== 0 || undefined) {
@@ -431,7 +431,7 @@ const ActiveListDataModal = ({
                       </li>
                       <li>
                         <a
-                          class="dropdown-item"
+                          className="dropdown-item"
                           href="#"
                           onClick={() => {
                             handleDownload(
@@ -453,9 +453,9 @@ const ActiveListDataModal = ({
             ) : (
               <>
                 {listData?.length > 0 ? (
-                  <div class="dropdown">
+                  <div className="dropdown">
                     <button
-                      class="btn btn-download dropdown-toggle"
+                      className="btn btn-download dropdown-toggle"
                       type="button"
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
@@ -464,12 +464,12 @@ const ActiveListDataModal = ({
                       <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                     </button>
                     <ul
-                      class="dropdown-menu"
+                      className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
                       <li>
                         <a
-                          class="dropdown-item"
+                          className="dropdown-item"
                           href="#"
                           onClick={() => {
                             if (companyinfo?.length !== 0 || undefined) {
@@ -485,7 +485,7 @@ const ActiveListDataModal = ({
                       </li>
                       <li>
                         <a
-                          class="dropdown-item"
+                          className="dropdown-item"
                           href="#"
                           onClick={() => {
                             handleDownload(
@@ -534,25 +534,25 @@ const ActiveListDataModal = ({
 
   return (
     <div
-      class="modal fade"
+      className="modal fade"
       id="exampleModalCenter"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
       aria-hidden="true"
       style={{ overflow: "hidden" }}
     >
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">
+      <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLongTitle">
               {activeDataModal
                 ? "All Active ListData"
                 : "All Inactive ListData"}
             </h5>
             <button
               type="button"
-              class="close"
+              className="close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
@@ -579,10 +579,10 @@ const ActiveListDataModal = ({
               subHeaderComponent={subHeaderComponent}
             />
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              className="btn btn-secondary"
               data-dismiss="modal"
               onClick={() => {
                 if (activeDataModal) {
@@ -603,7 +603,7 @@ const ActiveListDataModal = ({
             </button>
             <button
               type="button"
-              class={`btn btn-primary ${
+              className={`btn btn-primary ${
                 selectedData.length === 0 ||
                 isLoadingUser ||
                 isLoadingRawMaterial ||

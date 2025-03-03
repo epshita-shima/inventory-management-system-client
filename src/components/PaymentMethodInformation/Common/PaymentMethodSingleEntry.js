@@ -276,7 +276,7 @@ const PaymentMethodSingleEntry = () => {
       style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
       {/* <LoadingSpineer isLoading={isLoadingClientInfo}></LoadingSpineer> */}
-      <div class={`overflow-hidden ${isLoadingClientInfo ? 'd-none' : 'd-block'}`}>
+      <div className={`overflow-hidden ${isLoadingClientInfo ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={formValues}
@@ -363,8 +363,8 @@ const PaymentMethodSingleEntry = () => {
                             </div>
                           </div>
 
-                          <div class="row row-cols-1  row-cols-md-2 row-cols-lg-4">
-                            <div class="col col-md-6 col-lg-3">
+                          <div className="row row-cols-1  row-cols-md-2 row-cols-lg-4">
+                            <div className="col col-md-6 col-lg-3">
                               <label
                                 htmlFor="supplierId"
                                 className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"
@@ -374,7 +374,7 @@ const PaymentMethodSingleEntry = () => {
                               <div className="w-100 d-flex justify-content-between mt-2">
                                 <div className="w-100">
                                   <Select
-                                    class="form-select"
+                                    className="form-select"
                                     className="w-100 mb-3"
                                     aria-label="Default select example"
                                     name="sizeinfo"
@@ -463,7 +463,7 @@ const PaymentMethodSingleEntry = () => {
                                 </div>
                               </div>
                             </div>
-                            <div class="col col-md-6 col-lg-3">
+                            <div className="col col-md-6 col-lg-3">
                               <label
                                 htmlFor="supplierId"
                                 className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"
@@ -474,7 +474,7 @@ const PaymentMethodSingleEntry = () => {
                               <div className="w-100 d-flex justify-content-between mt-2">
                                 <div className="w-100">
                                   <Select
-                                    class="form-select"
+                                    className="form-select"
                                     className="w-100 mb-3"
                                     aria-label="Default select example"
                                     name="supplierpono"

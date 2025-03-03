@@ -16,31 +16,27 @@ const RawMaterialConsumptionTable = () => {
       const permidionData = user?.filter(
         (user) => user._id == userIdFromSession
       );
+      console.log('permidionData',permidionData)
       const extractUserListForCurrentUser = (userData, userId) => {
-        let userList = null;
+      
         const currentUser = userData?.find((user) => user._id === userId);
 
-        if (currentUser) {
-          currentUser?.menulist?.forEach((menu) => {
-            const userListSubMenu = menu?.items?.find(
-              (subItem) => subItem?.label === "Production Report"
-            );
-            if (userListSubMenu) {
-              userList = userListSubMenu;
-            } else {
-              menu?.items?.forEach((subMenu) => {
-                if (subMenu?.label === subMenu?.label) {
-                  const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "Finish Goods"
-                  );
-                  if (userListSubMenu) {
-                    userList = userListSubMenu;
-                  }
-                }
-              });
+        const findMenuItem = (menuList, targetLabel) => {
+          for (const menu of menuList) {
+            if (menu.label === targetLabel) {
+              return menu;
             }
-          });
-        }
+            if (menu.items && menu.items.length > 0) {
+              const foundItem = findMenuItem(menu.items, targetLabel);
+              if (foundItem) return foundItem;
+            }
+          }
+          return null;
+        };
+        
+        // Usage
+        const userList = currentUser?.menulist ? findMenuItem(currentUser.menulist, "Raw Material consumption") : null;
+        console.log(userList)
         return userList;
       };
 
@@ -48,6 +44,7 @@ const RawMaterialConsumptionTable = () => {
         permidionData,
         userIdFromSession
       );
+      console.log(permissions)
       setPermission(permissions);
     } else {
       navigate("/");
@@ -57,13 +54,13 @@ const RawMaterialConsumptionTable = () => {
     return (
       <div className="d-flex justify-content-center align-items-center">
         <button
-          class="btn"
+          className="btn"
           style={{ backgroundColor: "#2DDC1B", color: "white" }}
           type="button"
           disabled
         >
           <span
-            class="spinner-grow spinner-grow-sm"
+            className="spinner-grow spinner-grow-sm"
             role="status"
             aria-hidden="true"
           ></span>

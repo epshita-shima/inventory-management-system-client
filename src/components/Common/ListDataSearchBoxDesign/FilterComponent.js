@@ -31,7 +31,7 @@ const ClearButton = styled.button`
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
   <>
-  {/* <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/> */}
+  {/* <input type="text" className="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"/> */}
     <Input
       id="search"
       type="text"

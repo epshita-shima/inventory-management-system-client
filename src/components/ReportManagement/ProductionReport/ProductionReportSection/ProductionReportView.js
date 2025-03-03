@@ -24,7 +24,7 @@ const ProductionReportView = ({ permission }) => {
     isProductionDatewiseSummaryReport,
     setIsProductionDatewiseSummaryReport,
   ] = useState(false);
-
+console.log('permission',permission)
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);

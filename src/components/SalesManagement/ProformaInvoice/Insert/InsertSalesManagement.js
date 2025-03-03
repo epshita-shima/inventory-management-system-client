@@ -14,9 +14,9 @@ const InsertSalesManagement = ({
   unitInfoOptions,
 }) => {
   return (
-    <div class="row">
-      <div class="col-12 col-md-12 col-lg-12 fixed-column">
-        <div class="table-responsive">
+    <div className="row">
+      <div className="col-12 col-md-12 col-lg-12 fixed-column">
+        <div className="table-responsive">
           <table className="table table-bordered">
             <thead className="w-100">
               <tr>

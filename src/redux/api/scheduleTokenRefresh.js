@@ -1,5 +1,6 @@
 
 import { jwtDecode } from 'jwt-decode';
+import { refreshToken } from './refreshResult';
 export const scheduleTokenRefresh = (accessToken, dispatch) => {
   if (!accessToken) return;
 
@@ -12,7 +13,7 @@ export const scheduleTokenRefresh = (accessToken, dispatch) => {
     const timeUntilRefresh = refreshTime - currentTime;
 
     setTimeout(() => {
-      // dispatch(refreshToken());
+      dispatch(refreshToken());
     }, timeUntilRefresh);
   }
 };

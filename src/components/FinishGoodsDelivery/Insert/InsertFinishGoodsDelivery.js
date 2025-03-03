@@ -22,8 +22,8 @@ const InsertFinishGoodsDelivery = ({
   );
   
   return (
-    <div class="row row-cols-1 row-cols-lg-3">
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+    <div className="row row-cols-1 row-cols-lg-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Client Name</label>
         <br />
         <Field
@@ -42,7 +42,7 @@ const InsertFinishGoodsDelivery = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">PI Number</label>
         <br />
         <Field
@@ -61,7 +61,7 @@ const InsertFinishGoodsDelivery = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">DO Number</label>
         <br />
         <Field
@@ -80,7 +80,7 @@ const InsertFinishGoodsDelivery = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="paymentId">Driver Name</label>
         <br />
         <Field
@@ -101,7 +101,7 @@ const InsertFinishGoodsDelivery = ({
           }}
         />
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="driverContactNo">Driver Contact No</label>
         <br />
         <Field
@@ -126,7 +126,7 @@ const InsertFinishGoodsDelivery = ({
           <div className="text-danger">{errors.driverContactNo}</div>
         )}
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mt-3">
+      <div className="col-sm-12 col-md-6 col-lg-3 mt-3">
         <label htmlFor="truckNo">Truck Number</label>
         <br />
         <Field

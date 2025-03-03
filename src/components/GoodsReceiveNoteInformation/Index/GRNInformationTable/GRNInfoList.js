@@ -326,9 +326,9 @@ const GRNInfoList = ({ permission }) => {
           <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
             <div className="d-flex justify-content-end align-items-center">
               <div className="table-head-icon d-flex">
-                <div class="dropdown">
+                <div className="dropdown">
                   <button
-                    class="btn btn-download dropdown-toggle"
+                    className="btn btn-download dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton1"
                     data-bs-toggle="dropdown"
@@ -337,12 +337,12 @@ const GRNInfoList = ({ permission }) => {
                     <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                   </button>
                   <ul
-                    class="dropdown-menu"
+                    className="dropdown-menu"
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <li>
                       <a
-                        class="dropdown-item"
+                        className="dropdown-item"
                         href="#"
                         onClick={() => {
                           if (companyinfo?.length !== 0 || undefined) {
@@ -363,7 +363,7 @@ const GRNInfoList = ({ permission }) => {
                     </li>
                     <li>
                       <a
-                        class="dropdown-item"
+                        className="dropdown-item"
                         href="#"
                         onClick={() => {
                           handleGRNDownload(

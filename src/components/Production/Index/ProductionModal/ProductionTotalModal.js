@@ -141,9 +141,9 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
         totalProduction?.length > 0 && (<div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
-              <div class="dropdown">
+              <div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -151,10 +151,10 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
@@ -167,7 +167,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
                   </li>
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                        handleProductionExcel(
@@ -208,29 +208,29 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
   return (
     <>
       <div
-        class="modal fade"
+        className="modal fade"
         id="productionModal"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
+        <div className="modal-dialog modal-lg" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
                Production List
               </h5>
               <button
                 type="button"
-                class="close"
+                className="close"
                 data-dismiss="modal"
                 aria-label="Close"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div
                 style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
               >

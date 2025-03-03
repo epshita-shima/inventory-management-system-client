@@ -252,7 +252,7 @@ const InsertGRNInfo = () => {
 
     >
       {/* <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer> */}
-      <div class={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
+      <div className={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={initialValues}
@@ -319,8 +319,8 @@ const InsertGRNInfo = () => {
                             </div>
                           </div>
 
-                          <div class="row row-cols-1  row-cols-md-2 row-cols-lg-4">
-                            <div class="col col-md-6 col-lg-3 mt-2">
+                          <div className="row row-cols-1  row-cols-md-2 row-cols-lg-4">
+                            <div className="col col-md-6 col-lg-3 mt-2">
                               <label htmlFor="">Received Date</label>
                               <br />
                               <DatePicker
@@ -363,7 +363,7 @@ const InsertGRNInfo = () => {
                               />
                             </div>
 
-                            <div class="col col-md-6 col-lg-3 mt-2">
+                            <div className="col col-md-6 col-lg-3 mt-2">
                               <label
                                 htmlFor="challanNo"
                                 className="ml-sm-0 ml-md-0 ml-lg-4" 
@@ -416,7 +416,7 @@ const InsertGRNInfo = () => {
                                   )}
                             </div>
 
-                            <div class="col col-md-6 col-lg-3">
+                            <div className="col col-md-6 col-lg-3">
                               <label htmlFor="supplierId"  className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0" >
                                 Supplier Name
                               </label>
@@ -498,7 +498,7 @@ const InsertGRNInfo = () => {
                                 </div>
                               )}
                             </div>
-                            <div class="col col-md-6 col-lg-3">
+                            <div className="col col-md-6 col-lg-3">
                               <label htmlFor="supplierId" className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0">
                                 Supplier PO Number
                               </label>

@@ -25,9 +25,9 @@ const InsertDeliverReturnDetails = ({
 const {data:finishGoodsDeliveryInfo}=useGetAllFinishGoodsDeliveryInformationQuery(undefined)
 
   return (
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
-        <div class="table-responsive">
+    <div className="row justify-content-center">
+      <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
+        <div className="table-responsive">
           <table className="table table-bordered">
             <thead className="w-100">
               <tr>

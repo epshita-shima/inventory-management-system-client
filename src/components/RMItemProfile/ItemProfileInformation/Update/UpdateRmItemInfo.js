@@ -103,7 +103,7 @@ const UpdateRmItemInfo = () => {
   return (
     <div className="row px-4 mx-4">
       {/* {<LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>} */}
-      <div class="shadow-lg  p-5 rounded-4">
+      <div className="shadow-lg  p-5 rounded-4">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
             <span

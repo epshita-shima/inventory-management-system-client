@@ -134,9 +134,9 @@ const ApproveInvoiceModal = ({permission}) => {
         <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
           <div className="d-flex justify-content-end align-items-center">
             <div className="table-head-icon d-flex">
-              <div class="dropdown">
+              <div className="dropdown">
                 <button
-                  class="btn btn-download dropdown-toggle"
+                  className="btn btn-download dropdown-toggle"
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
@@ -144,10 +144,10 @@ const ApproveInvoiceModal = ({permission}) => {
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                        
@@ -161,7 +161,7 @@ const ApproveInvoiceModal = ({permission}) => {
                   </li>
                   <li>
                     <a
-                      class="dropdown-item"
+                      className="dropdown-item"
                       href="#"
                       onClick={() => {
                         handleInvoiceExcel(
@@ -195,29 +195,29 @@ const ApproveInvoiceModal = ({permission}) => {
     return (
       <>
          <div
-  class="modal fade"
+  className="modal fade"
   id="approveInvoiceModal"
-  tabindex="-1"
+  tabIndex="-1"
   role="dialog"
   aria-labelledby="exampleModalLabel"
   aria-hidden="true"
 >
-  <div class="modal-dialog fullscreen-modal" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">
+  <div className="modal-dialog fullscreen-modal" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="exampleModalLabel">
           Approve PI List
         </h5>
         <button
           type="button"
-          class="close"
+          className="close"
           data-dismiss="modal"
           aria-label="Close"
         >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div className="modal-body">
         <div
           className=""
           style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}

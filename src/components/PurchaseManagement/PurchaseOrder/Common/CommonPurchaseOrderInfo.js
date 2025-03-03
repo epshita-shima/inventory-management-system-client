@@ -229,7 +229,7 @@ const CommonPurchaseOrderInfo = () => {
     >
       {/* {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>} */}
 
-      <div class={`${isLoadingSupplier ? "d-none" : "d-block"}`}>
+      <div className={`${isLoadingSupplier ? "d-none" : "d-block"}`}>
         <div className="px-4 rounded-4">
           <Formik
             initialValues={initialValues}
@@ -273,9 +273,9 @@ const CommonPurchaseOrderInfo = () => {
                     const details = values.detailsData;
                     return (
                       <div className=" shadow-lg py-2 px-5">
-                        <div class="container-fluid">
-                          <div class="row justify-content-center">
-                            <div class="col-12 col-md-12 col-lg-12 fixed-column py-2">
+                        <div className="container-fluid">
+                          <div className="row justify-content-center">
+                            <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">
                               <div className="d-flex justify-content-between align-items-center">
                                 <h2 className="main-heading-title">
                                   {id

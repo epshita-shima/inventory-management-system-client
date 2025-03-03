@@ -432,9 +432,9 @@ const SpecialDeliveryTableList = ({ permission }) => {
           <>
             <div className="d-flex justify-content-end align-items-center">
               <div className="table-head-icon d-flex">
-                <div class="dropdown">
+                <div className="dropdown">
                   <button
-                    class="btn btn-download dropdown-toggle"
+                    className="btn btn-download dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton1"
                     data-bs-toggle="dropdown"
@@ -443,12 +443,12 @@ const SpecialDeliveryTableList = ({ permission }) => {
                     <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                   </button>
                   <ul
-                    class="dropdown-menu"
+                    className="dropdown-menu"
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <li>
                       <a
-                        class="dropdown-item"
+                        className="dropdown-item"
                         href="#"
                         onClick={() => {
                           if (companyinfo?.length !== 0 || undefined) {
@@ -466,7 +466,7 @@ const SpecialDeliveryTableList = ({ permission }) => {
                     </li>
                     <li>
                       <a
-                        class="dropdown-item"
+                        className="dropdown-item"
                         href="#"
                         onClick={() => {
                           //   handleProductionExcel(

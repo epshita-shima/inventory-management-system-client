@@ -157,16 +157,16 @@ const ListHeading = ({
 
   return (
     <div className={`${isLoading ? "d-none" : "d-block"}`}>
-      <div class="row">
+      <div className="row">
         <div
-          class={
+          className={
             purchaseOrderList
               ? " col-lg col-sm-12 col-md-4"
               : "col-md-4 col-lg-3"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid #2DDC1B",
               borderRadius: "10px",
@@ -175,12 +175,12 @@ const ListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#exampleModal"
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -190,7 +190,7 @@ const ListHeading = ({
                 {totalTitle}
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
               >
                 {grandTotal}
@@ -199,14 +199,14 @@ const ListHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             purchaseOrderList
               ? " col-lg col-sm-12 col-md-4 mt-4 mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
               : "col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid  #B8FEB3",
               borderRadius: "10px",
@@ -215,7 +215,7 @@ const ListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#exampleModalCenter"
               onClick={() => {
@@ -230,7 +230,7 @@ const ListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -240,7 +240,7 @@ const ListHeading = ({
                 {totalActiveTitle}
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
               >
                 {totalActive}
@@ -249,14 +249,14 @@ const ListHeading = ({
           </div>
         </div>
         <div
-          class={
+          className={
             purchaseOrderList
               ? " col-lg col-sm-12 col-md-4 mt-4  mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0"
               : "col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"
           }
         >
           <div
-            class="cardbox shadow-lg"
+            className="cardbox shadow-lg"
             style={{
               borderLeft: "12px solid red",
               borderRadius: "10px",
@@ -265,7 +265,7 @@ const ListHeading = ({
             }}
           >
             <div
-              class="card-body"
+              className="card-body"
               data-toggle="modal"
               data-target="#exampleModalCenter"
               onClick={() => {
@@ -280,7 +280,7 @@ const ListHeading = ({
               }}
             >
               <p
-                class="card-title"
+                className="card-title"
                 style={{
                   color: "#8091a5",
                   fontSize: "13px",
@@ -290,7 +290,7 @@ const ListHeading = ({
                 {totalInActiveTitle}
               </p>
               <h5
-                class="card-text"
+                className="card-text"
                 style={{ color: "#000", fontSize: "30px", fontWeight: "700" }}
               >
                 {totalInActive}
@@ -300,9 +300,9 @@ const ListHeading = ({
         </div>
         {purchaseOrderList ? (
           <>
-            <div class=" col-lg col-sm-12 col-md-4 mt-4  mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0 mt-4 mt-sm-0">
+            <div className=" col-lg col-sm-12 col-md-4 mt-4  mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0 mt-4 mt-sm-0">
               <div
-                class="cardbox shadow-lg"
+                className="cardbox shadow-lg"
                 style={{
                   borderLeft: "12px solid #2DDC1B",
                   borderRadius: "10px",
@@ -311,13 +311,13 @@ const ListHeading = ({
                 }}
               >
                 <div
-                  class="card-body"
+                  className="card-body"
                   data-toggle="modal"
                   data-target="#exampleModalCenter"
                   onClick={() => {}}
                 >
                   <p
-                    class="card-title"
+                    className="card-title"
                     style={{
                       color: "#8091a5",
                       fontSize: "13px",
@@ -327,7 +327,7 @@ const ListHeading = ({
                     Total Approved PO
                   </p>
                   <h5
-                    class="card-text"
+                    className="card-text"
                     style={{
                       color: "#000",
                       fontSize: "30px",
@@ -339,9 +339,9 @@ const ListHeading = ({
                 </div>
               </div>
             </div>
-            <div class=" col-lg col-sm-12 col-md-4 mt-4  mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0">
+            <div className=" col-lg col-sm-12 col-md-4 mt-4  mt-sm-4 mt-md-4 mt-lg-0 mt-xl-0">
               <div
-                class="cardbox shadow-lg"
+                className="cardbox shadow-lg"
                 style={{
                   borderLeft: "12px solid  #B8FEB3",
                   borderRadius: "10px",
@@ -350,7 +350,7 @@ const ListHeading = ({
                 }}
               >
                 <div
-                  class="card-body"
+                  className="card-body"
                   data-toggle="modal"
                   data-target="#exampleModalCenter"
                   onClick={() => {
@@ -361,7 +361,7 @@ const ListHeading = ({
                   }}
                 >
                   <p
-                    class="card-title"
+                    className="card-title"
                     style={{
                       color: "#8091a5",
                       fontSize: "13px",
@@ -371,7 +371,7 @@ const ListHeading = ({
                     Total UnApproved PO
                   </p>
                   <h5
-                    class="card-text"
+                    className="card-text"
                     style={{
                       color: "#000",
                       fontSize: "30px",

@@ -289,9 +289,9 @@ const DeliveryOrderListData = ({ permission }) => {
               ></FontAwesomeIcon>
               &nbsp;
             </div>
-            <div class="dropdown">
+            <div className="dropdown">
               <button
-                class="btn btn-download dropdown-toggle"
+                className="btn btn-download dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
@@ -299,10 +299,10 @@ const DeliveryOrderListData = ({ permission }) => {
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={() => {
                       if (companyinfo?.length !== 0 || undefined) {
@@ -322,7 +322,7 @@ const DeliveryOrderListData = ({ permission }) => {
                 </li>
                 {/* <li>
                   <a
-                    class="dropdown-item"
+                    className="dropdown-item"
                     href="#"
                     onClick={() => {
                       // handleInvoiceExcel(
