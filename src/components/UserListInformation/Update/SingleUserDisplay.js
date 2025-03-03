@@ -40,7 +40,6 @@ const SingleUserDisplay = () => {
   const singleUserData = useSelector((state) => state.menu.singleUser);
   const [updateUser, { isLoading: updateUserLoading }] =
     useUpdateUserInformationMutation();
-console.log(singleUserData)
   useEffect(() => {
     if (menuItems) {
       dispatch(setMenuItems(menuItems));
@@ -62,7 +61,6 @@ console.log(singleUserData)
     try {
       await dispatch(filterCheckedMenuItems());
       const updatedUserData = store.getState().menu.singleUser;
-      console.log(updatedUserData)
       await updateUser(updatedUserData);
       // Data has been successfully updated
       swal("Done", "Data Update Successfully", "success");

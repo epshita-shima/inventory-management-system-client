@@ -19,31 +19,27 @@ const ProductionReportTable = () => {
       const permidionData = user?.filter(
         (user) => user._id === userIdFromSession
       );
+
       const extractUserListForCurrentUser = (userData, userId) => {
-        let userList = null;
+
         const currentUser = userData?.find((user) => user._id === userId);
    
-        if (currentUser) {
-          currentUser?.menulist?.forEach((menu) => {
-            const userListSubMenu = menu?.items?.find(
-              (subItem) => subItem?.label === "Production Report"
-            );
-            if (userListSubMenu) {
-              userList = userListSubMenu;
-            } else {
-              menu?.items?.forEach((subMenu) => {
-                if (subMenu?.label === subMenu?.label) {
-                  const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "Finish Goods"
-                  );
-                  if (userListSubMenu) {
-                    userList = userListSubMenu;
-                  }
-                }
-              });
+        const findMenuItem = (menuList, targetLabel) => {
+          for (const menu of menuList) {
+            if (menu.label === targetLabel) {
+              return menu;
             }
-          });
-        }
+            if (menu.items && menu.items.length > 0) {
+              const foundItem = findMenuItem(menu.items, targetLabel);
+              if (foundItem) return foundItem;
+            }
+          }
+          return null;
+        };
+        
+        // Usage
+        const userList = currentUser?.menulist ? findMenuItem(currentUser.menulist, "Finish Goods") : null;
+        console.log(userList)
         return userList;
       };
 
@@ -76,6 +72,7 @@ const ProductionReportTable = () => {
       </div>
     );
   }
+  console.log(permission)
   return (
       <div>
         <ProductionReportView  permission={permission}></ProductionReportView>
