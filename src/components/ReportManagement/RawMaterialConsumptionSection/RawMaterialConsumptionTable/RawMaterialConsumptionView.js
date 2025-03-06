@@ -105,7 +105,7 @@ const RawMaterialConsumptionView = ({ permission }) => {
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={rawMaterialConsumptionSummaryData}
+            filteredDatas={rawMaterialConsumptionSummaryData?.rawConsumptionData}
             rawMaterialDataInfo={rawMaterialDataInfo}
             itemUnitInformation={itemUnitInformation}
             companyinfo={companyinfo}

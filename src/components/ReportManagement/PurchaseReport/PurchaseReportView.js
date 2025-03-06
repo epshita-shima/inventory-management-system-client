@@ -84,6 +84,7 @@ const PurchaseReportView = ({ permission }) => {
     }));
 
     if (updatedFilters.reportStatus === "purchasedetailsreport") {
+      console.log(updatedFilters)
       await triggerPurchaseDetailsReport(updatedFilters);
     }
     if (updatedFilters.reportStatus === "purchasesummaryreport") {

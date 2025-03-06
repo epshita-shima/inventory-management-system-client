@@ -27,7 +27,7 @@ const DeliverReturnSinglePart = ({
     filteredDeliveryOrderData.some((item) => item.piId === deliverOrder.piId)
   );
   const deliveryOptions = deliveryOrderDropdown(matchedDeliverInfo);
-
+console.log(deliveryOrderDataInformation)
   return (
     <div className="row row-cols-1 row-cols-lg-4">
       <div className="col-sm-12 col-md-6 col-lg-4 mt-2">
@@ -91,10 +91,12 @@ const DeliverReturnSinglePart = ({
               })}
               onChange={(e) => {
                 setFieldValue("piId", e.value);
+                console.log( e.value)
                 const filteredDeliveryData =
                   deliveryOrderDataInformation?.filter(
                     (order) => order.piId == e.value
                   );
+                  console.log(filteredDeliveryData)
                 setFilteredDeliveryOrderData(filteredDeliveryData);
                 // swal(
                 //   "Relax!",

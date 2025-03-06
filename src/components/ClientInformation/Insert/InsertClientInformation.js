@@ -143,7 +143,7 @@ const InsertClientInformation = () => {
                     .min(11, "must be at least 11 characters long"),
                   contactPerson: Yup.string().required("Required"),
                   binNo: Yup.string().required("Required"),
-                  tradeLicenceNo: Yup.string().required("Required"),
+                  // tradeLicenceNo: Yup.string().required("Required"),
                   tinNo: Yup.string().required("Required"),
                 })
               ),
@@ -174,6 +174,7 @@ const InsertClientInformation = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
+                    console.log(details)
                     return (
                       <div className="row shadow-lg pt-5 pb-3 d-flex justify-content-center mx-auto rounded-4">
                         <div className="col-md-12">
@@ -662,11 +663,14 @@ const InsertClientInformation = () => {
                                             width: "20%",
                                           }}
                                           disabled={
-                                            id
+                                            (id
                                               ? false
-                                              : !(isValid && dirty) ||
-                                                isUpdateLoading ||
-                                                isInsertLoading
+                                              : !(isValid && dirty)) ||
+                                            isUpdateLoading
+                                              ? true
+                                              : false || isInsertLoading
+                                              ? true
+                                              : false
                                           }
                                         >
                                           {id

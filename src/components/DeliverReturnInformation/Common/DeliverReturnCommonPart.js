@@ -36,7 +36,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
 
   const [returnDate, setReturnDate] = useState(new Date());
 
-  
+  console.log(deliveryOrderDataInformation)
   const initialValues = {
     returnDate: "",
     piId: "",
