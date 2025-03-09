@@ -67,7 +67,7 @@ const Dashboard = () => {
     result.setDate(result.getDate() - daysToSubtract); // Subtract days
     return result.toLocaleDateString("en-CA"); // Format to "YYYY-MM-DD"
   }
-
+console.log(finishGoodsProductionData)
   const [fromDate, setFromDate] = useState(getBackDate(new Date(), 1));
   const [toDate, setToDate] = useState(new Date());
   const [purchaseFromDate, setPurchaseFromDate] = useState(
@@ -104,7 +104,7 @@ const Dashboard = () => {
   const [finishGoodsProductionFilters, setFinishGoodsProductionFilters] = useState({
     fromDate: finishGoodsProductionFromDate,
     toDate: new Date(finishGoodsProductionToDate).toLocaleDateString("en-CA"),
-    itemId: "",
+    productionItemName: "",
     reportStatus: "",
   });
   const { data: rawMaterialData } = useGetAllRMItemInformationQuery(undefined);
@@ -171,6 +171,7 @@ const Dashboard = () => {
     await triggerFinishGoodsProductionSummaryReport(updatedFilters);
   };
 
+
   const itemMap = new Map();
 
   purchaseDetailsData?.forEach((entry) => {
@@ -218,6 +219,11 @@ const Dashboard = () => {
     "Dec",
   ];
   const itemNames = [...new Set(rawConsumptionData?.monthlyRawConsumptionData?.map((item) => item.itemName))];
+ 
+
+  const itemNamesFinishGoods = [...new Set(finishGoodsProductionData?.monthlyFinishGoodsProductionData?.map((item) => item.itemName?.trim())?.filter((name)=>name))];
+  const uniqueItemNames = [...new Set(itemNamesFinishGoods)];
+ console.log(uniqueItemNames)
   const datasets = itemNames?.map((itemName, index) => {
     return {
       label: itemName,
@@ -227,12 +233,32 @@ const Dashboard = () => {
       ),
       borderColor: backgroundColors[index % backgroundColors.length],
       backgroundColor: backgroundColors[index % backgroundColors.length],
+      tension: 0.3, 
+    };
+  });
+ 
+  const datasetsFinishGoodsProduction = uniqueItemNames?.map((itemName, index) => {
+    return {
+      label: itemName,
+      data: months.map(
+        (month) =>
+          finishGoodsProductionData?.monthlyFinishGoodsProductionData?.find((item) => item.month === month && item.itemName === itemName)?.totalMonthlyQty || 0
+      ),
+      borderColor: backgroundColors[index % backgroundColors.length],
+      backgroundColor: backgroundColors[index % backgroundColors.length],
       tension: 0.3, // Smooth curve
     };
   });
+
   const dataLine = {
     labels: months,
     datasets: datasets,
+   
+  };
+
+  const dataFinishGoodsProductionLine = {
+    labels: months,
+    datasets: datasetsFinishGoodsProduction,
    
   };
 
@@ -244,11 +270,11 @@ const Dashboard = () => {
         data: salesSummaryData?.monthlySalesData?.map(
           (item) => item.totalMonthlyQty
         ),
-        backgroundColor: "#2DDC1B", // Blue
-        borderColor: "#2DDC1B",
-        borderWidth: salesSummaryData?.monthlySalesData.map((val) =>
+        backgroundColor: "#B8FEC5", // Blue
+        borderColor: "#B8FEC5",
+        borderWidth:salesSummaryData?.length > 0 ?  salesSummaryData?.monthlySalesData.map((val) =>
           Math.max(1, val / 10)
-        ),
+        ) : 2,
       },
     ],
   };
@@ -257,7 +283,7 @@ const Dashboard = () => {
     labels: labels,
     datasets: [
       {
-        data: aggregatedData.map((item) => item.amount),
+        data: aggregatedData?.map((item) => item.amount),
         backgroundColor: colors,
         borderWidth: 1,
       },
@@ -265,6 +291,39 @@ const Dashboard = () => {
   };
 
   const optionsLine = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          borderWidth: 2,
+          color: "rgba(0,0,0,0.1)",
+        },
+        ticks: {
+          padding: 10,
+        },
+        borderWidth: 5,
+        borderColor: "#2DDC1B",
+        width: "100%",
+      },
+      y: {
+        grid: {
+          borderWidth: 2,
+          color: "rgba(0,0,0,0.1)",
+        },
+        ticks: {
+          padding: 10,
+        },
+        borderWidth: 10,
+        borderColor: "#2DDC1B",
+      },
+    },
+  };
+  const optionsFinishProductionLine = {
     responsive: true,
     plugins: {
       legend: {
@@ -319,73 +378,69 @@ const Dashboard = () => {
   return (
     <div className="container-fluid">
       <div style={{ height: "80vh", overflowY: "scroll", overflowX: "hidden" }}>
-        <div className="row text-center g-3">
-          <div
-            className="col-sm  p-3 rounded"
-            style={{ background: "#B8FEB3" }}
-          >
-            <h3>Total Sales</h3>
+        <div className="row text-center g-4">
+          
+          {/* Total Sales Card */}
+          <div className="col-sm p-3 rounded shadow-sm" style={{ background: "#D6F5D6" }}>
+            <h3 className="fw-bold">Total Sales</h3>
             <div className="row">
               <div className="col-md-6">
-                <p>Quantity:{headingTotalInfo?.grandTotalSalesQuantity}</p>
+                <p className="text-muted">Quantity: {headingTotalInfo?.grandTotalSalesQuantity}</p>
               </div>
               <div className="col-md-6">
-                <p>Amount:{headingTotalInfo?.grandTotalSalesAmount}TK</p>
+                <p className="text-muted">Amount: {headingTotalInfo?.grandTotalSalesAmount} TK</p>
               </div>
             </div>
           </div>
-
-          <div
-            className="col-sm p-3 rounded text-white"
-            style={{ background: "#2DDC1B" }}
-          >
-            <h3>Total Purchase</h3>
+  
+          {/* Total Purchase Card */}
+          <div className="col-sm p-3 rounded shadow-sm text-black" style={{ background: "#B8FEB3" }}>
+            <h3 className="fw-bold">Total Purchase</h3>
             <div className="row">
               <div className="col-md-6">
-                <p>Quantity:{headingTotalInfo?.grandTotalPurchaseQty}</p>
+                <p className="text-muted">Quantity: {headingTotalInfo?.grandTotalPurchaseQty}</p>
               </div>
               <div className="col-md-6">
-                <p>Amount:{headingTotalInfo?.grandTotalPurchaseAmount}TK</p>
+                <p className="text-muted">Amount: {headingTotalInfo?.grandTotalPurchaseAmount} TK</p>
               </div>
             </div>
           </div>
-
-          <div
-            className="col-sm  p-3 rounded"
-            style={{ background: "#B8FEB3" }}
-          >
-            <h3>Finish Goods Production</h3>
+  
+          {/* Finish Goods Production Card */}
+          <div className="col-sm p-3 rounded shadow-sm" style={{ background: "#D6F5D6" }}>
+            <h3 className="fw-bold">Finish Goods Production</h3>
             <div className="row">
               <div className="col-md-6">
-                <p>Quantity:{headingTotalInfo?.grandTotalProductionItemQty}</p>
+                <p className="text-muted">Quantity: {headingTotalInfo?.grandTotalProductionItemQty}</p>
               </div>
               <div className="col-md-6">
-                <p>Amount: $1,500,000</p>
+                <p className="text-muted">Amount: $1,500,000</p>
               </div>
             </div>
           </div>
-          <div
-            className="col-sm  p-3 rounded text-white"
-            style={{ background: "#2DDC1B" }}
-          >
-            <h3>Raw Material Consumption</h3>
+  
+          {/* Raw Material Consumption Card */}
+          <div className="col-sm p-3 rounded shadow-sm text-black" style={{ background: "#B8FEB3" }}>
+            <h3 className="fw-bold">Raw Material Consumption</h3>
             <div className="row">
               <div className="col-md-6">
-                <p>Quantity:{headingTotalInfo?.grandTotalRawConsumptionQty}</p>
+                <p className="text-muted">Quantity: {headingTotalInfo?.grandTotalRawConsumptionQty}</p>
               </div>
               <div className="col-md-6">
-                <p>Amount: $1,500,000</p>
+                <p className="text-muted">Amount: $1,500,000</p>
               </div>
             </div>
           </div>
+  
         </div>
-
+  
         {/* Charts Section */}
         <div className="row mt-4 g-4">
-          <div className="col-sm-6 shadow p-4 d-flex flex-column">
+          
+          {/* Sales Chart */}
+          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column">
             <h3 className="text-center fw-bold">Sales Information</h3>
-            <div className=" d-flex flex-column align-items-end">
-              <SalesDataBarChart
+            <SalesDataBarChart
                 handleApplyFilters={handleApplyFilters}
                 productionOptions={productionOptions}
                 filters={filters}
@@ -395,16 +450,11 @@ const Dashboard = () => {
                 setToDate={setToDate}
                 setFromDate={setFromDate}
               ></SalesDataBarChart>
-            </div>
-
-            <div
-              className="bg-light p-3 rounded shadow mt-4"
-              style={{ width: "100%", height: "70%", margin: "auto" }}
-            >
+            <div className="bg-light p-3 rounded shadow mt-4" style={{ width: "100%", height: "70%", margin: "auto" }}>
               <Bar data={dataBar} options={options} />
             </div>
           </div>
-          <div className="col-sm-6 shadow p-4 d-flex flex-column align-items-center">
+          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column">
             <h3 className="text-center fw-bold">Purchase Information</h3>
             <PurchaseDataPIChart
               handleApplyPurchaseFilters={handleApplyPurchaseFilters}
@@ -416,19 +466,15 @@ const Dashboard = () => {
               setToDate={setPurchaseToDate}
               setFromDate={setPurchaseFromDate}
             ></PurchaseDataPIChart>
-            <div
-              className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center"
-              style={{ width: "100%", height: "70%", margin: "auto" }}
-            >
+           <div className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center" style={{ width: "100%", height: "70%", margin: "auto" }}>
               <Pie data={dataPI} options={optionsPI} />
             </div>
           </div>
-          <div className="col-sm-6 shadow p-4">
-            <h3 className="text-center fw-bold">
-              Raw Material Consumption in Production
-            </h3>
-            <div className="d-flex flex-column align-items-end">
-              <RawConsumptionLineChat
+  
+          {/* Purchase Chart */}
+          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column align-items-center">
+            <h3 className="text-center fw-bold">Purchase Information</h3>
+            <RawConsumptionLineChat
                 handleApplyFilters={handleApplyRawConsumptionFilters}
                 purchaseOptions={purchaseOptions}
                 filters={rawConsumptionFilters}
@@ -438,20 +484,14 @@ const Dashboard = () => {
                 setToDate={setRawConsumptionToDate}
                 setFromDate={setRawConsumptionFromDate}
               ></RawConsumptionLineChat>
-            </div>
-
-            <div
-              className="bg-light p-3 rounded shadow mt-4"
-              style={{ width: "100%", height: "70%", margin: "auto" }}
-            >
-              <Line data={dataLine} options={optionsLine} />
+            <div className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center" style={{ width: "100%", height: "70%", margin: "auto" }}>
+            <Line data={dataLine} options={optionsLine} />
             </div>
           </div>
-          <div className="col-sm-6 shadow p-4 ">
-            <h3 className="text-center fw-bold">Finish Goods in Production</h3>
-            <div className="d-flex flex-column align-items-end">
-              <FinishGoodsProductionLineChart
-                handleApplyFilters={handleApplyFinishGoodsProductionFilters}
+          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column align-items-center">
+            <h3 className="text-center fw-bold">Raw Material Consumption</h3>
+            <FinishGoodsProductionLineChart
+                handleApplyFinishGoodsProductionFilters={handleApplyFinishGoodsProductionFilters}
                 productionOptions={productionOptions}
                 filters={finishGoodsProductionFilters}
                 fromDate={finishGoodsProductionFromDate}
@@ -460,18 +500,21 @@ const Dashboard = () => {
                 setToDate={setFinishGoodsProductionToDate}
                 setFromDate={setFinishGoodsProductionFromDate}
               ></FinishGoodsProductionLineChart>
-            </div>
-            <div
-              className="bg-light p-3 rounded shadow mt-4"
-              style={{ width: "100%", height: "70%", margin: "auto" }}
-            >
-              <Line data={dataLine} options={optionsLine} />
+            <div className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center" style={{ width: "100%", height: "70%", margin: "auto" }}>
+            <Line data={dataFinishGoodsProductionLine} options={optionsFinishProductionLine} />
             </div>
           </div>
+  
         </div>
       </div>
     </div>
   );
+  
+
+
+
 };
+
+
 
 export default Dashboard;

@@ -7,7 +7,7 @@ import './FinishGoodsProductionLineChart.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-const FinishGoodsProductionLineChart = ({handleApplyFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
+const FinishGoodsProductionLineChart = ({handleApplyFinishGoodsProductionFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
 
   return (
     <div className="row mt-4 g-3">
@@ -46,7 +46,7 @@ const FinishGoodsProductionLineChart = ({handleApplyFilters,productionOptions,fi
           onChange={async (e) => {
             setFilters((prevFilters) => ({
               ...prevFilters,
-              itemId: e.value,
+              productionItemName: e.value,
             }));
           }}
         />
@@ -111,7 +111,7 @@ const FinishGoodsProductionLineChart = ({handleApplyFilters,productionOptions,fi
         ...filters
       };
 
-       await handleApplyFilters(updatedFilters)
+       await handleApplyFinishGoodsProductionFilters(updatedFilters)
      }}></FontAwesomeIcon>
     </div>
   </div>

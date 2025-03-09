@@ -67,7 +67,8 @@ const App =()=> {
   const getMenulistData = localStorage.getItem("user");
   const token= localStorage.getItem("accesstoken");
   const menuListData = JSON.parse(getMenulistData);
- isTokenExpired(token)
+//  isTokenExpired(token)
+
   return (
     <div>
       <div className="app-container">

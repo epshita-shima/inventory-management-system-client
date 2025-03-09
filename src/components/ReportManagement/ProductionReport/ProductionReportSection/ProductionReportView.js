@@ -124,7 +124,7 @@ console.log('permission',permission)
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={productionDatewiseSummaryData}
+            filteredDatas={productionDatewiseSummaryData?.finishGoodsProduction}
             finishGoodsItemInfo={finishGoodsItemInfo}
             rawMaterialDataInfo={rawMaterialDataInfo}
             itemUnitInformation={itemUnitInformation}
