@@ -106,7 +106,7 @@ const FinishGoodsProductionLineChart = ({handleApplyFinishGoodsProductionFilters
     </div>
     <div className="col-sm-2
     ">
-     <FontAwesomeIcon className="fs-1 text-success mt-5 " icon={faSearch} onClick={async()=>{
+     <FontAwesomeIcon className="fs-1 text-success mt-5 cursor-pointer" icon={faSearch} onClick={async()=>{
        const updatedFilters = {
         ...filters
       };

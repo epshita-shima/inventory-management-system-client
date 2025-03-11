@@ -33,6 +33,7 @@ import { Barchart } from "./Chart/Barchart";
 import PIChart from "./Chart/PIChart";
 import { RawMaterialConsumptionLine } from "./Chart/RawMaterialConsumptionLine";
 import { FinishGoodsPRoductionLine } from "./Chart/FinishGoodsPRoductionLine";
+import LoadingSpineer from "../../components/Common/LoadingSpinner/LoadingSpineer";
 ChartJS.register(
   LineElement,
   ArcElement,
@@ -46,15 +47,18 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  const { data: headingTotalInfo } = useGetAllHeadingTotalInfoQuery(undefined);
-  const [
-    triggerSalesSummaryReport,
-    { data: salesSummaryData },
-  ] = useLazyGetSalesSummaryReportQuery();
-  const [
-    triggerPurchaseDetailsReport,
-    { data: purchaseDetailsData},
-  ] = useLazyGetPurchaseDetailsReportQuery();
+  const {
+    data: headingTotalInfo,
+    isLoading: headingDataLoading,
+    error,
+  } = useGetAllHeadingTotalInfoQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  console.log(headingTotalInfo);
+  const [triggerSalesSummaryReport, { data: salesSummaryData }] =
+    useLazyGetSalesSummaryReportQuery();
+  const [triggerPurchaseDetailsReport, { data: purchaseDetailsData }] =
+    useLazyGetPurchaseDetailsReportQuery();
   const [triggerRawConsumptionSummaryReport, { data: rawConsumptionData }] =
     useLazyGetRawMaterialSummaryConsumptionReportQuery();
   const [
@@ -118,42 +122,60 @@ const Dashboard = () => {
   const purchaseOptions = rawMaterialItemDropdown(rawMaterialData);
 
   useEffect(() => {
-    setFilters((prevFilters) => {
-      const updatedFilters = {
-        ...prevFilters,
-        reportStatus: "",
-      };
-      triggerSalesSummaryReport(updatedFilters);
-      return updatedFilters;
-    });
-    setPurchaseFilters((prevFilters) => {
-      const updatedFilters = {
-        ...prevFilters,
-        reportStatus: "",
-      };
+    if (error) {
+      console.error("Error fetching heading total info:", error);
+    }
+  }, [error]);
 
-      triggerPurchaseDetailsReport(updatedFilters);
-      return updatedFilters;
-    });
-    setRawConsumptionFilters((prevFilters) => {
-      const updatedFilters = {
-        ...prevFilters,
-        reportStatus: "",
-      };
+  useEffect(() => {
+    const updatedFilters = {
+      ...filters,
+      reportStatus: "",
+    };
 
-      triggerRawConsumptionSummaryReport(updatedFilters);
-      return updatedFilters;
-    });
-    setFinishGoodsProductionFilters((prevFilters) => {
-      const updatedFilters = {
-        ...prevFilters,
-        reportStatus: "",
-      };
+    const updatedPurchaseFilters = {
+      ...purchaseFilters,
+      reportStatus: "",
+    };
+    const updatedRawConsumptionFilters = {
+      ...rawConsumptionFilters,
+      reportStatus: "",
+    };
+    const updatedFiltersFinishProduction = {
+      ...finishGoodsProductionFilters,
+      reportStatus: "",
+    };
+    const fetchRawConsuptionReport = async () => {
+      await triggerRawConsumptionSummaryReport(updatedRawConsumptionFilters);
+    };
 
-      triggerFinishGoodsProductionSummaryReport(updatedFilters);
-      return updatedFilters;
-    });
-  }, []);
+    const fetchSalesSummaryReport = async () => {
+      await triggerSalesSummaryReport(updatedFilters);
+    };
+
+    const fetchPurchaseReport = async () => {
+      await triggerPurchaseDetailsReport(updatedPurchaseFilters);
+    };
+
+    const fetchFinishGoodsReport = async () => {
+      await triggerFinishGoodsProductionSummaryReport(
+        updatedFiltersFinishProduction
+      );
+    };
+    fetchRawConsuptionReport();
+    fetchFinishGoodsReport();
+    fetchPurchaseReport();
+    fetchSalesSummaryReport();
+  }, [
+    filters,
+    finishGoodsProductionFilters,
+    purchaseFilters,
+    rawConsumptionFilters,
+    triggerFinishGoodsProductionSummaryReport,
+    triggerPurchaseDetailsReport,
+    triggerRawConsumptionSummaryReport,
+    triggerSalesSummaryReport,
+  ]);
 
   const handleApplyFilters = async (updatedFilters) => {
     await triggerSalesSummaryReport(updatedFilters);
@@ -197,6 +219,7 @@ const Dashboard = () => {
 
   return (
     <div className="container-fluid">
+      <LoadingSpineer isLoading={headingDataLoading}></LoadingSpineer>
       <div style={{ height: "80vh", overflowY: "scroll", overflowX: "hidden" }}>
         <div className="row text-center g-4">
           {/* Total Sales Card */}
@@ -232,7 +255,7 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="col-md-6">
-                <p className="text-muted">Amount: $1,500,000</p>
+                {/* <p className="text-muted">Amount: $1,500,000</p> */}
               </div>
             </div>
           </div>
@@ -244,13 +267,13 @@ const Dashboard = () => {
           >
             <h3 className="fw-bold">Finish Goods Production</h3>
             <div className="row">
-              <div className="col-md-6">
-                <p className="text-muted">
+              <div className="col-md-6 ">
+                <p className="text-muted ">
                   Quantity: {headingTotalInfo?.grandTotalProductionItemQty}
                 </p>
               </div>
               <div className="col-md-6">
-                <p className="text-muted">Amount: $1,500,000</p>
+                {/* <p className="text-muted">Amount: $1,500,000</p> */}
               </div>
             </div>
           </div>
