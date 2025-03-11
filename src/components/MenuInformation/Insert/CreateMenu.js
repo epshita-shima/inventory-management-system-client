@@ -16,8 +16,7 @@ import "./CreateMenu.css";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
-import '../../../buttonStyle/style.css';
+import "../../../buttonStyle/style.css";
 
 const CreateMenu = () => {
   const { data: menuItems, isLoading: isMenuloading } =
@@ -60,10 +59,6 @@ const CreateMenu = () => {
             label: option.label,
           });
         } else {
-          // result.push({
-          //   value: option._id,
-          //   label: parentLabel ? `${parentLabel} > ${option.label}` : option.label,
-          // });
         }
         if (option.items && option.items.length > 0) {
           result = result.concat(
@@ -314,8 +309,9 @@ const CreateMenu = () => {
         overflowY: "hidden",
       }}
     >
-      {/* <LoadingSpineer isLoading={isMenuloading}></LoadingSpineer> */}
-      <div className={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}>
+      <div
+        className={`overflow-hidden ${isMenuloading ? "d-none" : "d-block"}`}
+      >
         <div className="shadow-lg p-5 rounded-4">
           <div className="d-flex justify-content-between align-items-center ">
             <div className="d-flex align-items-center">
@@ -323,7 +319,6 @@ const CreateMenu = () => {
                 style={{
                   fontSize: "14px",
                   color: "#000",
-                  // backgroundColor: "#00B987",
                   backgroundColor: "#2DDC1B",
                   borderRadius: "50px",
                   padding: "3px",
@@ -343,7 +338,7 @@ const CreateMenu = () => {
             </div>
             <div>
               <button
-               className="customBackToListButton"
+                className="customBackToListButton"
                 onClick={() => {
                   navigate("/main-view/menu-list");
                 }}
@@ -388,8 +383,6 @@ const CreateMenu = () => {
                     ...theme,
                     colors: {
                       ...theme.colors,
-                      // primary25: "#CBF3F0",
-                      // primary: "#00B987",
                       primary25: "#B8FEB3",
                       primary: "#2DDC1B",
                     },
@@ -421,8 +414,6 @@ const CreateMenu = () => {
                     colors: {
                       ...theme.colors,
                       primary25: "#B8FEB3",
-                      // primary25: "#CBF3F0",
-                      // primary: "#00B987",
                       primary: "#2DDC1B",
                     },
                   })}
@@ -461,7 +452,6 @@ const CreateMenu = () => {
             <button
               className="border-0 "
               style={{
-                // backgroundColor: "#00B987",
                 backgroundColor: "#2DDC1B",
                 color: "black",
                 padding: "5px 10px",
@@ -490,12 +480,12 @@ const CreateMenu = () => {
                   })
                 ),
               })}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
+              onSubmit={({ setSubmitting, resetForm }) => {
                 resetForm({ values: initialValues });
                 setSubmitting(false);
               }}
             >
-              {({ values, resetForm, setFieldValue, isSubmitting }) => (
+              {({ values, resetForm, setFieldValue }) => (
                 <Form
                   id="menucreation-form"
                   onSubmit={(e) => {
@@ -508,11 +498,7 @@ const CreateMenu = () => {
                       ArrayHelperRef.current = arrayHelpers;
                       const details = values.detailsData;
                       return (
-                        <div
-                        // className=" flex-1 items-center d-flex-nowrap table-responsive-custom"
-                        // style={{
-                        //   height: "calc(60vh - 120px)",overflowY: "auto" }}
-                        >
+                        <div>
                           <div className="container-fluid">
                             <div className="row justify-content-center">
                               <div className="col-12 col-md-12 col-lg-12 fixed-column py-2">

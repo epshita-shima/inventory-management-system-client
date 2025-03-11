@@ -21,7 +21,7 @@ const InsertDeliverReturnDetails = ({
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: previousSalesReturnInfo } =
     useGetAllReturnDeliveredInformationQuery(undefined);
-    const matchedDoInfo=doInformation?.find((deliverOrder)=>deliverOrder._id==doDetailsFilteredData?.doId);
+    const matchedDoInfo=doInformation?.find((deliverOrder)=>deliverOrder._id===doDetailsFilteredData?.doId);
 const {data:finishGoodsDeliveryInfo}=useGetAllFinishGoodsDeliveryInformationQuery(undefined)
 
   return (
@@ -144,8 +144,7 @@ const {data:finishGoodsDeliveryInfo}=useGetAllFinishGoodsDeliveryInformationQuer
                             onChange={(e) => {
                               const newReturnQty = Number(e.target.value); // The new return quantity entered by the user
                               const itemId = detail.itemId; // The current item's ID
-                              const deliveredQty = detail.deliverQty; // The delivered quantity for this item
-                            
+                           
                               const findMatchedReturnItem =
                                 previousSalesReturnInfo.filter(
                                   (item) => item.piId === values.piId

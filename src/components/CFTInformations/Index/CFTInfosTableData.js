@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import CFTInfosList from "./CFTInfoTable/CFTInfosList";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
-import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const CFTInfosTableData = () => {

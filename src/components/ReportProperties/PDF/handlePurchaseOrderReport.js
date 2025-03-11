@@ -26,7 +26,6 @@ const downloadPOPDF = async (
     (supplier) => supplier._id == data.supplierId
   );
 
-
   const filterBsnkInfo = (filterBsnkInfo) => {
     const matchData = filterBsnkInfo.find((item) => item._id === data.bankId);
     return matchData;
@@ -76,8 +75,7 @@ const downloadPOPDF = async (
   );
   doc.text("Mobile", xCoordinate, additionalTextY + 10);
   doc.text(
-    `:${supplierInfos?.mobileNo
-    }`,
+    `:${supplierInfos?.mobileNo}`,
     xCoordinate + labelWidth,
     additionalTextY + 10
   );
@@ -189,42 +187,42 @@ const downloadPOPDF = async (
         const totalRows = data.table.body.length;
         const columnIndex = data.column.index;
         const totalColumns = data.table.columns.length;
-    
+
         console.log("Row Index:", rowIndex, "Total Rows:", totalRows); // Debugging
-    console.log(columnIndex === 5,columnIndex)
+        console.log(columnIndex === 5, columnIndex);
         // Default center alignment
         data.cell.styles.halign = "center";
-    
+
         // Left-align the entire last row
         if (rowIndex === totalRows - 1) {
-            data.cell.styles.halign = "left"; 
-            data.cell.styles.fontStyle = "bold";
-            data.cell.styles.fontSize = 11;
+          data.cell.styles.halign = "left";
+          data.cell.styles.fontStyle = "bold";
+          data.cell.styles.fontSize = 11;
         }
-    
+
         // But right-align the last column in the last row
         if (rowIndex === totalRows - 1 && columnIndex === totalColumns - 1) {
-            data.cell.styles.halign = "right";
+          data.cell.styles.halign = "right";
         }
-    
+
         // Right-align the second last row (if applicable)
         if (rowIndex === totalRows - 2) {
-            data.cell.styles.halign = "right";
-            data.cell.styles.fontStyle = "bold";
+          data.cell.styles.halign = "right";
+          data.cell.styles.fontStyle = "bold";
         }
-    
+
         // Specific column alignments
         if (columnIndex === 3 || columnIndex === 5) {
-            data.cell.styles.halign = "center";
+          data.cell.styles.halign = "center";
         }
         if (columnIndex === 1) {
-            data.cell.styles.halign = "left";
+          data.cell.styles.halign = "left";
         }
-        
+
         if (columnIndex === 5) {
-            data.cell.styles.halign = "right";
+          data.cell.styles.halign = "right";
         }
-    }
+      },
     });
     return doc.previousAutoTable.finalY;
   }

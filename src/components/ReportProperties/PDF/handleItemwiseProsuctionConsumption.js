@@ -52,9 +52,7 @@ const downloadRawMaterailProductionConsumptionDetailsPDF = async (
           data.cell.styles.halign = "right";
          
         }
-        // if (colIndex === totalCols - 1) {
-        //   data.cell.styles.halign = "right";
-        // }
+   
 
       },
     });
@@ -113,9 +111,7 @@ const downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary = async (
           data.cell.styles.halign = "right";
          
         }
-        // if (colIndex === totalCols - 1) {
-        //   data.cell.styles.halign = "right";
-        // }
+     
 
       },
     });

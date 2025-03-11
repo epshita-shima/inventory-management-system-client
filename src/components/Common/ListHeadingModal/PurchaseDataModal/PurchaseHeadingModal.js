@@ -1,12 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   faCheckToSlot,
-  faDownload,
   faFilePdf,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import swal from "sweetalert";
 import {
@@ -24,20 +23,19 @@ const PurchaseHeadingModal = ({
   totalPurchaseLCModal,
   totalPurchaseApproveModal,
   totalPurchaseUnApproveModal,
-  approveDataRefetch,
   rawMaterialItemInfo,
   bankInformation,
   paymentData,
   companyinfo,
   reportTitle
 }) => {
-  const { data: grnDataInfo, refetch: grnRefetch } =
+  const { data: grnDataInfo } =
     useGetAllGRNInformationQuery(undefined);
   const [deletePurchaseOrderInfo] = useDeletePurchaseOrderInformationMutation();
   const [updatePOApproveStatus] =
     useUpdatePurchaseOrderInformationStatusMutation();
 
-  const [filterText, setFilterText] = useState("");
+  const [filterText] = useState("");
 
   const columns = [
     {
@@ -330,12 +328,7 @@ const PurchaseHeadingModal = ({
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
-                // if (activeDataModal) {
-                //   setActiveDataModal(false);
-                // }
-                // if (inActiveDataModal) {
-                //   setInActiveDataModal(false);
-                // }
+               
               }}
             >
               <span aria-hidden="true">&times;</span>
@@ -359,12 +352,7 @@ const PurchaseHeadingModal = ({
               className="btn btn-secondary"
               data-dismiss="modal"
               onClick={() => {
-                // if (activeDataModal) {
-                //   setActiveDataModal(false);
-                // }
-                // if (inActiveDataModal) {
-                //   setInActiveDataModal(false);
-                // }
+             
               }}
               style={{
                 backgroundColor: "transparent",

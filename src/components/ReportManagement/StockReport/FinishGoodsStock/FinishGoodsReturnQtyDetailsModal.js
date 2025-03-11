@@ -20,13 +20,10 @@ import { formatDate } from "../../../Uitilites/DateUtilities";
 const FinishGoodsReturnQtyDetailsModal = ({
   permission,
   filteredDatas,
-  filterText,
   companyinfo,
-  isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
   itemUnitInformation,
-  isReturnDetailsLoading,
   returnSingleItemId,
 }) => {
   const itemName = finishGoodsItemInfo?.find(
@@ -320,9 +317,7 @@ const FinishGoodsReturnQtyDetailsModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={transformedSalsReturnData}

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { Field } from "formik";
 import {
   finishGoodsWithSizeItemDropdown,
-  rawMaterialItemDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import "./ProductionDatePicker.css";
@@ -290,7 +289,7 @@ const ProductionSingleInfo = ({
               const calculateExcessOrLess = Math.abs(
                 updateProductionData?.productionQty - expectQty
               );
-              // setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+      
               if (excessOrLess === 0) {
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
@@ -503,8 +502,7 @@ const ProductionSingleInfo = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({
@@ -795,8 +793,7 @@ const ProductionSingleInfo = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({

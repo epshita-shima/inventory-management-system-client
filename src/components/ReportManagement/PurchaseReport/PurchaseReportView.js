@@ -5,7 +5,6 @@ import { useGetAllItemInformationQuery } from "../../../redux/features/iteminfor
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../redux/features/companyinfo/compayApi";
 import { useGetAllInvoiceInformationQuery } from "../../../redux/features/invoiceinformation/invoiceinfoApi";
-import { useGetAllClientInformationQuery } from "../../../redux/features/clientinformation/clientInfoApi";
 import CommonPurchaseParameter from "./CommonPurchaseParameter";
 import PurchaseReportDataTable from "./PurchaseReportDataTable";
 import {

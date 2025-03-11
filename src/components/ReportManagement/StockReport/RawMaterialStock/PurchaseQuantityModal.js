@@ -45,7 +45,6 @@ const PurchaseQuantityModal = ({
     },
     {
       name: "Date",
-      // selector: (row) => new Date(row.receiveDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
@@ -56,7 +55,9 @@ const PurchaseQuantityModal = ({
           data-target="#exampleModalLabelProductionQtyDetails"
           onClick={() => handleRowClickForPurchaseDetails(row)}
         >
-          <a href="#" className="text-success fw-bold">{new Date(row.receiveDate).toLocaleDateString("en-CA")}</a>
+          <a href="#" className="text-success fw-bold">
+            {new Date(row.receiveDate).toLocaleDateString("en-CA")}
+          </a>
         </div>
       ),
     },
@@ -133,7 +134,10 @@ const PurchaseQuantityModal = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -201,9 +205,7 @@ const PurchaseQuantityModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={filteredDatas}

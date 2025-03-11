@@ -159,7 +159,7 @@ const PurchaseOderList = ({ permission }) => {
               fontSize: "14px",
               textAlign: "center",
             }}
-            // href={`UpdateGroupName/${data?.GroupId}`}
+    
           >
             {purchaseInfoData?.approveStatus === true ? (
               <p className="text-success fw-bold">Approve</p>

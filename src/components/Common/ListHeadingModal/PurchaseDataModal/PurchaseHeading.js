@@ -49,8 +49,7 @@ const PurchaseHeading = ({
                 setTotalPurchaseLCModal(false);
                 setTotalPurchaseApproveModal(false);
                 setTotalPurchaseUnApproveModal(false);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(false)
+              
               }}
             >
               <p

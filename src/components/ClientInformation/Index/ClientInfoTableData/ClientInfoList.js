@@ -20,13 +20,11 @@ import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
 import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
-import LoadingSpineer from "./../../../Common/LoadingSpinner/LoadingSpineer";
 
 const ClientInfoList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const {
     data: clientInfoData,
-    isLoading: isClientInfoLoading,
     refetch,
   } = useGetAllClientInformationQuery(undefined);
   const [filterText, setFilterText] = useState("");

@@ -49,13 +49,12 @@ const downloadProductionPDF = (companyinfo, reportTitle, fromDate, toDate) => {
       textColor: [0, 0, 0],
       font: "times", // All text color
       fontSize: 10,
-      // overflow: 'linebreak',
-      // cellWidth: 'wrap',
+
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
       1: { cellWidth: "auto" }, // Example for the second column
-      // You can specify auto or a specific width for each column
+     
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center"; // Align all cell content to center
@@ -97,8 +96,7 @@ const downloadHeadingProductionPDF = (data, companyinfo, reportTitle) => {
       textColor: [0, 0, 0],
       font: "times", // All text color
       fontSize: 10,
-      // overflow: 'linebreak',
-      // cellWidth: 'wrap',
+  
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
@@ -168,8 +166,6 @@ const downloadInvoiceSingleDataPDF = (
       textColor: [0, 0, 0],
       font: "times", // All text color
       fontSize: 10,
-      // overflow: 'linebreak',
-      // cellWidth: 'wrap',
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
@@ -238,9 +234,7 @@ const downloadInvoiceUnapproveDataPDF = (
       lineColor: [0, 0, 0], // Color for all borders
       textColor: [0, 0, 0],
       font: "times", // All text color
-      fontSize: 10,
-      // overflow: 'linebreak',
-      // cellWidth: 'wrap',
+      fontSize: 10
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
@@ -522,14 +516,6 @@ const downloadPaymentReceivedPDF = (
     orientation: "landscape",
   });
 
-  const pageWidth = doc.internal.pageSize.getWidth();
-
-  const formatDate1 = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
   const xCoordinate = 20;
   const labelWidth = 40;
 
@@ -766,8 +752,7 @@ const downloadPaymentReceivedPDF = (
       const lastRowIndex = data.table.body.length - 1;
 
       if (data.row.index === lastRowIndex) {
-        // Right-align and make the font bold for the last row
-        // data.cell.styles.halign = "right";
+
         data.cell.styles.fontSize = 8;
         data.cell.styles.fontStyle = "bold";
       }
@@ -854,13 +839,7 @@ const downloadPaymentReceivedAllSelectedPIPDF = (
         });
         data.cell.styles.halign = "right";
       }
-      // if (regex.test(textContent.trim())) {
-      //   Object.values(data.row.cells).forEach((cell) => {
-      //     cell.styles = cell.styles || {};
-      //     cell.styles.fontStyle = "bold";
-      //     cell.styles.textColor = [255, 0, 0]; // Set text color to red
-      //   });
-      // }
+
       Object.values(data.row.cells).forEach((cell) => {
         const textContent = cell.text[0] || "";
 
@@ -1002,13 +981,7 @@ const downloadDeliveryOrderPDF = (
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
-      // const lastRowIndex = data.table.body.length - 1;
 
-      // if (data.row.index === lastRowIndex) {
-
-      //   data.cell.styles.fontSize = 10;
-      //   data.cell.styles.fontStyle = "bold";
-      // }
     },
   });
 
@@ -1021,8 +994,6 @@ const downloadDeliveryOrderPDF = (
 const downloadDeliveryOrderListPDF = (
   data,
   customerInfo,
-  finishGoods,
-  itemsizeinfo,
   companyinfo,
   reportTitle
 ) => {
@@ -1060,9 +1031,8 @@ const downloadDeliveryOrderListPDF = (
       lineColor: [0, 0, 0], // Color for all borders
       textColor: [0, 0, 0],
       font: "times", // All text color
-      fontSize: 10,
-      // overflow: 'linebreak',
-      // cellWidth: 'wrap',
+      fontSize: 10
+   
     },
     columnStyles: {
       0: { cellWidth: "auto" }, // Example for the first column
@@ -1174,8 +1144,8 @@ const downloadReturnDeliveredPDF = (
       `${filteredDoNumber?.doNo}`,
       `${itemName} (${filteredItemSizes})`,
       `${unitInfo}`,
-      rows.deliveredQty == 0 ? "-" : rows.deliveredQty,
-      rows.returnQty == 0 ? "-" : rows.returnQty,
+      rows.deliveredQty === 0 ? "-" : rows.deliveredQty,
+      rows.returnQty === 0 ? "-" : rows.returnQty,
     ];
   });
 
@@ -1223,13 +1193,7 @@ const downloadReturnDeliveredPDF = (
     },
     didParseCell: function (data) {
       data.cell.styles.halign = "center";
-      // const lastRowIndex = data.table.body.length - 1;
-
-      // if (data.row.index === lastRowIndex) {
-
-      //   data.cell.styles.fontSize = 10;
-      //   data.cell.styles.fontStyle = "bold";
-      // }
+ 
     },
   });
 
@@ -1371,7 +1335,6 @@ const downloadImage = async (data, companyinfo, reportTitle) => {
 
     columnStyles: {
       0: { cellPadding: 2, cellWidth: 10 },
-      // 1: { cellPadding: 2, cellWidth: 40 },
       2: {
         cellPadding: { top: 15, right: 5, bottom: 15, left: 5 },
         cellWidth: 60,
@@ -1457,7 +1420,6 @@ const downloadAllImage = async (data, companyinfo, reportTitle) => {
 
     columnStyles: {
       0: { cellPadding: 2, cellWidth: 10 },
-      // 1: { cellPadding: 2, cellWidth: 40 },
       2: {
         cellPadding: { top: 15, right: 5, bottom: 15, left: 5 },
         cellWidth: 60,
@@ -1495,7 +1457,6 @@ const downloadAllImage = async (data, companyinfo, reportTitle) => {
 
 const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -1538,7 +1499,7 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
-    // doc.setFont("helvetica");
+    
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyAddress) {
         doc.text(
@@ -1640,7 +1601,6 @@ const addFooter = (doc, companyinfo, reportTitle, fromDate, toDate) => {
 
 const addFooter1 = (doc, companyinfo, reportTitle) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -1658,17 +1618,12 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
 
     // Header content
 
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =
           companyinfo?.companyinfo[0]?.companyName.toUpperCase();
       }
     }
-
-    // const detailsX = logoWidth + 20;
 
     const companyDetailsWidth = pageWidth * detailsWidthPercentage;
     doc.setFont("times", "italic");
@@ -1689,7 +1644,6 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
-    // doc.setFont("helvetica");
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyAddress) {
         doc.text(
@@ -1783,7 +1737,6 @@ const addFooter1 = (doc, companyinfo, reportTitle) => {
 };
 const addFooterForDOListData = (doc, companyinfo, reportTitle) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -1801,9 +1754,6 @@ const addFooterForDOListData = (doc, companyinfo, reportTitle) => {
 
     // Header content
 
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =
@@ -1832,7 +1782,6 @@ const addFooterForDOListData = (doc, companyinfo, reportTitle) => {
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
-    // doc.setFont("helvetica");
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyAddress) {
         doc.text(
@@ -1939,9 +1888,6 @@ const addFooterForPaymentReceive = (doc, companyinfo, reportTitle) => {
 
     // Header content
 
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =
@@ -2077,9 +2023,6 @@ const addFooterForSalesReturn = (doc, companyinfo, reportTitle) => {
 
     // Header content
 
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo) {
       if (companyinfo[0]?.companyName) {
         var companyNameUpper = companyinfo[0]?.companyName.toUpperCase();
@@ -2107,8 +2050,7 @@ const addFooterForSalesReturn = (doc, companyinfo, reportTitle) => {
     }
 
     doc.setFont("normal"); // Reset font style
-    doc.setFontSize(10); // Reset font size
-    // doc.setFont("helvetica");
+    doc.setFontSize(10); // Reset font size;
     if (companyinfo) {
       if (companyinfo[0]?.companyAddress) {
         doc.text(

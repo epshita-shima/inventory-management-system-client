@@ -7,15 +7,9 @@ import { formatDate } from "../../../Uitilites/DateUtilities";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const CombineReport = ({
-  permission,
   filteredCombineData,
-  filterText,
-  piInformation,
-  clientInformation,
-  companyInformation,
   isTableDispaly,
   companyinfo,
-  itemSizeInfo,
   isCombineLoading
 }) => {
   const { groupedResult, orderInfo } = filteredCombineData || {};
@@ -356,9 +350,7 @@ const CombineReport = ({
                         // Convert grouped object to an array
                         return Object.values(grouped);
                       };
-                      
-                      const calculatedData = calculateInvoiceMetrics(orderInfo);
-
+                 
                       handelCombineReportExcel(
                         groupedResult,
                         companyinfo,
@@ -377,7 +369,7 @@ const CombineReport = ({
       
       </div>
     );
-  }, [companyinfo, orderInfo,groupedResult]);
+  }, [companyinfo, groupedResult]);
 
   return (
     <div>

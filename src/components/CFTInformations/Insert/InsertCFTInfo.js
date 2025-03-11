@@ -12,13 +12,12 @@ import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Select from "react-select";
-import { MakeBy } from "./../../Common/ListHeadingModal/MakeByPermission/MakeBy";
 import {
   useGetAllCFTInfosQuery,
   useInsertCFTInfoMutation,
 } from "../../../redux/features/cftinformation/cftInfosApi";
 import "./InsertCFTInfo.css";
-import { rawMaterialItemDropdown, rawMaterialItemDropdownForCFT } from "../../Common/CommonDropdown/CommonDropdown";
+import { rawMaterialItemDropdownForCFT } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import '../../../buttonStyle/style.css'
@@ -30,12 +29,12 @@ const InsertCFTInfo = () => {
     new Date().toLocaleDateString("en-CA")
   );
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
-  const [insertCFTInfos, { isLoading }] = useInsertCFTInfoMutation();
+  const [insertCFTInfos] = useInsertCFTInfoMutation();
   const { data: allCFTInfoData } = useGetAllCFTInfosQuery(undefined);
   const makebyUser = getMakebyUser();
 
   const rawMaterialItemOptionsForCFT = rawMaterialItemDropdownForCFT(itemInfo);
-  console.log(rawMaterialItemOptionsForCFT)
+
   const initialValues = {
     detailsData: [
       {
@@ -139,8 +138,7 @@ const InsertCFTInfo = () => {
                 detailsData: Yup.array().of(
                   Yup.object().shape({
                     itemId: Yup.string().required("Required"),
-                    cftPerKg: Yup.string().required("Required"),
-                    // image: Yup.string().required("Required")
+                    cftPerKg: Yup.string().required("Required")
                   })
                 ),
               })}
@@ -153,7 +151,6 @@ const InsertCFTInfo = () => {
                 values,
                 resetForm,
                 setFieldValue,
-                isSubmitting,
                 errors,
                 touched,
                 isValid,
@@ -171,7 +168,6 @@ const InsertCFTInfo = () => {
                       <DatePicker
                         dateFormat="y-MM-dd"
                         className="text-center custom-datepicker ms-2"
-                        //   value={isEdit ? updateOpeningStore?.OpeningDate : startDate}
                         calendarClassName="custom-calendar"
                         selected={startDate}
                         required
@@ -214,7 +210,6 @@ const InsertCFTInfo = () => {
                       <div
                         className="border-0 "
                         style={{
-                          // backgroundColor: "#00B987",
                           backgroundColor: "#2DDC1B",
                           color: "black",
                           padding: "5px 10px",
@@ -243,7 +238,6 @@ const InsertCFTInfo = () => {
                       return (
                         <div
                           className=" flex-1 items-center d-flex-nowrap py-2"
-                          // style={{height: "calc(75vh - 120px)", overflowY: "auto" }}
                         >
                           <div className="container-fluid">
                             <div className="row justify-content-center">
@@ -304,10 +298,7 @@ const InsertCFTInfo = () => {
                                                           label: "Select Size",
                                                           value: 0,
                                                         }}
-                                                        // value={rawMaterialItemOptions.find(
-                                                        //   (x) =>
-                                                        //     x.value == values.detailsData[index].sizeId
-                                                        // )}
+                                                     
                                                         value={rawMaterialItemOptionsForCFT?.filter(
                                                           function (option) {
                                                             return (
@@ -329,8 +320,7 @@ const InsertCFTInfo = () => {
                                                           menu: (provided) => ({
                                                             ...provided,
                                                             zIndex: 9999,
-                                                            height: "auto",
-                                                            // overflowY: "scroll",
+                                                            height: "auto"
                                                           }),
                                                         }}
                                                         theme={(theme) => ({

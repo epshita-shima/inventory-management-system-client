@@ -5,7 +5,6 @@ import PaymentReceiveDataTableList from "./PaymentReceiveDataTable/PaymentReceiv
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const PaymentReceiveDataTable = () => {
   const { data: user, isLoading: isUserloading } =
@@ -29,28 +28,9 @@ const PaymentReceiveDataTable = () => {
     }
   }, [user, navigate, isUserloading]);
 
-  // if (isUserloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
+
   return (
     <div>
-      {/* <LoadingSpineer isLoading={isUserloading}></LoadingSpineer> */}
       <div className={`${isUserloading ? "d-none" : "d-block"}`}>
         <PaymentReceiveDataTableList
           permission={permission}

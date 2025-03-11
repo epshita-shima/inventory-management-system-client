@@ -16,6 +16,7 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
   const reportTitle = "PRODUCTION REPORT";
   const {data:finishGoods}=useGetAllItemInformationQuery(undefined);
   const {data:rawItemInfo}=useGetAllRMItemInformationQuery(undefined);
+  
   const columns = [
     {
       name: "Sl.",

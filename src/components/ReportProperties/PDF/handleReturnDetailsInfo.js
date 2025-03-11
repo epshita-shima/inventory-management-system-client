@@ -3,7 +3,6 @@ import { addFooter } from "./footerUtility";
 import {
   calculateGrandTotalReturnAmount,
   calculateGrandTotalReturnQty,
-  calculateGrandTotalSalesQty,
 } from "../../Uitilites/CalculationUtilities/calculation";
 import { formatDate } from "../../Uitilites/DateUtilities";
 
@@ -31,16 +30,16 @@ const downloadReturnDetailsInfoPDF = async (companyinfo, reportTitle) => {
       valign: "middle",
     },
     columnStyles: {
-      0: { cellWidth: "auto" }, // Custom width for first column
-      1: { cellWidth: "auto" }, // Custom width for second column
-      2: { cellWidth: 25 }, // Custom width for third column
-      3: { cellWidth: "auto" }, // Auto width for fourth column
-      4: { cellWidth: "auto" }, // Custom width for first column
-      5: { cellWidth: "auto" }, // Custom width for second column
-      6: { cellWidth: "auto" }, // Custom width for third column
-      7: { cellWidth: "auto" }, // Auto width for fourth column
-      8: { cellWidth: "auto" }, // Auto width for fourth column
-      9: { cellWidth: 25 }, // Auto width for fourth column
+      0: { cellWidth: "auto" }, 
+      1: { cellWidth: "auto" }, 
+      2: { cellWidth: 25 },     
+      3: { cellWidth: "auto" }, 
+      4: { cellWidth: "auto" }, 
+      5: { cellWidth: "auto" }, 
+      6: { cellWidth: "auto" }, 
+      7: { cellWidth: "auto" }, 
+      8: { cellWidth: "auto" }, 
+      9: { cellWidth: 25 },     
     },
     didParseCell: function (data) {
       const rowIndex = data.row.index;
@@ -101,7 +100,6 @@ const downloadGoupReturnDetailsPDF = (
   Object.keys(groupedData).forEach((key) => {
     const group = groupedData[key];
     const formattedDate = formatDate(group.returnDate);
-    const rowSpan = group?.detailsData.length;
 
     const piNumber = piInformation.find((pi) => pi._id === group.piId);
 
@@ -133,9 +131,7 @@ const downloadGoupReturnDetailsPDF = (
       const itemNames = finishGoodsItemInfo.find(
         (item) => item._id === detail.itemId
       );
-      const itemSize = itemSizeInfo.find(
-        (size) => size._id === itemNames.sizeId
-      );
+
       const itemUnit = itemUnitInformation.find(
         (unit) => unit._id === itemNames.unitId
       );
@@ -152,7 +148,6 @@ const downloadGoupReturnDetailsPDF = (
         detailIndex === 0 ? transferFrom : "",
         detailIndex === 0 ? transferTo : "",
         detailIndex === 0 ? piNumber.invoiceNo : "",
-        // `${itemNames.itemName} (${itemSize.sizeInfo})`,
         `${itemUnit?.unitInfo}`,
         detail.returnQty.toLocaleString(),
         calculateAvgPrice.toLocaleString(),
@@ -242,7 +237,6 @@ const downloadGoupReturnDetailsPDF = (
     },
   ]);
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [
       [
         "Return Date",

@@ -14,7 +14,7 @@ const RawMaterialConsumptionTable = () => {
       const userSingleId = JSON.parse(getUserId);
       const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       console.log('permidionData',permidionData)
       const extractUserListForCurrentUser = (userData, userId) => {

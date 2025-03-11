@@ -119,7 +119,6 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
                         values,
                         resetForm,
                         setFieldValue,
-                        isSubmitting,
                         errors,
                         touched,
                         isValid,
@@ -153,7 +152,6 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
                               <div
                                 className="border-0 "
                                 style={{
-                                  // backgroundColor: "#2DDC1B",
                                   backgroundColor: "#B8FEB3",
                                   color: "#000",
                                   padding: "5px 10px",
@@ -274,7 +272,7 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
                                                 <td className="text-center align-items-center">
                                                   <div className="w-100">
                                                     <Select
-                                                      className="form-select"
+                                                      class="form-select"
                                                       className="w-100"
                                                       aria-label="Default select example"
                                                       name={`detailsData.${index}.paymentType`}
@@ -304,7 +302,6 @@ const InvoiceCommonModal = ({ acivePaymentModal, setAcivePaymentModal }) => {
                                                           ...provided,
                                                           zIndex: 9999,
                                                           height: "auto",
-                                                          // overflowY: "scroll",
                                                         }),
                                                       }}
                                                       theme={(theme) => ({

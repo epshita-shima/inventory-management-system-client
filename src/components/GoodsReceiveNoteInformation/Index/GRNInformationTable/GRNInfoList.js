@@ -43,19 +43,15 @@ const GRNInfoList = ({ permission }) => {
   const [deleteGRNInfo] = useDeleteGRNInformationMutation();
   const [selectSupplierPoNo, setSelectSupplierPoNo] = useState("");
   const [selectSupplierName, setSelectSupplierName] = useState("");
-  const [selectMonth, setSelectMonth] = useState([]);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
   const [pOOptionsData, setPOOptionsData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
+  const [filteredData] = useState([]);
   const animatedComponents = makeAnimated();
   const reportTitle = "GOODS RECEIVE REPORT";
-  const [executeQuery, setExecuteQuery] = useState(false);
-
   const [filters, setFilters] = useState({
     supplierPONo: "",
     supplierId: "",
@@ -237,8 +233,6 @@ const GRNInfoList = ({ permission }) => {
                           }
                         );
                         await refetch();
-
-                        setIsFetchAfterDeleteData(true);
                       } else {
                         swal(
                           "Error",
@@ -467,8 +461,7 @@ const GRNInfoList = ({ permission }) => {
                           menu: (provided) => ({
                             ...provided,
                             zIndex: 9999,
-                            height: "auto",
-                            // overflowY: "scroll",
+                            height: "auto"
                           }),
                         }}
                         theme={(theme) => ({
@@ -518,8 +511,7 @@ const GRNInfoList = ({ permission }) => {
                           menu: (provided) => ({
                             ...provided,
                             zIndex: 9999,
-                            height: "auto",
-                            // overflowY: "scroll",
+                            height: "auto"
                           }),
                         }}
                         theme={(theme) => ({
@@ -718,7 +710,6 @@ const GRNInfoList = ({ permission }) => {
                   }));
                   setSelectSupplierName("");
                   setSelectSupplierPoNo("");
-                  setSelectMonth("");
                   setIsTableDisplay(false);
                 }}
               >

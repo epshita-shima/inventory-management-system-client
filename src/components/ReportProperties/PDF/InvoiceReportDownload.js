@@ -29,14 +29,6 @@ const downloadInvoicePDF = async (
   );
 
   const numberInWords = toWords(parseInt(calculateTotalAmount));
-  const companyContact = companyinfo.companyinfo[0].companyContact;
-  const companyEmail = companyinfo.companyinfo[0].companyEmail;
-  const factoryAddress = companyinfo.companyinfo[0].footerAddress;
-
-  const phoneNumber = companyContact.split(",")[0].split(": ")[1].trim();
-  const contactEmail = companyEmail.split(",")[0].split(": ")[1].trim();
-  const factoryConvertAddress = factoryAddress.replace("Factory Address:", "");
-
 
   const formattedExpireDate = formatDate(data.expireDate);
   const formattedDelivaryDate = formatDate(data.piDate);
@@ -211,7 +203,6 @@ const downloadInvoicePDF = async (
   addContent(doc, xCoordinate, labelWidth, textY);
 
   function addContent(doc, xCoordinate, labelWidth, textY) {
-    const pageHeight = doc.internal.pageSize.getHeight();
 
     const conditionInfoHeaderY = textY + 12;
     conditionInformationHeader(doc, conditionInfoHeaderY);

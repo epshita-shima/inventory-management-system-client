@@ -18,8 +18,8 @@ import { clientInfoDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import { downloadDeliveryOrderPDF } from "../../ReportProperties/PDF/HeaderFooter";
 import FilterComponent from "../../Common/ListDataSearchBoxDesign/FilterComponent";
-import LoadingSpineer from "./../../Common/LoadingSpinner/LoadingSpineer";
-import './FinishGoodsDeliveryListData.css'
+import "./FinishGoodsDeliveryListData.css";
+
 const FinishGoodsDeliveryListData = ({ permission }) => {
   const reportTitle = "DELIVERY ORDER INFORMATION";
   const [filterText, setFilterText] = useState("");
@@ -39,36 +39,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
     useGetAllInvoiceInformationQuery(undefined);
   const { data: itemsizeinfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishGoodsInfo } = useGetAllItemInformationQuery(undefined);
-  const [insertApproveStatus] = useUpdateDeliveryOrderApproveStatusMutation();
   const clientInfoOptions = clientInfoDropdown(clientInformation);
-
-  const transformedDOData = filteredDatas?.flatMap((itemDetails) =>
-    itemDetails.detailsData.map((detail) => ({
-      ...itemDetails,
-      detailsData: detail,
-    }))
-  );
-
-  const handleApproveStatus = async (e, doData) => {
-    const updatedObject = {
-      ...doData,
-      approveStatus: true,
-      approveBy: getMakebyUser(),
-      approveDate: new Date(),
-    };
-
-    const response = await insertApproveStatus(updatedObject);
-    if (response.data.status === 200) {
-      swal("Done", "Data Update status Successfully", "success");
-      setExecuteQuery(true);
-    } else {
-      swal(
-        "Not Possible!",
-        "An problem occurred while updating the data",
-        "error"
-      );
-    }
-  };
 
   const approveTypeOptions = [
     { value: true, label: "Approved" },
@@ -202,7 +173,9 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`list-page/update-finish-goods-delivery-order-info/${row?._id}`);
+                window.open(
+                  `list-page/update-finish-goods-delivery-order-info/${row?._id}`
+                );
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -251,7 +224,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
 
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        {filteredDatas?.length ===0 ? (
+        {filteredDatas?.length === 0 ? (
           <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
@@ -259,15 +232,15 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
               filterText={filterText}
             />
           </div>
-        ):''}
+        ) : (
+          ""
+        )}
       </div>
     );
   }, [filterText, resetPaginationToggle, filteredDatas]);
 
-
   return (
     <div className="row px-5 mx-4">
-      {/* <LoadingSpineer isLoading={isClientInfoLoading}></LoadingSpineer> */}
       <div
         className={`col userlist-table ${
           isClientInfoLoading ? "d-none" : "d-block"
@@ -276,10 +249,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
         <div>
           <h3 className="fw-bold mt-1">Finish Goods Delivery List</h3>
           <hr />
-          <div
-            className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block finish-goods-delivery-parameter-width"
-            
-          >
+          <div className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block finish-goods-delivery-parameter-width">
             <div className="w-100">
               <label htmlFor="">Client Name</label>
               <div>
@@ -305,9 +275,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                     }),
                     menu: (provided) => ({
                       ...provided,
-                      // zIndex: 9999,
-                      // height: "200px",
-                      // overflowY: "scroll",
                     }),
                   }}
                   theme={(theme) => ({
@@ -354,7 +321,6 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                       ...provided,
                       zIndex: 9999,
                       height: "auto",
-                      // overflowY: "scroll",
                     }),
                   }}
                   theme={(theme) => ({
@@ -402,7 +368,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                   width: "100px",
                   height: "38px",
                   marginTop: "15px",
-                  marginLeft:'5px'
+                  marginLeft: "5px",
                 }}
                 onClick={() => {
                   setFilters((prevFilters) => ({
@@ -416,9 +382,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
                 Clear
               </button>
             </div>
-            <div>
-              
-            </div>
+            <div></div>
           </div>
         </div>
 

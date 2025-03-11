@@ -146,9 +146,7 @@ const UpdatePurchaseOrderInfo = ({
                               }),
                               menu: (provided) => ({
                                 ...provided,
-                                zIndex: 9999,
-                                // height: "200px",
-                                // overflowY: "scroll",
+                                zIndex: 9999
                               }),
                             }}
                             theme={(theme) => ({

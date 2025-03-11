@@ -13,7 +13,7 @@ const MainView = ({
   const smallToMediumScreenHeight = "80vh";
   return (
     <div
-    //  style={{ position: 'relative' }}
+
     >
       <div
         style={{

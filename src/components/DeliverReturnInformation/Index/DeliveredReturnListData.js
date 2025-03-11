@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useDeleteReturnDeliveredInformationMutation,
   useGetAllReturnDeliveredInformationQuery,
@@ -25,12 +25,11 @@ const DeliveredReturnListData = ({ permission }) => {
   const reportTitle = "Sales Return Report";
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const { data: deliveredReturnInformationData, refetch,isFetching:isReturnDataFetching } =
+  const { data: deliveredReturnInformationData, refetch } =
     useGetAllReturnDeliveredInformationQuery(undefined);
   const { data: deliverOrderInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
-  const { data: finishGoodsDeliveryInfo } =
-    useGetAllFinishGoodsDeliveryInformationQuery(undefined);
+
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInformation } = useGetCompanyInfoQuery(undefined);
@@ -161,7 +160,7 @@ const DeliveredReturnListData = ({ permission }) => {
                         icon: "success",
                       });
                       refetch();
-                    // }
+           
                   } else {
                     swal("Your data is safe!");
                   }

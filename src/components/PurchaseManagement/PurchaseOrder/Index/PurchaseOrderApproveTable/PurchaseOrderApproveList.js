@@ -31,7 +31,7 @@ const PurchaseOrderApproveList = ({
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [filterText, setFilterText] = useState("");
-  const { data: grnDataInfo, refetch: grnRefetch } =
+  const { data: grnDataInfo } =
     useGetAllGRNInformationQuery(undefined);
 
   const reportTitle = "PURCHASE ORDER";

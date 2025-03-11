@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ApproveInvoiceModal from "../../SalesManagement/ProformaInvoice/Index/ApproveInvoiceModal/ApproveInvoiceModal";
-import UnApproveInvoiceModal from "../../SalesManagement/ProformaInvoice/Index/UnApproveInvoiceModal/UnApproveInvoiceModal"
+import UnApproveInvoiceModal from "../../SalesManagement/ProformaInvoice/Index/UnApproveInvoiceModal/UnApproveInvoiceModal";
 const InvoiceListHeading = ({
   totalApprovedPi,
   totalUnApprovePi,
@@ -9,7 +9,8 @@ const InvoiceListHeading = ({
   permission,
   userRoleId,
   userRoles,
-  finishGoodsData,unitInfo,
+  finishGoodsData,
+  unitInfo,
   sizeInfo,
   paymentInfo,
   base64Logo,
@@ -17,7 +18,6 @@ const InvoiceListHeading = ({
 }) => {
   const [showUnApprovePIModal, setShowUnApprovePIModal] = useState(false);
   const [showApprovePIModal, setShowApprovePIModal] = useState(false);
-
 
   return (
     <div>
@@ -60,7 +60,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div
+          className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}
+        >
           <div
             className="cardbox shadow-lg"
             style={{
@@ -74,12 +76,7 @@ const InvoiceListHeading = ({
               className="card-body"
               data-toggle="modal"
               data-target="#productionModal"
-              onClick={() => {
-                // setLastMonthModal(true);
-                // setTotalProductionModal(false);
-                // setLastOneWeekProductionModal(false)
-                // setYesterdayProductionModal(false)
-              }}
+              onClick={() => {}}
             >
               <p
                 className="card-title"
@@ -100,7 +97,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div
+          className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}
+        >
           <div
             className="cardbox shadow-lg"
             style={{
@@ -138,7 +137,9 @@ const InvoiceListHeading = ({
             </div>
           </div>
         </div>
-        <div className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}>
+        <div
+          className={"col-md-4 col-lg-3 mt-4  mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0"}
+        >
           <div
             className="cardbox shadow-lg"
             style={{
@@ -178,16 +179,17 @@ const InvoiceListHeading = ({
       </div>
 
       {showUnApprovePIModal && (
-        <UnApproveInvoiceModal permission={permission} 
-        userRoleId={userRoleId}
-        userRoles={userRoles}
-        finishGoodsData={finishGoodsData}
-        unitInfo={unitInfo}
-  sizeInfo={sizeInfo}
-  paymentInfo={paymentInfo}
-  base64Logo={base64Logo}
-  signature={ signature}
-         />
+        <UnApproveInvoiceModal
+          permission={permission}
+          userRoleId={userRoleId}
+          userRoles={userRoles}
+          finishGoodsData={finishGoodsData}
+          unitInfo={unitInfo}
+          sizeInfo={sizeInfo}
+          paymentInfo={paymentInfo}
+          base64Logo={base64Logo}
+          signature={signature}
+        />
       )}
       {showApprovePIModal && <ApproveInvoiceModal permission={permission} />}
     </div>

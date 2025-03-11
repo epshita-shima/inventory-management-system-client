@@ -61,9 +61,7 @@ const downloadProductionDatewiseDetailsInfoPDF = async (
       if (textContent?.trim().toLowerCase() === "grand total") {
         data.cell.styles.halign = "right";
       }
-      // if (colIndex === totalCols - 1) {
-      //   data.cell.styles.halign = "right";
-      // }
+      
     },
   });
 
@@ -75,7 +73,6 @@ const downloadProductionGroupedDetailsPDF = async (
   groupedData,
   filteredData,
   finishGoodsItemInfo,
-  itemSizeInfo,
   itemUnitInformation,
   companyinfo,
   reportProductionTitle
@@ -107,7 +104,7 @@ const downloadProductionGroupedDetailsPDF = async (
         finalRows.push([
           { content: formattedDate, rowSpan: rowSpan },
           detail.batchNo,
-          // `${itemNames.itemName} (${itemSize.sizeInfo})`,
+      
           itemUnit.unitInfo,
           detail.productionQty,
         ]);
@@ -115,7 +112,6 @@ const downloadProductionGroupedDetailsPDF = async (
         // Subsequent rows without the first column data
         finalRows.push([
           detail.batchNo,
-          // `${itemNames.itemName} (${itemSize.sizeInfo})`,
           itemUnit.unitInfo,
           detail.productionQty,
         ]);
@@ -171,7 +167,6 @@ const downloadProductionGroupedDetailsPDF = async (
   ]);
 
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [["Production Date", "Batch",  "Unit", "Production Qty"]],
     body: finalRows,
     startY: 50,

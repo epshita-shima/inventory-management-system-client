@@ -27,7 +27,7 @@ const ProductionConsumptionDetailsModal = ({
       }))
   );
 
-  console.log(transformedProductionData)
+  console.log(transformedProductionData);
   const grandTotalProductionQuantity = productionSingleItemDetailsData?.reduce(
     (totalMaterialUsed, item) => {
       const detailsMaterialUsed = item.detailsData.reduce(
@@ -189,7 +189,10 @@ const ProductionConsumptionDetailsModal = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -270,9 +273,7 @@ const ProductionConsumptionDetailsModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={transformedProductionData}
@@ -302,8 +303,8 @@ const ProductionConsumptionDetailsModal = ({
                     Object.keys(groupedData)?.map((dateKey) => {
                       const batches = groupedData[dateKey]; // Get batches for this date
                       const formattedDate = formatDate(dateKey); // Format the date key
-console.log(batches)
-                      // Calculate total material used for the entire date
+                      console.log(batches);
+        
                       const dateWiseTotalMaterialUsed = batches.reduce(
                         (total, batch) =>
                           total +
@@ -324,8 +325,6 @@ console.log(batches)
                               <React.Fragment key={batch.batchNo}>
                                 {batch.detailsData.map(
                                   (detail, detailIndex) => {
-                                
-
                                     return (
                                       <tr key={detail._id}>
                                         {/* Render Production Date only once per date */}
@@ -360,7 +359,6 @@ console.log(batches)
                                           </td>
                                         )}
 
-
                                         <td>
                                           {detail?.materialUsed.toLocaleString()}
                                         </td>
@@ -375,7 +373,7 @@ console.log(batches)
                           {/* Date-wise Total Row */}
                           <tr>
                             <td
-                              colSpan={ 2 }
+                              colSpan={2}
                               style={{
                                 textAlign: "right",
                                 fontWeight: "bold",
@@ -409,7 +407,7 @@ console.log(batches)
                   {/* Grand Total Row */}
                   <tr>
                     <td
-                      colSpan={2 }
+                      colSpan={2}
                       style={{
                         textAlign: "right",
                         fontWeight: "bold",

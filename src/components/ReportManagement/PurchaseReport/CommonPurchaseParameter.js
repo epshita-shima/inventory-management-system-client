@@ -111,7 +111,6 @@ const CommonPurchaseParameter = ({
                     ...provided,
                     zIndex: 9999,
                     height: "auto",
-                    // overflowY: "scroll",
                   }),
                 }}
                 theme={(theme) => ({
@@ -159,7 +158,6 @@ const CommonPurchaseParameter = ({
                     ...provided,
                     zIndex: 9999,
                     height: "auto",
-                    // overflowY: "scroll",
                   }),
                 }}
                 theme={(theme) => ({
@@ -208,7 +206,6 @@ const CommonPurchaseParameter = ({
                     ...provided,
                     zIndex: 9999,
                     height: "auto",
-                    // overflowY: "scroll",
                   }),
                 }}
                 theme={(theme) => ({
@@ -290,8 +287,7 @@ const CommonPurchaseParameter = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({

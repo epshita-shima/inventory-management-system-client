@@ -1,29 +1,21 @@
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
-import React, { useEffect } from "react";
+
 
 const UpdateGRNInfo = ({
   grnSingleData,
   setGRNSingleData,
   rmItemInfo,
   makebyUser,
-  setTotalGrandQuantity,
-  setTotalGrandAmount,
   setFieldValue,
   touched,
   errors,
-  totalGrandAmount,
-  totalGrandQuantity,
+
 }) => {
   const handleKeyUp = (e, index, detail) => {
     const inputValue = e.target.value;
-
     const parsedValue = parseInt(inputValue, 10);
-    // if (isNaN(parsedValue)) {
-    //   return;
-    // }
-
     const calculateTotalAmount = parsedValue * detail.unitPrice;
 
     setGRNSingleData((prev) => {

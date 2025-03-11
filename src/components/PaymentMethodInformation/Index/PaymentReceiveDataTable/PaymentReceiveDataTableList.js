@@ -196,24 +196,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     grandTotalCashQuantity - grandTotalAdjustQuantity;
   const grandTotalNetAmount = grandTotalCashAmount - grandTotalAdjustAmount;
 
-  const groupItemsByNameAndSize = (detailsData) => {
-    return detailsData.reduce((acc, curr) => {
-      const itemKey = `${curr.itemId}-${curr.sizeId}`;
-      if (!acc[itemKey]) {
-        acc[itemKey] = {
-          ...curr,
-          quantity: curr.quantity,
-          amount: curr.amount,
-        };
-      } else {
-        // Sum quantities and amounts for repeated items
-        acc[itemKey].quantity += curr.quantity;
-        acc[itemKey].amount += curr.amount;
-      }
-      return acc;
-    }, {});
-  };
-
   const getFilteredMatchedItemsForCalculation = (filteredDatas, row) => {
     return filteredDatas
       ?.map((data) => {
@@ -227,6 +209,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       })
       .filter(Boolean);
   };
+
   const columns = [
     {
       name: "Sl.",
@@ -273,9 +256,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     {
       name: "Currency",
       selector: (row) => {
-        const currency = invoiceData?.find(
-          (x) => x._id === row?.piNumber
-        );
+        const currency = invoiceData?.find((x) => x._id === row?.piNumber);
         return currency ? currency.currency : "N/A";
       },
       sortable: true,
@@ -289,9 +270,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         if (row.isGroup) {
           return null;
         }
-        const filterPIData = invoiceData?.find(
-          (x) => x._id === row?.piNumber
-        );
+        const filterPIData = invoiceData?.find((x) => x._id === row?.piNumber);
         const findPiQuantityPerItem = filterPIData?.detailsData.find(
           (item) => item.itemId === row.detail.itemId
         );
@@ -306,9 +285,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         if (row.isGroup) {
           return null;
         }
-        const filterPIData = invoiceData?.find(
-          (x) => x._id === row?.piNumber
-        );
+        const filterPIData = invoiceData?.find((x) => x._id === row?.piNumber);
         const findPiAmountPerItem = filterPIData?.detailsData.find(
           (item) => item.itemId === row.detail.itemId
         );
@@ -379,10 +356,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
         );
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-     
           const adjustmentItems = filterMatchedItem
             .flat()
-            .filter((item) => item.paymentStatus === "adjustment")
+            .filter((item) => item.paymentStatus === "adjustment");
 
           const totalAdjustment = adjustmentItems
             .flat()
@@ -391,7 +367,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           return Math.round(totalAdjustment * 100) / 100;
         }
 
-        return "N/A"; 
+        return "N/A";
       },
       center: true,
       width: "180px",
@@ -440,10 +416,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
           .filter(Boolean);
 
         if (filterMatchedItem && filterMatchedItem.length > 0) {
-          // Filter the "cash" items
-          // const cashItems = filterMatchedItem.filter((item) =>
-          //   item.some((data) => data.paymentStatus === "cash")
-          // );
           const adjustmentItems = filterMatchedItem
             .flat()
             .filter((item) => item.paymentStatus === "adjustment");
@@ -575,8 +547,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       -1
   );
 
-
-  //for all items pdf report 
+  //for all items pdf report
   function groupDataByPiNumberAndItemId(data) {
     const groupedData = {};
     data?.forEach((entry) => {
@@ -656,7 +627,6 @@ const PaymentReceiveDataTableList = ({ permission }) => {
     return acc;
   }, []);
 
-
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -679,7 +649,10 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                 >
                   <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -751,119 +724,116 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       <div>
         <h3 className="fw-bold mt-1">Payment Receive List</h3>
         <hr />
-     
-          <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-75">
+
+        <div className="d-lg-flex justify-content-lg-between align-items-lg-center w-75">
+          <div className="w-100">
+            <label htmlFor="">Client Name</label>
+            <br />
             <div className="w-100">
-              <label htmlFor="">Client Name</label>
-              <br />
-              <div className="w-100">
-                <Select
-                  class="form-select"
-                  className="w-100"
-                  aria-label="Default select example"
-                  name="poinfo"
-                  options={clientInfoOptions}
-                  defaultValue={{
-                    label: "Select Client Name",
-                    value: 0,
-                  }}
-                  value={clientInfoOptions.filter(function (option) {
-                    return option.value === clientId;
-                  })}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      width: "100%",
-                      borderColor: state.isFocused ? "#fff" : "#fff",
-                      border: "1px solid #2DDC1B",
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                      height: "auto",
-                      // overflowY: "scroll",
-                    }),
-                  }}
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary25: "#B8FEB3",
-                      primary: "#2DDC1B",
-                    },
-                  })}
-                  onChange={(e) => {
-                    const matchedInvoice = invoiceData?.filter(
-                      (invoice) =>
-                        invoice.customerID === e.value &&
-                        invoice.isApproved === true
-                    );
-                    if (matchedInvoice?.length > 0) {
-                      setFilterInvoiceList(matchedInvoice);
-                    } else {
-                      setFilterInvoiceList([]);
-                    }
-                    setClientId(e.value);
-                    setFilters((prevFilters) => ({
-                      ...prevFilters,
-                      clientId: e.value,
-                    }));
-                  }}
-                ></Select>
-              </div>
+              <Select
+                class="form-select"
+                className="w-100"
+                aria-label="Default select example"
+                name="poinfo"
+                options={clientInfoOptions}
+                defaultValue={{
+                  label: "Select Client Name",
+                  value: 0,
+                }}
+                value={clientInfoOptions.filter(function (option) {
+                  return option.value === clientId;
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                    borderColor: state.isFocused ? "#fff" : "#fff",
+                    border: "1px solid #2DDC1B",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                    height: "auto",
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#B8FEB3",
+                    primary: "#2DDC1B",
+                  },
+                })}
+                onChange={(e) => {
+                  const matchedInvoice = invoiceData?.filter(
+                    (invoice) =>
+                      invoice.customerID === e.value &&
+                      invoice.isApproved === true
+                  );
+                  if (matchedInvoice?.length > 0) {
+                    setFilterInvoiceList(matchedInvoice);
+                  } else {
+                    setFilterInvoiceList([]);
+                  }
+                  setClientId(e.value);
+                  setFilters((prevFilters) => ({
+                    ...prevFilters,
+                    clientId: e.value,
+                  }));
+                }}
+              ></Select>
             </div>
+          </div>
 
-            <div className="w-100 ms-0 ms-lg-2 ms-xl-2">
-              <label htmlFor="">PI Number</label>
-              <br />
-              <div className="w-100">
-                <Select
-                  class="form-select"
-                  className="w-100"
-                  aria-label="Default select example"
-                  name="poinfo"
-                  options={piInfoOptions}
-                  defaultValue={{
-                    label: "Select PI Number",
-                    value: 0,
-                  }}
-                  value={piInfoOptions.filter(function (option) {
-                    return option.value === piNumber;
-                  })}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      width: "100%",
-                      borderColor: state.isFocused ? "#fff" : "#fff",
-                      border: "1px solid #2DDC1B",
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                      height: "auto",
-                      // overflowY: "scroll",
-                    }),
-                  }}
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary25: "#B8FEB3",
-                      primary: "#2DDC1B",
-                    },
-                  })}
-                  onChange={(e) => {
-
-                    setPiNumber(e.value);
-                    setFilters((prevFilters) => ({
-                      ...prevFilters,
-                      piNumber: e.value,
-                    }));
-                  }}
-                ></Select>
-              </div>
+          <div className="w-100 ms-0 ms-lg-2 ms-xl-2">
+            <label htmlFor="">PI Number</label>
+            <br />
+            <div className="w-100">
+              <Select
+                class="form-select"
+                className="w-100"
+                aria-label="Default select example"
+                name="poinfo"
+                options={piInfoOptions}
+                defaultValue={{
+                  label: "Select PI Number",
+                  value: 0,
+                }}
+                value={piInfoOptions.filter(function (option) {
+                  return option.value === piNumber;
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                    borderColor: state.isFocused ? "#fff" : "#fff",
+                    border: "1px solid #2DDC1B",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                    height: "auto",
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#B8FEB3",
+                    primary: "#2DDC1B",
+                  },
+                })}
+                onChange={(e) => {
+                  setPiNumber(e.value);
+                  setFilters((prevFilters) => ({
+                    ...prevFilters,
+                    piNumber: e.value,
+                  }));
+                }}
+              ></Select>
             </div>
-            <div className="ms-0 ms-lg-4 ms-xl-4 d-flex">
+          </div>
+          <div className="ms-0 ms-lg-4 ms-xl-4 d-flex">
             <button
               className="border-0 "
               style={{
@@ -908,9 +878,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
               Clear
             </button>
           </div>
-          </div>
-          
-       
+        </div>
       </div>
 
       {isTableDispaly ? (
@@ -951,10 +919,9 @@ const PaymentReceiveDataTableList = ({ permission }) => {
 
         <tbody>
           <>
-            {result.map((row, rowIndex) => {
+            {result.map((row) => {
               const rowSpan = row?.detailsData?.length; // Get the length of detailsData for rowspan
 
-              // Calculate totals for each piNumber
               const totalCashQuantity = row.detailsData.reduce(
                 (acc, detail) => acc + detail.paidTotalQuantity,
                 0
@@ -995,7 +962,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
                     const filterIPQuantity = matchPiNumber?.detailsData.find(
                       (item) => item.itemId === detail.itemId
                     );
-   
+
                     return (
                       <tr key={`${row.piNumber}-${detail.itemId}`}>
                         {detailIndex === 0 && (

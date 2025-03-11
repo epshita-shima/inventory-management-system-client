@@ -18,7 +18,6 @@ import {
 } from "../../../redux/features/returndeliveredinformation/returndeliveredApi";
 import { useNavigate } from "react-router-dom";
 import { useGetAllFinishGoodsDeliveryInformationQuery,} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import '../../../buttonStyle/style.css'
 
 const DeliverReturnCommonPart = () => {
@@ -36,7 +35,6 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
 
   const [returnDate, setReturnDate] = useState(new Date());
 
-  console.log(deliveryOrderDataInformation)
   const initialValues = {
     returnDate: "",
     piId: "",
@@ -112,7 +110,6 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
         zIndex: "9999",
       }}
     >
-      {/* <LoadingSpineer isLoading={isPiInfoLoading}></LoadingSpineer> */}
       <div className={`${isPiInfoLoading ? 'd-none' : 'd-block'}`}>
         <div className="px-4 rounded-4">
           <Formik
@@ -131,11 +128,8 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
-              touched,
-              isValid,
-              dirty,
+              touched
             }) => (
               <Form
                 id="pocreation-form"
@@ -145,7 +139,7 @@ const{data:doInformation}=useGetAllDelieryOrderInformationAfterDeliverQuery(unde
               >
                 <FieldArray
                   name="detailsData"
-                  render={(arrayHelpers) => {
+                  render={() => {
                     const totalQtyCalculate =
                       doDetailsFilteredData?.detailsData?.reduce(
                         (acc, cur) => acc + parseFloat(cur.deliverQty || 0),

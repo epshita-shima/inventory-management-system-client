@@ -17,12 +17,11 @@ const PaymentModeDataList = () => {
       const userSingleId = JSON.parse(getUserId);
       const userIdFromSession = userSingleId[0]?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
 
-        // Find the user object matching the provided userId
         const currentUser = userData?.find((user) => user._id === userId);
 
         if (currentUser) {

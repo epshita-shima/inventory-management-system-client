@@ -309,8 +309,6 @@ const DeliveryOrderListData = ({ permission }) => {
                         downloadDeliveryOrderListPDF(
                           transformedDOData,
                           clientInformation,
-                          finishGoodsInfo,
-                          itemsizeinfo,
                           { companyinfo },
                           reportTitle
                         );

@@ -1,11 +1,9 @@
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import PaymentOptionInBankModal from "../Common/PaymentOptionInBank/PaymentOptionInBankModal";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import "./InsertPaymentMethodInformation.css";
 import { useGetAllBankInformationQuery } from "../../../redux/features/bankinformation/bankInfoAPi";
 import { bankInformationDropdown } from "../../Common/CommonDropdown/CommonDropdown";
@@ -20,19 +18,17 @@ const InsertPaymentMethodInformation = ({
   paymentMethodOptions,
   bankChequeDate,
   setBankChequeDate,
-  itemNameData,
-  itemSize,
   setFormValues,
   itemNameOptions,
   invoiveByInvoiceNumber,
 }) => {
-  const [show, setShow] = useState(false);
+  const [setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
   const [openModals, setOpenModals] = useState([]);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
 
   const bankInfoOptions = bankInformationDropdown(bankInformation);
-  const handleClose = () => setShow(false);
+
 
   const handlePaymentMethodChange = (e, index) => {
     const paymentMethod = e.value;
@@ -52,7 +48,6 @@ const InsertPaymentMethodInformation = ({
       setBankInCheque(false);
     }
   };
- // Track open modals for each detail
 
   const handleCloseModal = (index) => {
     const newOpenModals = [...openModals];
@@ -166,12 +161,6 @@ const InsertPaymentMethodInformation = ({
                                     },
                                   })}
                                   onChange={(e) => {
-                                    // swal({
-                                    //   title: "Sorry!",
-                                    //   text: "This Client has no PI.",
-                                    //   icon: "warning",
-                                    //   button: "OK",
-                                    // });
                                     handlePaymentMethodChange(e, index);
                                     setFieldValue(
                                       `detailsData.${index}.paymentMethod`,
@@ -241,7 +230,6 @@ const InsertPaymentMethodInformation = ({
                                       ...provided,
                                       zIndex: 9999,
                                       height: "auto",
-                                      // overflowY: "scroll",
                                     }),
                                     menuPortal: (base) => ({
                                       ...base,
@@ -259,12 +247,6 @@ const InsertPaymentMethodInformation = ({
                                     },
                                   })}
                                   onChange={(e) => {
-                                    // swal({
-                                    //   title: "Sorry!",
-                                    //   text: "This Client has no PI.",
-                                    //   icon: "warning",
-                                    //   button: "OK",
-                                    // });
                                     setFieldValue(
                                       `detailsData.${index}.paymentStatus`,
                                       e.value
@@ -429,10 +411,7 @@ const InsertPaymentMethodInformation = ({
                                       detailsData: [...temp_details],
                                     };
                                   });
-                                  // setFieldValue(
-                                  //   `detailsData.${index}.quantity`,
-                                  //   parseFloat(e.target.value)
-                                  // );
+                                
                                 }}
                               />
                               <br />

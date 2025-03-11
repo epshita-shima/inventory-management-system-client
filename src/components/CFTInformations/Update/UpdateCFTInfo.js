@@ -24,15 +24,11 @@ import getMakebyUser from "./../../Common/CommonMakeUser/CommonMakingUser";
 import '../../../buttonStyle/style.css'
 
 const UpdateCFTInfo = () => {
-  const [startDate, setStartDate] = useState(
-    new Date().toLocaleDateString("en-CA")
-  );
   const [finishDate, setFinishDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
 
   const { id } = useParams();
-  const [file, setFile] = useState(null);
   const [singleCFTInfosData, setSingleCFTInfosData] = useState();
   const { data: singleCFTInfoData, isLoading: isCFTInfoloading } =
     useGetSingleCFTInfoQuery(id);
@@ -223,7 +219,6 @@ const UpdateCFTInfo = () => {
                               button: "OK",
                             });
                           } else {
-                            setStartDate(startDate.toLocaleDateString("en-CA"));
                             setSingleCFTInfosData((prevData) => ({
                               ...prevData,
                               openingDate:

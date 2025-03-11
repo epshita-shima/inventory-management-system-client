@@ -1,6 +1,5 @@
 export const addFooter = (doc, companyinfo, reportTitle) => {
   const pageCount = doc.internal.getNumberOfPages(); // Get the total number of pages
-  const logoWidthPercentage = 0.15; // 15% of page width for the logo
   const detailsWidthPercentage = 0.8;
 
   for (let i = 1; i <= pageCount; i++) {
@@ -18,9 +17,6 @@ export const addFooter = (doc, companyinfo, reportTitle) => {
 
     // Header content
 
-    // const logoWidth = pageWidth * logoWidthPercentage;
-    // const logoHeight = logoWidth * (40 / 40);
-    // doc.addImage(logoImage, 'PNG', 10, headerY, logoWidth,logoHeight);
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyName) {
         var companyNameUpper =
@@ -49,7 +45,6 @@ export const addFooter = (doc, companyinfo, reportTitle) => {
 
     doc.setFont("normal"); // Reset font style
     doc.setFontSize(10); // Reset font size
-    // doc.setFont("helvetica");
     if (companyinfo && companyinfo?.companyinfo[0]) {
       if (companyinfo?.companyinfo[0]?.companyAddress) {
         doc.text(

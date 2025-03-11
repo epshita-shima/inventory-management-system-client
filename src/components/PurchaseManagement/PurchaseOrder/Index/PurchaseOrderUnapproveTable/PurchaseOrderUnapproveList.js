@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,12 +22,8 @@ import { useGetAllGRNInformationQuery } from "../../../../../redux/features/good
 const PurchaseOrderUnapproveList = ({
   permission,
   purchaseFilterUnApproveAllData,
-  setPurchaseFilterUnApproveAllData,
   purchaseInfoData,
   handleApproveData,
-  fromDate,
-  toDate,
-  refetch,
   isPurchaseOrderLoading,
 }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
@@ -149,7 +145,6 @@ const PurchaseOrderUnapproveList = ({
             style={{
               textDecoration: "none",
               color: "red",
-              // fontSize: "22px",
               textAlign: "center",
               fontWeight: "bold",
               border: `${

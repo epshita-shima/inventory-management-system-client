@@ -18,7 +18,6 @@ const PurchaseReportDataTable = ({
   supplierInfo,
   bankInformation,
   paymentData,
-  filters,
   isTableDispaly,
   isPurchaseDetailsLoading
 }) => {
@@ -36,7 +35,6 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
   useEffect(() => {
     const processData = async () => {
       const data = await groupPurchaseDateByDetails(filteredDatas);
-      // const convertObjectData=Object.values(data)
       setGroupedData(data);
     };
     processData();
@@ -272,8 +270,6 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
 
   return (
     <div
-    // className="row px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <LoadingSpineer isLoading={isPurchaseDetailsLoading}></LoadingSpineer>
      {isTableDispaly && (

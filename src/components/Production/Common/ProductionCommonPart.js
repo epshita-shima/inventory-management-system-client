@@ -3,7 +3,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Field, FieldArray, Form, Formik } from "formik";
+import {FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
@@ -101,15 +101,6 @@ const ProductionCommonPart = () => {
     { value: "677248c1a1a0d9059b94977f", label: "150" },
   ];
 
-  // recipe version v1
-  // const receipeOptionsLessQty900 = [
-  //   { value: "677248c1a1a0d9059b94977e", label: "200" },
-  //   { value: "677248c1a1a0d9059b94977c", label: "144" },
-  //   { value: "677248c1a1a0d9059b94977d", label: "256" },
-  //   { value: "677248c1a1a0d9059b949780", label: "" },
-  //   { value: "677248c1a1a0d9059b949781", label: "" },
-  //   { value: "677248c1a1a0d9059b94977f", label: "300" },
-  // ];
 const receipeOptionsLessQty900=[
       { value: "677248c1a1a0d9059b94977e", label: "275" },
     { value: "677248c1a1a0d9059b94977c", label: "150" },
@@ -256,7 +247,7 @@ const receipeOptionsLessQty900=[
                 })
               ),
             })}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
+            onSubmit={( { setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
               setSubmitting(false);
             }}
@@ -265,7 +256,6 @@ const receipeOptionsLessQty900=[
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -385,7 +375,6 @@ const receipeOptionsLessQty900=[
                                     <div
                                       className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"
                                       style={{
-                                        // backgroundColor: "#00B987",
                                         backgroundColor: "#B8FEB3",
                                         color: "#000",
                                         fontWeight: 900,

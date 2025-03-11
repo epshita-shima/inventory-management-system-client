@@ -1,6 +1,6 @@
 /* eslint-disable react/style-prop-object */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Menubar } from 'primereact/menubar';
 const Navbar = ({ data }) => {

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import ProductionInfoList from "./ProductionInfoTable/ProductionInfoList";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
-import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const ProductionListTable = () => {
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
@@ -57,25 +56,6 @@ const ProductionListTable = () => {
     }
   }, [user, navigate]);
 
-  // if (isUserloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>

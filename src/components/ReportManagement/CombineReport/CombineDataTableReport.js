@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from "react";
 import "./CombineReportDataTable.css";
 import DataTable from "react-data-table-component";
 import { getPurchaseColumns } from "../../Uitilites/purchaseColumn";

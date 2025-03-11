@@ -1,4 +1,3 @@
-import React from 'react'
 import { addFooter } from './footerUtility';
 import jsPDF from 'jspdf';
 
@@ -63,9 +62,7 @@ const downloadFinishGoodsStockReportPDF =(  companyinfo,
           data.cell.styles.halign = "right";
          
         }
-        // if (colIndex === totalCols - 1) {
-        //   data.cell.styles.halign = "right";
-        // }
+   
 
       },
     });

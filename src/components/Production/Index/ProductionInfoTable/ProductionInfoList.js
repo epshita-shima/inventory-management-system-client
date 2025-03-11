@@ -7,7 +7,6 @@ import {
   useLazyGetFilteredProductionInfoQuery,
 } from "../../../../redux/features/productioninformation/productionApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import makeAnimated from "react-select/animated";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import swal from "sweetalert";
 import {
@@ -54,11 +53,10 @@ const ProductionInfoList = ({ permission }) => {
     toDate: toDate,
   });
   const [perBatchProductionData, setPerBatchProductionData] = useState([]);
-  // const [totalProduction, setTotalProduction] = useState([]);
   const [lastOneMonthProduction, setLastOneMonthProduction] = useState([]);
   const [lastOneWeekData, setLastOneWeekData] = useState([]);
   const [yesterdayData, setYesterDayData] = useState([]);
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredProductionInfoQuery();
 
   useEffect(() => {
@@ -87,7 +85,6 @@ const ProductionInfoList = ({ permission }) => {
       lastMonthDate.setMonth(today.getMonth() - 1);
       lastWeekDate.setDate(today.getDate() - 7);
       setFilteredData(filteredDatas || []);
-      // setTotalProduction(filteredDatas);
 
       const filteredLastMonthData = productionInitialData?.filter((item) => {
         const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
@@ -114,7 +111,7 @@ const ProductionInfoList = ({ permission }) => {
 
   useEffect(() => {
     if (isFetchAfterDeleteData) {
-      // setFilteredData(grnAllInformation);
+
       handleApplyFilters();
       setIsFetchAfterDeleteData(false);
     }
@@ -590,18 +587,14 @@ const ProductionInfoList = ({ permission }) => {
           </tr>
         </thead>
         <tbody>
-          {" "}
-          {/* {perBatchProductionData?.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td> */}
+        
           <tr>
             <td>{perBatchProductionData?.productionDate}</td>
             <td>{perBatchProductionData?.batchNo}</td>
             <td>{perBatchProductionData?.totalBatch}</td>
             <td>{perBatchProductionData?.productionQty}</td>
           </tr>
-          {/* </tr>
-          ))} */}
+    
         </tbody>
       </table>
     </div>

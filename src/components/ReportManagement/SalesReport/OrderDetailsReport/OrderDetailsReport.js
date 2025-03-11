@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import OrderDetailsReportTable from './OrderDetailsReportTable';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 import ReportView from './ReportView';

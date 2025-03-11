@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
-import { supplierDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import InsertGRNDetailsInfo from "./InsertGRNDetailsInfo";
@@ -18,12 +17,10 @@ import {
   useInsertGRNInformationMutation,
   useGetSingleGRNInformationQuery,
   useUpdateGRNInformationMutation,
-  useGetAllGRNInformationQuery,
 } from "../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
 import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-import LoadingSpineer from './../../Common/LoadingSpinner/LoadingSpineer';
 import '../../../buttonStyle/style.css';
 
 const InsertGRNInfo = () => {
@@ -31,7 +28,7 @@ const InsertGRNInfo = () => {
   const ArrayHelperRef = useRef();
   const makebyUser = getMakebyUser();
   const { data: supplierInfo,isLoading:isLoadingSupplier } = useGetAllSupplierInformationQuery(undefined);
-  const { data: purchaseOrderInfo, isLoading } =
+  const { data: purchaseOrderInfo } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rmItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [pOOptionsData, setPOOptionsData] = useState([]);
@@ -251,7 +248,6 @@ const InsertGRNInfo = () => {
       style={{ height: 'calc(98vh - 120px)', overflowY: 'hidden' }}
 
     >
-      {/* <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer> */}
       <div className={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
         <div className="shadow-lg  rounded-4">
           <Formik
@@ -275,7 +271,6 @@ const InsertGRNInfo = () => {
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -367,9 +362,6 @@ const InsertGRNInfo = () => {
                               <label
                                 htmlFor="challanNo"
                                 className="ml-sm-0 ml-md-0 ml-lg-4" 
-                                // style={{
-                                //   marginLeft: "10px",
-                                // }}
                               >
                                 Challan No
                               </label>
@@ -389,7 +381,6 @@ const InsertGRNInfo = () => {
                                   width: "100%",
                                   borderRadius: "5px",
                                   textAlign: "center",
-                                  // marginLeft: "10px",
                                   height: "38px",
                                 }}
                                 className="ml-sm-0 ml-md-0 ml-lg-4" 
@@ -433,7 +424,6 @@ const InsertGRNInfo = () => {
                                     width: "100%",
                                     borderRadius: "5px",
                                     textAlign: "center",
-                                    // marginLeft: "10px",
                                     height: "38px",
                                   }}
                                 />
@@ -470,7 +460,6 @@ const InsertGRNInfo = () => {
                                           ...provided,
                                           zIndex: 9999,
                                           height: "auto",
-                                          // overflowY: "scroll",
                                         }),
                                       }}
                                       theme={(theme) => ({
@@ -513,10 +502,8 @@ const InsertGRNInfo = () => {
                                   style={{
                                     border: "1px solid #2DDC1B",
                                     padding: "5px",
-                                    // width: "92%",
                                     borderRadius: "5px",
                                     textAlign: "center",
-                                    // marginLeft: "10px",
                                     height: "38px",
                                   }}
                                 />
@@ -571,7 +558,6 @@ const InsertGRNInfo = () => {
                                           ...provided,
                                           zIndex: 9999,
                                           height: "auto",
-                                          // overflowY: "scroll",
                                         }),
                                       }}
                                       theme={(theme) => ({

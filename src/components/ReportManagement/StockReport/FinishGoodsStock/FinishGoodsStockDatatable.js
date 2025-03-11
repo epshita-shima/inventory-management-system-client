@@ -143,9 +143,6 @@ const FinishGoodsStockDatatable = ({
 
     {
       name: "Delivered Quantity",
-      // selector: (row) => (
-      //   <span>{row.deliveredQty === 0 ? "-" : row.deliveredQty}</span>
-      // ),
       sortable: true,
       center: true,
       filterable: true,
@@ -165,8 +162,6 @@ const FinishGoodsStockDatatable = ({
 
     {
       name: "Return Quantity",
-      // selector: (row) => (row.purchaseConsumption
-      // ),
       sortable: true,
       center: true,
       filterable: true,
@@ -283,7 +278,7 @@ const FinishGoodsStockDatatable = ({
         )}
       </div>
     );
-  }, [companyinfo, finishGoodsStockReportData]);
+  }, [companyinfo, finishGoodsStockReportData, finishItemInfo, itemSizeInfo]);
 
   return (
     <div className="mt-3">
@@ -293,7 +288,7 @@ const FinishGoodsStockDatatable = ({
             isLoading={isFinishGoodsStockDataLoading}
           ></LoadingSpineer>
           <div
-            // className={`${isRawMaterialStockDataLoading ? 'd-none' : 'd-block'} mt-4`}
+           
             style={{ height: "calc(80vh - 120px)", overflowY: "scroll" }}
           >
             <>
@@ -332,14 +327,6 @@ const FinishGoodsStockDatatable = ({
 
                 return (
                   <tr key={detail._id}>
-                    {/* <td
-                                  style={{
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                  }}
-                                >
-                                  {formattedDate}
-                                </td> */}
                     <td>{detailIndex + 1}</td>
                     <td>{`${itemNames?.itemName} (${itemSize.sizeInfo})`}</td>
                     <td>{detail?.productionQty===0 ? "-": detail?.productionQty.toLocaleString()}</td>

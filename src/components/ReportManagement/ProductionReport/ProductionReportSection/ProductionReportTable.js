@@ -3,7 +3,6 @@ import ProductionReportView from './ProductionReportView';
 
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
-// import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
 
 const ProductionReportTable = () => {
 

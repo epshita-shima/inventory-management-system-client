@@ -199,7 +199,7 @@ const useInactivityLogout = () => {
             handleLogout();
           }
         }, 1000);
-      }, 10 * 60 * 1000); // 10 min of inactivity
+      }, 1 * 60 * 1000); // 10 min of inactivity
     }
   };
 
@@ -228,7 +228,7 @@ const useInactivityLogout = () => {
     };
   }, []);
 
-  return null;
+  // return null;
 };
 
 export default useInactivityLogout;

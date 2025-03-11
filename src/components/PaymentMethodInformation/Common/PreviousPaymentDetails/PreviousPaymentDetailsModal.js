@@ -7,9 +7,7 @@ import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { useGetAllBankInformationQuery } from "../../../../redux/features/bankinformation/bankInfoAPi";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import {
-  useUpdatePreviousPaymentReceiveInfoMutation,
-} from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
+import { useUpdatePreviousPaymentReceiveInfoMutation } from "../../../../redux/features/paymentreceiveinfo/paymentreceiveApi";
 import swal from "sweetalert";
 import Select from "react-select";
 import { useGetAllClientInformationQuery } from "../../../../redux/features/clientinformation/clientInfoApi";
@@ -27,7 +25,7 @@ const PreviousPaymentDetailsModal = ({
   paymentStatusOptions,
   refetch,
   invoiceInformation,
-  setshowPreviousPaymentDetailsButton
+  setshowPreviousPaymentDetailsButton,
 }) => {
   const [itemSize, setItemSize] = useState([]);
   const [itemNameData, setItemNameData] = useState([]);
@@ -48,13 +46,11 @@ const PreviousPaymentDetailsModal = ({
 
   let serialNo = 1;
   const initialValues = {
-    detailsData: detail?.detailsData || []
+    detailsData: detail?.detailsData || [],
   };
-  const customerName = customerInfo?.find(
-    (x) => x._id === detail[0]?.clientId
-  );
+  const customerName = customerInfo?.find((x) => x._id === detail[0]?.clientId);
   const clientNameValue = customerName ? customerName.clientName : "N/A";
-  
+
   const findPiNumber = invoiceInformation?.find(
     (x) => x._id === detail[0]?.piNumber
   );
@@ -67,29 +63,23 @@ const PreviousPaymentDetailsModal = ({
 
     detail?.forEach((detailItem) => {
       detailItem?.detailsData?.forEach((dataDetail) => {
-        // Filter finishGoods by matching itemId
         const matchedItem = finishGoods.filter(
           (item) => item._id === dataDetail.itemId
         );
 
-        // Accumulate matched items for item name data
         accumulatedItemNameData.push(...matchedItem);
 
-        // Map matched items to their corresponding size from sizeInfo
         const filteredSize = matchedItem.map((item) =>
           sizeInfo?.find((x) => x?._id === item.sizeId)
         );
         accumulatedItemSizeData.push(...filteredSize);
 
-        // Filter bank information based on bankId
         const filteredBank = bankInformation.filter(
           (bankItem) => bankItem?._id === dataDetail.bankId
         );
         accumulatedBankData.push(...filteredBank);
       });
     });
-
-    // Set the state with the accumulated data
     setBankName(accumulatedBankData);
     setItemNameData(accumulatedItemNameData);
     setItemSize(accumulatedItemSizeData);
@@ -99,7 +89,7 @@ const PreviousPaymentDetailsModal = ({
   const handleCheckboxChange = (index) => {
     setIsDeletePreviousPaymentData((prev) => ({
       ...prev,
-      [index]: !prev[index], // Toggle the state for the specific item
+      [index]: !prev[index],
     }));
   };
 
@@ -157,7 +147,7 @@ const PreviousPaymentDetailsModal = ({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={({ setSubmitting }) => {
         setSubmitting(false);
       }}
       enableReinitialize={true}
@@ -228,7 +218,7 @@ const PreviousPaymentDetailsModal = ({
                     {paymentReceivePreviousData.map((payment, paymentIndex) =>
                       payment?.detailsData.map((detailItem, index) => {
                         const indexXlaculate = paymentIndex - index;
-                        const currentIndex = cumulativeIndex; // Capture the current cumulative index
+                        const currentIndex = cumulativeIndex;
                         cumulativeIndex++;
                         return (
                           <tr key={`${paymentIndex}-${index}`}>
@@ -240,7 +230,9 @@ const PreviousPaymentDetailsModal = ({
                                 name={`detailsData.${index}.itemName`}
                                 value={`${
                                   itemNameData[currentIndex]?.itemName || ""
-                                } (${itemSize[currentIndex]?.sizeInfo || "N/A"})`}
+                                } (${
+                                  itemSize[currentIndex]?.sizeInfo || "N/A"
+                                })`}
                                 type="text"
                                 placeholder="Item Name"
                                 disabled
@@ -288,7 +280,6 @@ const PreviousPaymentDetailsModal = ({
                                       ...provided,
                                       zIndex: 9999,
                                       height: "auto",
-                                      // overflowY: "scroll",
                                     }),
                                     menuPortal: (base) => ({
                                       ...base,
@@ -629,7 +620,6 @@ const PreviousPaymentDetailsModal = ({
                                       calCulateTotalAmount
                                     );
                                   } else {
-
                                     setFieldValue(
                                       `detailsData.${index}.quantity`,
                                       0
@@ -764,7 +754,7 @@ const PreviousPaymentDetailsModal = ({
                                                       item._id ===
                                                       detailItem._id
                                                   );
-                                            
+
                                                 if (existingIndex > -1) {
                                                   const updatedData = [
                                                     ...prevData,
@@ -775,7 +765,7 @@ const PreviousPaymentDetailsModal = ({
                                                     isParent: true,
                                                     parentId: payment._id,
                                                   };
-                                                 
+
                                                   return updatedData;
                                                 } else {
                                                   return [
@@ -793,11 +783,15 @@ const PreviousPaymentDetailsModal = ({
                                             setIsDeletePreviousPaymentData(
                                               false
                                             );
-                                            setshowPreviousPaymentDetailsButton(false)
+                                            setshowPreviousPaymentDetailsButton(
+                                              false
+                                            );
                                           }
                                         } else {
                                           setIsDeletePreviousPaymentData(false);
-                                          setshowPreviousPaymentDetailsButton(true)
+                                          setshowPreviousPaymentDetailsButton(
+                                            true
+                                          );
                                           swal("Your data is safe!");
                                         }
                                       });
@@ -820,10 +814,8 @@ const PreviousPaymentDetailsModal = ({
               <Button
                 style={{ backgroundColor: "red", border: "none" }}
                 variant="secondary"
-                onClick={()=>{
-                  handleClosePreviousPayment()
-                  
-
+                onClick={() => {
+                  handleClosePreviousPayment();
                 }}
               >
                 Close

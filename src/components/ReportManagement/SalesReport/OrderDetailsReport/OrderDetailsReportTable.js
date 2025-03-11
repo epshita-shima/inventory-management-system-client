@@ -31,7 +31,7 @@ const OrderDetailsReportTable = ({
   isOderDetailsLoading,
   companyinfo,
 }) => {
-  const [filterText, setFilterText] = React.useState("");
+  const [filterText] = React.useState("");
   const [groupedData, setGroupedData] = useState({});
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);

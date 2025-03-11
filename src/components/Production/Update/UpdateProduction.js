@@ -100,9 +100,7 @@ const UpdateProduction = ({
                               }),
                               menu: (provided) => ({
                                 ...provided,
-                                zIndex: 9999,
-                                // height: "200px",
-                                // overflowY: "scroll",
+                                zIndex: 9999
                               }),
                             }}
                             theme={(theme) => ({
@@ -344,7 +342,7 @@ const UpdateProduction = ({
                         type="text"
                         name={`detailsData.${index}.excess`}
                         placeholder="Excess"
-                        value={detail?.excess==0 ? "-": detail?.excess  }
+                        value={detail?.excess=== 0 ? "-": detail?.excess  }
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",
@@ -361,7 +359,7 @@ const UpdateProduction = ({
                         type="text"
                         name={`detailsData.${index}.Less`}
                         placeholder="Less"
-                        value={detail?.less ==0? "-" : detail?.less  }
+                        value={detail?.less ===0? "-" : detail?.less  }
                         disabled
                         style={{
                           border: "1px solid #2DDC1B",

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { extractUserMenuListForCurrectMenu } from '../../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const PurchaseOrderApproveList = () => {
-    const clickhandler = (name) => console.log("delete", name);
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
   
     const [permission, setPermission] = useState();

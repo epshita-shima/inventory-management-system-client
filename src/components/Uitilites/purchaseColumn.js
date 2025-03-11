@@ -124,8 +124,6 @@ export const getPurchaseColumns = (
                         downloadGoupPurchaseItemWisePDF(
                           groupData,
                           filteredData,
-                          rawMaterialInfo,
-                          itemUnitInformation,
                           supplierInformation,
                           {companyinfo},
                           reportTitle

@@ -1,6 +1,5 @@
 import {
-  faArrowAltCircleLeft,
-  faPlus,
+  faArrowAltCircleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, FieldArray, Form, Formik } from "formik";
@@ -143,12 +142,11 @@ const InsertClientInformation = () => {
                     .min(11, "must be at least 11 characters long"),
                   contactPerson: Yup.string().required("Required"),
                   binNo: Yup.string().required("Required"),
-                  // tradeLicenceNo: Yup.string().required("Required"),
                   tinNo: Yup.string().required("Required"),
                 })
               ),
             })}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
+            onSubmit={( { setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
               setSubmitting(false);
             }}
@@ -157,7 +155,6 @@ const InsertClientInformation = () => {
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -687,8 +684,7 @@ const InsertClientInformation = () => {
                                 );
                               })
                             : null}
-                          {/* </tbody>
-                                  </table> */}
+                      
                         </div>
                       </div>
                     );

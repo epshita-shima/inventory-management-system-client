@@ -44,7 +44,6 @@ const RawMaterialConsumptionView = ({ permission }) => {
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
-      // trigger(filters);
       setExecuteQuery(false);
     }
   }, [executeQuery]);
@@ -76,9 +75,7 @@ const RawMaterialConsumptionView = ({ permission }) => {
           setFilters={setFilters}
           toDate={toDate}
           setToDate={setToDate}
-          // clientInfoOptions={clientInfoOptions}
           filters={filters}
-          // piInfoOptions={piInfoOptions}
           itemsOptions={itemsOptions}
           handleApplyFilters={handleApplyFilters}
           setIsRawMaterialDetails={setIsRawMaterialDetails}

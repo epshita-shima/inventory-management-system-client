@@ -40,7 +40,6 @@ const InsertGRNDetailsInfo = ({
   return (
     <div
       className="shadow-lg p-4 grninsertdata-main-view"
-      // style={{ height: "300px", overflowY: "auto" }}
     >
       <div className="container-fluid">
         <div className="row justify-content-center">
