@@ -55,11 +55,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       console.log("Valid");
     }
   } else {
-    swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
-      localStorage.clear("accesstoken");
-      localStorage.clear("user");
-      window.location.href = "/";
-    });
+    // swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
+    //   localStorage.clear("accesstoken");
+    //   localStorage.clear("user");
+    //   window.location.href = "/";
+    // });
     api.dispatch(authActions.logout());
     console.log("not here");
   }

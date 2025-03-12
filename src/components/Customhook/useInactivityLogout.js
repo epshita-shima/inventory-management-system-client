@@ -179,7 +179,7 @@ const useInactivityLogout = () => {
           if (value === "logout") {
             swal("Logged Out!", "You have been logged out successfully.", "success").then(() => {
               handleLogout();
-              localStorage.clear();
+              localStorage.clear()
             });
           } else {
             localStorage.setItem("resetSession", Date.now());
@@ -198,9 +198,10 @@ const useInactivityLogout = () => {
             clearInterval(interval);
             swal.close();
             handleLogout();
+            localStorage.clear()
           }
         }, 1000);
-      }, 15 * 60 * 1000); // 10 min of inactivity
+      }, 1 * 60 * 1000); // 10 min of inactivity
     }
   };
 
