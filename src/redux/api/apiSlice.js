@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { authActions, logout } from "./authSlice";
+import { authActions } from "./authSlice";
 import { scheduleTokenRefresh } from "./scheduleTokenRefresh";
 import swal from "sweetalert";
-import { jwtDecode } from "jwt-decode";
 import isTokenExpired from "./isTokenExpired";
 
 const baseQuery = fetchBaseQuery({

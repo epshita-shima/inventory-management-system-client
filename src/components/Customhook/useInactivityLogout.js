@@ -138,7 +138,7 @@ const useInactivityLogout = () => {
       const response = await loggedOutUser();
       if (response?.data?.success) {
         dispatch(authActions.logout());
-        localStorage.clear();
+        // localStorage.clear();
         window.location.href = "/";
       }
     }
@@ -179,6 +179,7 @@ const useInactivityLogout = () => {
           if (value === "logout") {
             swal("Logged Out!", "You have been logged out successfully.", "success").then(() => {
               handleLogout();
+              localStorage.clear();
             });
           } else {
             localStorage.setItem("resetSession", Date.now());
@@ -199,7 +200,7 @@ const useInactivityLogout = () => {
             handleLogout();
           }
         }, 1000);
-      }, 10 * 60 * 1000); // 10 min of inactivity
+      }, 15 * 60 * 1000); // 10 min of inactivity
     }
   };
 
