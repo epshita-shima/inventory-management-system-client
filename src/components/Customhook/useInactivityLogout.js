@@ -201,7 +201,7 @@ const useInactivityLogout = () => {
             localStorage.clear()
           }
         }, 1000);
-      }, 1 * 60 * 1000); // 10 min of inactivity
+      }, 10 * 60 * 1000); // 10 min of inactivity
     }
   };
 

@@ -300,7 +300,7 @@ const Dashboard = () => {
         </div>
 
         {/* Charts Section */}
-        <div className="row mt-4 g-4">
+        <div className="row  g-4">
           {/* Purchase Chart */}
           <div className="col-sm-6 shadow-sm p-4 d-flex flex-column">
             <h3 className="text-center fw-bold">Purchase Information</h3>
