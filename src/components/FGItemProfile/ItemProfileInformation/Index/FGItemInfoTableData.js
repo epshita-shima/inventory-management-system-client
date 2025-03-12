@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const FGItemInfoTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
@@ -17,7 +16,7 @@ const FGItemInfoTableData = () => {
     isLoading: isFGItemloading,
     refetch,
   } = useGetAllItemInformationQuery(undefined);
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +35,7 @@ const FGItemInfoTableData = () => {
 
   return (
     <div>
-      {/* <LoadingSpineer isLoading={isUserloading}></LoadingSpineer> */}
+
       <div className={`${isUserloading ? "d-none" : "d-block"}`}>
         <IteminfoList
           permission={permission}

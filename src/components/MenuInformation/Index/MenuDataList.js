@@ -9,7 +9,7 @@ const MenuDataList = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {

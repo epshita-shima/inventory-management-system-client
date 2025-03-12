@@ -7,7 +7,7 @@ const PurchaseStatusList = () => {
   const { data: user} =
     useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,16 +21,12 @@ const PurchaseStatusList = () => {
       const extractUserListForCurrentUser = (userData, userId) => {
         let userList = null;
 
-        // Find the user object matching the provided userId
         const currentUser = userData?.find((user) => user._id === userId);
-
         if (currentUser) {
-          // Loop through the menus of the current user
           currentUser?.menulist?.forEach((menu) => {
             menu?.items?.forEach((subMenu) => {
-              // Check if the subMenu is the "User Profile" menu
+           
               if (subMenu?.label === "Purchase Order") {
-                // Find the "User List" sub-item
                 const userListSubMenu = subMenu?.items.find(
                   (subItem) => subItem?.label === "PO Approval"
                 );

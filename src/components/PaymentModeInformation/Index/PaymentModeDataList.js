@@ -8,7 +8,7 @@ import PaymnetModeList from './PaymentModeTable/PaymnetModeList';
 const PaymentModeDataList = () => {
   const { data: user } = useGetAllUserQuery(undefined);
  
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {

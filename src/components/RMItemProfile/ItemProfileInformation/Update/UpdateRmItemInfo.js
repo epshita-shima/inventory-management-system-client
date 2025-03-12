@@ -18,18 +18,18 @@ import {
   useUpdateRMItemInfoMutation,
 } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryInfo/categoryInfoApi";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Update/InsertCategoryInformationModal";
 import "./UpdateRmItemInfo.css";
 import "../../../../buttonStyle/style.css";
+
 const UpdateRmItemInfo = () => {
-  const [startDate, setStartDate] = useState(
+  const [ setStartDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
   const { id } = useParams();
-  const [singleItemInfoData, setSingleItemInfoData] = useState();
-  const { data: singleRMItemData, isLoading: isLoadingUpdateRaw } =
+  const [singleItemInfoData, setSingleItemInfoData] = useState({});
+  const { data: singleRMItemData, } =
     useGetSingleRMItemQuery(id);
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);

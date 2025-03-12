@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
 import swal from "sweetalert";
+import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
+import { useLazyGetRawMaterialStockReportQuery } from "../../../redux/features/stockreport/stockreportApi";
+import { useEffect } from "react";
 const InsertProduction = ({
   details,
   setFieldValue,
@@ -16,6 +19,15 @@ const InsertProduction = ({
   receipeOptionsLessQty938,
   receipeOptionsLessQty900,
 }) => {
+  const [triggerStockReport, { data: rawMaterialStockReportData }] =
+    useLazyGetRawMaterialStockReportQuery();
+
+  useEffect(() => {
+    triggerStockReport();
+  }, []);
+  console.log(rawMaterialStockReportData);
+
+  const { data: rawMateialData } = useGetAllRMItemInformationQuery(undefined);
   function getCftPerKgByItemId(itemId) {
     console.log(rawMaterialsData, itemId);
     const itemDatawithCftDeclaration = rawMaterialsData?.find(
@@ -197,7 +209,9 @@ const InsertProduction = ({
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg ? findCFTPerKG?.cftPerKg :0
+                                            findCFTPerKG?.cftPerKg
+                                              ? findCFTPerKG?.cftPerKg
+                                              : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipe`,
@@ -288,11 +302,13 @@ const InsertProduction = ({
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipeLabelData`,
-                                            labelData ? labelData :0
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg ? findCFTPerKG?.cftPerKg : 0
+                                            findCFTPerKG?.cftPerKg
+                                              ? findCFTPerKG?.cftPerKg
+                                              : 0
                                           );
                                         } else {
                                           swal(
@@ -317,9 +333,9 @@ const InsertProduction = ({
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.asPerRatio`,
-                                       0
+                                          0
                                         );
-                                     
+
                                         setFieldValue(
                                           `detailsData.${index}.materialUsed`,
                                           ""
@@ -372,11 +388,13 @@ const InsertProduction = ({
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.receipeLabelData`,
-                                            labelData ? labelData :0
+                                            labelData ? labelData : 0
                                           );
                                           setFieldValue(
                                             `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg ?  findCFTPerKG?.cftPerKg : 0
+                                            findCFTPerKG?.cftPerKg
+                                              ? findCFTPerKG?.cftPerKg
+                                              : 0
                                           );
                                         } else {
                                           swal(
@@ -397,7 +415,7 @@ const InsertProduction = ({
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.receipe`,
-                                         0
+                                          0
                                         );
                                         setFieldValue(
                                           `detailsData.${index}.asPerRatio`,
@@ -484,45 +502,98 @@ const InsertProduction = ({
                               const value1 = parseFloat(e.target.value);
                               const value2 = parseFloat(detail.asPerRatio);
                               const calculateExcessOrLess = value1 - value2;
-                              if (calculateExcessOrLess === 0) {
-                                setFieldValue(`detailsData.${index}.less`, 0);
-                                setFieldValue(`detailsData.${index}.excess`, 0);
-                                setFieldValue(
-                                  `detailsData.${index}.consumptionStatus`,
-                                  "No Change"
+                              const existingPurchaseItem =
+                                rawMaterialStockReportData.find(
+                                  (details) => details.itemId === detail.itemId
                                 );
-                              } else if (calculateExcessOrLess < 0) {
-                                setFieldValue(
-                                  `detailsData.${index}.less`,
-                                  Math.abs(
-                                    Math.round(calculateExcessOrLess * 100) /
-                                      100
-                                  )
-                                );
-                                setFieldValue(`detailsData.${index}.excess`, 0);
-                                setFieldValue(
-                                  `detailsData.${index}.consumptionStatus`,
-                                  "Less"
-                                );
-                              } else if (calculateExcessOrLess > 0) {
-                                setFieldValue(
-                                  `detailsData.${index}.excess`,
-                                  Math.abs(
-                                    (Math.round(calculateExcessOrLess) * 100) /
-                                      100
-                                  )
-                                );
-                                setFieldValue(`detailsData.${index}.less`, 0);
-                                setFieldValue(
-                                  `detailsData.${index}.consumptionStatus`,
-                                  "Excess"
+
+                              console.log(existingPurchaseItem);
+                              const itemNamesFind = rawMateialData.find(
+                                (item) => item._id === detail.itemId
+                              );
+                              if (existingPurchaseItem) {
+                                if (
+                                  existingPurchaseItem?.stockInHand >
+                                  e.target.value
+                                ) {
+                                  if (calculateExcessOrLess === 0) {
+                                    setFieldValue(
+                                      `detailsData.${index}.less`,
+                                      0
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.excess`,
+                                      0
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.consumptionStatus`,
+                                      "No Change"
+                                    );
+                                  } else if (calculateExcessOrLess < 0) {
+                                    setFieldValue(
+                                      `detailsData.${index}.less`,
+                                      Math.abs(
+                                        Math.round(
+                                          calculateExcessOrLess * 100
+                                        ) / 100
+                                      )
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.excess`,
+                                      0
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.consumptionStatus`,
+                                      "Less"
+                                    );
+                                  } else if (calculateExcessOrLess > 0) {
+                                    setFieldValue(
+                                      `detailsData.${index}.excess`,
+                                      Math.abs(
+                                        (Math.round(calculateExcessOrLess) *
+                                          100) /
+                                          100
+                                      )
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.less`,
+                                      0
+                                    );
+                                    setFieldValue(
+                                      `detailsData.${index}.consumptionStatus`,
+                                      "Excess"
+                                    );
+                                  }
+
+                                  setFieldValue(
+                                    `detailsData.${index}.materialUsed`,
+                                    e.target.value
+                                  );
+                                } else {
+                                  const quantity = parseFloat(
+                                    existingPurchaseItem?.stockInHand || 0
+                                  );
+                                  const materialUsed = parseFloat(
+                                    detail.materialUsed || 0
+                                  );
+
+                                  const remaining = quantity - materialUsed;
+                                  const formattedRemaining =
+                                    remaining.toFixed(2);
+                                  swal(
+                                    "Not Possible",
+                                    `Please purchase ${itemNamesFind?.itemName}. Remaing quantity is ${formattedRemaining}`,
+                                    "warning"
+                                  );
+                                }
+                              }
+                              else{
+                                swal(
+                                  "Not Possible",
+                                  `Please purchase ${itemNamesFind?.itemName}.`,
+                                  "warning"
                                 );
                               }
-
-                              setFieldValue(
-                                `detailsData.${index}.materialUsed`,
-                                e.target.value
-                              );
                             }}
                           />
                           <br />

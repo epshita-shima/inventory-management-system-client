@@ -1,40 +1,37 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react'
-import IteminfoList from '../../../FGItemProfile/ItemProfileInformation/Index/IteminfoTableData/IteminfoList';
-import { useNavigate } from 'react-router-dom';
-import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
-import { useGetAllRMItemInformationQuery } from '../../../../redux/features/iteminformation/rmItemInfoApi';
-import RMItemInfoList from './ItemInfoTableData/RMItemInfoList';
-import { extractUserMenuListForCurrectMenu } from '../../../Uitilites/extractUserMenuListForCurrectMenu';
-import LoadingSpineer from '../../../Common/LoadingSpinner/LoadingSpineer';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
+import RMItemInfoList from "./ItemInfoTableData/RMItemInfoList";
+import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const RMItemInfoTableData = () => {
-    const clickhandler = (name) => console.log("delete", name);
-    const { data: user,isLoading:isUserloading } = useGetAllUserQuery(undefined);
-   
-    const [permission, setPermission] = useState();
-    const navigate = useNavigate();
-    useEffect(() => {
-    if(!isUserloading && user){
-      const permissions = extractUserMenuListForCurrectMenu(user, "Raw Material Item List");
+  const clickhandler = (name) => console.log("delete", name);
+  const { data: user, isLoading: isUserloading } =
+    useGetAllUserQuery(undefined);
 
-    if (permissions) {
-      setPermission(permissions);
-    } else {
-      navigate("/");
+  const [permission, setPermission] = useState({});
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isUserloading && user) {
+      const permissions = extractUserMenuListForCurrectMenu(
+        user,
+        "Raw Material Item List"
+      );
+
+      if (permissions) {
+        setPermission(permissions);
+      } else {
+        navigate("/");
+      }
     }
-    }
-    }, [user, navigate, isUserloading]);
-    
-    return (
-      <div>
-        {/* <LoadingSpineer isLoading={isUserloading}> </LoadingSpineer> */}
-       <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
-       <RMItemInfoList
-          permission={permission}
-          click={clickhandler}
-        />
+  }, [user, navigate, isUserloading]);
+
+  return (
+    <div>
+      <div className={`${isUserloading ? "d-none" : "d-block"}`}>
+        <RMItemInfoList permission={permission} click={clickhandler} />
         {permission?.isInserted && (
           <div
             className={`position-absolute`}
@@ -60,9 +57,9 @@ const RMItemInfoTableData = () => {
             </div>
           </div>
         )}
-       </div>
       </div>
-    );
-}
+    </div>
+  );
+};
 
-export default RMItemInfoTableData
+export default RMItemInfoTableData;

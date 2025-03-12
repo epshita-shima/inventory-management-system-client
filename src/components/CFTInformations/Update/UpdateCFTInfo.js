@@ -29,7 +29,7 @@ const UpdateCFTInfo = () => {
   );
 
   const { id } = useParams();
-  const [singleCFTInfosData, setSingleCFTInfosData] = useState();
+  const [singleCFTInfosData, setSingleCFTInfosData] = useState({});
   const { data: singleCFTInfoData, isLoading: isCFTInfoloading } =
     useGetSingleCFTInfoQuery(id);
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);

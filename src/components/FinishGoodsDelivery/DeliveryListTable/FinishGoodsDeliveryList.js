@@ -6,7 +6,7 @@ import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMe
 
 const FinishGoodsDeliveryList = () => {
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
 

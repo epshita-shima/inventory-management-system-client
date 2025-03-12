@@ -26,7 +26,7 @@ const StockReportDataTable = ({
   const [purchaseSingleItemId, setPurchaseSingleItemId] = useState("");
   const [showProductionModal, setShowProductionModal] = useState(false);
   const [showPurchaseModal, setShowPruchaseModal] = useState(false);
-  const [setSelectedRow] = useState(null);
+  
   const [
     triggerDatewiseDetailsProductionStockReport,
     { data: productionItemDetailsData },
@@ -40,14 +40,13 @@ const StockReportDataTable = ({
     await triggerDatewiseDetailsProductionStockReport({
       itemId: rowData.itemId,
     });
-    setSelectedRow(rowData);
+
     setProductionSingleItemId(rowData.itemId);
     setShowProductionModal(true); // Show modal when a row is clicked
   };
 
   const handleRowClickForPurchase = async (rowData) => {
     await triggerDatewiseDetailsPurchaseStockReport({ itemId: rowData.itemId });
-    setSelectedRow(rowData);
     setPurchaseSingleItemId(rowData.itemId);
     setShowPruchaseModal(true); // Show modal when a row is clicked
   };

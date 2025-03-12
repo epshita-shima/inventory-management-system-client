@@ -11,7 +11,7 @@ const GRNInfoTable = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
