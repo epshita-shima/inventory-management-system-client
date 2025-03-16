@@ -64,6 +64,22 @@ const InsertProduction = ({
     }
   }
 
+  const data = [
+    {
+      itemId: "677248c1a1a0d9059b94977d",
+      productionConsumption: 1022,
+      purchasePrice: 105,
+      purchaseQuantity: 700,
+      stockInHand: -322,
+    },
+    {
+      itemId: "677248c1a1a0d9059b94977c",
+      productionConsumption: 500,
+      purchasePrice: 90,
+      purchaseQuantity: 300,
+      stockInHand: 200,
+    },
+  ];
   return (
     <div className="row">
       <div className="col-12 col-md-12 col-lg-12 fixed-column">
@@ -130,9 +146,14 @@ const InsertProduction = ({
                                   label: "Select Item Name",
                                   value: 0,
                                 }}
-                                value={rawMaterialsData.find(function (option) {
-                                  return option.value === detail.itemId;
-                                })}
+                                value={
+                                  rawMaterialsData.find(
+                                    (option) => option.value === detail.itemId
+                                  ) || {
+                                    label: "Select Item Name",
+                                    value: 0,
+                                  }
+                                }
                                 styles={{
                                   control: (baseStyles, state) => ({
                                     ...baseStyles,
@@ -174,6 +195,15 @@ const InsertProduction = ({
                                       "warning"
                                     );
                                   } else {
+                                    const existingPurchaseItem = data?.find(
+                                      (details) => details.itemId === e.value
+                                    );
+
+                                    console.log(existingPurchaseItem);
+                                    const itemNamesFind = rawMateialData.find(
+                                      (item) => item._id === e.value
+                                    );
+
                                     if (
                                       values.receipeQtyRatio.toString() ===
                                       "1000"
@@ -198,33 +228,98 @@ const InsertProduction = ({
                                             (labelData /
                                               findCFTPerKG?.cftPerKg) *
                                             values.totalBatch;
-                                          console.log(calculateAsPerRatio);
-                                          setFieldValue(
-                                            `detailsData.${index}.itemId`,
-                                            e.value
+                                          console.log(
+                                            detail.materialUsed,
+                                            existingPurchaseItem
                                           );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipeLabelData`,
-                                            labelData ? labelData : 0
+
+                                          const materialUsed = parseFloat(
+                                            detail.materialUsed || 0
                                           );
-                                          setFieldValue(
-                                            `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg
-                                              ? findCFTPerKG?.cftPerKg
-                                              : 0
+                                          const stockInHand = parseFloat(
+                                            existingPurchaseItem?.stockInHand ||
+                                              0
                                           );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipe`,
-                                            labelData ? labelData : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.asPerRatio`,
-                                            calculateAsPerRatio
-                                              ? Math.round(
-                                                  calculateAsPerRatio * 100
-                                                ) / 100
-                                              : 0
-                                          );
+
+                                          if (existingPurchaseItem) {
+                                            if (
+                                              materialUsed > 0 &&
+                                              materialUsed > stockInHand
+                                            ) {
+                                              const remaining =
+                                                stockInHand - materialUsed;
+                                              const formattedRemaining =
+                                                remaining.toFixed(2);
+
+                                              swal(
+                                                "Sorry!",
+                                                `Please purchase ${itemNamesFind?.itemName}. Remaining stock quantity is ${formattedRemaining}`,
+                                                "warning"
+                                              );
+
+                                              setFieldValue(
+                                                `detailsData.${index}.materialUsed`,
+                                                0
+                                              );
+                                            }
+
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              e.value
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              findCFTPerKG?.cftPerKg || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              calculateAsPerRatio
+                                                ? Math.round(
+                                                    calculateAsPerRatio * 100
+                                                  ) / 100
+                                                : 0
+                                            );
+                                          } else {
+                                            // Stock not found at all
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              ""
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.materialUsed`,
+                                              0
+                                            );
+
+                                            swal(
+                                              "Sorry!",
+                                              `${itemNamesFind?.itemName} stock not available.`,
+                                              "warning"
+                                            );
+                                          }
                                         } else {
                                           swal(
                                             "Not Possible",
@@ -283,33 +378,92 @@ const InsertProduction = ({
                                             (labelData /
                                               findCFTPerKG.cftPerKg) *
                                             values.totalBatch;
+                                          const materialUsed = parseFloat(
+                                            detail.materialUsed || 0
+                                          );
+                                          const stockInHand = parseFloat(
+                                            existingPurchaseItem?.stockInHand ||
+                                              0
+                                          );
+                                          if (existingPurchaseItem) {
+                                            if (
+                                              materialUsed > 0 &&
+                                              materialUsed > stockInHand
+                                            ) {
+                                              const remaining =
+                                                stockInHand - materialUsed;
+                                              const formattedRemaining =
+                                                remaining.toFixed(2);
 
-                                          setFieldValue(
-                                            `detailsData.${index}.itemId`,
-                                            e.value
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipe`,
-                                            labelData ? labelData : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.asPerRatio`,
-                                            calculateAsPerRatio
-                                              ? Math.round(
-                                                  calculateAsPerRatio * 100
-                                                ) / 100
-                                              : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipeLabelData`,
-                                            labelData ? labelData : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg
-                                              ? findCFTPerKG?.cftPerKg
-                                              : 0
-                                          );
+                                              swal(
+                                                "Sorry!",
+                                                `Please purchase ${itemNamesFind?.itemName}. Remaining stock quantity is ${formattedRemaining}`,
+                                                "warning"
+                                              );
+
+                                              setFieldValue(
+                                                `detailsData.${index}.materialUsed`,
+                                                0
+                                              );
+                                            }
+
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              e.value
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              findCFTPerKG?.cftPerKg || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              calculateAsPerRatio
+                                                ? Math.round(
+                                                    calculateAsPerRatio * 100
+                                                  ) / 100
+                                                : 0
+                                            );
+                                          } else {
+                                            // Stock not found at all
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              ""
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.materialUsed`,
+                                              0
+                                            );
+
+                                            swal(
+                                              "Sorry!",
+                                              `${itemNamesFind?.itemName} stock not available.`,
+                                              "warning"
+                                            );
+                                          }
                                         } else {
                                           swal(
                                             "Not Possible",
@@ -370,32 +524,93 @@ const InsertProduction = ({
                                               findCFTPerKG?.cftPerKg) *
                                             values.totalBatch;
 
-                                          setFieldValue(
-                                            `detailsData.${index}.itemId`,
-                                            e.value
+                                          const materialUsed = parseFloat(
+                                            detail.materialUsed || 0
                                           );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipe`,
-                                            labelData ? labelData : 0
+                                          const stockInHand = parseFloat(
+                                            existingPurchaseItem?.stockInHand ||
+                                              0
                                           );
-                                          setFieldValue(
-                                            `detailsData.${index}.asPerRatio`,
-                                            calculateAsPerRatio
-                                              ? Math.round(
-                                                  calculateAsPerRatio * 100
-                                                ) / 100
-                                              : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.receipeLabelData`,
-                                            labelData ? labelData : 0
-                                          );
-                                          setFieldValue(
-                                            `detailsData.${index}.singleValueCFTPerKg`,
-                                            findCFTPerKG?.cftPerKg
-                                              ? findCFTPerKG?.cftPerKg
-                                              : 0
-                                          );
+
+                                          if (existingPurchaseItem) {
+                                            if (
+                                              materialUsed > 0 &&
+                                              materialUsed > stockInHand
+                                            ) {
+                                              const remaining =
+                                                stockInHand - materialUsed;
+                                              const formattedRemaining =
+                                                remaining.toFixed(2);
+
+                                              swal(
+                                                "Sorry!",
+                                                `Please purchase ${itemNamesFind?.itemName}. Remaining stock quantity is ${formattedRemaining}`,
+                                                "warning"
+                                              );
+
+                                              setFieldValue(
+                                                `detailsData.${index}.materialUsed`,
+                                                0
+                                              );
+                                            }
+
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              e.value
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              findCFTPerKG?.cftPerKg || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              labelData || 0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              calculateAsPerRatio
+                                                ? Math.round(
+                                                    calculateAsPerRatio * 100
+                                                  ) / 100
+                                                : 0
+                                            );
+                                          } else {
+                                            // Stock not found at all
+                                            setFieldValue(
+                                              `detailsData.${index}.itemId`,
+                                              ""
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipeLabelData`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.singleValueCFTPerKg`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.receipe`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.asPerRatio`,
+                                              0
+                                            );
+                                            setFieldValue(
+                                              `detailsData.${index}.materialUsed`,
+                                              0
+                                            );
+
+                                            swal(
+                                              "Sorry!",
+                                              `${itemNamesFind?.itemName} stock not available.`,
+                                              "warning"
+                                            );
+                                          }
                                         } else {
                                           swal(
                                             "Not Possible",
@@ -502,10 +717,9 @@ const InsertProduction = ({
                               const value1 = parseFloat(e.target.value);
                               const value2 = parseFloat(detail.asPerRatio);
                               const calculateExcessOrLess = value1 - value2;
-                              const existingPurchaseItem =
-                                rawMaterialStockReportData.find(
-                                  (details) => details.itemId === detail.itemId
-                                );
+                              const existingPurchaseItem = data.find(
+                                (details) => details.itemId === detail.itemId
+                              );
 
                               console.log(existingPurchaseItem);
                               const itemNamesFind = rawMateialData.find(
@@ -581,16 +795,15 @@ const InsertProduction = ({
                                   const formattedRemaining =
                                     remaining.toFixed(2);
                                   swal(
-                                    "Not Possible",
-                                    `Please purchase ${itemNamesFind?.itemName}. Remaing quantity is ${formattedRemaining}`,
+                                    "Sorry!",
+                                    `Please purchase ${itemNamesFind?.itemName}. Remaing stock quantity is ${formattedRemaining}`,
                                     "warning"
                                   );
                                 }
-                              }
-                              else{
+                              } else {
                                 swal(
-                                  "Not Possible",
-                                  `Please purchase ${itemNamesFind?.itemName}.`,
+                                  "Sorry!",
+                                  `${itemNamesFind?.itemName} Stock not Available`,
                                   "warning"
                                 );
                               }
