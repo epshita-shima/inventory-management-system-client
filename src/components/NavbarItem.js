@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createPopper } from '@popperjs/core';
+import React, {  useState } from 'react';
 
 const NavbarItem = ({ item,index }) => {
 const [isOpen, setIsOpen] = useState(false);

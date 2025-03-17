@@ -20,6 +20,7 @@ import { useInsertRMItemInformationMutation } from "../../../../redux/features/i
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Update/InsertCategoryInformationModal";
 import "../../../../buttonStyle/style.css";
+import { categoryInfoConvertSelectOption, itemUnitConvertSelectOption } from "../../../Common/CommonDropdown/CommonDropdown";
 
 const InsertRmItemInfo = () => {
   const ArrayHelperRef = useRef();
@@ -33,30 +34,8 @@ const InsertRmItemInfo = () => {
   const navigate = useNavigate();
   const makebyUser = getMakebyUser();
 
-  const categoryInfoConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.categoryInfo,
-      });
-    });
-    return result;
-  };
-
   const categoryInfoConvertedOptions =
     categoryInfoConvertSelectOption(categoryInfoData);
-
-  const itemUnitConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.unitInfo,
-      });
-    });
-    return result;
-  };
 
   const itemUnitConvertedOptions = itemUnitConvertSelectOption(itemUnitData);
 
@@ -82,14 +61,17 @@ const InsertRmItemInfo = () => {
       },
     ],
   };
+
   const itemStatusOptions = [
     { value: "true", label: "Active" },
     { value: "false", label: "Inactive" },
   ];
+
   const cftPerDeclerationOptions = [
     { value: "true", label: "Yes" },
     { value: "false", label: "No" },
   ];
+
   const handleSubmit = async (e, values, resetForm) => {
     e.preventDefault();
     try {
@@ -686,7 +668,7 @@ const InsertRmItemInfo = () => {
                                               menuPosition="fixed"
                                               menuPortalTarget={document.body}
                                               onChange={(e) => {
-                                                if (e.value == "true") {
+                                                if (e.value === "true") {
                                                   setFieldValue(
                                                     `detailsData.${index}.itemStatus`,
                                                     true
@@ -750,7 +732,7 @@ const InsertRmItemInfo = () => {
                                               menuPosition="fixed"
                                               menuPortalTarget={document.body}
                                               onChange={(e) => {
-                                                if (e.value == "true") {
+                                                if (e.value === "true") {
                                                   setFieldValue(
                                                     `detailsData.${index}.cftDeclaration`,
                                                     true

@@ -20,6 +20,7 @@ import { useInsertItemInformationMutation } from "../../../../redux/features/ite
 import { useNavigate } from "react-router-dom";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import '../../../../buttonStyle/style.css';
+import { itemSizeConvertSelectOption, itemUnitConvertSelectOption } from "../../../Common/CommonDropdown/CommonDropdown";
 
 const InsertFgItemInfo = () => {
   const ArrayHelperRef = useRef();
@@ -31,30 +32,7 @@ const InsertFgItemInfo = () => {
   const [insertIteminfo,{isLoading}] = useInsertItemInformationMutation();
   const navigate = useNavigate();
   const makebyUser = getMakebyUser();
-
-  const itemSizeConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.sizeInfo,
-      });
-    });
-    return result;
-  };
-
   const itemSizeConvertedOptions = itemSizeConvertSelectOption(itemSize);
-
-  const itemUnitConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.unitInfo,
-      });
-    });
-    return result;
-  };
 
   const itemUnitConvertedOptions = itemUnitConvertSelectOption(itemUnitData);
 

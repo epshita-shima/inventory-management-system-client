@@ -5,9 +5,9 @@ import { extractUserMenuListForCurrectMenu } from '../../../Uitilites/extractUse
 
 const PurchaseOrderApproveList = () => {
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
-  
     const [permission, setPermission] = useState({});
     const navigate = useNavigate();
+    
     useEffect(() => {
       if (!isUserloading && user) {
         const permissions = extractUserMenuListForCurrectMenu(user, "PO Approval");

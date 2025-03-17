@@ -24,14 +24,12 @@ const PurchaseStatusList = () => {
         const currentUser = userData?.find((user) => user._id === userId);
         if (currentUser) {
           currentUser?.menulist?.forEach((menu) => {
-            menu?.items?.forEach((subMenu) => {
-           
+            menu?.items?.forEach((subMenu) => {  
               if (subMenu?.label === "Purchase Order") {
                 const userListSubMenu = subMenu?.items.find(
                   (subItem) => subItem?.label === "PO Approval"
                 );
                 if (userListSubMenu) {
-                  // Set the user list property
                   userList = userListSubMenu;
                 }
               }

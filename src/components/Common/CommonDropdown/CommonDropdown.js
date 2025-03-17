@@ -195,6 +195,37 @@ const poInfoDropdown=(options)=>{
   return result;
 }
 
+const itemUnitConvertSelectOption = (options) => {
+  let result = [];
+  options?.forEach((option) => {
+    result.push({
+      value: option._id,
+      label: option.unitInfo,
+    });
+  });
+  return result;
+};
+  const categoryInfoConvertSelectOption = (options) => {
+    let result = [];
+    options?.forEach((option) => {
+      result.push({
+        value: option._id,
+        label: option.categoryInfo,
+      });
+    });
+    return result;
+  };
+  const itemSizeConvertSelectOption = (options) => {
+    let result = [];
+    options?.forEach((option) => {
+      result.push({
+        value: option._id,
+        label: option.sizeInfo,
+      });
+    });
+    return result;
+  };
+
 export {
   supplierDropdown,
   rawMaterialItemDropdown,
@@ -210,5 +241,8 @@ export {
   deliveryOrderDropdown,
   rawMaterialWithUnitDropdown,
   productionBatchDropdown,
-  poInfoDropdown,rawMaterialItemDropdownForCFT
+  poInfoDropdown,rawMaterialItemDropdownForCFT,
+  itemUnitConvertSelectOption,
+  categoryInfoConvertSelectOption,
+  itemSizeConvertSelectOption
 };
