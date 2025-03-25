@@ -5,23 +5,6 @@ export const Barchart = ({ salesSummaryData }) => {
   const dataBar = {
     labels: salesSummaryData?.monthlySalesData?.map((item) => item.month),
     datasets: [
-      // {
-      //   label: "Sales Quantity",
-      //   data: salesSummaryData?.monthlySalesData?.map(
-      //     (item) => item.totalMonthlyQty
-      //   ),
-      //   backgroundColor: "#2DDC1B", // Blue
-      //   borderColor: "#2DDC1B",
-      //   borderWidth:
-      //     salesSummaryData?.length > 0
-      //       ? salesSummaryData?.monthlySalesData.map((val) =>
-      //           Math.max(1, val / 10)
-      //         )
-      //       : 2,
-      //       barThickness: 40,
-      //       categoryPercentage: 1.0, // Align with label
-      //       barPercentage: 0.6,
-      // },
       {
         label: "Sales Amount",
         data: salesSummaryData?.monthlySalesData?.map(

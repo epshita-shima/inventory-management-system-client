@@ -8,7 +8,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const PurchaseDataPIChart = ({handleApplyPurchaseFilters,purchaseOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
   return (
-    <div className="row mt-4 g-3">
+    <div className="row mt-1 g-3">
     <div className="col-sm-4">
       <div className="d-flex flex-column">
         <label className="fw-semibold">Report Status</label>

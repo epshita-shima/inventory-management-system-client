@@ -41,14 +41,14 @@ const PurchaseOrderApproveForm = ({ permission }) => {
     useGetAllPurchaseOrderApproveInformationQuery(undefined);
   const { data: purchaseUnapproveInfoData } =
     useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
-  const [ setPurchaseApproveAllData] = useState([]);
-  const [ setPurchaseUnApproveAllData] = useState([]);
+  const [purchaseApproveAllData, setPurchaseApproveAllData] = useState([]);
+  const [purchaseUnApproveAllData, setPurchaseUnApproveAllData] = useState([]);
   const [purchaseFilterApproveAllData, setPurchaseFilterApproveAllData] =
     useState([]);
   const [purchaseFilterUnApproveAllData, setPurchaseFilterUnApproveAllData] =
     useState([]);
-  const [ setPurchaseInCash] = useState([]);
-  const [ setPurchaseInInLCAtSight] = useState([]);
+  const [purchaseInCash, setPurchaseInCash] = useState([]);
+  const [ purchaseInInLCAtSight,setPurchaseInInLCAtSight] = useState([]);
   const [purchaseOrderList, setPurchaseOrderList] = useState(true);
   const [fromDate, setFromDate] = useState(
     new Date().toLocaleDateString("en-CA")

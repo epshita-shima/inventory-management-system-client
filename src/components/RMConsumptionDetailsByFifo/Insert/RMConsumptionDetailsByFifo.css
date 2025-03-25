@@ -1,0 +1,18 @@
+.fullscreen-modal-poruction-create {
+  max-width: 98vw !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+}
+
+.fullscreen-modal-poruction-create .modal-content {
+  height: 85vh !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.modal-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
+}

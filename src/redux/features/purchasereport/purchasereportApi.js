@@ -20,10 +20,20 @@ const purchasereportApi = api.injectEndpoints({
         refetchOnFocus: true,
       }),
     }),
+    getPurchaseItemReport: builder.query({
+      query: (queryParams) => ({
+        url: "/api/v1/purchase-report/single-item",
+        params: queryParams,
+        providesTags: [],
+        refetchOnReconnect: true,
+        refetchOnFocus: true,
+      }),
+    }),
   })
 })
 
 export const {
 useLazyGetPurchaseDetailsReportQuery,
-useLazyGetPurchaseSummaryReportQuery
+useLazyGetPurchaseSummaryReportQuery,
+useLazyGetPurchaseItemReportQuery,
 } = purchasereportApi

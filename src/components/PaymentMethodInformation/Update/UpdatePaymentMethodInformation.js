@@ -19,7 +19,7 @@ const UpdatePaymentMethodInformation = ({
   bankChequeDate,
   setBankChequeDate
 }) => {
-  const [setShow] = useState(false);
+  const [show,setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
 

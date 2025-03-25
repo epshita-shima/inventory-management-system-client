@@ -35,7 +35,35 @@ const InsertGRNDetailsInfo = ({
 
     setFieldValue("grandTotalQuantity", calGrandTotalQuantity);
     setFieldValue("grandTotalAmount", calTotalAmount);
-  }, [details, setTotalGrandAmount, setTotalGrandQuantity, setFieldValue]);
+    if (values.detailsData && values.detailsData.length > 0) {
+      values.detailsData.forEach((detail, index) => {
+        const matchingItem = rmItemInfo?.find(
+          (item) => item._id === detail.itemId
+        );
+  
+        const matchPONO = purchaseOrderInfo?.find(
+          (item) => item.poNo === values.supplierPoNo
+        );
+  
+        const itemIdToCalculate = matchingItem?._id;
+  
+        const totalQuantity = grnInfoData?.reduce((acc, cur) => {
+          const itemQuantity = cur.detailsData
+            ?.filter(
+              (item) =>
+                item.itemId === itemIdToCalculate &&
+                item.pOSingleId === matchPONO?._id
+            )
+            .reduce((itemAcc, itemCur) => itemAcc + itemCur.quantity, 0);
+  
+          return acc + itemQuantity;
+        }, 0);
+  
+        // 🟢 Set the total quantity in Formik field (if you want to store it)
+        setFieldValue(`detailsData.${index}.previousReceivedQuantity`, totalQuantity);
+      });
+    }
+  }, [details, setTotalGrandAmount, setTotalGrandQuantity, setFieldValue, values.detailsData, values.supplierPoNo, rmItemInfo, purchaseOrderInfo, grnInfoData]);
 
   return (
     <div

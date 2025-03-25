@@ -22,7 +22,7 @@ const InsertPaymentMethodInformation = ({
   itemNameOptions,
   invoiveByInvoiceNumber,
 }) => {
-  const [setShow] = useState(false);
+  const [show,setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
   const [openModals, setOpenModals] = useState([]);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);

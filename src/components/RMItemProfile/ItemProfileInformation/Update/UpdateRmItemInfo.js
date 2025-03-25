@@ -25,7 +25,7 @@ import "../../../../buttonStyle/style.css";
 import { categoryInfoConvertSelectOption, itemUnitConvertSelectOption } from "../../../Common/CommonDropdown/CommonDropdown";
 
 const UpdateRmItemInfo = () => {
-  const [ setStartDate] = useState(
+  const [startDate, setStartDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
   const { id } = useParams();
@@ -41,7 +41,6 @@ const UpdateRmItemInfo = () => {
   useEffect(() => {
     setSingleItemInfoData(singleRMItemData);
   }, [singleRMItemData]);
-
 
 
   const categoryInfoConvertedOptions =

@@ -227,7 +227,7 @@ const Dashboard = () => {
             className="col-sm p-3 rounded shadow-sm"
             style={{ background: "#D6F5D6" }}
           >
-            <h3 className="fw-bold">Total Purchase</h3>
+            <h3 className="fw-bold fs-3">Total Purchase</h3>
             <div className="row">
               <div className="col-md-6">
                 <p className="text-muted">
@@ -247,7 +247,7 @@ const Dashboard = () => {
             className="col-sm p-3 rounded shadow-sm text-black"
             style={{ background: "#B8FEB3" }}
           >
-            <h3 className="fw-bold">Raw Material Consumption</h3>
+            <h3 className="fw-bold fs-3">Raw Material Consumption</h3>
             <div className="row">
               <div className="col-md-6">
                 <p className="text-muted">
@@ -265,7 +265,7 @@ const Dashboard = () => {
             className="col-sm p-3 rounded shadow-sm"
             style={{ background: "#D6F5D6" }}
           >
-            <h3 className="fw-bold">Finish Goods Production</h3>
+            <h3 className="fw-bold fs-3">Finish Goods Production</h3>
             <div className="row">
               <div className="col-md-6 ">
                 <p className="text-muted ">
@@ -283,7 +283,7 @@ const Dashboard = () => {
             className="col-sm p-3 rounded shadow-sm text-black"
             style={{ background: "#B8FEB3" }}
           >
-            <h3 className="fw-bold">Total Sales</h3>
+            <h3 className="fw-bold fs-3">Total Sales</h3>
             <div className="row">
               <div className="col-md-6">
                 <p className="text-muted">
@@ -302,8 +302,8 @@ const Dashboard = () => {
         {/* Charts Section */}
         <div className="row  g-4">
           {/* Purchase Chart */}
-          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column">
-            <h3 className="text-center fw-bold">Purchase Information</h3>
+          <div className="col-sm-6 shadow-sm d-flex flex-column">
+            <h3 className="fs-3 text-center fw-bold">Purchase Information</h3>
             <PurchaseDataPIChart
               handleApplyPurchaseFilters={handleApplyPurchaseFilters}
               purchaseOptions={purchaseOptions}
@@ -315,7 +315,7 @@ const Dashboard = () => {
               setFromDate={setPurchaseFromDate}
             ></PurchaseDataPIChart>
             <div
-              className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center"
+              className="bg-light p-3 rounded shadow my-4 d-flex justify-content-center align-items-center"
               style={{ width: "100%", height: "70%", margin: "auto" }}
             >
               <PIChart
@@ -327,8 +327,8 @@ const Dashboard = () => {
           </div>
 
           {/* raw material conxumption chart */}
-          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column align-items-center">
-            <h3 className="text-center fw-bold">Raw Material Consumption</h3>
+          <div className="col-sm-6 shadow-sm d-flex flex-column align-items-center">
+            <h3 className="text-center fw-bold fs-3">Raw Material Consumption</h3>
             <RawConsumptionLineChat
               handleApplyFilters={handleApplyRawConsumptionFilters}
               purchaseOptions={purchaseOptions}
@@ -340,7 +340,7 @@ const Dashboard = () => {
               setFromDate={setRawConsumptionFromDate}
             ></RawConsumptionLineChat>
             <div
-              className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center"
+              className="bg-light rounded shadow my-4 d-flex justify-content-center align-items-center"
               style={{ width: "100%", height: "70%", margin: "auto" }}
             >
               <RawMaterialConsumptionLine
@@ -351,8 +351,8 @@ const Dashboard = () => {
             </div>
           </div>
           {/* Finish goods productions Chart */}
-          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column align-items-center">
-            <h3 className="text-center fw-bold">Finish Goods Production</h3>
+          <div className="col-sm-6 shadow-sm d-flex flex-column align-items-center">
+            <h3 className="text-center fw-bold fs-3">Finish Goods Production</h3>
             <FinishGoodsProductionLineChart
               handleApplyFinishGoodsProductionFilters={
                 handleApplyFinishGoodsProductionFilters
@@ -366,7 +366,7 @@ const Dashboard = () => {
               setFromDate={setFinishGoodsProductionFromDate}
             ></FinishGoodsProductionLineChart>
             <div
-              className="bg-light p-3 rounded shadow mt-4 d-flex justify-content-center align-items-center"
+              className="bg-light rounded shadow my-4 d-flex justify-content-center align-items-center"
               style={{ width: "100%", height: "70%", margin: "auto" }}
             >
               <FinishGoodsPRoductionLine
@@ -377,8 +377,8 @@ const Dashboard = () => {
             </div>
           </div>
           {/* Sales Chart */}
-          <div className="col-sm-6 shadow-sm p-4 d-flex flex-column">
-            <h3 className="text-center fw-bold">Sales Information</h3>
+          <div className="col-sm-6 shadow-sm d-flex flex-column">
+            <h3 className="text-center fw-bold fs-3">Sales Information</h3>
             <SalesDataBarChart
               handleApplyFilters={handleApplyFilters}
               productionOptions={productionOptions}
@@ -390,7 +390,7 @@ const Dashboard = () => {
               setFromDate={setFromDate}
             ></SalesDataBarChart>
             <div
-              className="bg-light p-3 rounded shadow mt-4"
+              className="bg-light rounded shadow my-4 "
               style={{ width: "100%", height: "70%", margin: "0 auto" }}
             >
               <Barchart salesSummaryData={salesSummaryData}></Barchart>

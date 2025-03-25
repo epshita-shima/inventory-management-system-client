@@ -4,8 +4,11 @@ import { Field } from "formik";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
-import { useLazyGetRawMaterialStockReportQuery } from "../../../redux/features/stockreport/stockreportApi";
-import { useEffect } from "react";
+import RMConsumptionDetailsByFifoInsert from "../../RMConsumptionDetailsByFifo/Insert/RMConsumptionDetailsByFifoInsert";
+import { useState } from "react";
+import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
+import { useLazyGetPurchaseItemReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
+
 const InsertProduction = ({
   details,
   setFieldValue,
@@ -19,17 +22,15 @@ const InsertProduction = ({
   receipeOptionsLessQty938,
   receipeOptionsLessQty900,
 }) => {
-  const [triggerStockReport, { data: rawMaterialStockReportData }] =
-    useLazyGetRawMaterialStockReportQuery();
-
-  useEffect(() => {
-    triggerStockReport();
-  }, []);
-  console.log(rawMaterialStockReportData);
-
+  const { data: purchaseData } =
+    useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rawMateialData } = useGetAllRMItemInformationQuery(undefined);
+  const [triggerStockReport, { data: purchaseItemDetails }] =
+    useLazyGetPurchaseItemReportQuery();
+  
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   function getCftPerKgByItemId(itemId) {
-    console.log(rawMaterialsData, itemId);
     const itemDatawithCftDeclaration = rawMaterialsData?.find(
       (detail) =>
         String(detail.value) === String(itemId) &&
@@ -67,10 +68,10 @@ const InsertProduction = ({
   const data = [
     {
       itemId: "677248c1a1a0d9059b94977d",
-      productionConsumption: 1022,
+      productionConsumption: 600,
       purchasePrice: 105,
       purchaseQuantity: 700,
-      stockInHand: -322,
+      stockInHand: 100,
     },
     {
       itemId: "677248c1a1a0d9059b94977c",
@@ -80,6 +81,13 @@ const InsertProduction = ({
       stockInHand: 200,
     },
   ];
+  console.log(purchaseItemDetails)
+  const handleSelectChange = async (selectedOption) => {
+    await triggerStockReport({ itemId: selectedOption });
+    setSelectedItem(selectedOption); // save selected item
+    setShowModal(true);
+  };
+
   return (
     <div className="row">
       <div className="col-12 col-md-12 col-lg-12 fixed-column">
@@ -141,6 +149,8 @@ const InsertProduction = ({
                                 className="w-100 mb-3"
                                 aria-label="Default select example"
                                 name="itemName"
+                                // data-toggle="modal"
+                                // data-target="#rmconsumptiondetailbyfifo"
                                 options={rawMaterialsData}
                                 defaultValue={{
                                   label: "Select Item Name",
@@ -199,7 +209,6 @@ const InsertProduction = ({
                                       (details) => details.itemId === e.value
                                     );
 
-                                    console.log(existingPurchaseItem);
                                     const itemNamesFind = rawMateialData.find(
                                       (item) => item._id === e.value
                                     );
@@ -212,8 +221,6 @@ const InsertProduction = ({
                                         receipeOptions1000.find(
                                           (x) => x.value === e.value
                                         );
-
-                                      console.log("receipeData", receipeData);
 
                                       if (receipeData) {
                                         const labelData = receipeData
@@ -262,7 +269,7 @@ const InsertProduction = ({
                                                 0
                                               );
                                             }
-
+                                            handleSelectChange(e.value);
                                             setFieldValue(
                                               `detailsData.${index}.itemId`,
                                               e.value
@@ -909,6 +916,13 @@ const InsertProduction = ({
           </table>
         </div>
       </div>
+      <RMConsumptionDetailsByFifoInsert
+        showModal={showModal}
+        setShowModal={setShowModal}
+        selectedItem={selectedItem}
+        purchaseData={purchaseData}
+        filterItemData={purchaseItemDetails}
+      ></RMConsumptionDetailsByFifoInsert>
     </div>
   );
 };
