@@ -81,7 +81,7 @@ const InsertProduction = ({
       stockInHand: 200,
     },
   ];
-  console.log(purchaseItemDetails)
+  console.log(JSON.stringify(purchaseItemDetails))
   const handleSelectChange = async (selectedOption) => {
     await triggerStockReport({ itemId: selectedOption });
     setSelectedItem(selectedOption); // save selected item

@@ -16,22 +16,98 @@ const RMConsumptionDetailsByFifoInsert = ({
   const makebyUser = getMakebyUser();
   const { data: rawMaterialData } = useGetAllRMItemInformationQuery(undefined);
 
+  const itemNameMatching = rawMaterialData?.find(
+    (item) => item._id === selectedItem
+  );
+
+  console.log(filterItemData)
+  const previousMaterialUsedData = [
+    {
+      purchaseDate: "2025-03-23",
+      itemId: "677248c1a1a0d9059b94977d",
+      quantity: 100,
+      rate: 50,
+      amount: 5000,
+      materialUsed: 80,
+      makeBy: "JohnDoe",
+      updateBy: "JaneDoe",
+      makeDate: "2025-03-27T10:00:00Z",
+      updateDate: "",
+    },
+    {
+      purchaseDate: "2025-03-23",
+      itemId: "677248c1a1a0d9059b94977c",
+      quantity: 200,
+      rate: 400,
+      amount: 8000,
+      materialUsed: 150,
+      makeBy: "AliceSmith",
+      updateBy: "BobJohnson",
+      makeDate: "2025-03-26T09:30:00Z",
+      updateDate: "",
+    },
+    {
+      purchaseDate: "2025-03-24",
+      itemId: "677248c1a1a0d9059b94977c",
+      quantity: 200,
+      rate: 400,
+      amount: 8000,
+      materialUsed: 50,
+      makeBy: "AliceSmith",
+      updateBy: "BobJohnson",
+      makeDate: "2025-03-26T09:30:00Z",
+      updateDate: "",
+    },
+    {
+      purchaseDate: "2025-03-25",
+      itemId: "677248c1a1a0d9059b94977c",
+      quantity: 150,
+      rate: 500,
+      amount: 9000,
+      materialUsed: 120,
+      makeBy: "CharlieBrown",
+      updateBy: "DavidLee",
+      makeDate: "2025-03-25T08:15:00Z",
+      updateDate: "",
+    },
+  ];
+  const calculatePreviousUsed = (filterItemData, previousMaterialUsedData) => {
+    return filterItemData?.map((purchase) => {
+      // Find all previous material usage records for the same item before the purchase date
+      const totalMaterialUsed = previousMaterialUsedData
+        .filter(
+          (usage) =>usage.itemId === purchase.itemId && usage.purchaseDate === purchase.receivedDate 
+        )
+        .reduce((sum, usage) => sum + usage.materialUsed, 0);
+        const closingStock = purchase.quantity - totalMaterialUsed;
+
+      return {
+        ...purchase,
+        previousUsed: totalMaterialUsed, // Total material used before this purchase
+        closingStock,
+      };
+    }).filter((item)=>item.closingStock !==0)
+  };
+   
+  const result = calculatePreviousUsed(filterItemData, previousMaterialUsedData);
+  console.log(JSON.stringify(result));
   const initialValues = {
-    detailsData: [
+    detailsData: result?.length > 0 ? result : [
       {
-        unitInfo: "",
+        receivedDate: "",
+        itemId: "",
+        quantity: '',
+        rate: '',
+        amount: '',
+        materialUsed: '',
+        closingStock: '',  // Ensure closingStock is included
         makeBy: makebyUser,
         updateBy: null,
         makeDate: new Date(),
         updateDate: null,
-      },
-    ],
+      }
+    ]
   };
-  const itemNameMatching = rawMaterialData?.find(
-    (item) => item._id === selectedItem
-  );
-  console.log(purchaseData);
-  console.log(filterItemData);
   return (
     <>
       {showModal && (
@@ -90,8 +166,8 @@ const RMConsumptionDetailsByFifoInsert = ({
                         <FieldArray
                           name="detailsData"
                           render={() => {
-                            const details = filterItemData;
-
+                            const details = values.detailsData;
+console.log(details)
                             return (
                               <div
                                 className=" flex-1 items-center d-flex-nowrap"
@@ -117,6 +193,9 @@ const RMConsumptionDetailsByFifoInsert = ({
                                         Amount
                                       </th>
                                       <th className="bg-white text-center align-middle ">
+                                        Previous Material Used
+                                      </th>
+                                      <th className="bg-white text-center align-middle ">
                                         Closing Stock
                                       </th>
                                       <th className="bg-white text-center align-middle ">
@@ -129,46 +208,6 @@ const RMConsumptionDetailsByFifoInsert = ({
                                   </thead>
                                   {details && details.length > 0
                                     ? details.map((detail, index) => {
-                                        console.log(values);
-                                        const totalQuantity =
-                                          filterItemData?.detailsData?.[index]
-                                            ?.totalQuantity || 0;
-                                        const currentMaterialUsed =
-                                          filterItemData?.detailsData?.[index]
-                                            ?.materialUsed || 0;
-
-                                        // Previous row data
-                                        const prevTotalQuantity =
-                                          filterItemData?.detailsData?.[
-                                            index - 1
-                                          ]?.totalQuantity || 0;
-                                        const prevMaterialUsed =
-                                          filterItemData?.detailsData?.[
-                                            index - 1
-                                          ]?.materialUsed || 0;
-
-                                        let isDisabled = false;
-
-                                        if (index === 0) {
-                                          // First row: enable by default until materialUsed === totalQuantity
-                                          isDisabled =
-                                            currentMaterialUsed >=
-                                            totalQuantity;
-                                        } else {
-                                          // For all other rows:
-                                          // Enable only if previous row is fully used
-                                          const isPrevFullyUsed =
-                                            prevMaterialUsed >=
-                                            prevTotalQuantity;
-                                          const isCurrentFullyUsed =
-                                            currentMaterialUsed >=
-                                            totalQuantity;
-
-                                          isDisabled =
-                                            !isPrevFullyUsed ||
-                                            isCurrentFullyUsed;
-                                        }
-
                                         return (
                                           <tbody>
                                             <tr key={index}>
@@ -267,6 +306,28 @@ const RMConsumptionDetailsByFifoInsert = ({
                                               <td className="text-center align-middle">
                                                 <Field
                                                   type="text"
+                                                  name={`detailsData.${index}.previousMaterialUsed`}
+                                                  placeholder="previous material used"
+                                                  value={detail?.previousUsed}
+                                                  required
+                                                  disabled
+                                                  style={{
+                                                    border: "1px solid #2DDC1B",
+                                                    padding: "5px",
+                                                    borderRadius: "5px",
+                                                    textAlign: "center",
+                                                  }}
+                                                  onClick={(e) => {
+                                                    setFieldValue(
+                                                      "previousMaterialUsed",
+                                                      e.target.value
+                                                    );
+                                                  }}
+                                                />
+                                              </td>
+                                              <td className="text-center align-middle">
+                                                <Field
+                                                  type="text"
                                                   name={`detailsData.${index}.closingStock`}
                                                   placeholder="closing stock"
                                                   value={detail?.closingStock}
@@ -293,18 +354,24 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   placeholder="material used"
                                                   value={detail?.materialUsed}
                                                   required
-                                                  disabled={isDisabled}
+                                                  disabled={index > 0 && values.detailsData[index - 1]?.closingStock !== values.detailsData[index - 1]?.materialUsed }
                                                   style={{
                                                     border: "1px solid #2DDC1B",
                                                     padding: "5px",
                                                     borderRadius: "5px",
                                                     textAlign: "center",
                                                   }}
-                                                  onClick={(e) => {
-                                                    setFieldValue(
-                                                      "materialUsed",
-                                                      e.target.value
-                                                    );
+                                                  onChange={(e) => {
+                                                    const usedValue = Number(e.target.value);
+                                                    console.log("usedValue",usedValue)
+                                                    console.log('detail.closingStock - usedValue',detail)
+                                                    setFieldValue(`detailsData.${index}.materialUsed`, usedValue);
+                                                    // setFieldValue(`detailsData.${index}.closingStock`, 
+                                                    //   Math.max(0, detail.closingStock - usedValue)
+                                                    // );
+                                                    if (index > 0 && values.detailsData[index - 1]?.closingStock !== values.detailsData[index - 1]?.materialUsed ) {
+                                                      setFieldValue(`detailsData.${index}.materialUsed`, '');
+                                                    }
                                                   }}
                                                 />
                                               </td>
