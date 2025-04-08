@@ -3,6 +3,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import getMakebyUser from "./../../Common/CommonMakeUser/CommonMakingUser";
 import * as Yup from "yup";
+import swal from "sweetalert";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import "./RMConsumptionDetailsByFifo.css";
 
@@ -12,102 +13,33 @@ const RMConsumptionDetailsByFifoInsert = ({
   selectedItem,
   purchaseData,
   filterItemData,
+  initialValues,
+  valuesData,
+  setFieldValue,
+  valueIndex,
+  data,
+  rawMateialData,
 }) => {
   const makebyUser = getMakebyUser();
   const { data: rawMaterialData } = useGetAllRMItemInformationQuery(undefined);
-
+  console.log(valuesData);
   const itemNameMatching = rawMaterialData?.find(
     (item) => item._id === selectedItem
   );
 
-  console.log(filterItemData)
-  const previousMaterialUsedData = [
-    {
-      purchaseDate: "2025-03-23",
-      itemId: "677248c1a1a0d9059b94977d",
-      quantity: 100,
-      rate: 50,
-      amount: 5000,
-      materialUsed: 80,
-      makeBy: "JohnDoe",
-      updateBy: "JaneDoe",
-      makeDate: "2025-03-27T10:00:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-23",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 200,
-      rate: 400,
-      amount: 8000,
-      materialUsed: 150,
-      makeBy: "AliceSmith",
-      updateBy: "BobJohnson",
-      makeDate: "2025-03-26T09:30:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-24",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 200,
-      rate: 400,
-      amount: 8000,
-      materialUsed: 50,
-      makeBy: "AliceSmith",
-      updateBy: "BobJohnson",
-      makeDate: "2025-03-26T09:30:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-25",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 150,
-      rate: 500,
-      amount: 9000,
-      materialUsed: 120,
-      makeBy: "CharlieBrown",
-      updateBy: "DavidLee",
-      makeDate: "2025-03-25T08:15:00Z",
-      updateDate: "",
-    },
-  ];
-  const calculatePreviousUsed = (filterItemData, previousMaterialUsedData) => {
-    return filterItemData?.map((purchase) => {
-      // Find all previous material usage records for the same item before the purchase date
-      const totalMaterialUsed = previousMaterialUsedData
-        .filter(
-          (usage) =>usage.itemId === purchase.itemId && usage.purchaseDate === purchase.receivedDate 
-        )
-        .reduce((sum, usage) => sum + usage.materialUsed, 0);
-        const closingStock = purchase.quantity - totalMaterialUsed;
-
-      return {
-        ...purchase,
-        previousUsed: totalMaterialUsed, // Total material used before this purchase
-        closingStock,
-      };
-    }).filter((item)=>item.closingStock !==0)
+  const handleSubmitMaterialUSed = (e, values, resetForm) => {
+    e.preventDefault();
+    const filtredData = values.detailsData.filter(
+      (item) => item.materialUsed !== ""
+    );
+    const totalMaterialUSed = filtredData.reduce((sum, details) => {
+      return sum + details.materialUsed;
+    }, 0);
+    setFieldValue(`detailsData.${valueIndex}.materialUsed`, totalMaterialUSed);
+    setFieldValue(`detailsData.${valueIndex}.detailsMaterialUsed`, filtredData);
+    setShowModal(false);
   };
-   
-  const result = calculatePreviousUsed(filterItemData, previousMaterialUsedData);
-  console.log(JSON.stringify(result));
-  const initialValues = {
-    detailsData: result?.length > 0 ? result : [
-      {
-        receivedDate: "",
-        itemId: "",
-        quantity: '',
-        rate: '',
-        amount: '',
-        materialUsed: '',
-        closingStock: '',  // Ensure closingStock is included
-        makeBy: makebyUser,
-        updateBy: null,
-        makeDate: new Date(),
-        updateDate: null,
-      }
-    ]
-  };
+  console.log();
   return (
     <>
       {showModal && (
@@ -158,16 +90,16 @@ const RMConsumptionDetailsByFifoInsert = ({
                       touched,
                     }) => (
                       <Form
-                        id="menucreation-form"
-                        onSubmit={(e) => {
-                          // handleSubmit(e, values, resetForm);
-                        }}
+                        id="materialused-info-form"
+                        // onSubmit={(e) => {
+                        //   handleSubmitMaterialUSed(e, values, resetForm);
+                        // }}
                       >
                         <FieldArray
                           name="detailsData"
                           render={() => {
                             const details = values.detailsData;
-console.log(details)
+                            console.log(details);
                             return (
                               <div
                                 className=" flex-1 items-center d-flex-nowrap"
@@ -353,8 +285,15 @@ console.log(details)
                                                   name={`detailsData.${index}.materialUsed`}
                                                   placeholder="material used"
                                                   value={detail?.materialUsed}
-                                                  required
-                                                  disabled={index > 0 && values.detailsData[index - 1]?.closingStock !== values.detailsData[index - 1]?.materialUsed }
+                                                  disabled={
+                                                    index > 0 &&
+                                                    values.detailsData[
+                                                      index - 1
+                                                    ]?.closingStock !==
+                                                      values.detailsData[
+                                                        index - 1
+                                                      ]?.materialUsed
+                                                  }
                                                   style={{
                                                     border: "1px solid #2DDC1B",
                                                     padding: "5px",
@@ -362,15 +301,191 @@ console.log(details)
                                                     textAlign: "center",
                                                   }}
                                                   onChange={(e) => {
-                                                    const usedValue = Number(e.target.value);
-                                                    console.log("usedValue",usedValue)
-                                                    console.log('detail.closingStock - usedValue',detail)
-                                                    setFieldValue(`detailsData.${index}.materialUsed`, usedValue);
-                                                    // setFieldValue(`detailsData.${index}.closingStock`, 
-                                                    //   Math.max(0, detail.closingStock - usedValue)
+                                                    const usedValue = Number(
+                                                      e.target.value
+                                                    );
+                                                    if (
+                                                      detail.closingStock <
+                                                      usedValue
+                                                    ) {
+                                                      swal({
+                                                        title: "Sorry!",
+                                                        text: "You can not used more than closing stock.",
+                                                        icon: "warning",
+                                                        button: "OK",
+                                                      });
+                                                      return;
+                                                    }
+                                                    // setFieldValue(
+                                                    //   `detailsData.${index}.materialUsed`,
+                                                    //   usedValue
                                                     // );
-                                                    if (index > 0 && values.detailsData[index - 1]?.closingStock !== values.detailsData[index - 1]?.materialUsed ) {
-                                                      setFieldValue(`detailsData.${index}.materialUsed`, '');
+
+                                                    const updatedDetails = [
+                                                      ...values.detailsData,
+                                                    ];
+                                                    const currentClosingStock =
+                                                      updatedDetails[index]
+                                                        .closingStock;
+                                                    const isCurrentRowFinished =
+                                                      usedValue ===
+                                                      currentClosingStock;
+
+                                                    if (
+                                                      isCurrentRowFinished &&
+                                                      updatedDetails[index + 1]
+                                                    ) {
+                                                    } else {
+                                                      // If not fully used, clear all the next rows' materialUsed
+                                                      for (
+                                                        let i = index + 1;
+                                                        i <
+                                                        updatedDetails.length;
+                                                        i++
+                                                      ) {
+                                                        setFieldValue(
+                                                          `detailsData.${i}.materialUsed`,
+                                                          ""
+                                                        );
+                                                      }
+                                                    }
+                                                    const newValue = parseFloat(e.target.value) || 0; // Default to 0 if invalid
+                                                    const updatedDetailsData = [...details]; // Make a copy of the details array
+                                                  
+                                                    // Assuming you're updating the materialUsed of the specific index
+                                                    updatedDetailsData[index].materialUsed = newValue;
+                                                  
+                                                    // Recalculate the total
+                                                    const totalMaterialUsed = updatedDetailsData.reduce((total, detail) => {
+                                                      return total + (parseFloat(detail.materialUsed) || 0); // Add each materialUsed value
+                                                    }, 0);
+                                                    const value1 =
+                                                      parseFloat(
+                                                        totalMaterialUsed
+                                                      );
+                                                    const value2 = parseFloat(
+                                                      valuesData.detailsData[
+                                                        index
+                                                      ]?.asPerRatio
+                                                    );
+                                                    const calculateExcessOrLess =
+                                                      value1 - value2;
+                                                console.log('totalMaterialUsed=',totalMaterialUsed,'calculateExcessOrLess=',calculateExcessOrLess)
+                                                    const existingPurchaseItem =
+                                                      data.find(
+                                                        (details) =>
+                                                          details.itemId ===
+                                                          detail.itemId
+                                                      );
+
+                                                    console.log(
+                                                      existingPurchaseItem
+                                                    );
+                                                    const itemNamesFind =
+                                                      rawMateialData.find(
+                                                        (item) =>
+                                                          item._id ===
+                                                          detail.itemId
+                                                      );
+                                                    if (existingPurchaseItem) {
+                                                      if (
+                                                        existingPurchaseItem?.stockInHand >
+                                                        e.target.value
+                                                      ) {
+                                                        if (
+                                                          calculateExcessOrLess ===
+                                                          0
+                                                        ) {
+                                                          setFieldValue(
+                                                            `detailsData.${index}.less`,
+                                                            0
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.excess`,
+                                                            0
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.consumptionStatus`,
+                                                            "No Change"
+                                                          );
+                                                        } else if (
+                                                          calculateExcessOrLess <
+                                                          0
+                                                        ) {
+                                                          setFieldValue(
+                                                            `detailsData.${index}.less`,
+                                                            Math.abs(
+                                                              Math.round(
+                                                                calculateExcessOrLess *
+                                                                  100
+                                                              ) / 100
+                                                            )
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.excess`,
+                                                            0
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.consumptionStatus`,
+                                                            "Less"
+                                                          );
+                                                        } else if (
+                                                          calculateExcessOrLess >
+                                                          0
+                                                        ) {
+                                                          setFieldValue(
+                                                            `detailsData.${index}.excess`,
+                                                            Math.abs(
+                                                              (Math.round(
+                                                                calculateExcessOrLess
+                                                              ) *
+                                                                100) /
+                                                                100
+                                                            )
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.less`,
+                                                            0
+                                                          );
+                                                          setFieldValue(
+                                                            `detailsData.${index}.consumptionStatus`,
+                                                            "Excess"
+                                                          );
+                                                        }
+
+                                                        setFieldValue(
+                                                          `detailsData.${index}.materialUsed`,
+                                                          e.target.value
+                                                        );
+                                                      } else {
+                                                        const quantity =
+                                                          parseFloat(
+                                                            existingPurchaseItem?.stockInHand ||
+                                                              0
+                                                          );
+                                                        const materialUsed =
+                                                          parseFloat(
+                                                            detail.materialUsed ||
+                                                              0
+                                                          );
+
+                                                        const remaining =
+                                                          quantity -
+                                                          materialUsed;
+                                                        const formattedRemaining =
+                                                          remaining.toFixed(2);
+                                                        swal(
+                                                          "Sorry!",
+                                                          `Please purchase ${itemNamesFind?.itemName}. Remaing stock quantity is ${formattedRemaining}`,
+                                                          "warning"
+                                                        );
+                                                      }
+                                                    } else {
+                                                      swal(
+                                                        "Sorry!",
+                                                        `${itemNamesFind?.itemName} Stock not Available`,
+                                                        "warning"
+                                                      );
                                                     }
                                                   }}
                                                 />
@@ -408,9 +523,10 @@ console.log(details)
                               outline: "none",
                               border: "none",
                             }}
-                            type="submit"
+                            type="button"
+                            onClick={(e) => handleSubmitMaterialUSed(e, values)}
                           >
-                            Submit
+                            Save Info
                           </button>
                         </div>
                       </Form>
