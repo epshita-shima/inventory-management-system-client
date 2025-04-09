@@ -1,7 +1,6 @@
 import { Field, FieldArray, Formik } from "formik";
 import React from "react";
 import { Form } from "react-bootstrap";
-import getMakebyUser from "./../../Common/CommonMakeUser/CommonMakingUser";
 import * as Yup from "yup";
 import swal from "sweetalert";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
@@ -15,14 +14,14 @@ const RMConsumptionDetailsByFifoInsert = ({
   filterItemData,
   initialValues,
   valuesData,
-  setFieldValue,
+  setFieldValueForProduction,
   valueIndex,
   data,
   rawMateialData,
 }) => {
-  const makebyUser = getMakebyUser();
+
   const { data: rawMaterialData } = useGetAllRMItemInformationQuery(undefined);
-  console.log(valuesData);
+
   const itemNameMatching = rawMaterialData?.find(
     (item) => item._id === selectedItem
   );
@@ -33,13 +32,57 @@ const RMConsumptionDetailsByFifoInsert = ({
       (item) => item.materialUsed !== ""
     );
     const totalMaterialUSed = filtredData.reduce((sum, details) => {
-      return sum + details.materialUsed;
+      return sum + parseFloat(details.materialUsed);
     }, 0);
-    setFieldValue(`detailsData.${valueIndex}.materialUsed`, totalMaterialUSed);
-    setFieldValue(`detailsData.${valueIndex}.detailsMaterialUsed`, filtredData);
+
+    const value1 = parseFloat(totalMaterialUSed);
+    const value2 = parseFloat(values.detailsData[valueIndex]?.asPerRatio || 0);
+    console.log(
+      "values.detailsData[valueIndex]",
+      values.detailsData[valueIndex]
+    );
+    const calculateExcessOrLess = value1 - value2;
+
+    if (calculateExcessOrLess === 0) {
+      setFieldValueForProduction(`detailsData.${valueIndex}.less`, 0);
+      setFieldValueForProduction(`detailsData.${valueIndex}.excess`, 0);
+      setFieldValueForProduction(
+        `detailsData.${valueIndex}.consumptionStatus`,
+        "No Change"
+      );
+    } else if (calculateExcessOrLess < 0) {
+      setFieldValueForProduction(
+        `detailsData.${valueIndex}.less`,
+        Math.abs(Math.round(calculateExcessOrLess * 100) / 100)
+      );
+      setFieldValueForProduction(`detailsData.${valueIndex}.excess`, 0);
+      setFieldValueForProduction(
+        `detailsData.${valueIndex}.consumptionStatus`,
+        "Less"
+      );
+    } else {
+      setFieldValueForProduction(
+        `detailsData.${valueIndex}.excess`,
+        Math.abs(Math.round(calculateExcessOrLess * 100) / 100)
+      );
+      setFieldValueForProduction(`detailsData.${valueIndex}.less`, 0);
+      setFieldValueForProduction(
+        `detailsData.${valueIndex}.consumptionStatus`,
+        "Excess"
+      );
+    }
+
+    setFieldValueForProduction(
+      `detailsData.${valueIndex}.materialUsed`,
+      totalMaterialUSed
+    );
+    setFieldValueForProduction(
+      `detailsData.${valueIndex}.detailsMaterialUsed`,
+      filtredData
+    );
     setShowModal(false);
   };
-  console.log();
+
   return (
     <>
       {showModal && (
@@ -155,12 +198,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.receivedDate}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "receivedDate",
@@ -177,12 +215,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.quantity}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "quantity",
@@ -199,12 +232,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.unitPrice}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "unitPrice",
@@ -221,12 +249,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.amount}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "amount",
@@ -243,12 +266,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.previousUsed}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "previousMaterialUsed",
@@ -265,12 +283,7 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                   value={detail?.closingStock}
                                                   required
                                                   disabled
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onClick={(e) => {
                                                     setFieldValue(
                                                       "closingStock",
@@ -294,32 +307,30 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                         index - 1
                                                       ]?.materialUsed
                                                   }
-                                                  style={{
-                                                    border: "1px solid #2DDC1B",
-                                                    padding: "5px",
-                                                    borderRadius: "5px",
-                                                    textAlign: "center",
-                                                  }}
+                                                  className="input-design-material-used"
                                                   onChange={(e) => {
                                                     const usedValue = Number(
                                                       e.target.value
                                                     );
+
+                                                    // Check if the used value exceeds the closing stock
                                                     if (
                                                       detail.closingStock <
                                                       usedValue
                                                     ) {
                                                       swal({
                                                         title: "Sorry!",
-                                                        text: "You can not used more than closing stock.",
+                                                        text: "You cannot use more than closing stock.",
                                                         icon: "warning",
                                                         button: "OK",
                                                       });
                                                       return;
                                                     }
-                                                    // setFieldValue(
-                                                    //   `detailsData.${index}.materialUsed`,
-                                                    //   usedValue
-                                                    // );
+                                                    setFieldValue(
+                                                      `detailsData.${index}.materialUsed`,
+                                                      usedValue
+                                                    );
+                                                    // Update materialUsed
 
                                                     const updatedDetails = [
                                                       ...values.detailsData,
@@ -335,6 +346,8 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                       isCurrentRowFinished &&
                                                       updatedDetails[index + 1]
                                                     ) {
+                                                      // Row is finished but next row exists
+                                                      // You may want to trigger some other logic here
                                                     } else {
                                                       // If not fully used, clear all the next rows' materialUsed
                                                       for (
@@ -348,144 +361,6 @@ const RMConsumptionDetailsByFifoInsert = ({
                                                           ""
                                                         );
                                                       }
-                                                    }
-                                                    const newValue = parseFloat(e.target.value) || 0; // Default to 0 if invalid
-                                                    const updatedDetailsData = [...details]; // Make a copy of the details array
-                                                  
-                                                    // Assuming you're updating the materialUsed of the specific index
-                                                    updatedDetailsData[index].materialUsed = newValue;
-                                                  
-                                                    // Recalculate the total
-                                                    const totalMaterialUsed = updatedDetailsData.reduce((total, detail) => {
-                                                      return total + (parseFloat(detail.materialUsed) || 0); // Add each materialUsed value
-                                                    }, 0);
-                                                    const value1 =
-                                                      parseFloat(
-                                                        totalMaterialUsed
-                                                      );
-                                                    const value2 = parseFloat(
-                                                      valuesData.detailsData[
-                                                        index
-                                                      ]?.asPerRatio
-                                                    );
-                                                    const calculateExcessOrLess =
-                                                      value1 - value2;
-                                                console.log('totalMaterialUsed=',totalMaterialUsed,'calculateExcessOrLess=',calculateExcessOrLess)
-                                                    const existingPurchaseItem =
-                                                      data.find(
-                                                        (details) =>
-                                                          details.itemId ===
-                                                          detail.itemId
-                                                      );
-
-                                                    console.log(
-                                                      existingPurchaseItem
-                                                    );
-                                                    const itemNamesFind =
-                                                      rawMateialData.find(
-                                                        (item) =>
-                                                          item._id ===
-                                                          detail.itemId
-                                                      );
-                                                    if (existingPurchaseItem) {
-                                                      if (
-                                                        existingPurchaseItem?.stockInHand >
-                                                        e.target.value
-                                                      ) {
-                                                        if (
-                                                          calculateExcessOrLess ===
-                                                          0
-                                                        ) {
-                                                          setFieldValue(
-                                                            `detailsData.${index}.less`,
-                                                            0
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.excess`,
-                                                            0
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.consumptionStatus`,
-                                                            "No Change"
-                                                          );
-                                                        } else if (
-                                                          calculateExcessOrLess <
-                                                          0
-                                                        ) {
-                                                          setFieldValue(
-                                                            `detailsData.${index}.less`,
-                                                            Math.abs(
-                                                              Math.round(
-                                                                calculateExcessOrLess *
-                                                                  100
-                                                              ) / 100
-                                                            )
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.excess`,
-                                                            0
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.consumptionStatus`,
-                                                            "Less"
-                                                          );
-                                                        } else if (
-                                                          calculateExcessOrLess >
-                                                          0
-                                                        ) {
-                                                          setFieldValue(
-                                                            `detailsData.${index}.excess`,
-                                                            Math.abs(
-                                                              (Math.round(
-                                                                calculateExcessOrLess
-                                                              ) *
-                                                                100) /
-                                                                100
-                                                            )
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.less`,
-                                                            0
-                                                          );
-                                                          setFieldValue(
-                                                            `detailsData.${index}.consumptionStatus`,
-                                                            "Excess"
-                                                          );
-                                                        }
-
-                                                        setFieldValue(
-                                                          `detailsData.${index}.materialUsed`,
-                                                          e.target.value
-                                                        );
-                                                      } else {
-                                                        const quantity =
-                                                          parseFloat(
-                                                            existingPurchaseItem?.stockInHand ||
-                                                              0
-                                                          );
-                                                        const materialUsed =
-                                                          parseFloat(
-                                                            detail.materialUsed ||
-                                                              0
-                                                          );
-
-                                                        const remaining =
-                                                          quantity -
-                                                          materialUsed;
-                                                        const formattedRemaining =
-                                                          remaining.toFixed(2);
-                                                        swal(
-                                                          "Sorry!",
-                                                          `Please purchase ${itemNamesFind?.itemName}. Remaing stock quantity is ${formattedRemaining}`,
-                                                          "warning"
-                                                        );
-                                                      }
-                                                    } else {
-                                                      swal(
-                                                        "Sorry!",
-                                                        `${itemNamesFind?.itemName} Stock not Available`,
-                                                        "warning"
-                                                      );
                                                     }
                                                   }}
                                                 />

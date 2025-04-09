@@ -184,7 +184,7 @@ const InsertGRNInfo = () => {
       makeDate: values.makeDate,
       updateDate: values.updateDate,
     };
-    values.detailsData.map((item) => {
+    values.detailsData.forEach((item) => {
       modelData.detailsData.push({
         pOSingleId: values.pOSingleId,
         itemId: item.itemId,

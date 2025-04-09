@@ -162,7 +162,7 @@ const PaymentMethodSingleEntry = () => {
         updateDate: null,
         detailsData: [],
       };
-      values.detailsData.map((item) => {
+      values.detailsData.forEach((item) => {
         modelData.detailsData.push({
           paymentReceiveDate: item.paymentReceiveDate
             ? item.paymentReceiveDate

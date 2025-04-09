@@ -1,6 +1,4 @@
 import {
-  faInfo,
-  faPlus,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { useLazyGetPurchaseItemReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
+import "./InsertProduction.css";
 
 const InsertProduction = ({
   details,
@@ -32,18 +31,26 @@ const InsertProduction = ({
   const { data: purchaseData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rawMateialData } = useGetAllRMItemInformationQuery(undefined);
-  const [triggerStockReport, { data: purchaseItemDetails }] =
+  const [triggerStockReport, { data: purchaseItemDetails,isLoading }] =
     useLazyGetPurchaseItemReportQuery();
 
   const [showModal, setShowModal] = useState(false);
-  const [totalMaterialUsedDetails, setTotalMaterialUsedDetails] = useState({});
+
   const [selectedItem, setSelectedItem] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    setPurchaseItems(purchaseItemDetails);
-  }, [purchaseItemDetails]);
+    if(purchaseItemDetails && !isLoading){
+      setPurchaseItems(purchaseItemDetails);
+      setShowModal(true);       // move here
+      setShowInfo(false);
+    }
+   
+  }, [purchaseItemDetails,isLoading]);
 
+  console.log(purchaseItemDetails)
+
+  
   function getCftPerKgByItemId(itemId) {
     const itemDatawithCftDeclaration = rawMaterialsData?.find(
       (detail) =>
@@ -147,6 +154,7 @@ const InsertProduction = ({
           ...purchase,
           previousUsed: totalMaterialUsed, // Total material used before this purchase
           closingStock,
+          rate:purchase.rate
         };
       })
       .filter((item) => item.closingStock !== 0);
@@ -156,6 +164,7 @@ const InsertProduction = ({
     showInfo ? modalItems : purchaseItems,
     previousMaterialUsedData
   );
+console.log(result)
 
   const initialValues = {
     detailsData:
@@ -169,7 +178,7 @@ const InsertProduction = ({
               rate: "",
               amount: "",
               materialUsed: "",
-              closingStock: "", // Ensure closingStock is included
+              closingStock: "", 
               makeBy: getMakebyUser,
               updateBy: null,
               makeDate: new Date(),
@@ -198,16 +207,16 @@ const InsertProduction = ({
   const handleSelectChange = async (selectedOption) => {
     await triggerStockReport({ itemId: selectedOption });
     setSelectedItem(selectedOption);
-    setShowModal(true);
-    setShowInfo(false);
+    
   };
+
   const handleSelectModal = async (selectedOption) => {
     setSelectedItem(selectedOption[0].itemId);
     setModalItems(selectedOption);
     setShowModal(true);
     setShowInfo(true);
   };
-  console.log(totalMaterialUsedDetails);
+
   return (
     <div className="row">
       <div className="col-12 col-md-12 col-lg-12 fixed-column">
@@ -818,15 +827,8 @@ const InsertProduction = ({
                               placeholder="Receipe"
                               value={detail?.receipe}
                               disabled
-                              style={{
-                                border: "1px solid #2DDC1B",
-                                padding: "5px",
-                                width: "100%",
-                                borderRadius: "5px",
-                                height: "38px",
-                                marginBottom: "5px",
-                                textAlign: "center",
-                              }}
+                              className='input-design'
+
                             />
                           </td>
 
@@ -951,15 +953,7 @@ const InsertProduction = ({
                               placeholder="As Per Ratio"
                               value={detail?.asPerRatio}
                               disabled
-                              style={{
-                                border: "1px solid #2DDC1B",
-                                padding: "5px",
-                                width: "100%",
-                                borderRadius: "5px",
-                                height: "38px",
-                                marginBottom: "5px",
-                                textAlign: "center",
-                              }}
+                             className='input-design'
                             />
                           </td>
                           <td className="text-center  align-items-center">
@@ -971,14 +965,7 @@ const InsertProduction = ({
                                 detail?.excess === 0 ? "-" : detail?.excess
                               }
                               disabled
-                              style={{
-                                border: "1px solid #2DDC1B",
-                                padding: "5px",
-                                width: "100%",
-                                borderRadius: "5px",
-                                height: "38px",
-                                textAlign: "center",
-                              }}
+                              className='input-design'
                             />
                           </td>
                           <td className="text-center  align-items-center">
@@ -988,14 +975,7 @@ const InsertProduction = ({
                               placeholder="Less"
                               value={detail?.less === 0 ? "-" : detail?.less}
                               disabled
-                              style={{
-                                border: "1px solid #2DDC1B",
-                                padding: "5px",
-                                width: "100%",
-                                borderRadius: "5px",
-                                height: "38px",
-                                textAlign: "center",
-                              }}
+                              className="input-design"
                             />
                           </td>
                           <td className="text-center  align-items-center d-none">
@@ -1005,14 +985,7 @@ const InsertProduction = ({
                               placeholder="Consumption Status"
                               value={detail?.consumptionStatus}
                               disabled
-                              style={{
-                                border: "1px solid #2DDC1B",
-                                padding: "5px",
-                                width: "100%",
-                                borderRadius: "5px",
-                                height: "38px",
-                                textAlign: "center",
-                              }}
+                              className="input-design"
                             />
                           </td>
                           <td className="text-center  align-middle">
@@ -1039,7 +1012,7 @@ const InsertProduction = ({
                           initialValues={initialValues}
                           showInfo={showInfo}
                           valuesData={values}
-                          setFieldValue={setFieldValue}
+                          setFieldValueForProduction={setFieldValue}
                           valueIndex={index}
                           data={data}
                           rawMateialData={rawMateialData}
