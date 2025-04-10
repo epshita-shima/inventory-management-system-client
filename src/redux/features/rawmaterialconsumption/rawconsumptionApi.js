@@ -2,6 +2,15 @@ import { api } from "../../api/apiSlice";
 
 const rawconsumptionApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getAllRawMaterialConsumptionInformation: builder.query({
+      query: () => "/api/v1/raw-consumption",
+      providesTags: [
+        "insertRawMaterialConsumption",
+      ],
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    }),
+
     insertRawMaterialConsumption: builder.mutation({
       query: (payload) => ({
         url: "/api/v1/raw-consumption",
@@ -17,4 +26,4 @@ const rawconsumptionApi = api.injectEndpoints({
   }),
 });
 
-export const { useInsertRawMaterialConsumptionMutation } = rawconsumptionApi;
+export const {useGetAllRawMaterialConsumptionInformationQuery ,useInsertRawMaterialConsumptionMutation } = rawconsumptionApi;

@@ -165,7 +165,7 @@ const ProductionInfoList = ({ permission }) => {
       grow: 2,
       cell: (filteredData) => (
         <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
+          {permission?.isPDF && (
             <a
               target="_blank"
               className={` action-icon `}
@@ -198,10 +198,8 @@ const ProductionInfoList = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
-          )}
-          {permission?.isUpdated ? (
+          ) }
+          {/* {permission?.isUpdated ? (
             <a
               target="_blank"
               className={` action-icon `}
@@ -229,9 +227,9 @@ const ProductionInfoList = ({ permission }) => {
             </a>
           ) : (
             ""
-          )}
+          )} */}
 
-          {permission?.isRemoved ? (
+          {permission?.isRemoved && (
             <a
               target="_blank"
               className="action-icon "
@@ -279,8 +277,6 @@ const ProductionInfoList = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
         </div>
       ),

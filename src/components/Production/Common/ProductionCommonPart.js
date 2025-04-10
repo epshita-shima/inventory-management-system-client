@@ -36,7 +36,7 @@ const ProductionCommonPart = () => {
     useGetSingleProductionInformationQuery(id);
   const [updateProductionData, setUpdateProductionData] = useState([]);
   const [updateSingleProductionInfo] = useUpdateProductionInformationMutation();
-  const [insertRawConsumption]=useInsertRawMaterialConsumptionMutation()
+  const [insertRawConsumption] = useInsertRawMaterialConsumptionMutation();
   const [startDates, setStartDates] = useState(
     new Date().toLocaleDateString("en-CA")
   );
@@ -189,46 +189,56 @@ const ProductionCommonPart = () => {
           updateDate: null,
           detailsData: [],
         };
-        const materialUsedModel={
-          detailsData:[]};
+        const materialUsedModel = {
+          detailsData: [],
+        };
         values.detailsData.forEach((item) => {
           newProductionInfo.detailsData.push({
             itemId: item.itemId,
             receipe: item.receipe,
-            totalMaterialUsed: parseFloat(item.materialUsed),
+            materialUsed: parseFloat(item.materialUsed),
             asPerRatio: parseFloat(item.asPerRatio),
             excess: parseFloat(item.excess),
             less: parseFloat(item.less),
             consumptionStatus: item.consumptionStatus,
           });
-          item.detailsMaterialUsed.forEach((details)=>{
+          item.detailsMaterialUsed.forEach((details) => {
             materialUsedModel.detailsData.push({
               purchaseDate: details.receivedDate,
-            itemId: details.itemId,
-            quantity:details.quantity,
-            rate: details.unitPrice,
-            amount: details.amount,
-            materialUsed: details.materialUsed,
-            closingStock: details.closingStock, 
-            makeBy: getMakebyUser(),
-            updateBy: null,
-            makeDate: new Date(),
-            updateDate: null,
-            })
-          })
+              itemId: details.itemId,
+              quantity: details.quantity,
+              rate: details.unitPrice,
+              amount: details.amount,
+              materialUsed: details.materialUsed,
+              closingStock: details.closingStock,
+              makeBy: getMakebyUser(),
+              updateBy: null,
+              makeDate: new Date(),
+              updateDate: null,
+            });
+          });
         });
-        console.log(JSON.stringify(newProductionInfo))
-        console.log(materialUsedModel)
 
         const response = await insertProductionData(newProductionInfo);
-        const rawConsumptionResponse=await insertRawConsumption(materialUsedModel.detailsData)
-        if (response.data.status === 200 && rawConsumptionResponse.data.status===200) {
-          swal("Done", "Data Save Successfully", "success");
-          await createSerialNo(serialData);
-          serialRefresh();
-          resetForm();
-          setProStartDate("");
-          setEndDate("");
+
+        if (response.data.status === 200) {
+          const rawConsumptionResponse = await insertRawConsumption(
+            materialUsedModel.detailsData
+          );
+          if (rawConsumptionResponse.data.status === 200) {
+            swal("Done", "Data Save Successfully", "success");
+            await createSerialNo(serialData);
+            serialRefresh();
+            resetForm();
+            setProStartDate("");
+            setEndDate("");
+          } else {
+            swal(
+              "Not Possible!",
+              "An problem occurred while creating the data",
+              "error"
+            );
+          }
         } else {
           swal(
             "Not Possible!",

@@ -216,8 +216,8 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
+        <div className="modal-dialog modal-lg fullscreen-modal" role="document">
+          <div className="modal-content " style={{alignItems:'normal' }}>
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
                Production List
@@ -232,8 +232,8 @@ const ProductionTotalModal = ({ totalProduction,permission}) => {
               </button>
             </div>
             <div className="modal-body">
-              <div
-                style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+              <div 
+                style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
               >
                 <DataTable
                   columns={columns}

@@ -306,8 +306,8 @@ const PurchaseHeadingModal = ({
       aria-hidden="true"
       style={{ overflow: "hidden" }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-lg " role="document">
-        <div className="modal-content">
+      <div className="modal-dialog  modal-lg fullscreen-modal" role="document">
+        <div className="modal-content" style={{alignItems:"normal"}}>
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLongTitle">
               {totalPurchaseModal

@@ -1,6 +1,4 @@
-import {
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field } from "formik";
 import Select from "react-select";
@@ -12,6 +10,7 @@ import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/
 import { useLazyGetPurchaseItemReportQuery } from "../../../redux/features/purchasereport/purchasereportApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import "./InsertProduction.css";
+import { useGetAllRawMaterialConsumptionInformationQuery } from "../../../redux/features/rawmaterialconsumption/rawconsumptionApi";
 
 const InsertProduction = ({
   details,
@@ -31,26 +30,23 @@ const InsertProduction = ({
   const { data: purchaseData } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rawMateialData } = useGetAllRMItemInformationQuery(undefined);
-  const [triggerStockReport, { data: purchaseItemDetails,isLoading }] =
+  const [triggerStockReport, { data: purchaseItemDetails, isLoading }] =
     useLazyGetPurchaseItemReportQuery();
-
+  const { data: previousMaterialUsedData } =
+    useGetAllRawMaterialConsumptionInformationQuery(undefined);
   const [showModal, setShowModal] = useState(false);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    if(purchaseItemDetails && !isLoading){
+    if (purchaseItemDetails && !isLoading) {
       setPurchaseItems(purchaseItemDetails);
-      setShowModal(true);       // move here
+      setShowModal(true);
       setShowInfo(false);
     }
-   
-  }, [purchaseItemDetails,isLoading]);
+  }, [purchaseItemDetails, isLoading]);
 
-  console.log(purchaseItemDetails)
-
-  
   function getCftPerKgByItemId(itemId) {
     const itemDatawithCftDeclaration = rawMaterialsData?.find(
       (detail) =>
@@ -86,63 +82,62 @@ const InsertProduction = ({
     }
   }
 
-  const previousMaterialUsedData = [
-    {
-      purchaseDate: "2025-03-23",
-      itemId: "677248c1a1a0d9059b94977d",
-      quantity: 100,
-      rate: 50,
-      amount: 5000,
-      materialUsed: 80,
-      makeBy: "JohnDoe",
-      updateBy: "JaneDoe",
-      makeDate: "2025-03-27T10:00:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-23",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 200,
-      rate: 400,
-      amount: 8000,
-      materialUsed: 150,
-      makeBy: "AliceSmith",
-      updateBy: "BobJohnson",
-      makeDate: "2025-03-26T09:30:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-24",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 200,
-      rate: 400,
-      amount: 8000,
-      materialUsed: 50,
-      makeBy: "AliceSmith",
-      updateBy: "BobJohnson",
-      makeDate: "2025-03-26T09:30:00Z",
-      updateDate: "",
-    },
-    {
-      purchaseDate: "2025-03-25",
-      itemId: "677248c1a1a0d9059b94977c",
-      quantity: 150,
-      rate: 500,
-      amount: 9000,
-      materialUsed: 120,
-      makeBy: "CharlieBrown",
-      updateBy: "DavidLee",
-      makeDate: "2025-03-25T08:15:00Z",
-      updateDate: "",
-    },
-  ];
+  // const previousMaterialUsedData = [
+  //   {
+  //     purchaseDate: "2025-03-23",
+  //     itemId: "677248c1a1a0d9059b94977d",
+  //     quantity: 100,
+  //     rate: 50,
+  //     amount: 5000,
+  //     materialUsed: 80,
+  //     makeBy: "JohnDoe",
+  //     updateBy: "JaneDoe",
+  //     makeDate: "2025-03-27T10:00:00Z",
+  //     updateDate: "",
+  //   },
+  //   {
+  //     purchaseDate: "2025-03-23",
+  //     itemId: "677248c1a1a0d9059b94977c",
+  //     quantity: 200,
+  //     rate: 400,
+  //     amount: 8000,
+  //     materialUsed: 150,
+  //     makeBy: "AliceSmith",
+  //     updateBy: "BobJohnson",
+  //     makeDate: "2025-03-26T09:30:00Z",
+  //     updateDate: "",
+  //   },
+  //   {
+  //     purchaseDate: "2025-03-24",
+  //     itemId: "677248c1a1a0d9059b94977c",
+  //     quantity: 200,
+  //     rate: 400,
+  //     amount: 8000,
+  //     materialUsed: 50,
+  //     makeBy: "AliceSmith",
+  //     updateBy: "BobJohnson",
+  //     makeDate: "2025-03-26T09:30:00Z",
+  //     updateDate: "",
+  //   },
+  //   {
+  //     purchaseDate: "2025-03-25",
+  //     itemId: "677248c1a1a0d9059b94977c",
+  //     quantity: 150,
+  //     rate: 500,
+  //     amount: 9000,
+  //     materialUsed: 120,
+  //     makeBy: "CharlieBrown",
+  //     updateBy: "DavidLee",
+  //     makeDate: "2025-03-25T08:15:00Z",
+  //     updateDate: "",
+  //   },
+  // ];
 
   const calculatePreviousUsed = (filterItemData, previousMaterialUsedData) => {
     return filterItemData
       ?.map((purchase) => {
-        // Find all previous material usage records for the same item before the purchase date
         const totalMaterialUsed = previousMaterialUsedData
-          .filter(
+          ?.filter(
             (usage) =>
               usage.itemId === purchase.itemId &&
               usage.purchaseDate === purchase.receivedDate
@@ -154,7 +149,7 @@ const InsertProduction = ({
           ...purchase,
           previousUsed: totalMaterialUsed, // Total material used before this purchase
           closingStock,
-          rate:purchase.rate
+          rate: purchase.rate,
         };
       })
       .filter((item) => item.closingStock !== 0);
@@ -164,7 +159,6 @@ const InsertProduction = ({
     showInfo ? modalItems : purchaseItems,
     previousMaterialUsedData
   );
-console.log(result)
 
   const initialValues = {
     detailsData:
@@ -178,7 +172,7 @@ console.log(result)
               rate: "",
               amount: "",
               materialUsed: "",
-              closingStock: "", 
+              closingStock: "",
               makeBy: getMakebyUser,
               updateBy: null,
               makeDate: new Date(),
@@ -207,7 +201,6 @@ console.log(result)
   const handleSelectChange = async (selectedOption) => {
     await triggerStockReport({ itemId: selectedOption });
     setSelectedItem(selectedOption);
-    
   };
 
   const handleSelectModal = async (selectedOption) => {
@@ -363,7 +356,6 @@ console.log(result)
                                               (labelData /
                                                 findCFTPerKG?.cftPerKg) *
                                               values.totalBatch;
-                                       
 
                                             const materialUsed = parseFloat(
                                               detail.materialUsed || 0
@@ -827,8 +819,7 @@ console.log(result)
                               placeholder="Receipe"
                               value={detail?.receipe}
                               disabled
-                              className='input-design'
-
+                              className="input-design"
                             />
                           </td>
 
@@ -953,7 +944,7 @@ console.log(result)
                               placeholder="As Per Ratio"
                               value={detail?.asPerRatio}
                               disabled
-                             className='input-design'
+                              className="input-design"
                             />
                           </td>
                           <td className="text-center  align-items-center">
@@ -965,7 +956,7 @@ console.log(result)
                                 detail?.excess === 0 ? "-" : detail?.excess
                               }
                               disabled
-                              className='input-design'
+                              className="input-design"
                             />
                           </td>
                           <td className="text-center  align-items-center">
