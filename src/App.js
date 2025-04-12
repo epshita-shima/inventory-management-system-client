@@ -54,6 +54,7 @@ import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/Pu
 import StockReportDetails from "./components/ReportManagement/StockReport/RawMaterialStock/StockReportDetails";
 import FinishGoodStockDetails from "./components/ReportManagement/StockReport/FinishGoodsStock/FinishGoodStockDetails";
 import useInactivityLogout from './components/Customhook/useInactivityLogout';
+import ConsumptionReportMenuPermission from './components/ReportManagement/ConsumptionInFIFOReport/ConsumptionReportView/ConsumptionReportMenuPermission';
 
 const App =()=> {
 
@@ -538,6 +539,14 @@ const App =()=> {
                 element={
                   <RequireAuth>
                     <RawMaterialConsumptionTable />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path="consumption-in-fifo-method"
+                element={
+                  <RequireAuth>
+                    <ConsumptionReportMenuPermission/>
                   </RequireAuth>
                 }
               ></Route>

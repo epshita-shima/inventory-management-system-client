@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 
 const ProductionReportTable = () => {
-
-  const { data: user,isLoading: isUserloading } = useGetAllUserQuery(undefined);
-
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
+  const { data: user,isLoading: isUserloading } = useGetAllUserQuery(undefined);
+
+
   useEffect(() => {
     if (localStorage.length > 0) {
       const getUserId = localStorage.getItem("user");
@@ -71,7 +71,7 @@ const ProductionReportTable = () => {
       </div>
     );
   }
-  console.log(permission)
+ 
   return (
       <div>
         <ProductionReportView  permission={permission}></ProductionReportView>

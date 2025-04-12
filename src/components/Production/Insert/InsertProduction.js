@@ -82,57 +82,6 @@ const InsertProduction = ({
     }
   }
 
-  // const previousMaterialUsedData = [
-  //   {
-  //     purchaseDate: "2025-03-23",
-  //     itemId: "677248c1a1a0d9059b94977d",
-  //     quantity: 100,
-  //     rate: 50,
-  //     amount: 5000,
-  //     materialUsed: 80,
-  //     makeBy: "JohnDoe",
-  //     updateBy: "JaneDoe",
-  //     makeDate: "2025-03-27T10:00:00Z",
-  //     updateDate: "",
-  //   },
-  //   {
-  //     purchaseDate: "2025-03-23",
-  //     itemId: "677248c1a1a0d9059b94977c",
-  //     quantity: 200,
-  //     rate: 400,
-  //     amount: 8000,
-  //     materialUsed: 150,
-  //     makeBy: "AliceSmith",
-  //     updateBy: "BobJohnson",
-  //     makeDate: "2025-03-26T09:30:00Z",
-  //     updateDate: "",
-  //   },
-  //   {
-  //     purchaseDate: "2025-03-24",
-  //     itemId: "677248c1a1a0d9059b94977c",
-  //     quantity: 200,
-  //     rate: 400,
-  //     amount: 8000,
-  //     materialUsed: 50,
-  //     makeBy: "AliceSmith",
-  //     updateBy: "BobJohnson",
-  //     makeDate: "2025-03-26T09:30:00Z",
-  //     updateDate: "",
-  //   },
-  //   {
-  //     purchaseDate: "2025-03-25",
-  //     itemId: "677248c1a1a0d9059b94977c",
-  //     quantity: 150,
-  //     rate: 500,
-  //     amount: 9000,
-  //     materialUsed: 120,
-  //     makeBy: "CharlieBrown",
-  //     updateBy: "DavidLee",
-  //     makeDate: "2025-03-25T08:15:00Z",
-  //     updateDate: "",
-  //   },
-  // ];
-
   const calculatePreviousUsed = (filterItemData, previousMaterialUsedData) => {
     return filterItemData
       ?.map((purchase) => {

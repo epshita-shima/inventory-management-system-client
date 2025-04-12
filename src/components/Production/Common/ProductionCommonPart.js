@@ -203,6 +203,7 @@ const ProductionCommonPart = () => {
             consumptionStatus: item.consumptionStatus,
           });
           item.detailsMaterialUsed.forEach((details) => {
+            const closingStockCalculate=parseFloat(details.quantity) - parseFloat(details.closingStock)
             materialUsedModel.detailsData.push({
               purchaseDate: details.receivedDate,
               itemId: details.itemId,
@@ -210,7 +211,7 @@ const ProductionCommonPart = () => {
               rate: details.unitPrice,
               amount: details.amount,
               materialUsed: details.materialUsed,
-              closingStock: details.closingStock,
+              closingStock: closingStockCalculate,
               makeBy: getMakebyUser(),
               updateBy: null,
               makeDate: new Date(),
