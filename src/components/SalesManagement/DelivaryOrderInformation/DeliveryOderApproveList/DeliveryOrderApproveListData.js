@@ -307,11 +307,11 @@ const DeliveryOrderApproveListData = ({ permission }) => {
   }, [filterText, resetPaginationToggle, filteredDatas]);
 
   return (
-    <div className="row px-5 mx-4">
-      <div className="col userlist-table">
+    <div className=" px-5 mx-4">
+      <div className="col">
         <div>
           <h3 className="fw-bold mt-1">Delivery Order Approve Status</h3>
-          <hr />
+         
           <div className="d-block d-lg-flex justify-content-lg-between align-items-lg-center d-md-block do-approve-parameter-width">
             <div className="w-100">
               <label htmlFor="">Approve Type</label>
@@ -409,7 +409,7 @@ const DeliveryOrderApproveListData = ({ permission }) => {
         {isTableDispaly ? (
           <div
             className={`${isGetDataLoading ? "d-none" : "d-block"}`}
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
+          
           >
             <DataTable
               columns={columns}
@@ -420,6 +420,8 @@ const DeliveryOrderApproveListData = ({ permission }) => {
               pagination
               subHeader
               subHeaderComponent={subHeaderComponent}
+              fixedHeader={true}
+              fixedHeaderScrollHeight="calc(65vh - 120px)"
             />
           </div>
         ) : null}

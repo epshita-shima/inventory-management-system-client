@@ -173,8 +173,8 @@ const PaymnetModeList = ({ permission }) => {
   return (
     <div className="row p-5 mx-4">
       <div
-        className="col userlist-table"
-        style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
+        className="col"
+   
       >
         <div className="shadow-lg">
           <DataTable
@@ -186,6 +186,8 @@ const PaymnetModeList = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+              fixedHeaderScrollHeight="calc(60vh - 120px)"
           />
         </div>
       </div>

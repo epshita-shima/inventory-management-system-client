@@ -19,7 +19,10 @@ import {
 import { useGetAllInvoiceInformationQuery } from "../../../../../redux/features/invoiceinformation/invoiceinfoApi";
 import { useGetAllClientInformationQuery } from "../../../../../redux/features/clientinformation/clientInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../../redux/features/iteminformation/finishgoodsinfoApi";
-import { downloadDeliveryOrderListPDF, downloadDeliveryOrderPDF } from "../../../../ReportProperties/PDF/HeaderFooter";
+import {
+  downloadDeliveryOrderListPDF,
+  downloadDeliveryOrderPDF,
+} from "../../../../ReportProperties/PDF/HeaderFooter";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetCompanyInfoQuery } from "../../../../../redux/features/companyinfo/compayApi";
 
@@ -28,8 +31,11 @@ const DeliveryOrderListData = ({ permission }) => {
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
-  const { data: deliveryOrderData,isLoading:isDOLoading, refetch } =
-    useGetAllDelieryOrderInformationQuery(undefined);
+  const {
+    data: deliveryOrderData,
+    isLoading: isDOLoading,
+    refetch,
+  } = useGetAllDelieryOrderInformationQuery(undefined);
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: clientInformation } =
@@ -69,15 +75,13 @@ const DeliveryOrderListData = ({ permission }) => {
       sortable: true,
       center: true,
       filterable: true,
-      width:"220px"
+      width: "220px",
     },
 
     {
       name: "PI Number",
       selector: (row) => {
-        const piNumber = invoiceInformation?.find(
-          (x) => x._id === row?.piId
-        );
+        const piNumber = invoiceInformation?.find((x) => x._id === row?.piId);
         return piNumber ? piNumber.invoiceNo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -96,24 +100,26 @@ const DeliveryOrderListData = ({ permission }) => {
 
     {
       name: "Item Name",
-      selector: (row,index) => {
+      selector: (row, index) => {
         const itemName = finishGoodsInfo?.find(
           (x) => x._id === row?.detailsData.itemId
         );
-       
+
         const filteredItemSize = finishGoodsInfo?.map((item) => {
           const foundSize = itemsizeinfo?.find(
             (rawItem) => rawItem._id === item.sizeId
           );
           return foundSize;
         });
-        const filteredItemSizes = filteredItemSize ? filteredItemSize[index]?.sizeInfo : null;
-        return itemName ? itemName.itemName +` (${filteredItemSizes})` : "N/A";
+        const filteredItemSizes = filteredItemSize
+          ? filteredItemSize[index]?.sizeInfo
+          : null;
+        return itemName ? itemName.itemName + ` (${filteredItemSizes})` : "N/A";
       },
       sortable: true,
       center: true,
       filterable: true,
-      width:"250px"
+      width: "250px",
     },
 
     {
@@ -178,7 +184,7 @@ const DeliveryOrderListData = ({ permission }) => {
           ) : (
             ""
           )}
-    
+
           {permission?.isRemoved ? (
             <a
               target="_blank"
@@ -269,8 +275,6 @@ const DeliveryOrderListData = ({ permission }) => {
       -1
   );
 
-
-
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -299,7 +303,10 @@ const DeliveryOrderListData = ({ permission }) => {
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
                 <li>
                   <a
                     className="dropdown-item"
@@ -346,13 +353,17 @@ const DeliveryOrderListData = ({ permission }) => {
         </div>
       </div>
     );
-  }, [filterText, resetPaginationToggle, refetch, companyinfo, transformedDOData, clientInformation, finishGoodsInfo, itemsizeinfo]);
+  }, [
+    filterText,
+    resetPaginationToggle,
+    refetch,
+    companyinfo,
+    transformedDOData,
+    clientInformation,
+  ]);
 
   return (
-    <div
-      className={`row px-2 mx-4 ${isDOLoading ? 'd-none' : 'd-block'}`}
-      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
+    <div className={` px-2 mx-4 ${isDOLoading ? "d-none" : "d-block"}`}>
       <div className="col mt-sm-4 mt-md-4 mt-lg-0">
         <div className="shadow-lg">
           <DataTable
@@ -376,6 +387,8 @@ const DeliveryOrderListData = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(80vh - 120px)"
           />
         </div>
       </div>

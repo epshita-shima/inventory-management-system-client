@@ -717,10 +717,7 @@ const PaymentReceiveDataTableList = ({ permission }) => {
   ]);
 
   return (
-    <div
-      className="row px-5 mx-4"
-      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
+    <div className="row px-5 mx-4">
       <div>
         <h3 className="fw-bold mt-1">Payment Receive List</h3>
         <hr />
@@ -882,19 +879,19 @@ const PaymentReceiveDataTableList = ({ permission }) => {
       </div>
 
       {isTableDispaly ? (
-        <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
-          <div className="shadow-lg">
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              defaultSortField="name"
-              customStyles={customStyles}
-              striped
-              pagination
-              subHeader
-              subHeaderComponent={subHeaderComponent}
-            />
-          </div>
+        <div className="shadow-lg">
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            defaultSortField="name"
+            customStyles={customStyles}
+            striped
+            pagination
+            subHeader
+            subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
+          />
         </div>
       ) : (
         ""

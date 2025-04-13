@@ -240,9 +240,9 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
   }, [filterText, resetPaginationToggle, filteredDatas]);
 
   return (
-    <div className="row px-5 mx-4">
+    <div className="px-5 mx-4">
       <div
-        className={`col userlist-table ${
+        className={`col  ${
           isClientInfoLoading ? "d-none" : "d-block"
         }`}
       >
@@ -387,10 +387,7 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
         </div>
 
         {isTableDispaly ? (
-          <div
-            className=" "
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-          >
+         
             <DataTable
               columns={columns}
               data={filteredItems}
@@ -400,8 +397,10 @@ const FinishGoodsDeliveryListData = ({ permission }) => {
               pagination
               subHeader
               subHeaderComponent={subHeaderComponent}
+              fixedHeader={true}
+              fixedHeaderScrollHeight="calc(60vh - 120px)"
             />
-          </div>
+        
         ) : null}
       </div>
     </div>

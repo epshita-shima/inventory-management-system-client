@@ -1,6 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataTable from "react-data-table-component";
 import React, { useMemo } from "react";
 import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
@@ -9,12 +7,9 @@ import { formatDate } from "../../../Uitilites/DateUtilities";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const SalesReturnSummaryReport = ({
-  permission,
+
   filteredDatas,
-  filterText,
-  piInformation,
-  clientInformation,
-  companyInformation,
+
   isTableDispaly,
   companyinfo,
   isReturnSummaryLoading,
@@ -165,7 +160,6 @@ const SalesReturnSummaryReport = ({
       {isTableDispaly && (
         <div
           className={`${  isReturnSummaryLoading ? 'd-none' : 'd-block'}`}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
             title={
@@ -187,6 +181,8 @@ const SalesReturnSummaryReport = ({
             striped
             pagination
             subHeader
+             fixedHeader={true}
+              fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       )}

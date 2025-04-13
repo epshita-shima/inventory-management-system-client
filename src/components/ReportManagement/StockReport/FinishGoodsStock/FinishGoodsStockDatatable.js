@@ -287,10 +287,7 @@ const FinishGoodsStockDatatable = ({
           <LoadingSpineer
             isLoading={isFinishGoodsStockDataLoading}
           ></LoadingSpineer>
-          <div
-           
-            style={{ height: "calc(80vh - 120px)", overflowY: "scroll" }}
-          >
+         
             <>
               <DataTable
                 columns={columns}
@@ -301,9 +298,11 @@ const FinishGoodsStockDatatable = ({
                 striped
                 pagination
                 subHeader
+                 fixedHeader={true}
+              fixedHeaderScrollHeight="calc(80vh - 120px)"
               />
             </>
-          </div>
+        
 
           <table id="my-finish-goods-stock-table" className="d-none">
             <thead>

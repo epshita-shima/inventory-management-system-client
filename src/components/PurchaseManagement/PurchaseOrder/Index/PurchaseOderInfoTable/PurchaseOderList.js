@@ -159,7 +159,6 @@ const PurchaseOderList = ({ permission }) => {
               fontSize: "14px",
               textAlign: "center",
             }}
-    
           >
             {purchaseInfoData?.approveStatus === true ? (
               <p className="text-success fw-bold">Approve</p>
@@ -388,8 +387,8 @@ const PurchaseOderList = ({ permission }) => {
 
   return (
     <div
-      className="row px-5 mx-4"
-      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
+      className=" px-5 mx-4"
+   
     >
       <PurchaseHeading
         permission={permission}
@@ -409,7 +408,7 @@ const PurchaseOderList = ({ permission }) => {
         reportTitle={reportTitle}
       ></PurchaseHeading>
       <div
-        className="col userlist-table mt-sm-4 mt-md-4 mt-lg-0 podata-main-view"
+        className="col  mt-sm-4 mt-md-4 mt-lg-4 "
         style={{ display: isPurchaseloading ? "none" : "block" }}
       >
         <div className="shadow-lg">
@@ -422,6 +421,8 @@ const PurchaseOderList = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>

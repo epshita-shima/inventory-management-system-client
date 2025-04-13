@@ -246,7 +246,7 @@ const StockReportDataTable = ({
           <LoadingSpineer
             isLoading={isRawMaterialStockDataLoading}
           ></LoadingSpineer>
-          <div style={{ height: "calc(80vh - 120px)", overflowY: "scroll" }}>
+   
             <>
               <DataTable
                 columns={columns}
@@ -257,9 +257,11 @@ const StockReportDataTable = ({
                 striped
                 pagination
                 subHeader
+                 fixedHeader={true}
+              fixedHeaderScrollHeight="calc(75vh - 120px)"
               />
             </>
-          </div>
+         
           <table id="my-raw-material-stock-table" className="d-none">
             <thead>
               <tr>

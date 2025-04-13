@@ -145,7 +145,6 @@ const CommonParameter = ({
               marginTop: "25px",
             }}
             onClick={() => {
-              setIsTableDisplay(false);
               setFilters((prevFilters) => ({
                 ...prevFilters,
                 fromDate: new Date().toLocaleDateString("en-CA"),

@@ -201,11 +201,11 @@ const MenuList = ({ permission }) => {
   }, [filterText, resetPaginationToggle, refetch]);
 
   return (
-    <div className="row p-5 mx-4">
+    <div className=" p-5 mx-4">
       {/* {<LoadingSpineer isLoading={isMenuloading}></LoadingSpineer>} */}
       <div
-        className="col userlist-table"
-        style={{ height: "calc(90vh - 120px)", overflowY: "scroll" }}
+        className="col"
+        
       >
         <div className="shadow-lg ">
           <DataTable
@@ -217,6 +217,8 @@ const MenuList = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+                fixedHeaderScrollHeight="calc(75vh - 120px)"
           />
         </div>
       </div>

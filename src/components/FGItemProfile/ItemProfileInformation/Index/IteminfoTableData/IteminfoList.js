@@ -3,7 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import DataTable from "react-data-table-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faPenToSquare, faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDownload,
+  faPenToSquare,
+  faRefresh,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import swal from "sweetalert";
 import { useGetAllItemSizeQuery } from "../../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
@@ -15,77 +20,93 @@ import handleDownload from "../../../../ReportProperties/Excel/HandelExcelDownlo
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
-import './IteminfoList.css'
+import "./IteminfoList.css";
 import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
-const IteminfoList = ({ permission, finishGoodInItemInfoData ,isFGItemloading,refetch}) => {
+const IteminfoList = ({
+  permission,
+  finishGoodInItemInfoData,
+  isFGItemloading,
+  refetch,
+}) => {
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [filterText, setFilterText] = React.useState("");
   const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
-  const [extractedInActiveDataForReport, setExtractedInActiveDataForReport] = useState([]);
-  const [resetPaginationToggle, setResetPaginationToggle] =React.useState(false);
+  const [extractedInActiveDataForReport, setExtractedInActiveDataForReport] =
+    useState([]);
+  const [resetPaginationToggle, setResetPaginationToggle] =
+    React.useState(false);
   const [activeFinishGoodItemModal, setActiveFinishGoodItemModal] =
-  useState(false);
-const [inActiveFinishGoodItemModal, setInActiveFinishGoodItemModal] =
-  useState(false);
-const [selectedData, setSelectedData] = useState([]);
+    useState(false);
+  const [inActiveFinishGoodItemModal, setInActiveFinishGoodItemModal] =
+    useState(false);
+  const [selectedData, setSelectedData] = useState([]);
   const [deleteItemInfo] = useDeleteItemInfoMutation();
-  const[finishGoodActiveStatus,setFinishGoodActiveStaus]=useState([])
-  const[finishGoodInActiveStatus,setFinishGoodInActiveStatus]=useState([])
+  const [finishGoodActiveStatus, setFinishGoodActiveStaus] = useState([]);
+  const [finishGoodInActiveStatus, setFinishGoodInActiveStatus] = useState([]);
   var reportTitle = "All Finish Good Item List";
 
   useEffect(() => {
-    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus===true);
-    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter((item) => item.itemStatus === false);
-    
+    const finishGoodActiveStatus = finishGoodInItemInfoData?.filter(
+      (item) => item.itemStatus === true
+    );
+    const finishGoodInActiveStatus = finishGoodInItemInfoData?.filter(
+      (item) => item.itemStatus === false
+    );
+
     const extractedFieldsForAllData = finishGoodInItemInfoData?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      return{
-        openingDate:item.openingDate,
+      return {
+        openingDate: item.openingDate,
         itemName: item.itemName,
         sizeId: size ? size.sizeInfo : "N/A",
         unitId: unit ? unit.unitInfo : "N/A",
-        openingStock:item.openingStock,
-        itemStatus:item.itemStatus ? 'Active' : 'InActive'
-      }
+        openingStock: item.openingStock,
+        itemStatus: item.itemStatus ? "Active" : "InActive",
+      };
     });
     const extractedFields = finishGoodActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
-      
-      return{
-        openingDate:item.openingDate,
+
+      return {
+        openingDate: item.openingDate,
         itemName: item.itemName,
         sizeId: size ? size.sizeInfo : "N/A",
         unitId: unit ? unit.unitInfo : "N/A",
-        openingStock:item.openingStock,
-        itemStatus:item.itemStatus ? 'Active' : 'InActive'
-      }
+        openingStock: item.openingStock,
+        itemStatus: item.itemStatus ? "Active" : "InActive",
+      };
     });
 
     const extractedInactiveFields = finishGoodInActiveStatus?.map((item) => {
       const size = itemSizeInfo?.find((x) => x._id === item.sizeId);
       const unit = itemUnitInfo?.find((x) => x._id === item?.unitId);
 
-      return{
-        openingDate:item.openingDate,
+      return {
+        openingDate: item.openingDate,
         itemName: item.itemName,
         sizeId: size ? size.sizeInfo : "N/A",
         unitId: unit ? unit.unitInfo : "N/A",
-        openingStock:item.openingStock,
-        itemStatus:item.itemStatus ? 'Active' : 'InActive'
-      }
+        openingStock: item.openingStock,
+        itemStatus: item.itemStatus ? "Active" : "InActive",
+      };
     });
-    setExtractedAllDataReport(extractedFieldsForAllData)
-    setFinishGoodActiveStaus(finishGoodActiveStatus)
-    setFinishGoodInActiveStatus(finishGoodInActiveStatus)
+    setExtractedAllDataReport(extractedFieldsForAllData);
+    setFinishGoodActiveStaus(finishGoodActiveStatus);
+    setFinishGoodInActiveStatus(finishGoodInActiveStatus);
     setExtractedDataForReport(extractedFields);
     setExtractedInActiveDataForReport(extractedInactiveFields);
-  }, [itemUnitInfo,finishGoodInItemInfoData?.unitId,itemSizeInfo,finishGoodInItemInfoData]);
+  }, [
+    itemUnitInfo,
+    finishGoodInItemInfoData?.unitId,
+    itemSizeInfo,
+    finishGoodInItemInfoData,
+  ]);
 
   const generateColumns = (data, fields) => {
     if (data?.length === 0) return [];
@@ -104,8 +125,7 @@ const [selectedData, setSelectedData] = useState([]);
           center: true,
           filterable: true,
         };
-      }
-      else if (field === "itemStatus") {
+      } else if (field === "itemStatus") {
         return {
           name: "Status",
           button: true,
@@ -143,7 +163,7 @@ const [selectedData, setSelectedData] = useState([]);
       }
     });
   };
-  
+
   const columns = [
     {
       name: "Sl.",
@@ -153,7 +173,8 @@ const [selectedData, setSelectedData] = useState([]);
     },
     {
       name: "Item Name",
-      selector: (finishGoodInItemInfoData) => finishGoodInItemInfoData?.itemName,
+      selector: (finishGoodInItemInfoData) =>
+        finishGoodInItemInfoData?.itemName,
       sortable: true,
       center: true,
       filterable: true,
@@ -161,7 +182,9 @@ const [selectedData, setSelectedData] = useState([]);
     {
       name: "Item Size",
       selector: (finishGoodInItemInfoData) => {
-        const size = itemSizeInfo?.find((x) => x._id === finishGoodInItemInfoData?.sizeId);
+        const size = itemSizeInfo?.find(
+          (x) => x._id === finishGoodInItemInfoData?.sizeId
+        );
         return size ? size.sizeInfo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -171,7 +194,9 @@ const [selectedData, setSelectedData] = useState([]);
     {
       name: "Item Unit",
       selector: (finishGoodInItemInfoData) => {
-        const unit = itemUnitInfo?.find((x) => x._id === finishGoodInItemInfoData?.unitId);
+        const unit = itemUnitInfo?.find(
+          (x) => x._id === finishGoodInItemInfoData?.unitId
+        );
         return unit ? unit.unitInfo : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -196,7 +221,11 @@ const [selectedData, setSelectedData] = useState([]);
             }}
             // href={`UpdateGroupName/${data?.GroupId}`}
           >
-            {finishGoodInItemInfoData?.itemStatus === true ? <p className="text-success fw-bold">Active</p> : <p className="text-danger fw-bold">InActive</p>}
+            {finishGoodInItemInfoData?.itemStatus === true ? (
+              <p className="text-success fw-bold">Active</p>
+            ) : (
+              <p className="text-danger fw-bold">InActive</p>
+            )}
           </a>
         </div>
       ),
@@ -217,7 +246,9 @@ const [selectedData, setSelectedData] = useState([]);
               title="Update item"
               style={{
                 color: `${
-                  finishGoodInItemInfoData?.items?.length === 0 ? "gray" : "#2DDC1B"
+                  finishGoodInItemInfoData?.items?.length === 0
+                    ? "gray"
+                    : "#2DDC1B"
                 } `,
                 border: `${
                   finishGoodInItemInfoData?.items?.length === 0
@@ -229,7 +260,9 @@ const [selectedData, setSelectedData] = useState([]);
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`finish-goods-item-list/update-finish-goods-items/${finishGoodInItemInfoData?._id}`);
+                window.open(
+                  `finish-goods-item-list/update-finish-goods-items/${finishGoodInItemInfoData?._id}`
+                );
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -329,11 +362,14 @@ const [selectedData, setSelectedData] = useState([]);
 
     return (
       <div className="d-block d-sm-flex justify-content-center align-items-center mb-2">
-      
         <div className="d-flex justify-content-end align-items-center">
           <div className="table-head-icon d-flex ">
             <div>
-              <FontAwesomeIcon icon={faRefresh} onClick={()=>refetch()}></FontAwesomeIcon> &nbsp;
+              <FontAwesomeIcon
+                icon={faRefresh}
+                onClick={() => refetch()}
+              ></FontAwesomeIcon>{" "}
+              &nbsp;
             </div>
             <div className="dropdown">
               <button
@@ -345,7 +381,10 @@ const [selectedData, setSelectedData] = useState([]);
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
                 <li>
                   <a
                     className="dropdown-item"
@@ -364,7 +403,11 @@ const [selectedData, setSelectedData] = useState([]);
                     className="dropdown-item"
                     href="#"
                     onClick={() => {
-                      handleDownload(extractedAllDataReport, companyinfo, reportTitle);
+                      handleDownload(
+                        extractedAllDataReport,
+                        companyinfo,
+                        reportTitle
+                      );
                     }}
                   >
                     Excel
@@ -390,26 +433,21 @@ const [selectedData, setSelectedData] = useState([]);
     companyinfo,
     extractedAllDataReport,
     reportTitle,
-    refetch
+    refetch,
   ]);
 
   return (
     <div className="row px-5 mx-4">
       {/* <LoadingSpineer isLoading={isFGItemloading}></LoadingSpineer> */}
-      <ListHeading 
-      finishGoodInItemInfoData={finishGoodInItemInfoData}
-      finishGoodActiveStatus={finishGoodActiveStatus}
-      finishGoodInActiveStatus={finishGoodInActiveStatus}
-      setActiveDataModal={setActiveFinishGoodItemModal}
+      <ListHeading
+        finishGoodInItemInfoData={finishGoodInItemInfoData}
+        finishGoodActiveStatus={finishGoodActiveStatus}
+        finishGoodInActiveStatus={finishGoodInActiveStatus}
+        setActiveDataModal={setActiveFinishGoodItemModal}
         setInActiveDataModal={setInActiveFinishGoodItemModal}
       ></ListHeading>
-      <div
-        className="col userlist-table mt-4 finishdata-main-view"
-        // style={{
-        //   overflow: "scroll",
-        //   height: "420px",
-        // }}
-      >
+
+      <div className="col mt-4 ">
         <div className="shadow-lg ">
           <DataTable
             columns={columns}
@@ -420,9 +458,12 @@ const [selectedData, setSelectedData] = useState([]);
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>
+      
       <table id="my-table" className="d-none">
         <thead>
           <tr>
@@ -486,7 +527,6 @@ const [selectedData, setSelectedData] = useState([]);
             <th>Unit Info</th>
             <th>Opening Stock</th>
             <th>Status</th>
-
           </tr>
         </thead>
         <tbody>

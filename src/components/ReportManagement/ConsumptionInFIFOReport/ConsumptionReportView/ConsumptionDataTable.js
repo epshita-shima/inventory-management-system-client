@@ -5,12 +5,7 @@ import DataTable from "react-data-table-component";
 const ConsumptionDataTable = ({consumptionData, rawMaterialList}) => {
   const columns = [
     {
-         name: (
-        <div>
-          <div>SL</div>
-          <div style={{ fontSize: "12px", color: "gray" }}>Sub Sl</div>
-        </div>
-      ),
+         name:"Sl.",
       selector: (row, index) => index + 1,
       center: true,
       width: "60px",
@@ -175,6 +170,8 @@ const ConsumptionDataTable = ({consumptionData, rawMaterialList}) => {
             striped
             pagination
             subHeader
+            fixedHeader={true}
+            fixedHeaderScrollHeight="400px"
           />
 
           <table id="my-production-datewise-summary-table" className="d-none">

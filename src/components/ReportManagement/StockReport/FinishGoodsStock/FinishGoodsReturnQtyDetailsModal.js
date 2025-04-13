@@ -327,6 +327,8 @@ const FinishGoodsReturnQtyDetailsModal = ({
                   pagination
                   subHeader
                   subHeaderComponent={subHeaderComponent}
+                   fixedHeader={true}
+              fixedHeaderScrollHeight="calc(85vh - 120px)"
                 />
               </div>
             </div>
