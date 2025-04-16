@@ -1,0 +1,15 @@
+
+.sub-header-wrapper {
+  width: 100%;
+  display: flex;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.sub-header-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}

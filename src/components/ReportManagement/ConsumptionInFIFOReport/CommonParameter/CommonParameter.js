@@ -22,10 +22,8 @@ const CommonParameter = ({
 
   return (
     <div className=" px-5 mx-2"
-    // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
     >
       <h3 className="fw-bold mt-1">Consumption Report</h3>
-      <hr />
 
       <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div
@@ -142,7 +140,7 @@ const CommonParameter = ({
               borderRadius: "5px",
               width: "100px",
               height: "38px",
-              marginTop: "25px",
+              marginTop: "15px",
             }}
             onClick={() => {
               setFilters((prevFilters) => ({
@@ -158,7 +156,7 @@ const CommonParameter = ({
             Clear
           </button>
         </div>
-        <div className=" d-flex mt-5 align-items-center justify-content-center report-status-width">
+        <div className=" d-flex mt-3 align-items-center justify-content-center report-status-width">
           <label htmlFor="" className="w-50">
             Report Status
           </label>
