@@ -54,81 +54,30 @@ const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
   
     // Opening Balance
     // { name: '', selector: row => row.opening.item, width: '6%',center:true },
-    { name: '', selector: row => row.opening.qty, width: '8%',center:true },
-    { name: '', selector: row => row.opening.rate, width: '6.89%',center:true },
-    { name: '', selector: row => row.opening.amount, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.opening.quantity === 0 ? '--' : row.opening.quantity}</div>, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.opening.rate === 0 ? '--' : row.opening.rate}</div>, width: '6.89%',center:true },
+    { name: '', selector: row => <div>{row.opening.amount === 0 ? '--' : row.opening.amount}</div>, width: '8%',center:true },
   
     // Purchase
     // { name: '', selector: row => row.purchase.item, width: '5%',center:true },
-    { name: '', selector: row => row.opening.qty, width: '8%',center:true },
-    { name: '', selector: row => row.opening.rate, width: '6.7%',center:true },
-    { name: '', selector: row => row.opening.amount, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.purchase.quantity === 0 ? '--' : row.purchase.quantity}</div>, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.purchase.rate === 0 ? '--' : row.purchase.rate}</div>, width: '6.7%',center:true },
+    { name: '', selector: row => <div>{row.purchase.amount === 0 ? '--' : row.purchase.amount}</div>, width: '8%',center:true },
   
     // Issue
     // { name: '', selector: row => row.issue.item, width: '5%',center:true },
-    { name: '', selector: row => row.opening.qty, width: '8%',center:true },
-    { name: '', selector: row => row.opening.rate, width: '6.88%',center:true },
-    { name: '', selector: row => row.opening.amount, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.issue.quantity === 0 ? '--' : row.issue.quantity}</div>, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.issue.rate === 0 ? '--' : row.issue.rate}</div>, width: '6.88%',center:true },
+    { name: '', selector: row => <div>{row.issue.amount === 0 ? '--' : row.issue.amount}</div>, width: '8%',center:true },
   
     // Closing
     // { name: '', selector: row => row.closing.item, width: '5%',center:true },
-    { name: '', selector: row => row.opening.qty, width: '8%',center:true },
-    { name: '', selector: row => row.opening.rate, width: '6.8%',center:true },
-    { name: '', selector: row => row.opening.amount, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.closing.quantity === 0 ? '--' : row.closing.quantity}</div>, width: '8%',center:true },
+    { name: '', selector: row => <div>{row.closing.rate === 0 ? '--' : row.closing.rate}</div>, width: '6.8%',center:true },
+    { name: '', selector: row => <div>{row.closing.amount === 0 ? '--' : row.closing.amount}</div>, width: '8%',center:true },
   ];
 
-  const data = [
-    {
-      date: '2025-04-15',
-      opening: { item: 'Iron', qty: 100, rate: 50, amount: 5000 },
-      purchase: { item: 'Iron', qty: 50, rate: 52, amount: 2600 },
-      issue: { item: 'Iron', qty: 30, rate: 51, amount: 1530 },
-      closing: { item: 'Iron', qty: 120, rate: 50, amount: 6000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
-    {
-      date: '2025-04-16',
-      opening: { item: 'Steel', qty: 200, rate: 40, amount: 8000 },
-      purchase: { item: 'Steel', qty: 100, rate: 42, amount: 4200 },
-      issue: { item: 'Steel', qty: 50, rate: 41, amount: 2050 },
-      closing: { item: 'Steel', qty: 250, rate: 40, amount: 10000 },
-    },
 
-  ];
 
   
 
@@ -276,7 +225,7 @@ const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
               style={{ width: '22.5%', padding: '0 5px',height:'50px' }}
             >
               {/* <div className="text-center" style={{ width: '25%' }}>Item</div> */}
-              <div className="text-center" style={{ width: '25%' }}>Qty</div>
+              <div className="text-center" style={{ width: '25%' }}>Quantity</div>
               <div className="text-center" style={{ width: '25%' }}>Rate</div>
               <div className="text-center" style={{ width: '25%' }}>Amount</div>
             </div>
@@ -292,7 +241,7 @@ const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
         <div className="overflow-y-hidden" style={{overflowY:'hidden'}}>
             <DataTable
               columns={columns}
-              data={data}
+              data={consumptionData}
               customStyles={customStyles}
               subHeaderComponent={subHeaderComponent}
               persistTableHead

@@ -205,11 +205,12 @@ const ProductionCommonPart = () => {
           item.detailsMaterialUsed.forEach((details) => {
             const closingStockCalculate=parseFloat(details.quantity) - parseFloat(details.closingStock)
             materialUsedModel.detailsData.push({
-              purchaseDate: details.receivedDate,
+              productionDate: values.productionDate,
               itemId: details.itemId,
               quantity: details.quantity,
               rate: details.unitPrice,
               amount: details.amount,
+              grnDetailsId:details.grnDetailsId,
               materialUsed: details.materialUsed,
               closingStock: closingStockCalculate,
               makeBy: getMakebyUser(),

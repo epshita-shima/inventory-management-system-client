@@ -89,7 +89,7 @@ const InsertProduction = ({
           ?.filter(
             (usage) =>
               usage.itemId === purchase.itemId &&
-              usage.purchaseDate === purchase.receivedDate
+              usage.grnDetailsId === purchase.grnDetailsId
           )
           .reduce((sum, usage) => sum + usage.materialUsed, 0);
         const closingStock = purchase.quantity - totalMaterialUsed;
@@ -108,15 +108,21 @@ const InsertProduction = ({
     showInfo ? modalItems : purchaseItems,
     previousMaterialUsedData
   );
+  console.log(JSON.stringify(result));
+  const finalResult = [...result]?.sort((a, b) =>
+    a.receivedDate.localeCompare(b.receivedDate)
+  );
 
+  console.log({ finalResult });
   const initialValues = {
     detailsData:
-      result?.length > 0
-        ? result
+      finalResult?.length > 0
+        ? finalResult
         : [
             {
               receivedDate: "",
               itemId: "",
+              grnDetailsId: "",
               quantity: "",
               rate: "",
               amount: "",
@@ -146,7 +152,7 @@ const InsertProduction = ({
       stockInHand: 200,
     },
   ];
-
+  console.log({ purchaseItemDetails });
   const handleSelectChange = async (selectedOption) => {
     await triggerStockReport({ itemId: selectedOption });
     setSelectedItem(selectedOption);
