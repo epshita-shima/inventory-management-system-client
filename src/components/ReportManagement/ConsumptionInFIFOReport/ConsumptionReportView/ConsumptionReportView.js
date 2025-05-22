@@ -26,7 +26,7 @@ const ConsumptionReportView = () => {
     await trigerConsumptionData(updatedFilters);
   };
 
-  console.log(consumptionDetails);
+
   return (
     <div  className="row px-5 mx-2"
     // style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
@@ -40,6 +40,7 @@ const ConsumptionReportView = () => {
         filters={filters}
         setFilters={setFilters}
         hangleGetConsumptionData={hangleGetConsumptionData}
+        consumptionData={consumptionDetails}
       ></CommonParameter>
       <ConsumptionDataTable
         consumptionData={consumptionDetails}

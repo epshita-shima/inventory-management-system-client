@@ -3,6 +3,8 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
+import handleFIFOConsumtionReportExcel from './../../../ReportProperties/Excel/handleFIFOConsumtionReportExcel';
+import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 
 const CommonParameter = ({
   setFilters,
@@ -13,16 +15,27 @@ const CommonParameter = ({
   itemsOptions,
   filters,
   hangleGetConsumptionData,
-  setIsTableDisplay,
+  consumptionData
 }) => {
+    const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+    const reportTitle="FIFO Consumption Report"
   const reportStatusOptions = [
-    { value: "datewiseconsumptiondetails", label: "Consumption Details" },
-    { value: "datewiseconsumptionsummary", label: "Consumption Summary" },
+    { value: "excel", label: "Excel" },
   ];
+  const parsedDate = new Date(fromDate);
+  const firstDayOfMonth = new Date(
+    parsedDate?.getFullYear(),
+    parsedDate?.getMonth(),
+    1
+  );
+  const lastDayOfMonth = new Date(
+    parsedDate?.getFullYear(),
+    parsedDate?.getMonth() + 1,
+    0
+  );
 
   return (
-    <div className=" px-5 mx-2"
-    >
+    <div className=" px-5 mx-2">
       <h3 className="fw-bold mt-1">Consumption Report</h3>
 
       <div className="d-block d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
@@ -39,8 +52,9 @@ const CommonParameter = ({
               calendarClassName="custom-calendar-order-details-report"
               selected={fromDate}
               required
-              onChange={(fromDate) => {
-                if (fromDate > new Date()) {
+              filterDate={(date) => date.getDate() === 1}
+              onChange={(date) => {
+                if (date > new Date()) {
                   swal({
                     title: "Select Valid Date",
                     text: "Date should be equal or earlier than today",
@@ -50,9 +64,9 @@ const CommonParameter = ({
                 } else {
                   setFilters((prevFilters) => ({
                     ...prevFilters,
-                    fromDate: fromDate?.toLocaleDateString("en-CA"),
+                    fromDate: date?.toLocaleDateString("en-CA"),
                   }));
-                  setFromDate(fromDate?.toLocaleDateString("en-CA"));
+                  setFromDate(date?.toLocaleDateString("en-CA"));
                 }
               }}
             />
@@ -66,6 +80,14 @@ const CommonParameter = ({
               calendarClassName="custom-calendar-order-details-report"
               selected={toDate}
               required
+              filterDate={(date) => {
+                const lastDay = new Date(
+                  date.getFullYear(),
+                  date.getMonth() + 1,
+                  0
+                );
+                return date.getDate() === lastDay.getDate();
+              }}
               onChange={(toDate) => {
                 setFilters((prevFilters) => ({
                   ...prevFilters,
@@ -123,13 +145,33 @@ const CommonParameter = ({
             </div>
           </div>
         </div>
-       
-          
-        
       </div>
 
       <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
-        <div>
+        <div className="d-flex ">
+           <button
+            className="border-0 "
+            style={{
+              backgroundColor: " #2DDC1B",
+              color: "white",
+              padding: "5px 10px",
+              fontSize: "14px",
+              borderRadius: "5px",
+              width: "250px",
+              height: "38px",
+              marginTop: "15px",
+            }}
+            onClick={async(e) => {
+               const updatedFilters = {
+                  ...filters,
+                  reportStatus: e.value,
+                };
+                setFilters(updatedFilters);
+                await hangleGetConsumptionData(updatedFilters);
+            }}
+          >
+           Show Consumption
+          </button>
           <button
             className="border-0 "
             style={{
@@ -141,13 +183,14 @@ const CommonParameter = ({
               width: "100px",
               height: "38px",
               marginTop: "15px",
+              marginLeft:'15px'
             }}
             onClick={() => {
               setFilters((prevFilters) => ({
                 ...prevFilters,
                 fromDate: new Date().toLocaleDateString("en-CA"),
                 toDate: new Date().toLocaleDateString("en-CA"),
-                itemId: ""
+                itemId: "",
               }));
               setFromDate(new Date().toLocaleDateString("en-CA"));
               setToDate(new Date().toLocaleDateString("en-CA"));
@@ -156,9 +199,9 @@ const CommonParameter = ({
             Clear
           </button>
         </div>
-        <div className=" d-flex mt-3 align-items-center justify-content-center report-status-width">
-          <label htmlFor="" className="w-50">
-            Report Status
+        <div className=" d-flex mt-3 align-items-center justify-content-start report-status-width">
+          <label htmlFor="" className="w-25" style={{fontSize:'24px'}}>
+           Download
           </label>
           <div className="w-100">
             <Select
@@ -175,6 +218,7 @@ const CommonParameter = ({
                   width: "100%",
                   borderColor: state.isFocused ? "#fff" : "#fff",
                   border: "1px solid #2DDC1B",
+                  marginLeft:'10px'
                 }),
                 menu: (provided) => ({
                   ...provided,
@@ -192,12 +236,14 @@ const CommonParameter = ({
                 },
               })}
               onChange={async (e) => {
-                const updatedFilters = {
-                  ...filters,
-                  reportStatus: e.value,
-                };
-                setFilters(updatedFilters);
-                await hangleGetConsumptionData(updatedFilters);
+  
+                        handleFIFOConsumtionReportExcel(
+                         consumptionData ,
+                          companyinfo,
+                          reportTitle
+                        );
+                    
+                
               }}
             ></Select>
           </div>

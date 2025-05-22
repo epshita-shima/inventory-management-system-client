@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import DataTable from "react-data-table-component";
 import "./ConsumptionDataTable.css"
 const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
+  console.log(JSON.stringify(consumptionData))
   // const columns = [
   //   {
   //        name:"Sl.",
@@ -77,104 +78,7 @@ const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
     { name: '', selector: row => <div>{row.closing.amount === 0 ? '--' : row.closing.amount}</div>, width: '8%',center:true },
   ];
 
-
-
   
-
-  // const customStyles = {
-  //   rows: {
-  //     style: {
-  //       textAlign: "center",
-  //     },
-  //   },
-  //   headCells: {
-  //     style: {
-  //       backgroundColor: "#B8FEB3",
-  //       color: "#000",
-  //       fontWeight: "bold",
-  //       textAlign: "center",
-  //       letterSpacing: "0.8px",
-  //     },
-  //   },
-  //   cells: {
-  //     style: {
-  //       borderRight: "1px solid gray",
-  //     },
-  //   },
-  //   headRow: {
-  //     style: {
-  //       paddingTop: "0px",
-  //     },
-  //   },
-  //   header: {
-  //     style: {
-  //       marginTop: "8px",
-  //     },
-  //   },
-  // };
-
-  // const subHeaderComponent = useMemo(() => {
-  //   return (
-  //     <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-  //       {consumptionData?.length > 0 && (
-  //         <div className="d-flex justify-content-end align-items-center">
-  //           <div className="table-head-icon d-flex">
-  //             <div className="dropdown">
-  //               <button
-  //                 className="btn btn-download dropdown-toggle"
-  //                 type="button"
-  //                 id="dropdownMenuButton1"
-  //                 data-bs-toggle="dropdown"
-  //                 aria-expanded="false"
-  //               >
-  //                 Download
-  //               </button>
-  //               <ul
-  //                 className="dropdown-menu"
-  //                 aria-labelledby="dropdownMenuButton1"
-  //               >
-  //                 <li>
-  //                   <a
-  //                     className="dropdown-item"
-  //                     href="#"
-  //                     onClick={() => {
-  //                       // if (companyinfo?.length !== 0 || undefined) {
-  //                       //   downloadProductionDatewiseSummaryPDF(
-  //                       //     { companyinfo },
-  //                       //     reportTitle
-  //                       //   );
-  //                       // }
-  //                     }}
-  //                   >
-  //                     PDF
-  //                   </a>
-  //                 </li>
-  //                 <li>
-  //                   <a
-  //                     className="dropdown-item"
-  //                     href="#"
-  //                     onClick={() => {
-  //                       // handleProductionDatewiseSummaryExcel(
-  //                       //   filteredDatas,
-  //                       //   rawMaterialList,
-  //                       //   itemSizeInfo,
-  //                       //   itemUnitInformation,
-  //                       //   companyinfo,
-  //                       //   reportTitle
-  //                       // );
-  //                     }}
-  //                   >
-  //                     Excel
-  //                   </a>
-  //                 </li>
-  //               </ul>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // }, [consumptionData?.length]);
   const customStyles = {
     rows: {
       style: {
@@ -206,7 +110,7 @@ const ConsumptionDataTable = ({ consumptionData, rawMaterialList }) => {
             <div
               key={index}
               className="d-flex align-items-center justify-content-center border-end border-start"
-              style={{ width: '22.5%', height: '40px' }}
+              style={{ width: '22.5%', height: '50px' }}
             >
               {title}
             </div>
