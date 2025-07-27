@@ -40,7 +40,7 @@ const RawMaterialDetailsView = ({
       detailsData: detail,
     }))
   );
-
+console.log('transformedProductionData',transformedProductionData)
 
   const grandTotalProductionQuantity = filteredDatas?.reduce(
     (totalMaterialUsed, item) => {
@@ -138,7 +138,7 @@ const RawMaterialDetailsView = ({
 
     {
       name: "Production Quantity",
-      selector: (row) => row.productionQty,
+       selector: (row) => row?.detailsData?.materialUsed,
       sortable: true,
       center: true,
       filterable: true,

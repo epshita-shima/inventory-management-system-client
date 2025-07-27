@@ -8,6 +8,7 @@ import ConsumptionDataTable from "./ConsumptionDataTable";
 const ConsumptionReportView = () => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
+  const [showTable,setShowTable]=useState(false)
   const { data: rawMaterialItemList } =
     useGetAllRMItemInformationQuery(undefined);
   const itemOptions = rawMaterialItemDropdown(rawMaterialItemList);
@@ -41,10 +42,13 @@ const ConsumptionReportView = () => {
         setFilters={setFilters}
         hangleGetConsumptionData={hangleGetConsumptionData}
         consumptionData={consumptionDetails}
+        setShowTable={setShowTable}
+        showTable={showTable}
       ></CommonParameter>
       <ConsumptionDataTable
         consumptionData={consumptionDetails}
         rawMaterialList={rawMaterialItemList}
+        showTable={showTable}
       ></ConsumptionDataTable>
     </div>
   );

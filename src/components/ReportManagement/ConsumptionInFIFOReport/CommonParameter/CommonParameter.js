@@ -3,7 +3,7 @@ import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import swal from "sweetalert";
-import handleFIFOConsumtionReportExcel from './../../../ReportProperties/Excel/handleFIFOConsumtionReportExcel';
+import handleFIFOConsumtionReportExcel from "./../../../ReportProperties/Excel/handleFIFOConsumtionReportExcel";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 
 const CommonParameter = ({
@@ -15,13 +15,13 @@ const CommonParameter = ({
   itemsOptions,
   filters,
   hangleGetConsumptionData,
-  consumptionData
+  consumptionData,
+  setShowTable,
+  showTable,
 }) => {
-    const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-    const reportTitle="FIFO Consumption Report"
-  const reportStatusOptions = [
-    { value: "excel", label: "Excel" },
-  ];
+  const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
+  const reportTitle = "FIFO Consumption Report";
+  const reportStatusOptions = [{ value: "excel", label: "Excel" }];
   const parsedDate = new Date(fromDate);
   const firstDayOfMonth = new Date(
     parsedDate?.getFullYear(),
@@ -149,7 +149,7 @@ const CommonParameter = ({
 
       <div className="d-block d-md-flex d-lg-flex d-xl-flex justify-content-between align-items-center w-100">
         <div className="d-flex ">
-           <button
+          <button
             className="border-0 "
             style={{
               backgroundColor: " #2DDC1B",
@@ -161,16 +161,17 @@ const CommonParameter = ({
               height: "38px",
               marginTop: "15px",
             }}
-            onClick={async(e) => {
-               const updatedFilters = {
-                  ...filters,
-                  reportStatus: e.value,
-                };
-                setFilters(updatedFilters);
-                await hangleGetConsumptionData(updatedFilters);
+            onClick={async (e) => {
+              const updatedFilters = {
+                ...filters,
+                reportStatus: e.value,
+              };
+              setShowTable(true);
+              setFilters(updatedFilters);
+              await hangleGetConsumptionData(updatedFilters);
             }}
           >
-           Show Consumption
+            Show Consumption
           </button>
           <button
             className="border-0 "
@@ -183,7 +184,7 @@ const CommonParameter = ({
               width: "100px",
               height: "38px",
               marginTop: "15px",
-              marginLeft:'15px'
+              marginLeft: "15px",
             }}
             onClick={() => {
               setFilters((prevFilters) => ({
@@ -199,55 +200,54 @@ const CommonParameter = ({
             Clear
           </button>
         </div>
-        <div className=" d-flex mt-3 align-items-center justify-content-start report-status-width">
-          <label htmlFor="" className="w-25" style={{fontSize:'24px'}}>
-           Download
-          </label>
-          <div className="w-100">
-            <Select
-              class="form-select"
-              aria-label="--Select sales report --"
-              name="reportinfo"
-              options={reportStatusOptions}
-              value={reportStatusOptions.filter(function (option) {
-                return option.value === filters?.reportStatus;
-              })}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  width: "100%",
-                  borderColor: state.isFocused ? "#fff" : "#fff",
-                  border: "1px solid #2DDC1B",
-                  marginLeft:'10px'
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
-                }),
-              }}
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary25: "#B8FEB3",
-                  primary: "#2DDC1B",
-                },
-              })}
-              onChange={async (e) => {
-  
-                        handleFIFOConsumtionReportExcel(
-                         consumptionData ,
-                          companyinfo,
-                          reportTitle
-                        );
-                    
-                
-              }}
-            ></Select>
+        {showTable && (
+          <div className=" d-flex mt-3 align-items-center justify-content-start report-status-width">
+            <label htmlFor="" className="w-25" style={{ fontSize: "24px" }}>
+              Download
+            </label>
+            <div className="w-100">
+              <Select
+                class="form-select"
+                aria-label="--Select sales report --"
+                name="reportinfo"
+                options={reportStatusOptions}
+                value={reportStatusOptions.filter(function (option) {
+                  return option.value === filters?.reportStatus;
+                })}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    width: "100%",
+                    borderColor: state.isFocused ? "#fff" : "#fff",
+                    border: "1px solid #2DDC1B",
+                    marginLeft: "10px",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                    height: "auto",
+                    // overflowY: "scroll",
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "#B8FEB3",
+                    primary: "#2DDC1B",
+                  },
+                })}
+                onChange={async (e) => {
+                  handleFIFOConsumtionReportExcel(
+                    consumptionData,
+                    companyinfo,
+                    reportTitle
+                  );
+                }}
+              ></Select>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

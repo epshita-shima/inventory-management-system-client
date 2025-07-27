@@ -76,7 +76,7 @@ const downloadHeadingProductionPDF = (data, companyinfo, reportTitle) => {
     row.productionDate,
     row.batchNo,
     row.totalBatch,
-    row.productionQty,
+    row.materialUsed,
   ]);
   doc1.autoTable({
     head: [
