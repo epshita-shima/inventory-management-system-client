@@ -115,7 +115,6 @@ const InsertPaymentOption = () => {
                       <div
                         className="border-0 "
                         style={{
-                          // backgroundColor: "#2DDC1B",
                           backgroundColor: "#B8FEB3",
                           color: "#000",
                           padding: "5px 10px",
@@ -256,8 +255,7 @@ const InsertPaymentOption = () => {
                                                 menu: (provided) => ({
                                                   ...provided,
                                                   zIndex: 9999,
-                                                  height: "auto",
-                                                  // overflowY: "scroll",
+                                                  height: "auto"
                                                 }),
                                               }}
                                               theme={(theme) => ({

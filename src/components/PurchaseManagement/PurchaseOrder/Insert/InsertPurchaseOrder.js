@@ -22,7 +22,6 @@ const InsertPurchaseOrder = ({
 
   return (
       <div className="insertpo-responsive-custom"
-      //  style={{ height: 'calc(42vh - 120px)', overflowY: "auto" }}
        >
         <table className="table table-bordered">
           <thead className="w-100">
@@ -113,9 +112,7 @@ const InsertPurchaseOrder = ({
                                 }),
                                 menu: (provided) => ({
                                   ...provided,
-                                  zIndex: 9999,
-                                  // height: "200px",
-                                  // overflowY: "scroll",
+                                  zIndex: 9999
                                 }),
                               }}
                               theme={(theme) => ({

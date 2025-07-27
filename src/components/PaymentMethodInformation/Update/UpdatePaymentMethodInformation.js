@@ -19,25 +19,23 @@ const UpdatePaymentMethodInformation = ({
   bankChequeDate,
   setBankChequeDate
 }) => {
-  const [show, setShow] = useState(false);
+  const [show,setShow] = useState(false);
   const [bankInCheque, setBankInCheque] = useState(false);
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
 
   const bankInfoOptions = bankInformationDropdown(bankInformation);
-  const handleClose = () => setShow(false);
-
   const handlePaymentMethodChange = (e, index) => {
     const paymentMethod = e.value;
     if (paymentMethod === "bank-cheque") {
       const newOpenModals = [...openModals];
-      newOpenModals[index] = true; // Set the modal open for the specific row
+      newOpenModals[index] = true; 
       setOpenModals(newOpenModals);
       setShow(true);
       setBankInCheque(true);
     }
     if (paymentMethod === "bank-cash") {
       const newOpenModals = [...openModals];
-      newOpenModals[index] = true; // Set the modal open for the specific row
+      newOpenModals[index] = true; 
       setOpenModals(newOpenModals);
       setShow(true);
       setBankInCheque(false);
@@ -47,7 +45,7 @@ const UpdatePaymentMethodInformation = ({
 
   const handleCloseModal = (index) => {
     const newOpenModals = [...openModals];
-    newOpenModals[index] = false; // Close the modal for the specific row
+    newOpenModals[index] = false; 
     setOpenModals(newOpenModals);
   };
   return (
@@ -126,7 +124,6 @@ const UpdatePaymentMethodInformation = ({
                                 ...provided,
                                 zIndex: 9999,
                                 height: "auto",
-                                // overflowY: "scroll",
                               }),
                               menuPortal: (base) => ({
                                 ...base,
@@ -203,7 +200,6 @@ const UpdatePaymentMethodInformation = ({
                                 ...provided,
                                 zIndex: 9999,
                                 height: "auto",
-                                // overflowY: "scroll",
                               }),
                               menuPortal: (base) => ({
                                 ...base,
@@ -261,8 +257,7 @@ const UpdatePaymentMethodInformation = ({
                               menu: (provided) => ({
                                 ...provided,
                                 zIndex: 9999,
-                                height: "auto",
-                                // overflowY: "scroll",
+                                height: "auto"
                               }),
                               menuPortal: (base) => ({
                                 ...base,

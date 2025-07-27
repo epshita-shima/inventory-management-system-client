@@ -10,13 +10,19 @@ const SalesSummaryReport = ({
   filteredDatas,
   isTableDispaly,
   companyinfo,
-  isSalesSummaryLoading
+  isSalesSummaryLoading,
 }) => {
   const reportTitle = "SALES SUMMARY";
   const [filterText, setFilterText] = React.useState("");
-  const grandTotalAmount=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverAmount,0)
-  const grandTotalDeliveredQty=filteredDatas?.reduce((sum,detail)=>sum+detail.totalDeliverQty,0)
-  
+  const grandTotalAmount = filteredDatas?.reduce(
+    (sum, detail) => sum + detail.totalDeliverAmount,
+    0
+  );
+  const grandTotalDeliveredQty = filteredDatas?.reduce(
+    (sum, detail) => sum + detail.totalDeliverQty,
+    0
+  );
+
   const columns = [
     {
       name: "Sl.",
@@ -102,17 +108,17 @@ const SalesSummaryReport = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
                       href="#"
                       onClick={() => {
                         if (companyinfo?.length !== 0 || undefined) {
-                          downloadSalesSummaryPDF(
-                            { companyinfo },
-                            reportTitle
-                          );
+                          downloadSalesSummaryPDF({ companyinfo }, reportTitle);
                         }
                       }}
                     >
@@ -147,10 +153,7 @@ const SalesSummaryReport = ({
     <div>
       <LoadingSpineer isLoading={isSalesSummaryLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div
-          className={`${isSalesSummaryLoading ? 'd-none' : 'd-block'} `}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-        >
+        <div className={`${isSalesSummaryLoading ? "d-none" : "d-block"} `}>
           <DataTable
             title={
               <h2
@@ -171,6 +174,8 @@ const SalesSummaryReport = ({
             striped
             pagination
             subHeader
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       )}
@@ -227,7 +232,7 @@ const SalesSummaryReport = ({
             >
               {grandTotalDeliveredQty != null
                 ? grandTotalDeliveredQty?.toLocaleString()
-                : 0} 
+                : 0}
             </td>
             <td
               style={{
@@ -238,7 +243,7 @@ const SalesSummaryReport = ({
             >
               {grandTotalAmount != null
                 ? grandTotalAmount?.toLocaleString()
-                : 0} 
+                : 0}
             </td>
           </tr>
         </tbody>

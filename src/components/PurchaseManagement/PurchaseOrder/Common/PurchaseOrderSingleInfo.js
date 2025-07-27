@@ -65,7 +65,6 @@ const PurchaseOrderSingleInfo = ({
                   ...provided,
                   zIndex: 9999,
                   height: "auto",
-                  // overflowY: "scroll",
                 }),
               }}
               theme={(theme) => ({
@@ -166,7 +165,6 @@ const PurchaseOrderSingleInfo = ({
                   ...provided,
                   zIndex: 9999,
                   height: "auto",
-                  // overflowY: "scroll",
                 }),
               }}
               theme={(theme) => ({
@@ -250,8 +248,7 @@ const PurchaseOrderSingleInfo = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({
@@ -371,7 +368,6 @@ const PurchaseOrderSingleInfo = ({
                 ...provided,
                 zIndex: 9999,
                 height: "auto",
-                // overflowY: "scroll",
               }),
             }}
             theme={(theme) => ({

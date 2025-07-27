@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {  useMemo} from "react";
+import React, { useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useGetAllPaymentInformationQuery } from "../../../../redux/features/paymnetinformation/paymentInfoApi";
 import { downloadSalesSummaryPDF } from "../../../ReportProperties/PDF/handleSalesSummaryPDF";
@@ -12,7 +12,7 @@ const OrderSummaryReport = ({
   isTableDispaly,
   filteredDatas,
   companyinfo,
-  isOrderSummaryLoading
+  isOrderSummaryLoading,
 }) => {
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const reportTitle = "ORDER SUMMARYF";
@@ -122,7 +122,10 @@ const OrderSummaryReport = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -160,12 +163,12 @@ const OrderSummaryReport = ({
       </div>
     );
   }, [companyinfo, filteredDatas, paymentTypeInfo]);
-  
+
   return (
-    <div >
+    <div>
       <LoadingSpineer isLoading={isOrderSummaryLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div className={`${isOrderSummaryLoading ? 'd-none' : 'd-block'}`} style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
+        <div className={`${isOrderSummaryLoading ? "d-none" : "d-block"}`}>
           <div className="shadow-lg">
             <DataTable
               title={
@@ -187,6 +190,8 @@ const OrderSummaryReport = ({
               striped
               pagination
               subHeader
+              fixedHeader={true}
+              fixedHeaderScrollHeight="calc(65vh - 120px)"
             />
           </div>
         </div>

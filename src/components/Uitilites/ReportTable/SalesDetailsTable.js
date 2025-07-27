@@ -72,7 +72,7 @@ const SalesDetailsTable = ({
                   );
 
                   const unitPrice = piNumber?.detailsData.find(
-                    (item) => item.itemId == detail.itemId
+                    (item) => item.itemId === detail.itemId
                   );
 
                   const clientName = clientInformation

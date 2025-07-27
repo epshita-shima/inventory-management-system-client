@@ -52,10 +52,6 @@ const InsertBankInformation = () => {
   return (
     <div
       className=" row px-4 mx-4"
-      // style={{
-      //   overflowY: "scroll",
-      //   height: "500px",
-      // }}
     >
       <div className="overflow-hidden">
         <div className="shadow-lg mt-2 mt-sm-4 mt-md-4 mt-lg-4 p-4 rounded-4">
@@ -76,7 +72,7 @@ const InsertBankInformation = () => {
                   })
                 ),
               })}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
+              onSubmit={({ setSubmitting, resetForm }) => {
                 resetForm({ values: initialValues });
                 setSubmitting(false);
               }}
@@ -85,7 +81,6 @@ const InsertBankInformation = () => {
                 values,
                 resetForm,
                 setFieldValue,
-                isSubmitting,
                 errors,
                 touched,
                 isValid,

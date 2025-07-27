@@ -43,19 +43,15 @@ const GRNInfoList = ({ permission }) => {
   const [deleteGRNInfo] = useDeleteGRNInformationMutation();
   const [selectSupplierPoNo, setSelectSupplierPoNo] = useState("");
   const [selectSupplierName, setSelectSupplierName] = useState("");
-  const [selectMonth, setSelectMonth] = useState([]);
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
   const [toDate, setToDate] = useState(new Date().toLocaleDateString("en-CA"));
   const [pOOptionsData, setPOOptionsData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [isFetchAfterDeleteData, setIsFetchAfterDeleteData] = useState(false);
+  const [filteredData] = useState([]);
   const animatedComponents = makeAnimated();
   const reportTitle = "GOODS RECEIVE REPORT";
-  const [executeQuery, setExecuteQuery] = useState(false);
-
   const [filters, setFilters] = useState({
     supplierPONo: "",
     supplierId: "",
@@ -66,7 +62,6 @@ const GRNInfoList = ({ permission }) => {
 
   const [trigger, { data: filteredDatas, isLoading: isGRnLoading }] =
     useLazyGetFilteredGRNQuery();
-
 
   useEffect(() => {
     const createPODropdown = (options) => {
@@ -237,8 +232,6 @@ const GRNInfoList = ({ permission }) => {
                           }
                         );
                         await refetch();
-
-                        setIsFetchAfterDeleteData(true);
                       } else {
                         swal(
                           "Error",
@@ -290,7 +283,7 @@ const GRNInfoList = ({ permission }) => {
       JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
       -1
   );
-  
+
   const groupData = (filteredData) => {
     return filteredData?.reduce((acc, row) => {
       const key = `${row.receiveDate}`;
@@ -301,13 +294,12 @@ const GRNInfoList = ({ permission }) => {
       return acc;
     }, {});
   };
-  
+
   let groupedData = null;
-  if(filteredItems && filteredItems.length > 0){
-    groupedData=groupData(filteredItems);
-  }
-  else{
-    groupedData = []; 
+  if (filteredItems && filteredItems.length > 0) {
+    groupedData = groupData(filteredItems);
+  } else {
+    groupedData = [];
   }
 
   const subHeaderComponent = useMemo(() => {
@@ -395,7 +387,19 @@ const GRNInfoList = ({ permission }) => {
         )}
       </div>
     );
-  }, [filteredDatas, filterText, filteredItems, supplierInfo, rawItemInfo, resetPaginationToggle, fromDate, purchaseInfoData, toDate, companyinfo, reportTitle]);
+  }, [
+    filteredDatas,
+    filterText,
+    filteredItems,
+    supplierInfo,
+    rawItemInfo,
+    resetPaginationToggle,
+    fromDate,
+    purchaseInfoData,
+    toDate,
+    companyinfo,
+    reportTitle,
+  ]);
 
   const generateMonths = (year) => {
     const getYear = year.getFullYear();
@@ -431,7 +435,7 @@ const GRNInfoList = ({ permission }) => {
 
   return (
     <div className="row px-5 mx-4">
-      <div className="col userlist-table mt-4">
+      <div className="col mt-2">
         <LoadingSpineer isLoading={isLoadingSupplier} />
         <div>
           <h3 className="fw-bold mt-1">Goods Receive Note (GRN) List</h3>
@@ -468,7 +472,6 @@ const GRNInfoList = ({ permission }) => {
                             ...provided,
                             zIndex: 9999,
                             height: "auto",
-                            // overflowY: "scroll",
                           }),
                         }}
                         theme={(theme) => ({
@@ -519,7 +522,6 @@ const GRNInfoList = ({ permission }) => {
                             ...provided,
                             zIndex: 9999,
                             height: "auto",
-                            // overflowY: "scroll",
                           }),
                         }}
                         theme={(theme) => ({
@@ -718,7 +720,6 @@ const GRNInfoList = ({ permission }) => {
                   }));
                   setSelectSupplierName("");
                   setSelectSupplierPoNo("");
-                  setSelectMonth("");
                   setIsTableDisplay(false);
                 }}
               >
@@ -727,29 +728,19 @@ const GRNInfoList = ({ permission }) => {
             </div>
           </div>
         </div>
-
-        {/* <div style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}> */}
         {isTableDispaly && (
-          <div
-            style={{
-              height: "calc(65vh - 120px)",
-              overflowY: "scroll",
-              overflowX: "scroll",
-              border: "1px solid white",
-              backgroundColor: "white",
-            }}
-          >
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              defaultSortField="name"
-              customStyles={customStyles}
-              striped
-              pagination
-              subHeader
-              subHeaderComponent={subHeaderComponent}
-            />
-          </div>
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            defaultSortField="name"
+            customStyles={customStyles}
+            striped
+            pagination
+            subHeader
+            subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(55vh - 120px)"
+          />
         )}
 
         {/* </div> */}

@@ -31,7 +31,7 @@ const OrderDetailsReportTable = ({
   isOderDetailsLoading,
   companyinfo,
 }) => {
-  const [filterText, setFilterText] = React.useState("");
+  const [filterText] = React.useState("");
   const [groupedData, setGroupedData] = useState({});
   const { data: unitInfo } = useGetAllItemUnitQuery(undefined);
   const { data: paymentInfo } = useGetAllPaymentInformationQuery(undefined);
@@ -294,7 +294,7 @@ const OrderDetailsReportTable = ({
     >
       <LoadingSpineer isLoading={isOderDetailsLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div className={`${isOderDetailsLoading ? 'd-none' : 'd-block'}`} style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}>
+        <div className={`${isOderDetailsLoading ? 'd-none' : 'd-block'}`} >
           <div className="shadow-lg">
             <DataTable
               title={
@@ -316,6 +316,8 @@ const OrderDetailsReportTable = ({
               striped
               pagination
               subHeader
+              fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
             />
           </div>
         </div>

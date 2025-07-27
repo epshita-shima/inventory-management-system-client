@@ -7,16 +7,10 @@ import { formatDate } from "../../../Uitilites/DateUtilities";
 import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const CombineReport = ({
-  permission,
   filteredCombineData,
-  filterText,
-  piInformation,
-  clientInformation,
-  companyInformation,
   isTableDispaly,
   companyinfo,
-  itemSizeInfo,
-  isCombineLoading
+  isCombineLoading,
 }) => {
   const { groupedResult, orderInfo } = filteredCombineData || {};
   const reportTitle = "COMBINE REPORT (SALES)";
@@ -249,144 +243,160 @@ const CombineReport = ({
   const subHeaderComponent = useMemo(() => {
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2">
-        {
-          groupedResult?.length > 0 && (  <div className="d-flex justify-content-end align-items-center">
-          <div className="table-head-icon d-flex">
-            <div className="dropdown">
-              <button
-                className="btn btn-download dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Download
-              </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      if (companyinfo?.length !== 0 || undefined) {
-                        downloadCombineReportPDF({ companyinfo }, reportTitle);
-                      }
-                    }}
-                  >
-                    PDF
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => {
-                      const calculateInvoiceMetrics = (data) => {
-                        const grouped = {};
-                      
-                        data?.forEach((entry) => {
-                          const { piDate, invoiceNo, detailsData } = entry;
-                      
-                          if (!grouped[invoiceNo]) {
-                            grouped[invoiceNo] = {
-                              piDate,
-                              invoiceNo,
-                              totalQuantity: 0,
-                              totalPiAmount: 0,
-                              totalDeliveredQty: 0,
-                              totalDeliveredAmount: 0,
-                              totalReturnAmount: 0,
-                              totalReturnQty: 0,
-                              totalNetQty: 0,
-                              piUnitPrice: 0,
-                              deliveredAvgUnitprice: 0,
-                              returnAvgUnitPrice: 0,
-                              totalNetAmount: 0,
-                              netAvgUnitPrice: 0,
-                            };
-                          }
-                      
-                          detailsData?.forEach(
-                            ({
-                              quantity,
-                              unitPrice,
-                              deliveredQty,
-                              returnQty,
-                            }) => {
-                              grouped[invoiceNo].totalQuantity += quantity;
-                              grouped[invoiceNo].totalDeliveredQty += deliveredQty;
-                              grouped[invoiceNo].totalReturnQty += returnQty;
-                              grouped[invoiceNo].totalNetQty += deliveredQty - returnQty;
-                      
-                              grouped[invoiceNo].totalPiAmount += Number(quantity) * Number(unitPrice);
-                      
-                              grouped[invoiceNo].piUnitPrice = Math.round(
-                                grouped[invoiceNo].totalPiAmount /
-                                  grouped[invoiceNo].totalQuantity
-                              );
-                      
-                              grouped[invoiceNo].totalDeliveredAmount += deliveredQty * unitPrice;
-                              grouped[invoiceNo].totalReturnAmount += returnQty * unitPrice;
-                      
-                              grouped[invoiceNo].deliveredAvgUnitprice = 
-                              grouped[invoiceNo].totalDeliveredQty > 0
-                                ? Math.round(grouped[invoiceNo].totalDeliveredAmount / grouped[invoiceNo].totalDeliveredQty)
-                                : 0;
-                      
-                              grouped[invoiceNo].returnAvgUnitPrice = grouped[invoiceNo].totalReturnQty > 0 ? Math.round(
-                                grouped[invoiceNo].totalReturnAmount /
-                                  grouped[invoiceNo].totalReturnQty
-                              ):0;
-                      
-                              grouped[invoiceNo].date = piDate;
-                      
-                              grouped[invoiceNo].totalNetQty = (grouped[invoiceNo].totalQuantity -
-                                grouped[invoiceNo].totalDeliveredQty) + grouped[invoiceNo].totalReturnQty;
-                      
-                              grouped[invoiceNo].totalNetAmount = grouped[invoiceNo].totalNetQty * grouped[invoiceNo].piUnitPrice;
-                      
-                              grouped[invoiceNo].netAvgUnitPrice = Math.round(
-                                grouped[invoiceNo].totalNetAmount /
-                                  grouped[invoiceNo].totalNetQty
-                              );
-                            }
+        {groupedResult?.length > 0 && (
+          <div className="d-flex justify-content-end align-items-center">
+            <div className="table-head-icon d-flex">
+              <div className="dropdown">
+                <button
+                  className="btn btn-download dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Download
+                </button>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        if (companyinfo?.length !== 0 || undefined) {
+                          downloadCombineReportPDF(
+                            { companyinfo },
+                            reportTitle
                           );
-                        });
-                      
-                        // Convert grouped object to an array
-                        return Object.values(grouped);
-                      };
-                      
-                      const calculatedData = calculateInvoiceMetrics(orderInfo);
+                        }
+                      }}
+                    >
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        const calculateInvoiceMetrics = (data) => {
+                          const grouped = {};
 
-                      handelCombineReportExcel(
-                        groupedResult,
-                        companyinfo,
-                        reportTitle
-                      );
-                    }}
-                  >
-                    Excel
-                  </a>
-                </li>
-              </ul>
+                          data?.forEach((entry) => {
+                            const { piDate, invoiceNo, detailsData } = entry;
+
+                            if (!grouped[invoiceNo]) {
+                              grouped[invoiceNo] = {
+                                piDate,
+                                invoiceNo,
+                                totalQuantity: 0,
+                                totalPiAmount: 0,
+                                totalDeliveredQty: 0,
+                                totalDeliveredAmount: 0,
+                                totalReturnAmount: 0,
+                                totalReturnQty: 0,
+                                totalNetQty: 0,
+                                piUnitPrice: 0,
+                                deliveredAvgUnitprice: 0,
+                                returnAvgUnitPrice: 0,
+                                totalNetAmount: 0,
+                                netAvgUnitPrice: 0,
+                              };
+                            }
+
+                            detailsData?.forEach(
+                              ({
+                                quantity,
+                                unitPrice,
+                                deliveredQty,
+                                returnQty,
+                              }) => {
+                                grouped[invoiceNo].totalQuantity += quantity;
+                                grouped[invoiceNo].totalDeliveredQty +=
+                                  deliveredQty;
+                                grouped[invoiceNo].totalReturnQty += returnQty;
+                                grouped[invoiceNo].totalNetQty +=
+                                  deliveredQty - returnQty;
+
+                                grouped[invoiceNo].totalPiAmount +=
+                                  Number(quantity) * Number(unitPrice);
+
+                                grouped[invoiceNo].piUnitPrice = Math.round(
+                                  grouped[invoiceNo].totalPiAmount /
+                                    grouped[invoiceNo].totalQuantity
+                                );
+
+                                grouped[invoiceNo].totalDeliveredAmount +=
+                                  deliveredQty * unitPrice;
+                                grouped[invoiceNo].totalReturnAmount +=
+                                  returnQty * unitPrice;
+
+                                grouped[invoiceNo].deliveredAvgUnitprice =
+                                  grouped[invoiceNo].totalDeliveredQty > 0
+                                    ? Math.round(
+                                        grouped[invoiceNo]
+                                          .totalDeliveredAmount /
+                                          grouped[invoiceNo].totalDeliveredQty
+                                      )
+                                    : 0;
+
+                                grouped[invoiceNo].returnAvgUnitPrice =
+                                  grouped[invoiceNo].totalReturnQty > 0
+                                    ? Math.round(
+                                        grouped[invoiceNo].totalReturnAmount /
+                                          grouped[invoiceNo].totalReturnQty
+                                      )
+                                    : 0;
+
+                                grouped[invoiceNo].date = piDate;
+
+                                grouped[invoiceNo].totalNetQty =
+                                  grouped[invoiceNo].totalQuantity -
+                                  grouped[invoiceNo].totalDeliveredQty +
+                                  grouped[invoiceNo].totalReturnQty;
+
+                                grouped[invoiceNo].totalNetAmount =
+                                  grouped[invoiceNo].totalNetQty *
+                                  grouped[invoiceNo].piUnitPrice;
+
+                                grouped[invoiceNo].netAvgUnitPrice = Math.round(
+                                  grouped[invoiceNo].totalNetAmount /
+                                    grouped[invoiceNo].totalNetQty
+                                );
+                              }
+                            );
+                          });
+
+                          // Convert grouped object to an array
+                          return Object.values(grouped);
+                        };
+
+                        handelCombineReportExcel(
+                          groupedResult,
+                          companyinfo,
+                          reportTitle
+                        );
+                      }}
+                    >
+                      Excel
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>)
-        }
-      
+        )}
       </div>
     );
-  }, [companyinfo, orderInfo,groupedResult]);
+  }, [companyinfo, groupedResult]);
 
   return (
     <div>
       <LoadingSpineer isLoading={isCombineLoading}></LoadingSpineer>
       {isTableDispaly && (
-        <div
-          className={`${isCombineLoading ? 'd-none' : 'd-block'}`}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-        >
+        <div className={`${isCombineLoading ? "d-none" : "d-block"}`}>
           <DataTable
             title={
               <h2
@@ -407,6 +417,8 @@ const CombineReport = ({
             striped
             pagination
             subHeader
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       )}
@@ -633,7 +645,6 @@ const CombineReport = ({
           </tr>
         </tbody>
       </table>
-      
     </div>
   );
 };

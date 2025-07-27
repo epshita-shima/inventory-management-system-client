@@ -18,18 +18,19 @@ import {
   useUpdateRMItemInfoMutation,
 } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllCategoryInfoQuery } from "../../../../redux/features/categoryInfo/categoryInfoApi";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 import getMakebyUser from "../../../Common/CommonMakeUser/CommonMakingUser";
 import InsertCategoryInformationModal from "../../../CategoryInformation/Update/InsertCategoryInformationModal";
 import "./UpdateRmItemInfo.css";
 import "../../../../buttonStyle/style.css";
+import { categoryInfoConvertSelectOption, itemUnitConvertSelectOption } from "../../../Common/CommonDropdown/CommonDropdown";
+
 const UpdateRmItemInfo = () => {
   const [startDate, setStartDate] = useState(
     new Date().toLocaleDateString("en-CA")
   );
   const { id } = useParams();
-  const [singleItemInfoData, setSingleItemInfoData] = useState();
-  const { data: singleRMItemData, isLoading: isLoadingUpdateRaw } =
+  const [singleItemInfoData, setSingleItemInfoData] = useState({});
+  const { data: singleRMItemData, } =
     useGetSingleRMItemQuery(id);
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitData } = useGetAllItemUnitQuery(undefined);
@@ -41,30 +42,10 @@ const UpdateRmItemInfo = () => {
     setSingleItemInfoData(singleRMItemData);
   }, [singleRMItemData]);
 
-  const categoryInfoConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.categoryInfo,
-      });
-    });
-    return result;
-  };
 
   const categoryInfoConvertedOptions =
     categoryInfoConvertSelectOption(categoryInfoData);
 
-  const itemUnitConvertSelectOption = (options) => {
-    let result = [];
-    options?.forEach((option) => {
-      result.push({
-        value: option._id,
-        label: option.unitInfo,
-      });
-    });
-    return result;
-  };
 
   const itemUnitConvertedOptions = itemUnitConvertSelectOption(itemUnitData);
 
@@ -102,7 +83,6 @@ const UpdateRmItemInfo = () => {
 
   return (
     <div className="row px-4 mx-4">
-      {/* {<LoadingSpineer isLoading={isLoadingUpdateRaw}></LoadingSpineer>} */}
       <div className="shadow-lg  p-5 rounded-4">
         <div className="d-flex justify-content-between align-items-center ">
           <div className="d-flex align-items-center">
@@ -252,7 +232,7 @@ const UpdateRmItemInfo = () => {
                             name="unitinfo"
                             options={itemUnitConvertedOptions}
                             value={itemUnitConvertedOptions.find(
-                              (x) => x.value == singleItemInfoData?.unitId
+                              (x) => x.value === singleItemInfoData?.unitId
                             )}
                             styles={{
                               control: (baseStyles, state) => ({
@@ -418,7 +398,7 @@ const UpdateRmItemInfo = () => {
                             onChange={(e) => {
                               setSingleItemInfoData((prevData) => ({
                                 ...prevData,
-                                itemStatus:e.value=="true"? true : false,
+                                itemStatus:e.value==="true"? true : false,
                                 updateBy: updatebyUser,
                                 updateDate: new Date(),
                               }));
@@ -478,7 +458,7 @@ const UpdateRmItemInfo = () => {
                             onChange={(e) => {
                               setSingleItemInfoData((prevData) => ({
                                 ...prevData,
-                                cftDeclaration:e.value=="true"? true : false,
+                                cftDeclaration:e.value==="true"? true : false,
                                 updateBy: updatebyUser,
                                 updateDate: new Date(),
                               }));

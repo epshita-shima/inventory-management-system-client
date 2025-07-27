@@ -41,16 +41,16 @@ const downloadGRNPDF = async (
         valign: "middle",
       },
       columnStyles: {
-        0: { cellWidth: "auto" }, // Custom width for first column
-        1: { cellWidth: "auto" }, // Custom width for second column
-        2: { cellWidth: 25 }, // Custom width for third column
-        3: { cellWidth: "auto" }, // Auto width for fourth column
-        4: { cellWidth: "auto" }, // Custom width for first column
-        5: { cellWidth: "auto" }, // Custom width for second column
-        6: { cellWidth: "auto" }, // Custom width for third column
-        7: { cellWidth: "auto" }, // Auto width for fourth column
-        8: { cellWidth: "auto" }, // Auto width for fourth column
-        9: { cellWidth: 25 }, // Auto width for fourth column
+        0: { cellWidth: "auto" }, 
+        1: { cellWidth: "auto" }, 
+        2: { cellWidth: 25 },     
+        3: { cellWidth: "auto" }, 
+        4: { cellWidth: "auto" }, 
+        5: { cellWidth: "auto" }, 
+        6: { cellWidth: "auto" }, 
+        7: { cellWidth: "auto" }, 
+        8: { cellWidth: "auto" }, 
+        9: { cellWidth: 25 },     
       },
       didParseCell: function (data) {
         const rowIndex = data.row.index;

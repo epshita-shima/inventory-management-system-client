@@ -4,14 +4,12 @@ import React, { useEffect, useState } from "react";
 import DeliveryOrderListData from "./DeliveryOrderListData";
 import { useGetAllUserQuery } from "../../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
-import DeliveryOrderApproveList from "../../DeliveryOderApproveList/DeliveryOrderApproveList";
 import { extractUserMenuListForCurrectMenu } from "../../../../Uitilites/extractUserMenuListForCurrectMenu";
-import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveryOrderList = () => {
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {

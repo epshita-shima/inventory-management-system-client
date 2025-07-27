@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { extractUserMenuListForCurrectMenu } from '../../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const PurchaseOrderApproveList = () => {
-    const clickhandler = (name) => console.log("delete", name);
     const { data: user, isUserloading } = useGetAllUserQuery(undefined);
-  
-    const [permission, setPermission] = useState();
+    const [permission, setPermission] = useState({});
     const navigate = useNavigate();
+    
     useEffect(() => {
       if (!isUserloading && user) {
         const permissions = extractUserMenuListForCurrectMenu(user, "PO Approval");

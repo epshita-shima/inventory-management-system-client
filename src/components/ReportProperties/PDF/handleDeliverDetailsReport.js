@@ -92,8 +92,7 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
   Object.keys(groupedData).forEach((key) => {
     const group = groupedData[key];
     const formattedDate = formatDate(group.finishGoodsDeliveryDate);
-    const rowSpan = group?.detailsData.length;
-  
+
     const piNumber = piInformation.find((pi) => pi._id === group.piId);
   
     const dateWiseTotalQuantity = group.detailsData.reduce(
@@ -132,7 +131,7 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
         detailIndex === 0 ? formattedDate : '',
         detailIndex === 0 ? clientName : '',
         detailIndex === 0 ? piNumber.invoiceNo : '',
-        // `${itemNames.itemName} (${itemSize.sizeInfo})`,
+  
        
         currency,
         `${itemUnit?.unitInfo}`,
@@ -225,7 +224,6 @@ const grandTotalSalesAmount=calculateGrandTotalSalesAmount(filteredData,piInform
     },
   ]);
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [
       ['Deliver Date', 'Client Name', 'PI Number', 'Currency','Unit', 'Deliver Qty', 'Unit Price', 'Amount']
     ],

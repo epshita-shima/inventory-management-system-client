@@ -1,13 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useMemo, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+
+import { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import ProductionConsumptionDetailsModal from "./ProductionConsumptionDetailsModal";
 import { useLazyGetRawMaterialDetailsConsumptionReportQuery } from "../../../../redux/features/productionreport/productionreportApi";
 import { formatDate } from "../../../Uitilites/DateUtilities";
-import {downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary} from "../../../ReportProperties/PDF/handleItemwiseProsuctionConsumption"
+import { downloadRawMaterailProductionConsumptionDetailsPDFItemwisSummary } from "../../../ReportProperties/PDF/handleItemwiseProsuctionConsumption";
 
 const ProductionConsumptionModal = ({
   productionSingleItemId,
@@ -16,8 +14,7 @@ const ProductionConsumptionModal = ({
   rawMaterialItem,
   companyinfo,
 }) => {
-
-  console.log(productionItemDetailsData)
+  console.log(productionItemDetailsData);
   const [showProductionDetailsModal, setShowProductionDetailsModal] =
     useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -51,7 +48,9 @@ const ProductionConsumptionModal = ({
     return Object.values(result);
   };
 
-  const grandTotalProductionConsumption =groupData(productionItemDetailsData)?.reduce(
+  const grandTotalProductionConsumption = groupData(
+    productionItemDetailsData
+  )?.reduce(
     (sum, detail) => sum + parseFloat(detail.totalProductionConsumption) || 0,
     0
   );
@@ -74,8 +73,6 @@ const ProductionConsumptionModal = ({
 
     {
       name: "Production Date",
-      // selector: (row) =>
-      //   new Date(row.productionDate).toLocaleDateString("en-CA"),
       sortable: true,
       center: true,
       filterable: true,
@@ -86,7 +83,9 @@ const ProductionConsumptionModal = ({
           data-target="#exampleModalLabelProductionConsumptionDetails"
           onClick={() => handleRowClickForProductionDetails(row)}
         >
-          <a href="#" className="text-success fw-bold">{new Date(row.productionDate).toLocaleDateString("en-CA")}</a>
+          <a href="#" className="text-success fw-bold">
+            {new Date(row.productionDate).toLocaleDateString("en-CA")}
+          </a>
         </div>
       ),
     },
@@ -148,7 +147,10 @@ const ProductionConsumptionModal = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -200,9 +202,7 @@ const ProductionConsumptionModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={groupData(productionItemDetailsData)}
@@ -212,6 +212,8 @@ const ProductionConsumptionModal = ({
                   pagination
                   subHeader
                   subHeaderComponent={subHeaderComponent}
+                  fixedHeader={true}
+                  fixedHeaderScrollHeight="calc(85vh - 120px)"
                 />
               </div>
 

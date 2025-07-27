@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   faArrowAltCircleLeft,
-  faExclamationCircle,
   faPlus,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, } from "react-bootstrap";
 import Select from "react-select";
 import "./UserCreation.css";
 import UserRoleEntryModal from "../../UserRoleInformation/Insert/UserRoleEntryModal";
@@ -34,13 +33,10 @@ const UserCreation = () => {
   const [serialValue, setSerialValue] = useState([]);
 
   const {
-    data: userRoleData,
-    isError: userRoleIsError,
-    isLoading: userRoleIsLoading,
+    data: userRoleData
   } = useGetUserRoleQuery();
   const {
     data: menuItems,
-    isError: menuItemsIsError,
     isLoading: menuItemsIsLoading,
   } = useGetAllMenuItemsQuery();
 
@@ -332,9 +328,6 @@ const UserCreation = () => {
               Back to menulist
             </button>
 
-            {/* <p style={{ fontSize: "20px", color: "red" }}>
-              <FontAwesomeIcon icon={faExclamationCircle}></FontAwesomeIcon>
-            </p> */}
           </div>
           <div className="mt-5">
             <Form validated={validated} onSubmit={handleCreateUser}>
@@ -359,9 +352,7 @@ const UserCreation = () => {
                       )}
                     </Form.Group>
                   </div>
-                  {/* <div className="">
-                  {validated && formData.firstname === '' && <p className="text-danger ">{`Firstname is required.`}</p>}
-                  </div> */}
+                 
                 </div>
 
                 <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
@@ -399,7 +390,7 @@ const UserCreation = () => {
                     <Form.Control.Feedback type="invalid">
                       Please provide a mobile.
                     </Form.Control.Feedback>
-                    {/* {validated && formData.lastname === '' && <div style={{ height: '20px' }}></div>} */}
+                    
                   </Form.Group>
                 </div>
                 <div className="w-100 ms-sm-2  ms-md-2  ms-lg-2 mt-2 mt-sm-0">
@@ -441,9 +432,8 @@ const UserCreation = () => {
                           primary: "#2DDC1B",
                         },
                       })}
-                      value={options?.find((x) => x.value == formData.roleId)}
-                      // style={{ border: "1px solid #2DDC1B" }}
-                      // value={typeOption.find((x)=>x.value==itemInformation.itemType)}
+                      value={options?.find((x) => x.value === formData.roleId)}
+                  
                       onChange={(e) => {
                         setFormData({ ...formData, roleId: e.value });
                       }}
@@ -474,7 +464,6 @@ const UserCreation = () => {
               <TreeView
                 isUpdate={isUpdate}
                 data={mergedData}
-                // userUPdateData={userUPdateData}
                 clickedCheckboxes={clickedCheckboxes}
                 setClickedCheckboxes={setClickedCheckboxes}
                 parentIds={parentIds}

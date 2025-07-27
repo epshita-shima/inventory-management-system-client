@@ -7,7 +7,7 @@ import { useGetAllRMItemInformationQuery } from "../../../../redux/features/item
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
 import { useGetAllItemUnitQuery } from "../../../../redux/features/itemUnitInfo/itemUnitInfoApi";
 
-const StockReportView = ({ permission, dropdownMenuStyles }) => {
+const StockReportView = () => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [executeQuery, setExecuteQuery] = useState(false);

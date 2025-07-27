@@ -120,8 +120,7 @@ const CommonParameter = ({
                   menu: (provided) => ({
                     ...provided,
                     zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
+                    height: "auto"
                   }),
                 }}
                 theme={(theme) => ({
@@ -168,8 +167,7 @@ const CommonParameter = ({
                   menu: (provided) => ({
                     ...provided,
                     zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
+                    height: "auto"
                   }),
                 }}
                 theme={(theme) => ({
@@ -217,8 +215,7 @@ const CommonParameter = ({
                   menu: (provided) => ({
                     ...provided,
                     zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
+                    height: "auto"
                   }),
                 }}
                 theme={(theme) => ({
@@ -301,8 +298,7 @@ const CommonParameter = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({

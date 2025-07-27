@@ -39,7 +39,7 @@ export const calculateGrandTotalReturnAmount = (data, piInformation) => {
     const detailReturnQty = detail.detailsData.reduce((sum, detail) => {
       const piNumber = piInformation?.find((pi) => pi._id === detail.piId);
       const unitPrice = piNumber?.detailsData.find(
-        (item) => item.itemId == detail.itemId
+        (item) => item.itemId === detail.itemId
       );
       return sum + detail.returnQty * unitPrice?.unitPrice;
     }, 0);

@@ -12,7 +12,6 @@ import {
   useGetSingleFinishGoodsDeliveryInformationQuery,
   useInsertFinishGoodsDeliveryInformationMutation,
 } from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 import '../../../buttonStyle/style.css';
 
 const FinishGoodsDeliveryCommonPart = () => {
@@ -91,7 +90,7 @@ const FinishGoodsDeliveryCommonPart = () => {
         zIndex: "9999",
       }}
     >
-      {/* <LoadingSpineer isLoading={isLoadingDetDelivery}></LoadingSpineer> */}
+
       <div className={isLoadingDetDelivery ? 'd-none' : 'd-block'}>
         <div className="px-4 rounded-4">
           <Formik
@@ -105,7 +104,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                 .matches(/^[0-9]+$/, "Must be a valid phone number"),
               truckNo: Yup.string().required("Required"),
             })}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
+            onSubmit={({ setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
               setSubmitting(false);
             }}
@@ -114,7 +113,6 @@ const FinishGoodsDeliveryCommonPart = () => {
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -128,8 +126,7 @@ const FinishGoodsDeliveryCommonPart = () => {
               >
                 <FieldArray
                   name="detailsData"
-                  render={(arrayHelpers) => {
-                    const details = values.detailsData;
+                  render={() => {
                     const totalDeliverQtyCalculate =
                       deliveryOrderInformation?.detailsData?.reduce(
                         (acc, cur) => acc + parseFloat(cur.deliverQty || 0),
@@ -236,18 +233,7 @@ const FinishGoodsDeliveryCommonPart = () => {
                                     deliveryOrderInformation
                                   }
                                 ></InsertFinishGoodsDeliveryDetails>
-                                // <InsertProduction
-                                //   details={details}
-                                //   setFieldValue={setFieldValue}
-                                //   touched={touched}
-                                //   errors={errors}
-                                //   arrayHelpers={arrayHelpers}
-                                //   values={values}
-                                //   receipeOptions={receipeOptions}
-                                //   cftData={cftData}
-                                //   receipeOptionsLessQty={receipeOptionsLessQty}
-                                //   rawMaterialsData={rawMaterialsData}
-                                // ></InsertProduction>
+                           
                               }
                             </div>
                           </div>

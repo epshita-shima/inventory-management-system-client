@@ -369,7 +369,7 @@ const UnApproveInvoiceModal = ({
         aria-hidden="true"
       >
         <div className="modal-dialog fullscreen-modal" role="document">
-          <div className="modal-content">
+          <div className="modal-content" style={{alignItems:"normal"}}>
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
                 Unapprove PI List

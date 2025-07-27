@@ -372,7 +372,10 @@ const UserListInfo = ({
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
                 <li>
                   <a
                     className="dropdown-item"
@@ -435,7 +438,7 @@ const UserListInfo = ({
       ></ListHeading>
       <div className="mt-5">
         <div className="row">
-          <div className="col userlist-table main-table-view">
+          <div className="col">
             <div className="shadow-lg overflow-x-auto flex-nowarp">
               <DataTable
                 columns={columns}
@@ -446,6 +449,8 @@ const UserListInfo = ({
                 pagination
                 subHeader
                 subHeaderComponent={subHeaderComponent}
+                fixedHeader={true}
+                fixedHeaderScrollHeight="calc(65vh - 120px)"
               />
             </div>
           </div>

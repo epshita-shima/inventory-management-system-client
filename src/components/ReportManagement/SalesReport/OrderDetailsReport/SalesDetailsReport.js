@@ -286,7 +286,6 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
       {isTableDispaly ? (
         <div
           className={`${isSalesDetailsLoading ? 'd-none' : 'd-block'}`}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
             title={
@@ -308,6 +307,8 @@ const grandTotalDeliverAmount = calculateGrandTotalSalesAmount(filteredDatas,piI
             striped
             pagination
             subHeader
+             fixedHeader={true}
+              fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       ) : null}

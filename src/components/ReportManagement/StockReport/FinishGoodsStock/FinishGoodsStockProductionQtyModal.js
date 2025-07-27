@@ -27,12 +27,6 @@ const FinishGoodsStockProductionQtyModal = ({
   const [groupedData, setGroupedData] = useState({});
   const reportTitle = `Production Quantity ${itemName?.itemName} (${sizeInfo?.sizeInfo})`;
   const reportTitlForAllData = `Itemwise Production Quantity ${itemName?.itemName} (${sizeInfo?.sizeInfo})`;
-  const transformedProductionData = filteredDatas?.flatMap((piDetails) =>
-    piDetails.detailsData.map((detail) => ({
-      ...piDetails,
-      detailsData: detail,
-    }))
-  );
   const grandTotalProductionQuantity =
     calculateProductionQuantity(filteredDatas);
 
@@ -43,6 +37,7 @@ const FinishGoodsStockProductionQtyModal = ({
     };
     processData();
   }, [filteredDatas]);
+
   const columns = [
     {
       name: "Sl.",
@@ -280,9 +275,7 @@ const FinishGoodsStockProductionQtyModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={filteredDatas}
@@ -292,6 +285,8 @@ const FinishGoodsStockProductionQtyModal = ({
                   pagination
                   subHeader
                   subHeaderComponent={subHeaderComponent}
+                   fixedHeader={true}
+              fixedHeaderScrollHeight="calc(85vh - 120px)"
                 />
               </div>
             </div>

@@ -51,10 +51,10 @@ import CombineReportTable from "./components/ReportManagement/CombineReport/Comb
 import PurchaseReportTable from "./components/ReportManagement/PurchaseReport/PurchaseReportTable";
 import RequireAuth from "./pages/RequireAuth/RequireAuth";
 import PurchaseStatusList from "./components/PurchaseManagement/PurchaseOrder/PurchaseOrderApprove/PurchaseStatusList";
-import isTokenExpired from "./redux/api/isTokenExpired";
 import StockReportDetails from "./components/ReportManagement/StockReport/RawMaterialStock/StockReportDetails";
 import FinishGoodStockDetails from "./components/ReportManagement/StockReport/FinishGoodsStock/FinishGoodStockDetails";
 import useInactivityLogout from './components/Customhook/useInactivityLogout';
+import ConsumptionReportMenuPermission from './components/ReportManagement/ConsumptionInFIFOReport/ConsumptionReportView/ConsumptionReportMenuPermission';
 
 const App =()=> {
 
@@ -65,9 +65,9 @@ const App =()=> {
   const [resetPassword, setResetPassword] = useState(false);
   const [userIdForChangePassowrd, setUserIdForChangePassowrd] = useState([]);
   const getMenulistData = localStorage.getItem("user");
-  const token= localStorage.getItem("accesstoken");
   const menuListData = JSON.parse(getMenulistData);
- isTokenExpired(token)
+
+
   return (
     <div>
       <div className="app-container">
@@ -539,6 +539,14 @@ const App =()=> {
                 element={
                   <RequireAuth>
                     <RawMaterialConsumptionTable />
+                  </RequireAuth>
+                }
+              ></Route>
+              <Route
+                path="consumption-in-fifo-method"
+                element={
+                  <RequireAuth>
+                    <ConsumptionReportMenuPermission/>
                   </RequireAuth>
                 }
               ></Route>

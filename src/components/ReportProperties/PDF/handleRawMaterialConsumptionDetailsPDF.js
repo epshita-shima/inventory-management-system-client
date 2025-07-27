@@ -61,10 +61,7 @@ const downloadRawMaterailConsumptionDetailsPDF = async (
           data.cell.styles.halign = "right";
          
         }
-        // if (colIndex === totalCols - 1) {
-        //   data.cell.styles.halign = "right";
-        // }
-
+  
       },
     });
 

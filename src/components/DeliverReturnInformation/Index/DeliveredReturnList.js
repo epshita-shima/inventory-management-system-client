@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const DeliveredReturnList = () => {
-  const clickhandler = (name) => console.log("delete", name);
+
   const { data: user, isLoading: isUserloading } =
     useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,25 +28,6 @@ const DeliveredReturnList = () => {
     }
   }, [user, navigate, isUserloading]);
 
-  // if (isUserloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading user...
-  //       </button>
-  //     </div>
-  //   );
-  // }
   return (
     <div>
 

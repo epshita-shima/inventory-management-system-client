@@ -1,20 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import DataTable from "react-data-table-component";
-import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { downloadRawMaterialConsumptionSummaryPDF } from "../../../ReportProperties/PDF/handleRawMaterualConsumptionSummary";
 import handleRawMaterialConsumptionSummaryExcel from "../../../ReportProperties/Excel/handleRawMaterialConsumptionSummaryExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
 const RawMaterialConsumptionSummaryView = ({
-  permission,
   isTableDispaly,
-  setIsTableDisplay,
   filteredDatas,
   rawMaterialDataInfo,
   itemUnitInformation,
-  finishGoodsItemInfo,
-  itemSizeInfo,
   companyinfo,
   filters
 }) => {
@@ -189,17 +184,6 @@ const RawMaterialConsumptionSummaryView = ({
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
-            // title={
-            //   <h2
-            //     style={{
-            //       fontSize: "24px",
-            //       fontWeight: "bold",
-            //       color: "#000",
-            //     }}
-            //   >
-            //     Datewise Summary Report
-            //   </h2>
-            // }
             subHeaderComponent={subHeaderComponent}
             columns={columns}
             data={filteredDatas}

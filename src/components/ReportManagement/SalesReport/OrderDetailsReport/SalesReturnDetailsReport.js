@@ -277,7 +277,6 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
       {isTableDispaly ? (
         <div
           className={`${isReturnDetailsLoading ? 'd-none' : 'd-block'}`}
-          style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
             title={
@@ -299,6 +298,8 @@ const grandTotalRetuenAmount=calculateGrandTotalReturnAmount(filteredDatas,piInf
             striped
             pagination
             subHeader
+             fixedHeader={true}
+              fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       ) : null}

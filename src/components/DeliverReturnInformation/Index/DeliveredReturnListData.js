@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useDeleteReturnDeliveredInformationMutation,
   useGetAllReturnDeliveredInformationQuery,
@@ -17,20 +17,16 @@ import { downloadReturnDeliveredPDF } from "../../ReportProperties/PDF/HeaderFoo
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../redux/features/itemsizeinfo/itemSizeInfoApi";
 import { useGetAllItemUnitQuery } from "../../../redux/features/itemUnitInfo/itemUnitInfoApi";
-import {
-  useGetAllFinishGoodsDeliveryInformationQuery
-} from "../../../redux/features/finishgoodsdeliveryinfo/finishgoodsdeliveryApi";
 
 const DeliveredReturnListData = ({ permission }) => {
   const reportTitle = "Sales Return Report";
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
-  const { data: deliveredReturnInformationData, refetch,isFetching:isReturnDataFetching } =
+  const { data: deliveredReturnInformationData, refetch } =
     useGetAllReturnDeliveredInformationQuery(undefined);
   const { data: deliverOrderInformation } =
     useGetAllDelieryOrderInformationAfterDeliverQuery(undefined);
-  const { data: finishGoodsDeliveryInfo } =
-    useGetAllFinishGoodsDeliveryInformationQuery(undefined);
+
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: companyInformation } = useGetCompanyInfoQuery(undefined);
@@ -49,7 +45,6 @@ const DeliveredReturnListData = ({ permission }) => {
         detailsData: detail,
       }))
   );
-
 
   const columns = [
     {
@@ -157,11 +152,10 @@ const DeliveredReturnListData = ({ permission }) => {
                 }).then(async (willDelete) => {
                   if (willDelete) {
                     await deleteReturnDeliveredInfo(row?._id);
-                      swal("Your data has been deleted!", {
-                        icon: "success",
-                      });
-                      refetch();
-                    // }
+                    swal("Your data has been deleted!", {
+                      icon: "success",
+                    });
+                    refetch();
                   } else {
                     swal("Your data is safe!");
                   }
@@ -214,24 +208,23 @@ const DeliveredReturnListData = ({ permission }) => {
 
     return (
       <div className="d-block d-sm-flex justify-content-between align-items-center mb-2 pe-4">
-        {
-          deliveredReturnInformationData?.length ===0 ? '' : (<div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
+        {deliveredReturnInformationData?.length === 0 ? (
+          ""
+        ) : (
+          <div className="mt-2 mt-sm-0 ms-2 mb-2 mb-sm-0">
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
               onClear={handleClear}
               filterText={filterText}
             />
-          </div>)
-        }
+          </div>
+        )}
       </div>
     );
-  }, [filterText, resetPaginationToggle,deliveredReturnInformationData]);
+  }, [filterText, resetPaginationToggle, deliveredReturnInformationData]);
 
   return (
-    <div
-      className="row px-5 mx-4"
-      style={{ height: "calc(100vh - 120px)", overflowY: "auto" }}
-    >
+    <div className=" px-5 mx-4">
       <div className="col mt-sm-4 mt-md-4 mt-lg-0">
         <div className="shadow-lg">
           <DataTable
@@ -255,6 +248,8 @@ const DeliveredReturnListData = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(80vh - 120px)"
           />
         </div>
       </div>

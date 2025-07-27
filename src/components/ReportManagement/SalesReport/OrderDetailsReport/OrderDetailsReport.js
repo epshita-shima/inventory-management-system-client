@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import OrderDetailsReportTable from './OrderDetailsReportTable';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllUserQuery } from '../../../../redux/features/user/userApi';
 import ReportView from './ReportView';
@@ -7,7 +6,7 @@ import ReportView from './ReportView';
 const OrderDetailsReport = () => {
     const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
   
-    const [permission, setPermission] = useState();
+    const [permission, setPermission] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {

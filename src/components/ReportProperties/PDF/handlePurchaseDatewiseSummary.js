@@ -71,7 +71,6 @@ const downloadGoupPurchaseSummaryPDF = (
   ]);
 
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [["Receive Date", "Quantity", "Avarage Rate", "Amount"]],
     body: finalRows,
     startY: 50,

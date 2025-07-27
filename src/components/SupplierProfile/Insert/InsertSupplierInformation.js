@@ -20,7 +20,6 @@ const InsertSupplierInformation = () => {
   const ArrayHelperRef = useRef();
   const navigate = useNavigate();
   const { id } = useParams();
-  const getUser = localStorage.getItem("user");
   const makebyUser = getMakebyUser();
   const [insertSupplierInfo, { isLoading: isSaveSuplierLoading }] =
     useInsertSupplierInformationMutation();
@@ -100,7 +99,6 @@ const InsertSupplierInformation = () => {
   return (
     <div
       className=" row p-4 px-lg-4 mx-lg-4"
-     
     >
       <div className="">
         <div className="">
@@ -154,7 +152,7 @@ const InsertSupplierInformation = () => {
                   })
                 ),
               })}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
+              onSubmit={( { setSubmitting, resetForm }) => {
                 resetForm({ values: initialValues });
                 setSubmitting(false);
               }}
@@ -163,7 +161,6 @@ const InsertSupplierInformation = () => {
                 values,
                 resetForm,
                 setFieldValue,
-                isSubmitting,
                 errors,
                 touched,
                 isValid,
@@ -175,10 +172,7 @@ const InsertSupplierInformation = () => {
                     handleSubmit(e, values, resetForm);
                   }}
                 >
-                  {/* <div className="d-flex justify-content-between align-items-center">
-                    <div className="d-flex mt-4 mb-4">
-                    </div>
-                  </div> */}
+              
 
                   <FieldArray
                     name="detailsData"

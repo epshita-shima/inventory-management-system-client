@@ -10,7 +10,6 @@ import { formatDate } from "../../../Uitilites/DateUtilities";
 const RawMaterialDetailsView = ({
   permission,
   isTableDispaly,
-  setIsTableDisplay,
   filteredDatas,
   rawMaterialDataInfo,
   itemUnitInformation,
@@ -41,7 +40,7 @@ const RawMaterialDetailsView = ({
       detailsData: detail,
     }))
   );
-
+console.log('transformedProductionData',transformedProductionData)
 
   const grandTotalProductionQuantity = filteredDatas?.reduce(
     (totalMaterialUsed, item) => {
@@ -139,7 +138,7 @@ const RawMaterialDetailsView = ({
 
     {
       name: "Production Quantity",
-      selector: (row) => row.productionQty,
+       selector: (row) => row?.detailsData?.materialUsed,
       sortable: true,
       center: true,
       filterable: true,
@@ -288,17 +287,6 @@ const RawMaterialDetailsView = ({
           style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
         >
           <DataTable
-            // title={
-            //   <h2
-            //     style={{
-            //       fontSize: "24px",
-            //       fontWeight: "bold",
-            //       color: "#000",
-            //     }}
-            //   >
-            //     Datewise Details Report
-            //   </h2>
-            // }
             subHeaderComponent={subHeaderComponent}
             columns={columns}
             data={transformedProductionData}

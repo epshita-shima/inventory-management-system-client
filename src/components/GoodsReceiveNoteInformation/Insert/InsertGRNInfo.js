@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import Select from "react-select";
 import swal from "sweetalert";
 import { useGetAllSupplierInformationQuery } from "../../../redux/features/supplierInformation/supplierInfoApi";
-import { supplierDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllPurchaseOrderInformationQuery } from "../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi";
 import { useGetAllRMItemInformationQuery } from "../../../redux/features/iteminformation/rmItemInfoApi";
 import InsertGRNDetailsInfo from "./InsertGRNDetailsInfo";
@@ -18,20 +17,22 @@ import {
   useInsertGRNInformationMutation,
   useGetSingleGRNInformationQuery,
   useUpdateGRNInformationMutation,
-  useGetAllGRNInformationQuery,
 } from "../../../redux/features/goodsreceivenoteinfo/grninfoApi";
 import UpdateGRNInfo from "./../Update/UpdateGRNInfo";
-import { useCreateSerialNoMutation, useGetSerialNoQuery } from "../../../redux/features/serialgenerate/serialApi";
+import {
+  useCreateSerialNoMutation,
+  useGetSerialNoQuery,
+} from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-import LoadingSpineer from './../../Common/LoadingSpinner/LoadingSpineer';
-import '../../../buttonStyle/style.css';
+import "../../../buttonStyle/style.css";
 
 const InsertGRNInfo = () => {
   const navigate = useNavigate();
   const ArrayHelperRef = useRef();
   const makebyUser = getMakebyUser();
-  const { data: supplierInfo,isLoading:isLoadingSupplier } = useGetAllSupplierInformationQuery(undefined);
-  const { data: purchaseOrderInfo, isLoading } =
+  const { data: supplierInfo, isLoading: isLoadingSupplier } =
+    useGetAllSupplierInformationQuery(undefined);
+  const { data: purchaseOrderInfo } =
     useGetAllPurchaseOrderInformationQuery(undefined);
   const { data: rmItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [pOOptionsData, setPOOptionsData] = useState([]);
@@ -48,7 +49,7 @@ const InsertGRNInfo = () => {
   const [updateGRNInfo] = useUpdateGRNInformationMutation();
   const { id } = useParams();
   const { data: singleGRNInfo } = useGetSingleGRNInformationQuery(id);
-  const { data: serialNo ,refetch} = useGetSerialNoQuery(undefined);
+  const { data: serialNo, refetch } = useGetSerialNoQuery(undefined);
   const [createSerialNo] = useCreateSerialNoMutation();
 
   const initialValues = {
@@ -90,7 +91,6 @@ const InsertGRNInfo = () => {
       purchaseOrderInfo.length > 0
     ) {
       setPOGrandTotalQuantity(purchaseOrderInfo[0]?.grandTotalQuantity);
-
     } else {
       console.log(
         "purchaseOrderInfo is not defined or is not an array or is empty"
@@ -162,7 +162,9 @@ const InsertGRNInfo = () => {
       pOSingleId: values.pOSingleId,
       supplierId: values.supplierId,
       grnSerialNo: `GRN-${
-        serialValue?.serialNo === undefined ? "1" : parseInt(serialValue?.serialNo) + 1
+        serialValue?.serialNo === undefined
+          ? "1"
+          : parseInt(serialValue?.serialNo) + 1
       }`,
       supplierPoNo: values.supplierPoNo,
       receiveDate: values.receiveDate,
@@ -182,20 +184,21 @@ const InsertGRNInfo = () => {
       makeDate: values.makeDate,
       updateDate: values.updateDate,
     };
-    values.detailsData.map((item) => {
+    values.detailsData.forEach((item) => {
       modelData.detailsData.push({
         pOSingleId: values.pOSingleId,
         itemId: item.itemId,
+        previousReceivedQuantity: item.previousReceivedQuantity,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         amount: item.totalAmount,
       });
     });
- 
+
     if (id) {
       try {
         const response = await updateGRNInfo(grnSingleData);
-   
+
         if (response.data.status === 200) {
           swal("Done", "Data Update Successfully", "success");
           navigate("/main-view/grn-list");
@@ -223,7 +226,7 @@ const InsertGRNInfo = () => {
         if (response.data.status === 200) {
           swal("Done", "Data Save Successfully", "success");
           await createSerialNo(serialData);
-          refetch()
+          refetch();
           resetForm();
         } else {
           swal(
@@ -248,16 +251,18 @@ const InsertGRNInfo = () => {
   return (
     <div
       className=" row mx-4"
-      style={{ height: 'calc(98vh - 120px)', overflowY: 'hidden' }}
-
+      style={{ height: "calc(98vh - 120px)", overflowY: "hidden" }}
     >
-      {/* <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer> */}
-      <div className={`overflow-hidden ${isLoadingSupplier ? 'd-none' : 'd-block'}`}>
+      <div
+        className={`overflow-hidden ${
+          isLoadingSupplier ? "d-none" : "d-block"
+        }`}
+      >
         <div className="shadow-lg  rounded-4">
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object({
-              challanNo:Yup.string().required("Required"),
+              challanNo: Yup.string().required("Required"),
               detailsData: Yup.array().of(
                 Yup.object().shape({
                   itemId: Yup.string().required("Required"),
@@ -275,7 +280,6 @@ const InsertGRNInfo = () => {
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -292,12 +296,13 @@ const InsertGRNInfo = () => {
                   render={(arrayHelpers) => {
                     ArrayHelperRef.current = arrayHelpers;
                     const details = values.detailsData;
-                 
+                    console.log(values);
                     return (
                       <div className=" flex-1 items-center d-flex-nowrap mt-3 py-2 px-5">
                         <div>
                           <div className="d-flex justify-content-between align-items-center">
-                            <h2 className="fs-sm fw-bold"
+                            <h2
+                              className="fs-sm fw-bold"
                               style={{ fontSize: "24px", fontWeight: "bold" }}
                             >
                               {id
@@ -306,7 +311,7 @@ const InsertGRNInfo = () => {
                             </h2>
                             <div>
                               <button
-                              className="customBackToListButton"
+                                className="customBackToListButton"
                                 onClick={() => {
                                   navigate("/main-view/grn-list");
                                 }}
@@ -366,10 +371,7 @@ const InsertGRNInfo = () => {
                             <div className="col col-md-6 col-lg-3 mt-2">
                               <label
                                 htmlFor="challanNo"
-                                className="ml-sm-0 ml-md-0 ml-lg-4" 
-                                // style={{
-                                //   marginLeft: "10px",
-                                // }}
+                                className="ml-sm-0 ml-md-0 ml-lg-4"
                               >
                                 Challan No
                               </label>
@@ -389,10 +391,9 @@ const InsertGRNInfo = () => {
                                   width: "100%",
                                   borderRadius: "5px",
                                   textAlign: "center",
-                                  // marginLeft: "10px",
                                   height: "38px",
                                 }}
-                                className="ml-sm-0 ml-md-0 ml-lg-4" 
+                                className="ml-sm-0 ml-md-0 ml-lg-4"
                                 onChange={(e) => {
                                   if (id) {
                                     setGRNSingleData((prevData) => ({
@@ -417,7 +418,10 @@ const InsertGRNInfo = () => {
                             </div>
 
                             <div className="col col-md-6 col-lg-3">
-                              <label htmlFor="supplierId"  className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0" >
+                              <label
+                                htmlFor="supplierId"
+                                className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"
+                              >
                                 Supplier Name
                               </label>
                               {id ? (
@@ -433,7 +437,6 @@ const InsertGRNInfo = () => {
                                     width: "100%",
                                     borderRadius: "5px",
                                     textAlign: "center",
-                                    // marginLeft: "10px",
                                     height: "38px",
                                   }}
                                 />
@@ -470,7 +473,6 @@ const InsertGRNInfo = () => {
                                           ...provided,
                                           zIndex: 9999,
                                           height: "auto",
-                                          // overflowY: "scroll",
                                         }),
                                       }}
                                       theme={(theme) => ({
@@ -499,7 +501,10 @@ const InsertGRNInfo = () => {
                               )}
                             </div>
                             <div className="col col-md-6 col-lg-3">
-                              <label htmlFor="supplierId" className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0">
+                              <label
+                                htmlFor="supplierId"
+                                className="ml-sm-0 ml-md-0 ml-lg-4 mt-sm-2 mt-md-2 mt-lg-0"
+                              >
                                 Supplier PO Number
                               </label>
                               {id ? (
@@ -513,10 +518,8 @@ const InsertGRNInfo = () => {
                                   style={{
                                     border: "1px solid #2DDC1B",
                                     padding: "5px",
-                                    // width: "92%",
                                     borderRadius: "5px",
                                     textAlign: "center",
-                                    // marginLeft: "10px",
                                     height: "38px",
                                   }}
                                 />
@@ -571,7 +574,6 @@ const InsertGRNInfo = () => {
                                           ...provided,
                                           zIndex: 9999,
                                           height: "auto",
-                                          // overflowY: "scroll",
                                         }),
                                       }}
                                       theme={(theme) => ({

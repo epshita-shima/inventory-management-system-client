@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const FinishGoodStockDetails = () => {
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {

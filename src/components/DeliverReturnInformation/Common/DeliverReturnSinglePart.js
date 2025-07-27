@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { Field } from "formik";
-import swal from "sweetalert";
+
 import "./DeliverReturnSinglePart.css";
 import { deliveryOrderDropdown } from "../../Common/CommonDropdown/CommonDropdown";
 
@@ -11,19 +10,16 @@ const DeliverReturnSinglePart = ({
   deliveryOrderDataInformation,
   values,
   setFieldValue,
-  touched,
-  errors,
   returnDate,
   setReturnDate,
   piNumberOptions,
   setDoDetailsFilteredData,
-  doInformation
+  doInformation,
 }) => {
-  
   const [filteredDeliveryOrderData, setFilteredDeliveryOrderData] = useState(
     []
   );
-  const matchedDeliverInfo = doInformation?.filter((deliverOrder) => 
+  const matchedDeliverInfo = doInformation?.filter((deliverOrder) =>
     filteredDeliveryOrderData.some((item) => item.piId === deliverOrder.piId)
   );
   const deliveryOptions = deliveryOrderDropdown(matchedDeliverInfo);
@@ -95,16 +91,10 @@ const DeliverReturnSinglePart = ({
                   deliveryOrderDataInformation?.filter(
                     (order) => order.piId == e.value
                   );
+
                 setFilteredDeliveryOrderData(filteredDeliveryData);
-                // swal(
-                //   "Relax!",
-                //   "Production Per Batch not Decleared, Please Contact with HO",
-                //   "warning"
-                // );
               }}
             ></Select>
-
-           
           </div>
         </div>
       </div>
@@ -123,10 +113,9 @@ const DeliverReturnSinglePart = ({
                 label: "Select DO Number",
                 value: 0,
               }}
-                value={ deliveryOptions.filter(function (option) {
-                        return option.value === values.doId;
-                      })
-                }
+              value={deliveryOptions.filter(function (option) {
+                return option.value === values.doId;
+              })}
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -138,7 +127,6 @@ const DeliverReturnSinglePart = ({
                   ...provided,
                   zIndex: 9999,
                   height: "auto",
-                  // overflowY: "scroll",
                 }),
               }}
               theme={(theme) => ({
@@ -153,11 +141,10 @@ const DeliverReturnSinglePart = ({
                 const filteredData = deliveryOrderDataInformation.find(
                   (doOrder) => doOrder.doId === e.value
                 );
-                setFieldValue('doId',e.value)
+                setFieldValue("doId", e.value);
                 setDoDetailsFilteredData(filteredData);
               }}
             ></Select>
-           
           </div>
         </div>
       </div>

@@ -110,8 +110,7 @@ const CommonParameterRawMaterial = ({
                   menu: (provided) => ({
                     ...provided,
                     zIndex: 9999,
-                    height: "auto",
-                    // overflowY: "scroll",
+                    height: "auto"
                   }),
                 }}
                 theme={(theme) => ({
@@ -168,7 +167,7 @@ const CommonParameterRawMaterial = ({
         </div>
         <div
           className=" d-flex mt-5 align-items-center justify-content-center report-status-width"
-          // style={{ width: "40%" }}
+        
         >
           <label htmlFor="" className="w-100">
             Report Status
@@ -192,8 +191,7 @@ const CommonParameterRawMaterial = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({

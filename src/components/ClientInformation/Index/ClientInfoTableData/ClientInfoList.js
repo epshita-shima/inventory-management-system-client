@@ -20,15 +20,11 @@ import { downloadPDF } from "../../../ReportProperties/PDF/HeaderFooter";
 import handleDownload from "../../../ReportProperties/Excel/HandelExcelDownload";
 import ListHeading from "../../../Common/ListHeading/ListHeading";
 import ActiveListDataModal from "../../../Common/ListHeadingModal/ActiveListModal/ActiveListDataModal";
-import LoadingSpineer from "./../../../Common/LoadingSpinner/LoadingSpineer";
 
 const ClientInfoList = ({ permission }) => {
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
-  const {
-    data: clientInfoData,
-    isLoading: isClientInfoLoading,
-    refetch,
-  } = useGetAllClientInformationQuery(undefined);
+  const { data: clientInfoData, refetch } =
+    useGetAllClientInformationQuery(undefined);
   const [filterText, setFilterText] = useState("");
   const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
@@ -236,7 +232,9 @@ const ClientInfoList = ({ permission }) => {
                 marginLeft: "10px",
               }}
               onClick={() => {
-                window.open(`client-list/update-client-info/${clientInfoData?._id}`);
+                window.open(
+                  `client-list/update-client-info/${clientInfoData?._id}`
+                );
               }}
             >
               <FontAwesomeIcon icon={faPenToSquare}></FontAwesomeIcon>
@@ -355,7 +353,10 @@ const ClientInfoList = ({ permission }) => {
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
                 <li>
                   <a
                     className="dropdown-item"
@@ -415,13 +416,7 @@ const ClientInfoList = ({ permission }) => {
         setActiveDataModal={setActiveClientInfoModal}
         setInActiveDataModal={setInActiveClientInfoModal}
       ></ListHeading>
-      <div
-        className="col userlist-table mt-4"
-        style={{
-          overflow: "scroll",
-          height: "420px",
-        }}
-      >
+      <div className="col  mt-4">
         <div className="shadow-lg">
           <DataTable
             columns={columns}
@@ -432,6 +427,8 @@ const ClientInfoList = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>

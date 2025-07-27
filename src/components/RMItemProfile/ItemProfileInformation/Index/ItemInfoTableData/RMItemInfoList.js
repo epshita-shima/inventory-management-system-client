@@ -24,7 +24,7 @@ import ActiveListDataModal from "../../../../Common/ListHeadingModal/ActiveListM
 import handleCheckboxClick from "../../../../Common/ListHeadingModal/Function/handleCheckboxClick";
 import FilterComponent from "../../../../Common/ListDataSearchBoxDesign/FilterComponent";
 import "./RMItemInfoList.css"
-import LoadingSpineer from "../../../../Common/LoadingSpinner/LoadingSpineer";
+
 const RMItemInfoList = ({ permission }) => {
   const { data: categoryInfoData } = useGetAllCategoryInfoQuery(undefined);
   const { data: itemUnitInfo } = useGetAllItemUnitQuery(undefined);
@@ -446,7 +446,7 @@ const RMItemInfoList = ({ permission }) => {
         setInActiveDataModal={setInActiveRawMeterialItemModal}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4 rawdata-main-view "
+        className="col  mt-4  "
       >
         <div className="shadow-lg ">
           <DataTable
@@ -458,6 +458,8 @@ const RMItemInfoList = ({ permission }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+             fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>

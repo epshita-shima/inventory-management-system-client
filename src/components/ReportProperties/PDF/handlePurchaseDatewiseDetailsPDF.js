@@ -178,7 +178,6 @@ const downloadGoupPurchaseDetailsPDF = (
   ]);
  
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [
       [
         "Receive Date",
@@ -261,8 +260,6 @@ const downloadGoupPurchaseDetailsPDF = (
 const downloadGoupPurchaseItemWisePDF = (
   groupedData,
   filteredData,
-  finishGoodsItemInfo,
-  itemUnitInformation,
   supplierInformation,
   companyinfo,
   reportPurchaseTitle
@@ -423,7 +420,6 @@ const downloadGoupPurchaseItemWisePDF = (
   ]);
  
   doc.autoTable({
-    // html: "#my-deliver-details-table",
     head: [
       [
         "Receive Date",

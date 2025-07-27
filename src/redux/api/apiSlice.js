@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { authActions, logout } from "./authSlice";
+import { authActions } from "./authSlice";
 import { scheduleTokenRefresh } from "./scheduleTokenRefresh";
 import swal from "sweetalert";
-import { jwtDecode } from "jwt-decode";
 import isTokenExpired from "./isTokenExpired";
 
 const baseQuery = fetchBaseQuery({
@@ -56,11 +55,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       console.log("Valid");
     }
   } else {
-    swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
-      localStorage.clear("accesstoken");
-      localStorage.clear("user");
-      window.location.href = "/";
-    });
+    // swal("Somthing went wrong!", `Please Login Again`, "warning").then(() => {
+    //   localStorage.clear("accesstoken");
+    //   localStorage.clear("user");
+    //   window.location.href = "/";
+    // });
     api.dispatch(authActions.logout());
     console.log("not here");
   }

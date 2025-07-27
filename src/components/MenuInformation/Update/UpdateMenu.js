@@ -332,10 +332,8 @@ const UpdateMenu = () => {
           <div className="mt-3">
             <Formik
               initialValues={{
-                // parentmenu: parentMenuName,
                 detailsData: [
                   {
-                    // menu_type: menuType,
                     menu_name: "",
                   },
                 ],
@@ -418,7 +416,7 @@ const UpdateMenu = () => {
                                                 return {
                                                   ...prevState,
                                                   items: updatedItems,
-                                                }; // Return a new object with updated items array
+                                                }; 
                                               });
                                             }}
                                             style={{ color: "white" }}
@@ -437,7 +435,6 @@ const UpdateMenu = () => {
                                       <td className="text-center align-middle">
                                         <Field
                                           type="text"
-                                          //   name={`detailsData.${index}.menu_name`}
                                           placeholder="Menu Name"
                                           value={detail?.label}
                                           style={{

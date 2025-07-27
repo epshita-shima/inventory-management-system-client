@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { Field } from "formik";
 import {
   finishGoodsWithSizeItemDropdown,
-  rawMaterialItemDropdown,
 } from "../../Common/CommonDropdown/CommonDropdown";
 import { useGetAllItemInformationQuery } from "../../../redux/features/iteminformation/finishgoodsinfoApi";
 import "./ProductionDatePicker.css";
@@ -46,46 +45,6 @@ const ProductionSingleInfo = ({
     { value: "938", label: "938" },
     {value:"900",label:"900"}
   ];
-
-  function getCftPerKgByItemId(itemId) {
-    for (const entry of cftData) {
-      const itemData = entry.detailsData.find(
-        (detail) => detail.itemId === itemId
-      );
-      if (itemData) {
-        return itemData.cftPerKg;
-      }
-    }
-  }
-
-  const handleStartDateChange = (event) => {
-    if (id) {
-      setUpdateProductionData((prevData) => ({
-        ...prevData,
-        productionStart: event.target.value,
-        updateBy: makebyUser,
-        updateDate: new Date(),
-      }));
-    } else {
-      setProStartDate(event.target.value);
-      setFieldValue("productionStart", event.target.value);
-    }
-  };
-
-  const handleEndDateChange = (event) => {
-    if (id) {
-      setUpdateProductionData((prevData) => ({
-        ...prevData,
-        productionEnd: event.target.value,
-        updateBy: makebyUser,
-        updateDate: new Date(),
-      }));
-    } else {
-      setEndDate(event.target.value);
-      setFieldValue("productionEnd", event.target.value);
-    }
-  };
-
   useEffect(() => {
     if (id) {
       const startDate = new Date(updateProductionData?.productionStart);
@@ -131,6 +90,53 @@ const ProductionSingleInfo = ({
     setFieldValue("batchNo", makeBatchNo);
   }, [serialValue?.serialNo, setFieldValue, startDates]);
 
+  function getCftPerKgByItemId(itemId) {
+    for (const entry of cftData) {
+      const itemData = entry.detailsData.find(
+        (detail) => detail.itemId === itemId
+      );
+      if (itemData) {
+        return itemData.cftPerKg;
+      }
+    }
+  }
+
+  const handleStartDateChange = (event) => {
+    if (id) {
+      setUpdateProductionData((prevData) => ({
+        ...prevData,
+        productionStart: event.target.value,
+        updateBy: makebyUser,
+        updateDate: new Date(),
+      }));
+    } else {
+      setProStartDate(event.target.value);
+      setFieldValue("productionStart", event.target.value);
+    }
+  };
+
+  const handleEndDateChange = (event) => {
+    if (id) {
+      setUpdateProductionData((prevData) => ({
+        ...prevData,
+        productionEnd: event.target.value,
+        updateBy: makebyUser,
+        updateDate: new Date(),
+      }));
+    } else {
+      setEndDate(event.target.value);
+      setFieldValue("productionEnd", event.target.value);
+    }
+  };
+
+const fomateDateFormatInput=(isoDate)=>{
+  if(!isoDate) return
+ const date=new Date(isoDate);
+//  const localISOTime=date.toISOString().slice(0,16);
+ const offset=date.getTimezoneOffset();
+ const localDate=new Date(date.getTime()-offset * 60000);
+ return localDate.toISOString().slice(0,16);
+}
   return (
     <div className="row row-cols-1 row-cols-lg-3">
       <div className="col-sm-12 col-md-6 col-lg-3">
@@ -188,7 +194,7 @@ const ProductionSingleInfo = ({
           <input
             type="datetime-local"
             id="dateInput"
-            value={id ? updateProductionData?.productionStart : proStartDate}
+            value={id ? fomateDateFormatInput(updateProductionData?.productionStart) : proStartDate}
             onChange={handleStartDateChange}
             style={{
               width: "100%",
@@ -207,7 +213,7 @@ const ProductionSingleInfo = ({
           <input
             type="datetime-local"
             id="dateInput"
-            value={id ? updateProductionData?.productionEnd : endDate}
+            value={id ? fomateDateFormatInput(updateProductionData?.productionEnd)  : endDate}
             onChange={handleEndDateChange}
             style={{
               width: "100%",
@@ -290,7 +296,7 @@ const ProductionSingleInfo = ({
               const calculateExcessOrLess = Math.abs(
                 updateProductionData?.productionQty - expectQty
               );
-              // setFieldValue("excessOrLessProductionQty", calculateExcessOrLess);
+      
               if (excessOrLess === 0) {
                 setUpdateProductionData((prevData) => ({
                   ...prevData,
@@ -503,8 +509,7 @@ const ProductionSingleInfo = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({
@@ -795,8 +800,7 @@ const ProductionSingleInfo = ({
                 menu: (provided) => ({
                   ...provided,
                   zIndex: 9999,
-                  height: "auto",
-                  // overflowY: "scroll",
+                  height: "auto"
                 }),
               }}
               theme={(theme) => ({

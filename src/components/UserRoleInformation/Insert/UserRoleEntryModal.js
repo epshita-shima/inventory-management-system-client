@@ -9,7 +9,7 @@ import swal from "sweetalert";
 const UserRoleEntryModal = () => {
   const [createUserRole] = useAddNewUserRoleMutation();
   const [existingUserRoles, setExistingUserRoles] = useState([]);
-  const { data: userRoles, error, isLoading } = useGetUserRoleQuery(undefined);
+  const { data: userRoles } = useGetUserRoleQuery(undefined);
 
   const [userRoleName, setUserRoleName] = useState("");
 
@@ -24,7 +24,6 @@ const UserRoleEntryModal = () => {
       return;
     }
     try {
-      // Call the mutation to create a new user role
       const userRoleFormData = {
         makeby: "",
         updateby: "",
@@ -33,7 +32,6 @@ const UserRoleEntryModal = () => {
 
       createUserRole(userRoleFormData);
       swal("Done", "Save Successfully", "success");
-      // Clear the input field after successful creation
       setUserRoleName("");
     } catch (error) {
       console.error("Error creating user role:", error);

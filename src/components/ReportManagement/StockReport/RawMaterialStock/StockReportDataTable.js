@@ -17,9 +17,7 @@ const StockReportDataTable = ({
   filterText,
   isTableDispaly,
   companyinfo,
-  itemSizeInfo,
   rawMaterialItem,
-  setFilterText,
   itemUnitInfo,
   isRawMaterialStockDataLoading,
 }) => {
@@ -28,7 +26,7 @@ const StockReportDataTable = ({
   const [purchaseSingleItemId, setPurchaseSingleItemId] = useState("");
   const [showProductionModal, setShowProductionModal] = useState(false);
   const [showPurchaseModal, setShowPruchaseModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+  
   const [
     triggerDatewiseDetailsProductionStockReport,
     { data: productionItemDetailsData },
@@ -42,20 +40,15 @@ const StockReportDataTable = ({
     await triggerDatewiseDetailsProductionStockReport({
       itemId: rowData.itemId,
     });
-    setSelectedRow(rowData);
+
     setProductionSingleItemId(rowData.itemId);
     setShowProductionModal(true); // Show modal when a row is clicked
   };
 
   const handleRowClickForPurchase = async (rowData) => {
     await triggerDatewiseDetailsPurchaseStockReport({ itemId: rowData.itemId });
-    setSelectedRow(rowData);
     setPurchaseSingleItemId(rowData.itemId);
     setShowPruchaseModal(true); // Show modal when a row is clicked
-  };
-
-  const handleCloseModal = () => {
-    setShowProductionModal(false);
   };
 
   const grandTotalPurchaseQuantity = rawMaterialStockReportData?.reduce(
@@ -94,7 +87,6 @@ const StockReportDataTable = ({
     },
     {
       name: "Purchase Quantity",
-      // selector: (row) => row.purchaseQuantity,
       sortable: true,
       center: true,
       filterable: true,
@@ -123,8 +115,6 @@ const StockReportDataTable = ({
 
     {
       name: "Production Consumption",
-      // selector: (row) => (row.purchaseConsumption
-      // ),
       sortable: true,
       center: true,
       filterable: true,
@@ -203,7 +193,10 @@ const StockReportDataTable = ({
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -221,13 +214,19 @@ const StockReportDataTable = ({
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#" onClick={() => {
-                      handleRaxMaterialStockReportExcel(  rawMaterialStockReportData,
-                        rawMaterialItem,
-                        itemUnitInfo,
-                        companyinfo,
-                        reportTitle)
-                    }}>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        handleRaxMaterialStockReportExcel(
+                          rawMaterialStockReportData,
+                          rawMaterialItem,
+                          itemUnitInfo,
+                          companyinfo,
+                          reportTitle
+                        );
+                      }}
+                    >
                       Excel
                     </a>
                   </li>
@@ -247,7 +246,7 @@ const StockReportDataTable = ({
           <LoadingSpineer
             isLoading={isRawMaterialStockDataLoading}
           ></LoadingSpineer>
-          <div style={{ height: "calc(80vh - 120px)", overflowY: "scroll" }}>
+   
             <>
               <DataTable
                 columns={columns}
@@ -258,9 +257,11 @@ const StockReportDataTable = ({
                 striped
                 pagination
                 subHeader
+                 fixedHeader={true}
+              fixedHeaderScrollHeight="calc(75vh - 120px)"
               />
             </>
-          </div>
+         
           <table id="my-raw-material-stock-table" className="d-none">
             <thead>
               <tr>
@@ -283,16 +284,8 @@ const StockReportDataTable = ({
 
                 return (
                   <tr key={detail._id}>
-                    {/* <td
-                                  style={{
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                  }}
-                                >
-                                  {formattedDate}
-                                </td> */}
-                                <td>{detailIndex+1}</td>
-                    <td >{`${itemNames?.itemName} (${itemUnit.unitInfo})`}</td>
+                    <td>{detailIndex + 1}</td>
+                    <td>{`${itemNames?.itemName} (${itemUnit.unitInfo})`}</td>
                     <td>{detail?.purchaseQuantity.toLocaleString()}</td>
                     <td>-</td>
                     <td>{detail.productionConsumption.toLocaleString()}</td>

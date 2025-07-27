@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import CFTInfosList from "./CFTInfoTable/CFTInfosList";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
-import { useGetAllCFTInfosQuery } from "../../../redux/features/cftinformation/cftInfosApi";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const CFTInfosTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
     useEffect(() => {

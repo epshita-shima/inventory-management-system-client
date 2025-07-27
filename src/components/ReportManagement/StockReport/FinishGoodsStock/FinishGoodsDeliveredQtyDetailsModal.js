@@ -21,7 +21,6 @@ const FinishGoodsDeliveredQtyDetailsModal = ({
   permission,
   companyinfo,
   filteredDatas,
-  isTableDispaly,
   finishGoodsItemInfo,
   itemSizeInfo,
   itemUnitInformation,
@@ -321,9 +320,7 @@ const FinishGoodsDeliveredQtyDetailsModal = ({
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
               * <DataTable
                   columns={columns}
                   data={transformedPIData}
@@ -333,6 +330,8 @@ const FinishGoodsDeliveredQtyDetailsModal = ({
                   pagination
                   subHeader
                   subHeaderComponent={subHeaderComponent}
+                   fixedHeader={true}
+              fixedHeaderScrollHeight="calc(85vh - 120px)"
                 /> 
               </div>
             </div>

@@ -109,7 +109,6 @@ const CommonProductionReportParameter = ({
                     ...provided,
                     zIndex: 9999,
                     height: "auto",
-                    // overflowY: "scroll",
                   }),
                 }}
                 theme={(theme) => ({

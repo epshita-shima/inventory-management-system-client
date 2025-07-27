@@ -26,17 +26,14 @@ import "../../Insert/InsertCFTInfo.css";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import handleCFTExcel from "../../../ReportProperties/Excel/handleCFTExcel";
 import { formatDate } from "../../../Uitilites/DateUtilities";
-import LoadingSpineer from "../../../Common/LoadingSpinner/LoadingSpineer";
 
 const CFTInfosList = ({ permission, }) => {
     const {
       data: cftInfosData,
-      isLoading:isCFTInfoloading,
       refetch,
     } = useGetAllCFTInfosQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const [filterText, setFilterText] = useState("");
-  const [extractedAllDataReport, setExtractedAllDataReport] = useState([]);
   const [extractedDataForReport, setExtractedDataForReport] = useState([]);
   const [extractedInActiveDataForReport, setExtractedInActiveDataForReport] =
     useState([]);
@@ -51,7 +48,7 @@ const CFTInfosList = ({ permission, }) => {
   const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const [cftInfoActiveStatus, setCFTInfoActiveStaus] = useState([]);
   const [cftInfoInActiveStatus, setCFTInfoInActiveStatus] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+ 
   var reportTitle = "CFT TO KG Converter";
   var reportTitleActiveImage = "All CFT All Active Image";
   var reportTitleInActiveImage = "All CFT All InActive Image";
@@ -106,22 +103,7 @@ const CFTInfosList = ({ permission, }) => {
       };
     });
 
-    const extractedFields = cftInfoActiveStatus?.map((item) => {
-      return {
-        openingDate: item.openingDate,
-        cftPerKg: item.cftPerKg,
-        isActive: item.isActive ? "Active" : "InActive",
-      };
-    });
-
-    const extractedInactiveFields = cftInfoInActiveStatus?.map((item) => {
-      return {
-        openingDate: item.openingDate,
-        cftPerKg: item.cftPerKg,
-        isActive: item.isActive ? "Active" : "InActive",
-      };
-    });
-    setExtractedAllDataReport(extractedAllFields);
+ 
     setCFTInfoActiveStaus(cftInfoActiveStatus);
     setCFTInfoInActiveStatus(cftInfoInActiveStatus);
     setExtractedDataForReport(cftInfoActiveStatus);
@@ -131,9 +113,7 @@ const CFTInfosList = ({ permission, }) => {
     setAllImageForReport(extractedAllImageFields);
   }, [cftInfosData?.unitId, cftInfosData]);
 
-  useEffect(() => {
-    setFilteredData(cftInfosData || []); // Ensure filteredDatas is not null/undefined
-  }, [cftInfosData]);
+ 
 
   const generateColumns = (data, fields) => {
     if (data?.length === 0) return [];
@@ -557,7 +537,7 @@ const CFTInfosList = ({ permission, }) => {
         setInActiveDataModal={setInActiveCFTInfosModal}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4 cftdata-main-view"
+        className="col  mt-4 "
       >
         <div className="shadow-lg">
           <DataTable
@@ -569,6 +549,8 @@ const CFTInfosList = ({ permission, }) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>

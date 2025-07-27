@@ -7,7 +7,7 @@ const CombineReportTable = () => {
 
   const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   const dropdownMenuStyles = {

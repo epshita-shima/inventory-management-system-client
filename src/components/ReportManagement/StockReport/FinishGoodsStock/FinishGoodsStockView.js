@@ -17,7 +17,7 @@ const FinishGoodsStockView = ({permission}) => {
     fromDate: new Date(fromDate).toLocaleDateString("en-CA"),
     toDate: new Date(toDate).toLocaleDateString("en-CA"),
   });
-  const [filterText, setFilterText] = useState("");
+  const [filterText] = useState("");
   const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const { data: finishItemInfo } = useGetAllItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);

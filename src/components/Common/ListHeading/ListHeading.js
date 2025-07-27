@@ -13,7 +13,6 @@ const ListHeading = ({
   rmItemInfoData,
   rmItemActiveStatus,
   rmItemInActiveStatus,
-  setActiveRawMeterialItemModal,
   cftInfosData,
   cftInfoActiveStatus,
   cftInfoInActiveStatus,
@@ -27,11 +26,9 @@ const ListHeading = ({
   purchaseInCash,
   purchaseInLCAtSight,
   purchaseOrderList,
-  setPurchaseOrderList,
   purchaseOrderApproveData,
   purchaseOrderUnApproveData,
   isLoading,
-  setPurchaseInfosModal,
 }) => {
   const [totalTitle, setTotalTitle] = useState("");
   const [totalActiveTitle, setTotalActiveTitle] = useState("");
@@ -56,7 +53,6 @@ const ListHeading = ({
         });
       }
       if (item.items && item.items.length > 0) {
-        // Concatenate the arrays returned by recursive calls
         urls.push(...traverse(item.items));
       }
     });
@@ -354,10 +350,7 @@ const ListHeading = ({
                   data-toggle="modal"
                   data-target="#exampleModalCenter"
                   onClick={() => {
-                    // const searchItem = mainData?.filter((x) => x.url == pathname);
-                    // if (searchItem[0]?.menuId !== MenuIdCollection.purchaseorderlist) {
-                    //   setInActiveDataModal(true);
-                    // }
+                  
                   }}
                 >
                   <p

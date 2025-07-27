@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useAddNewUserMutation } from '../../redux/api/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../redux/features/user/userSlice';
 import logImage from "../../assets/images/cta1.1.jpg"
@@ -62,8 +61,7 @@ const navigate=useNavigate()
             />
             
           </InputGroup>
-          {/* <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required /> */}
-          {/* <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required /> */}
+        
           <Form.Label htmlFor="inputPassword5" className="text-white">Password</Form.Label>
           <InputGroup className="mb-3">
             <Form.Control
@@ -76,9 +74,7 @@ const navigate=useNavigate()
               value={password} onChange={(e) => setPassword(e.target.value)}
               className="border border-primary"
             />
-            {/* <Form.Text id="passwordHelpBlock" muted>
-              {error && <div style={{ color: "red" }}>{error}</div>}
-            </Form.Text> */}
+     
           </InputGroup>
           <div className="d-grid ">
             <Button

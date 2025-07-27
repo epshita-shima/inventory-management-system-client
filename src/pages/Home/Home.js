@@ -32,6 +32,10 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
     var menuListSingleData = menuListData?.menulist;
   }
 
+  console.log(menuListData)
+  const menuSort= menus?.length >0 && [...menus]?.sort((a,b)=>a.order - b.order)
+  console.log(menuSort)
+
   useEffect(() => {
     if (localStorage.length > 0) {
     } else {

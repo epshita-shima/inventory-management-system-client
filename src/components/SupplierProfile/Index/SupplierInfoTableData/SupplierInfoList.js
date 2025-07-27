@@ -399,7 +399,7 @@ const SupplierInfoList = ({permission}) => {
         setInActiveDataModal={setInActiveSupplierInfoModal}
       ></ListHeading>
       <div
-        className="col userlist-table mt-4"
+        className="col  mt-4"
         style={{
           overflow: "scroll",
           height: "420px",
@@ -415,6 +415,8 @@ const SupplierInfoList = ({permission}) => {
             pagination
             subHeader
             subHeaderComponent={subHeaderComponent}
+            fixedHeader={true}
+            fixedHeaderScrollHeight="calc(65vh - 120px)"
           />
         </div>
       </div>

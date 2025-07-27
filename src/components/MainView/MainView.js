@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Home from "../../pages/Home/Home";
 import Footer from "../../pages/Footer/Footer";
-
+import "./MainView.css";
 const MainView = ({
   singleUserData,
   setSingleUserData,
@@ -12,9 +12,7 @@ const MainView = ({
   const extraSmallScreenHeight = "50vh";
   const smallToMediumScreenHeight = "80vh";
   return (
-    <div
-    //  style={{ position: 'relative' }}
-    >
+    <div>
       <div
         style={{
           "@media (maxWidth: 575.98px)": { height: extraSmallScreenHeight },
@@ -35,6 +33,19 @@ const MainView = ({
         <Footer />
       </div>
     </div>
+    // <div className="main-layout-wrapper">
+    //   <div className="main-layout-content">
+    //     <Home
+    //       singleUserData={singleUserData}
+    //       setSingleUserData={setSingleUserData}
+    //       setChangePassword={setChangePassword}
+    //       setResetPassword={setResetPassword}
+    //     ></Home>
+
+    //     <Outlet></Outlet>
+    //   </div>
+    //   <Footer />
+    // </div>
   );
 };
 

@@ -27,19 +27,19 @@ const downloadCombineReportPDF =(  companyinfo,
         valign: "middle",
       },
       columnStyles: {
-        0: { cellWidth: "auto" }, // Custom width for first column
-        1: { cellWidth: 25 }, // Custom width for second column
-        2: { cellWidth: 15 }, // Custom width for third column
-        3: { cellWidth: 25 }, // Auto width for fourth column
-        4: { cellWidth: 25 }, // Custom width for first column
-        5: { cellWidth: 15 }, // Custom width for second column
-        6: { cellWidth: 25 }, // Custom width for third column
-        7: { cellWidth: 25 }, // Auto width for fourth column
-        8: { cellWidth:15 }, // Auto width for fourth column
-        9: { cellWidth: 25 }, // Auto width for fourth column
-        10: { cellWidth: 25 }, // Auto width for fourth column
-        11: { cellWidth: 15 }, // Auto width for fourth column
-        12: { cellWidth: 25 }, // Auto width for fourth column
+        0: { cellWidth: "auto" }, 
+        1: { cellWidth: 25 }, 
+        2: { cellWidth: 15 }, 
+        3: { cellWidth: 25 }, 
+        4: { cellWidth: 25 }, 
+        5: { cellWidth: 15 }, 
+        6: { cellWidth: 25 }, 
+        7: { cellWidth: 25 }, 
+        8: { cellWidth:15 }, 
+        9: { cellWidth: 25 }, 
+        10: { cellWidth: 25 }, 
+        11: { cellWidth: 15 }, 
+        12: { cellWidth: 25 }, 
       },
       didParseCell: function (data) {
         const rowIndex = data.row.index;
@@ -78,7 +78,7 @@ const downloadCombineReportPDF =(  companyinfo,
             cell.styles.fillColor = [138, 138, 138]; // Gray line color
             cell.styles.textColor = [255, 255, 255];
           });
-          // data.cell.styles.halign = "right";
+
         }
         if (textContent?.trim().toLowerCase() === "grand total"){
           data.cell.styles.halign = "right";
@@ -87,12 +87,10 @@ const downloadCombineReportPDF =(  companyinfo,
           Object.values(data.row.cells).forEach((cell) => {
             cell.styles = cell.styles || {};
             cell.styles.fillColor = [255, 220, 220]; // Gray line color
-            // cell.styles.textColor = [255, 255, 255];
+        
           });
         }
-        if (colIndex === totalCols - 1) {
-          // data.cell.styles.halign = "right";
-        }
+       
       },
     });
 

@@ -4,12 +4,11 @@ import React, { useEffect, useState } from "react";
 import ProductionInfoList from "./ProductionInfoTable/ProductionInfoList";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
-import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const ProductionListTable = () => {
   const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
-  const [permission, setPermission] = useState();
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.length > 0) {
@@ -17,34 +16,27 @@ const ProductionListTable = () => {
       const userSingleId = JSON.parse(getUserId);
       const userIdFromSession = userSingleId?._id;
       const permidionData = user?.filter(
-        (user) => user._id == userIdFromSession
+        (user) => user._id === userIdFromSession
       );
       const extractUserListForCurrentUser = (userData, userId) => {
-        let userList = null;
         const currentUser = userData?.find((user) => user._id === userId);
-        if (currentUser) {
-          currentUser?.menulist?.forEach((menu) => {
-            const userListSubMenu = menu?.items?.find(
+        if (!currentUser?.menulist) return null;
+      
+        for (const menu of currentUser.menulist) {
+          // Try to find in first-level items
+          const directMatch = menu?.items?.find(item => item?.label === "Production List");
+          if (directMatch) return directMatch;
+      
+          // Try to find in second-level (nested) items if any
+          for (const subMenu of menu?.items || []) {
+            const nestedMatch = subMenu?.items?.find(
               (subItem) => subItem?.label === "Production List"
             );
-            if (userListSubMenu) {
-              userList = userListSubMenu;
-            } else {
-              menu?.items?.forEach((subMenu) => {
-                if (subMenu?.label === subMenu?.label) {
-                  const userListSubMenu = subMenu?.items?.find(
-                    (subItem) => subItem?.label === "Production List"
-                  );
-                  
-                  if (userListSubMenu) {
-                    userList = userListSubMenu;
-                  }
-                }
-              });
-            }
-          });
+            if (nestedMatch) return nestedMatch;
+          }
         }
-        return userList;
+      
+        return null;
       };
 
       var permissions = extractUserListForCurrentUser(
@@ -57,25 +49,6 @@ const ProductionListTable = () => {
     }
   }, [user, navigate]);
 
-  // if (isUserloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>

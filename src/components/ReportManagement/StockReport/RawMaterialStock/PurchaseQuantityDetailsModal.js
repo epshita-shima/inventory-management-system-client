@@ -1,19 +1,20 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useState } from 'react'
-import { groupPurchaseDateByDetails } from '../../../Uitilites/reportDataGrouping';
-import {useGetAllPurchaseOrderInformationQuery} from "../../../../redux/features/purchaseorderinformation/purchaseOrderInfoApi"
-import { downloadGoupPurchaseDetailsPDF } from '../../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF';
-import handlePurchaseDatewiseReportExcel from '../../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel';
+import React, { useEffect, useMemo, useState } from "react";
+import { groupPurchaseDateByDetails } from "../../../Uitilites/reportDataGrouping";
+import { downloadGoupPurchaseDetailsPDF } from "../../../ReportProperties/PDF/handlePurchaseDatewiseDetailsPDF";
+import handlePurchaseDatewiseReportExcel from "../../../ReportProperties/Excel/handlePurchaseDatewiseReportExcel";
 import DataTable from "react-data-table-component";
-const PurchaseQuantityDetailsModal = ({filteredDatas,companyinfo,  rawMaterialItem,
-  bankInformation,
-  paymentData,
-  supplierInfo,itemUnitInfo}) => {
-  
+const PurchaseQuantityDetailsModal = ({
+  filteredDatas,
+  companyinfo,
+  rawMaterialItem,
+
+  supplierInfo,
+  itemUnitInfo,
+}) => {
   const [groupedData, setGroupedData] = useState({});
   const reportPurchaseTitle = "PURCHASE ORDER INFORMATION";
-  const reportPOTitle="PO INFORMATION"
-const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
+
   const transformedData = filteredDatas?.flatMap((piDetails) =>
     piDetails.detailsData.map((detail) => ({
       ...piDetails,
@@ -29,7 +30,6 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
     };
     processData();
   }, [filteredDatas]);
-
 
   const columns = [
     {
@@ -58,8 +58,9 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
       name: "Supplier Name",
       selector: (poDetails) => {
         const supplierName = supplierInfo?.find(
-          (x) => x._id === poDetails?.supplierId);
-        
+          (x) => x._id === poDetails?.supplierId
+        );
+
         return supplierName ? supplierName.supplierName : "N/A"; // Assuming 'sizeName' is the field that contains the size name
       },
       sortable: true,
@@ -163,7 +164,10 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                 >
                   Download
                 </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
                   <li>
                     <a
                       className="dropdown-item"
@@ -198,7 +202,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                           supplierInfo,
                           companyinfo,
                           reportPurchaseTitle
-                        )
+                        );
                       }}
                     >
                       Excel
@@ -211,8 +215,15 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
         )}
       </div>
     );
-  }, [filteredDatas, companyinfo, rawMaterialItem, groupedData,itemUnitInfo, supplierInfo, transformedData]);
-
+  }, [
+    filteredDatas,
+    companyinfo,
+    rawMaterialItem,
+    groupedData,
+    itemUnitInfo,
+    supplierInfo,
+    transformedData,
+  ]);
 
   return (
     <div>
@@ -243,9 +254,7 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
               </button>
             </div>
             <div className="modal-body w-100">
-              <div
-              // style={{ height: "calc(65vh - 120px)", width:'100%',overflowY: "scroll" }}
-              >
+              <div>
                 <DataTable
                   columns={columns}
                   data={transformedData}
@@ -255,15 +264,16 @@ const {data:poInformation}=useGetAllPurchaseOrderInformationQuery(undefined)
                   pagination
                   subHeader
                   subHeaderComponent={subHeaderComponent}
+                  fixedHeader={true}
+                  fixedHeaderScrollHeight="calc(85vh - 120px)"
                 />
               </div>
-            
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default PurchaseQuantityDetailsModal
+export default PurchaseQuantityDetailsModal;

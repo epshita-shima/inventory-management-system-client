@@ -55,7 +55,7 @@ const CommonPurchaseOrderInfo = () => {
   const { data: itemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: paymentTypeInfo } = useGetAllPaymentInformationQuery(undefined);
   const { data: bankInfo } = useGetAllBankInformationQuery(undefined);
-  const { data: purchaseOderInfo, isLoading: isPurchaseLoading } =
+  const { data: purchaseOderInfo } =
     useGetSinglePurchaseOrderInformationQuery(id);
   const [totalGrandQuantity, setTotalGrandQuantity] = useState(0);
   const [totalGrandTotalAmount, setTotalGrandTotalAmount] = useState(0);
@@ -72,8 +72,7 @@ const CommonPurchaseOrderInfo = () => {
   const rawMaterialItemOptions = rawMaterialItemDropdown(itemInfo);
   const paymentTypeOptions = paymentInfoDropdown(paymentTypeInfo);
   const bankInfoOptions = bankInformationDropdown(bankInfo);
-  console.log("totalGrandQuantity=", totalGrandQuantity);
-  console.log("totalGrandTotalAmount=", totalGrandTotalAmount);
+
   const initialValues = {
     poNo: "",
     supplierId: "",
@@ -203,7 +202,6 @@ const CommonPurchaseOrderInfo = () => {
         const response = await insertPurchaseOrderInfo(modelData);
 
         if (response?.data?.status === 200) {
-          console.log(response)
           await createSerialNo(serialData);
           refetch();
           swal("Done", "Data Save Successfully", "success");
@@ -227,8 +225,7 @@ const CommonPurchaseOrderInfo = () => {
         zIndex: "9999",
       }}
     >
-      {/* {id ? <LoadingSpineer isLoading={isPurchaseLoading}></LoadingSpineer> : <LoadingSpineer isLoading={isLoadingSupplier}></LoadingSpineer>} */}
-
+   
       <div className={`${isLoadingSupplier ? "d-none" : "d-block"}`}>
         <div className="px-4 rounded-4">
           <Formik
@@ -245,7 +242,7 @@ const CommonPurchaseOrderInfo = () => {
                 })
               ),
             })}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
+            onSubmit={( { setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
               setSubmitting(false);
             }}
@@ -254,7 +251,6 @@ const CommonPurchaseOrderInfo = () => {
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -365,7 +361,6 @@ const CommonPurchaseOrderInfo = () => {
                                     <div
                                       className="border-0 ms-0 mt-2 mt-md-0 mt-lg-0 mt-xl-0 ms-md-2 ms-lg-2 ms-xl-2"
                                       style={{
-                                        // backgroundColor: "#00B987",
                                         backgroundColor: "#B8FEB3",
                                         color: "#000",
                                         padding: "5px 10px",

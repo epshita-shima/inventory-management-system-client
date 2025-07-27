@@ -4,14 +4,12 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import MenuList from "./MenuTableData/MenuList";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
-import { useGetAllMenuItemsQuery } from "../../../redux/features/menus/menuApi";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
 
 const MenuDataList = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user ,isLoading:isUserLoading} = useGetAllUserQuery(undefined);
- 
-  const [permission, setPermission] = useState();
+  const { data: user } = useGetAllUserQuery(undefined);
+
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,59 +58,35 @@ const MenuDataList = () => {
     }
   }, [user, navigate]);
 
-  // if (isUserLoading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading...
-  //       </button>
-  //     </div>
-  //   );
-  // }
-  
   return (
     <div>
-
       <div>
-      <MenuList
-        permission={permission}
-        click={clickhandler}
-      />
-      {permission?.isInserted && (
-        <div
-          className={`position-absolute`}
-          style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
-        >
-          <div className="">
-            <a
-              href="/main-view/create-menu"
-              target="_blank"
-              className="text-white text-center d-flex justify-content-center align-items-center"
-              style={{
-                backgroundColor: "#2DDC1B",
-                height: "40px",
-                width: "40px",
-                borderRadius: "50px",
-              }}
-            >
-              <FontAwesomeIcon
-                className="text-white fs-4"
-                icon={faPlus}
-              ></FontAwesomeIcon>
-            </a>
+        <MenuList permission={permission} click={clickhandler} />
+        {permission?.isInserted && (
+          <div
+            className={`position-absolute`}
+            style={{ right: "20%", bottom: "4%", zIndex: "9999" }}
+          >
+            <div className="">
+              <a
+                href="/main-view/create-menu"
+                target="_blank"
+                className="text-white text-center d-flex justify-content-center align-items-center"
+                style={{
+                  backgroundColor: "#2DDC1B",
+                  height: "40px",
+                  width: "40px",
+                  borderRadius: "50px",
+                }}
+              >
+                <FontAwesomeIcon
+                  className="text-white fs-4"
+                  icon={faPlus}
+                ></FontAwesomeIcon>
+              </a>
+            </div>
           </div>
-        </div>
-      ) }
+        )}
       </div>
     </div>
   );

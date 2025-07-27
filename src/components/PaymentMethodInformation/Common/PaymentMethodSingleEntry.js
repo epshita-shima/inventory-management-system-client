@@ -29,8 +29,8 @@ import PreviousPaymentDetailsModal from "./PreviousPaymentDetails/PreviousPaymen
 import UpdatePaymentMethodInformation from "../Update/UpdatePaymentMethodInformation";
 import getInitialFormValues from "../../Common/CommonDropdown/CommonFromValues/CommonFromValues";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
-import LoadingSpineer from "../../Common/LoadingSpinner/LoadingSpineer";
-import '../../../buttonStyle/style.css'
+import '../../../buttonStyle/style.css';
+
 const PaymentMethodSingleEntry = () => {
   const { id } = useParams();
   const ArrayHelperRef = useRef();
@@ -40,7 +40,7 @@ const PaymentMethodSingleEntry = () => {
   const { data: invoiceInformation } =
     useGetAllInvoiceInformationQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
-  const [paymentReceiveDate, setPaymentReceiveDate] = useState(new Date());
+  const [paymentReceiveDate] = useState(new Date());
   const [isDisplay, setIsDisplay] = useState(false);
   const [bankChequeDate, setBankChequeDate] = useState(new Date());
   const [invoiveByInvoiceNumber, setInvoiveByInvoiceNumber] = useState([]);
@@ -68,7 +68,6 @@ const PaymentMethodSingleEntry = () => {
     useState([]);
 
   const handleCloseModal = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [formValues, setFormValues] = useState((getInitialFormValues(clientName,piNumber,makebyUser,paymentReceiveDate)));
 
   const paymentMethodOptions = [
@@ -163,7 +162,7 @@ const PaymentMethodSingleEntry = () => {
         updateDate: null,
         detailsData: [],
       };
-      values.detailsData.map((item) => {
+      values.detailsData.forEach((item) => {
         modelData.detailsData.push({
           paymentReceiveDate: item.paymentReceiveDate
             ? item.paymentReceiveDate
@@ -374,7 +373,7 @@ const PaymentMethodSingleEntry = () => {
                               <div className="w-100 d-flex justify-content-between mt-2">
                                 <div className="w-100">
                                   <Select
-                                    className="form-select"
+                                    class="form-select"
                                     className="w-100 mb-3"
                                     aria-label="Default select example"
                                     name="sizeinfo"
@@ -474,7 +473,7 @@ const PaymentMethodSingleEntry = () => {
                               <div className="w-100 d-flex justify-content-between mt-2">
                                 <div className="w-100">
                                   <Select
-                                    className="form-select"
+                                    class="form-select"
                                     className="w-100 mb-3"
                                     aria-label="Default select example"
                                     name="supplierpono"
@@ -513,7 +512,6 @@ const PaymentMethodSingleEntry = () => {
                                         ...provided,
                                         zIndex: 9999,
                                         height: "auto",
-                                        // overflowY: "scroll",
                                       }),
                                     }}
                                     theme={(theme) => ({
@@ -539,10 +537,8 @@ const PaymentMethodSingleEntry = () => {
                                           setshowPreviousPaymentDetailsButton(
                                             true
                                           );
-                                          // setShow(true);
                                         } else {
                                           setPreviousPaymentData([]);
-                                          // setShow(false);
                                           setshowPreviousPaymentDetailsButton(
                                             false
                                           );
@@ -575,13 +571,13 @@ const PaymentMethodSingleEntry = () => {
                                           setPreviousPaymentData(
                                             filterPaymentData
                                           );
-                                          // setShow(true);
+                                         
                                           setshowPreviousPaymentDetailsButton(
                                             true
                                           );
                                         } else {
                                           setPreviousPaymentData([]);
-                                          // setShow(false);
+                                         
                                           setshowPreviousPaymentDetailsButton(
                                             false
                                           );
@@ -673,7 +669,6 @@ const PaymentMethodSingleEntry = () => {
                                   <div
                                     className="border-0 "
                                     style={{
-                                      // backgroundColor: "#2DDC1B",
                                       backgroundColor: "#B8FEB3",
                                       color: "#000",
                                       padding: "5px 10px",
@@ -820,8 +815,8 @@ const PaymentMethodSingleEntry = () => {
           setPreviousPaymentData={setPreviousPaymentData}
           finishGoods={finishGoods}
           sizeInfo={sizeInfo}
-          show={show} // Pass row-specific modal visibility
-          handleClosePreviousPayment={() => handleCloseModal()} // Close modal for this specific row
+          show={show} 
+          handleClosePreviousPayment={() => handleCloseModal()} 
           bankChequeDate={bankChequeDate}
           setBankChequeDate={setBankChequeDate}
           refetch={refetch}

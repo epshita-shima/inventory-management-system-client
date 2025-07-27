@@ -26,7 +26,7 @@ import "../../../../buttonStyle/style.css";
 const UpdateFgItemInfo = () => {
   const [startDate, setStartDate] = useState(new Date());
   const { id } = useParams();
-  const [singleItemInfoData, setSingleItemInfoData] = useState();
+  const [singleItemInfoData, setSingleItemInfoData] = useState({});
   const { data: singleItemData, isLoading: isFGItemloading } =
     useGetSingleItemQuery(id);
   const { data: itemSize } = useGetAllItemSizeQuery(undefined);

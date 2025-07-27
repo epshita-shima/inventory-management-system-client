@@ -7,7 +7,6 @@ import {
   useLazyGetFilteredProductionInfoQuery,
 } from "../../../../redux/features/productioninformation/productionApi";
 import { useGetCompanyInfoQuery } from "../../../../redux/features/companyinfo/compayApi";
-import makeAnimated from "react-select/animated";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import swal from "sweetalert";
 import {
@@ -29,7 +28,7 @@ import handleProductionExcel from "../../../ReportProperties/Excel/handleProduct
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
-import '../../Common/ProductionDatePicker.css'
+import "../../Common/ProductionDatePicker.css";
 const ProductionInfoList = ({ permission }) => {
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
@@ -38,7 +37,7 @@ const ProductionInfoList = ({ permission }) => {
   const { data: rawItemInfo } = useGetAllRMItemInformationQuery(undefined);
   const { data: companyinfo } = useGetCompanyInfoQuery(undefined);
   const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
-  const {data:itemSizeInfo}=useGetAllItemSizeQuery(undefined)
+  const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
   const [deleteProductionInfo] = useDeleteProductionInformationMutation();
   const [isTableDispaly, setIsTableDisplay] = useState(false);
   const [fromDate, setFromDate] = useState(
@@ -54,11 +53,10 @@ const ProductionInfoList = ({ permission }) => {
     toDate: toDate,
   });
   const [perBatchProductionData, setPerBatchProductionData] = useState([]);
-  // const [totalProduction, setTotalProduction] = useState([]);
   const [lastOneMonthProduction, setLastOneMonthProduction] = useState([]);
   const [lastOneWeekData, setLastOneWeekData] = useState([]);
   const [yesterdayData, setYesterDayData] = useState([]);
-  const [trigger, { data: filteredDatas, error, isFetching }] =
+  const [trigger, { data: filteredDatas }] =
     useLazyGetFilteredProductionInfoQuery();
 
   useEffect(() => {
@@ -87,7 +85,6 @@ const ProductionInfoList = ({ permission }) => {
       lastMonthDate.setMonth(today.getMonth() - 1);
       lastWeekDate.setDate(today.getDate() - 7);
       setFilteredData(filteredDatas || []);
-      // setTotalProduction(filteredDatas);
 
       const filteredLastMonthData = productionInitialData?.filter((item) => {
         const itemDate = new Date(item.productionDate); // assuming `item.date` is in a format that can be parsed by Date
@@ -114,7 +111,6 @@ const ProductionInfoList = ({ permission }) => {
 
   useEffect(() => {
     if (isFetchAfterDeleteData) {
-      // setFilteredData(grnAllInformation);
       handleApplyFilters();
       setIsFetchAfterDeleteData(false);
     }
@@ -123,7 +119,6 @@ const ProductionInfoList = ({ permission }) => {
   const handleApplyFilters = async () => {
     setExecuteQuery(true);
   };
-
 
   const columns = [
     {
@@ -168,7 +163,7 @@ const ProductionInfoList = ({ permission }) => {
       grow: 2,
       cell: (filteredData) => (
         <div className="d-flex justify-content-between align-content-center">
-          {permission?.isPDF ? (
+          {permission?.isPDF && (
             <a
               target="_blank"
               className={` action-icon `}
@@ -201,10 +196,8 @@ const ProductionInfoList = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faFilePdf}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
-          {permission?.isUpdated ? (
+          {/* {permission?.isUpdated ? (
             <a
               target="_blank"
               className={` action-icon `}
@@ -232,9 +225,9 @@ const ProductionInfoList = ({ permission }) => {
             </a>
           ) : (
             ""
-          )}
+          )} */}
 
-          {permission?.isRemoved ? (
+          {permission?.isRemoved && (
             <a
               target="_blank"
               className="action-icon "
@@ -282,8 +275,6 @@ const ProductionInfoList = ({ permission }) => {
             >
               <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
             </a>
-          ) : (
-            ""
           )}
         </div>
       ),
@@ -340,13 +331,15 @@ const ProductionInfoList = ({ permission }) => {
               >
                 <FontAwesomeIcon icon={faDownload}></FontAwesomeIcon>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton1"
+              >
                 <li>
                   <a
                     className="dropdown-item"
                     href="#"
                     onClick={() => {
-                      
                       if (companyinfo?.length !== 0 || undefined) {
                         downloadProductionPDF(
                           { companyinfo },
@@ -402,7 +395,7 @@ const ProductionInfoList = ({ permission }) => {
   ]);
 
   return (
-    <div className="row px-5 mx-4 ">
+    <div className=" px-5 mx-4 ">
       <ProductionListHeading
         permission={permission}
         totalProduction={productionInitialData}
@@ -410,7 +403,7 @@ const ProductionInfoList = ({ permission }) => {
         lastOneWeekData={lastOneWeekData}
         yesterdayData={yesterdayData}
       ></ProductionListHeading>
-      <div className="col userlist-table mt-4">
+      <div className="col mt-4">
         <div>
           <div
             className="d-lg-flex justify-content-lg-between align-items-lg-center d-md-block"
@@ -506,18 +499,13 @@ const ProductionInfoList = ({ permission }) => {
                 Clear
               </button>
             </div>
-            <div>
-             
-            </div>
+            <div></div>
           </div>
           <div></div>
         </div>
 
         {isTableDispaly ? (
-          <div
-            className=" "
-            style={{ height: "calc(65vh - 120px)", overflowY: "scroll" }}
-          >
+          <div>
             <DataTable
               columns={columns}
               data={filteredItems}
@@ -527,6 +515,8 @@ const ProductionInfoList = ({ permission }) => {
               pagination
               subHeader
               subHeaderComponent={subHeaderComponent}
+              fixedHeader={true}
+              fixedHeaderScrollHeight="calc(60vh - 120px)"
             />
           </div>
         ) : null}
@@ -590,18 +580,12 @@ const ProductionInfoList = ({ permission }) => {
           </tr>
         </thead>
         <tbody>
-          {" "}
-          {/* {perBatchProductionData?.map((item, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td> */}
           <tr>
             <td>{perBatchProductionData?.productionDate}</td>
             <td>{perBatchProductionData?.batchNo}</td>
             <td>{perBatchProductionData?.totalBatch}</td>
             <td>{perBatchProductionData?.productionQty}</td>
           </tr>
-          {/* </tr>
-          ))} */}
         </tbody>
       </table>
     </div>

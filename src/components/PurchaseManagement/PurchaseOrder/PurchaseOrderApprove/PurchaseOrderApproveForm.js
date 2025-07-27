@@ -41,7 +41,6 @@ const PurchaseOrderApproveForm = ({ permission }) => {
     useGetAllPurchaseOrderApproveInformationQuery(undefined);
   const { data: purchaseUnapproveInfoData } =
     useGetAllPurchaseOrderUnapproveInformationQuery(undefined);
-  const [purchaseInfosModal, setPurchaseInfosModal] = useState(false);
   const [purchaseApproveAllData, setPurchaseApproveAllData] = useState([]);
   const [purchaseUnApproveAllData, setPurchaseUnApproveAllData] = useState([]);
   const [purchaseFilterApproveAllData, setPurchaseFilterApproveAllData] =
@@ -49,7 +48,7 @@ const PurchaseOrderApproveForm = ({ permission }) => {
   const [purchaseFilterUnApproveAllData, setPurchaseFilterUnApproveAllData] =
     useState([]);
   const [purchaseInCash, setPurchaseInCash] = useState([]);
-  const [purchaseInLCAtSight, setPurchaseInInLCAtSight] = useState([]);
+  const [ purchaseInInLCAtSight,setPurchaseInInLCAtSight] = useState([]);
   const [purchaseOrderList, setPurchaseOrderList] = useState(true);
   const [fromDate, setFromDate] = useState(
     new Date().toLocaleDateString("en-CA")
@@ -60,7 +59,7 @@ const PurchaseOrderApproveForm = ({ permission }) => {
   const { data: bankInformation } = useGetAllBankInformationQuery(undefined);
   const { data: rawMaterialItemInfo } =
     useGetAllRMItemInformationQuery(undefined);
-  const { data: grnInfoData, refetch: grnRefetch } =
+  const { refetch: grnRefetch } =
     useGetAllGRNInformationQuery(undefined);
   const { data: paymentData } = useGetAllPaymentInformationQuery(undefined);
   const [updatePOApproveStatus] =
@@ -173,7 +172,6 @@ const PurchaseOrderApproveForm = ({ permission }) => {
           isLoading={isPurchaseOrderLoading}
           supplierInfo={supplierInfo}
           permission={permission}
-          setPurchaseInfosModal={setPurchaseInfosModal}
           companyinfo={companyinfo}
           bankInformation={bankInformation}
           rawMaterialItemInfo={rawMaterialItemInfo}
@@ -205,8 +203,6 @@ const PurchaseOrderApproveForm = ({ permission }) => {
                     menu: (provided) => ({
                       ...provided,
                       zIndex: 9999,
-                      // height: "200px",
-                      // overflowY: "scroll",
                     }),
                   }}
                   theme={(theme) => ({
@@ -229,7 +225,6 @@ const PurchaseOrderApproveForm = ({ permission }) => {
               <DatePicker
                 dateFormat="y-MM-dd"
                 className="text-center custom-datepicker3"
-                //   value={id ? purchaseOrderAllInformation?.deliveryDate : fromDate}
                 calendarClassName="custom-calendar3"
                 selected={fromDate}
                 required
@@ -253,7 +248,6 @@ const PurchaseOrderApproveForm = ({ permission }) => {
               <DatePicker
                 dateFormat="y-MM-dd"
                 className="text-center custom-datepicker3"
-                //   value={id ? purchaseOrderAllInformation?.deliveryDate : fromDate}
                 calendarClassName="custom-calendar3"
                 selected={toDate}
                 required

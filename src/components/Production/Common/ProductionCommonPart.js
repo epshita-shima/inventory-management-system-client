@@ -3,7 +3,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Field, FieldArray, Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import swal from "sweetalert";
@@ -26,18 +26,20 @@ import {
 } from "../../../redux/features/serialgenerate/serialApi";
 import getMakebyUser from "../../Common/CommonMakeUser/CommonMakingUser";
 import "../../../buttonStyle/style.css";
+import { useInsertRawMaterialConsumptionMutation } from "../../../redux/features/rawmaterialconsumption/rawconsumptionApi";
 
 const ProductionCommonPart = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const ArrayHelperRef = useRef();
   const { data: getSingleProductionData } =
     useGetSingleProductionInformationQuery(id);
   const [updateProductionData, setUpdateProductionData] = useState([]);
   const [updateSingleProductionInfo] = useUpdateProductionInformationMutation();
+  const [insertRawConsumption] = useInsertRawMaterialConsumptionMutation();
   const [startDates, setStartDates] = useState(
     new Date().toLocaleDateString("en-CA")
   );
-  const ArrayHelperRef = useRef();
   const { data: rawMaterials } = useGetAllRMItemInformationQuery(undefined);
   const rawMaterialsData = rawMaterialItemDropdown(rawMaterials);
   const { data: cftData } = useGetAllCFTInfosQuery(undefined);
@@ -50,6 +52,7 @@ const ProductionCommonPart = () => {
   const [insertProductionData, { isLoading: isProdctionInsertLoading }] =
     useInsertProductionInformationMutation();
   const makebyUser = getMakebyUser();
+
   const initialValues = {
     productionDate: new Date().toLocaleDateString("en-CA"),
     batchNo: "",
@@ -80,6 +83,7 @@ const ProductionCommonPart = () => {
         consumptionStatus: "",
         receipeLabelData: "",
         singleValueCFTPerKg: "",
+        detailsMaterialUsed: [],
       },
     ],
   };
@@ -101,24 +105,14 @@ const ProductionCommonPart = () => {
     { value: "677248c1a1a0d9059b94977f", label: "150" },
   ];
 
-  // recipe version v1
-  // const receipeOptionsLessQty900 = [
-  //   { value: "677248c1a1a0d9059b94977e", label: "200" },
-  //   { value: "677248c1a1a0d9059b94977c", label: "144" },
-  //   { value: "677248c1a1a0d9059b94977d", label: "256" },
-  //   { value: "677248c1a1a0d9059b949780", label: "" },
-  //   { value: "677248c1a1a0d9059b949781", label: "" },
-  //   { value: "677248c1a1a0d9059b94977f", label: "300" },
-  // ];
-const receipeOptionsLessQty900=[
-      { value: "677248c1a1a0d9059b94977e", label: "275" },
+  const receipeOptionsLessQty900 = [
+    { value: "677248c1a1a0d9059b94977e", label: "275" },
     { value: "677248c1a1a0d9059b94977c", label: "150" },
     { value: "677248c1a1a0d9059b94977d", label: "255" },
     { value: "677248c1a1a0d9059b949780", label: "" },
     { value: "677248c1a1a0d9059b949781", label: "12.5" },
     { value: "677248c1a1a0d9059b94977f", label: "250" },
-]
-
+  ];
 
   const areFieldsEmpty = () => {
     return (
@@ -195,7 +189,10 @@ const receipeOptionsLessQty900=[
           updateDate: null,
           detailsData: [],
         };
-        values.detailsData.map((item) => {
+        const materialUsedModel = {
+          detailsData: [],
+        };
+        values.detailsData.forEach((item) => {
           newProductionInfo.detailsData.push({
             itemId: item.itemId,
             receipe: item.receipe,
@@ -205,15 +202,45 @@ const receipeOptionsLessQty900=[
             less: parseFloat(item.less),
             consumptionStatus: item.consumptionStatus,
           });
+          item.detailsMaterialUsed.forEach((details) => {
+            const closingStockCalculate=parseFloat(details.quantity) - parseFloat(details.closingStock)
+            materialUsedModel.detailsData.push({
+              productionDate: values.productionDate,
+              itemId: details.itemId,
+              quantity: details.quantity,
+              rate: details.unitPrice,
+              amount: details.amount,
+              grnDetailsId:details.grnDetailsId,
+              materialUsed: details.materialUsed,
+              closingStock: closingStockCalculate,
+              makeBy: getMakebyUser(),
+              updateBy: null,
+              makeDate: new Date(),
+              updateDate: null,
+            });
+          });
         });
+
         const response = await insertProductionData(newProductionInfo);
+
         if (response.data.status === 200) {
-          swal("Done", "Data Save Successfully", "success");
-          await createSerialNo(serialData);
-          serialRefresh();
-          resetForm();
-          setProStartDate("");
-          setEndDate("");
+          const rawConsumptionResponse = await insertRawConsumption(
+            materialUsedModel.detailsData
+          );
+          if (rawConsumptionResponse.data.status === 200) {
+            swal("Done", "Data Save Successfully", "success");
+            await createSerialNo(serialData);
+            serialRefresh();
+            resetForm();
+            setProStartDate("");
+            setEndDate("");
+          } else {
+            swal(
+              "Not Possible!",
+              "An problem occurred while creating the data",
+              "error"
+            );
+          }
         } else {
           swal(
             "Not Possible!",
@@ -256,7 +283,7 @@ const receipeOptionsLessQty900=[
                 })
               ),
             })}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
+            onSubmit={({ setSubmitting, resetForm }) => {
               resetForm({ values: initialValues });
               setSubmitting(false);
             }}
@@ -265,7 +292,6 @@ const receipeOptionsLessQty900=[
               values,
               resetForm,
               setFieldValue,
-              isSubmitting,
               errors,
               touched,
               isValid,
@@ -334,8 +360,12 @@ const receipeOptionsLessQty900=[
                                   endDate={endDate}
                                   setEndDate={setEndDate}
                                   receipeOptions1000={receipeOptions1000}
-                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
-                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
+                                  receipeOptionsLessQty938={
+                                    receipeOptionsLessQty938
+                                  }
+                                  receipeOptionsLessQty900={
+                                    receipeOptionsLessQty900
+                                  }
                                 ></ProductionSingleInfo>
                               }
                               <div>
@@ -385,7 +415,6 @@ const receipeOptionsLessQty900=[
                                     <div
                                       className="border-0 mt-sm-4 ms-lg-2 mt-lg-0"
                                       style={{
-                                        // backgroundColor: "#00B987",
                                         backgroundColor: "#B8FEB3",
                                         color: "#000",
                                         fontWeight: 900,
@@ -425,6 +454,7 @@ const receipeOptionsLessQty900=[
                                             consumptionStatus: "",
                                             receipeLabelData: "",
                                             singleValueCFTPerKg: "",
+                                            detailsMaterialUsed: [],
                                           });
                                         }
                                       }}
@@ -446,11 +476,15 @@ const receipeOptionsLessQty900=[
                                   updateProductionData={updateProductionData}
                                   rawMaterialsData={rawMaterialsData}
                                   receipeOptions1000={receipeOptions1000}
-                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
+                                  receipeOptionsLessQty900={
+                                    receipeOptionsLessQty900
+                                  }
                                   setUpdateProductionData={
                                     setUpdateProductionData
                                   }
-                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
+                                  receipeOptionsLessQty938={
+                                    receipeOptionsLessQty938
+                                  }
                                   touched={touched}
                                   errors={errors}
                                 ></UpdateProduction>
@@ -463,9 +497,13 @@ const receipeOptionsLessQty900=[
                                   arrayHelpers={arrayHelpers}
                                   values={values}
                                   receipeOptions1000={receipeOptions1000}
-                                  receipeOptionsLessQty900={receipeOptionsLessQty900}
+                                  receipeOptionsLessQty900={
+                                    receipeOptionsLessQty900
+                                  }
                                   cftData={cftData}
-                                  receipeOptionsLessQty938={receipeOptionsLessQty938}
+                                  receipeOptionsLessQty938={
+                                    receipeOptionsLessQty938
+                                  }
                                   rawMaterialsData={rawMaterialsData}
                                 ></InsertProduction>
                               )}

@@ -1,6 +1,6 @@
 import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ErrorMessage, Field, Formik, Form, FieldArray } from "formik";
+import { Field, Formik, Form, FieldArray } from "formik";
 import React, { useRef, useState } from "react";
 import swal from "sweetalert";
 import * as Yup from "yup";
@@ -116,7 +116,6 @@ const InsertUnitInfoModal = () => {
                   values,
                   resetForm,
                   setFieldValue,
-                  isSubmitting,
                   errors,
                   touched,
                 }) => (

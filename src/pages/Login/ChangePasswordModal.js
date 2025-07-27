@@ -38,7 +38,7 @@ const ChangePasswordModal = ({
     } else {
       setSingleUserData(filteredUser);
     }
-  }, [setSingleUserData, userIdForChangePassowrd, users]);
+  }, [menuListData, setSingleUserData, userIdForChangePassowrd, users]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;

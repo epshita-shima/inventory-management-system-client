@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CommonProductionReportParameter from "../CommonProductionReportParameter/CommonProductionReportParameter";
-// import { useLazyGetProductionDatewiseDetailsReportQuery, useLazyGetProductionDatewiseSummaryReportQuery } from "../../../redux/features/productionreport/productionreportApi";
 import DatewiseProductionDetails from "../DatewiseProductionDetails/DatewiseProductionDetails";
 import DatewiseProductionSummary from "../DatewiseProductionSummary/DatewiseProductionSummary";
-// import { finishGoodsWithSizeItemDropdown, productionBatchDropdown } from "../../Common/CommonDropdown/CommonDropdown";
-// import { useGetAllProductionInformationQuery } from "../../../../redux/features/productioninformation/productionApi";
 import { useGetAllRMItemInformationQuery } from "../../../../redux/features/iteminformation/rmItemInfoApi";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
 import { useGetAllItemSizeQuery } from "../../../../redux/features/itemsizeinfo/itemSizeInfoApi";
@@ -65,7 +62,6 @@ console.log('permission',permission)
   useEffect(() => {
     if (executeQuery) {
       setIsTableDisplay(true);
-      // trigger(filters);
       setExecuteQuery(false);
     }
   }, [executeQuery]);
@@ -124,7 +120,7 @@ console.log('permission',permission)
             permission={permission}
             isTableDispaly={isTableDispaly}
             setIsTableDisplay={setIsTableDisplay}
-            filteredDatas={productionDatewiseSummaryData}
+            filteredDatas={productionDatewiseSummaryData?.finishGoodsProduction}
             finishGoodsItemInfo={finishGoodsItemInfo}
             rawMaterialDataInfo={rawMaterialDataInfo}
             itemUnitInformation={itemUnitInformation}
