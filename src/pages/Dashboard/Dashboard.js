@@ -54,7 +54,7 @@ const Dashboard = () => {
   } = useGetAllHeadingTotalInfoQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
-  console.log(headingTotalInfo);
+
   const [triggerSalesSummaryReport, { data: salesSummaryData }] =
     useLazyGetSalesSummaryReportQuery();
   const [triggerPurchaseDetailsReport, { data: purchaseDetailsData }] =

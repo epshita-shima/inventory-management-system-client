@@ -18,6 +18,7 @@ const baseQuery = fetchBaseQuery({
 console.log('url',process.env.REACT_APP_BASE_URL)
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log(result)
   const accessToken1 = localStorage.getItem("accesstoken");
   if (accessToken1) {
     if (isTokenExpired(accessToken1)) {

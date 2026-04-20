@@ -58,20 +58,20 @@ const UserDataList = ({
 
     // Find the user object matching the provided userId
     const currentUser = userData?.find((user) => user._id === userId);
-
+console.log(currentUser)
     if (currentUser) {
       // Loop through the menus of the current user
       currentUser?.menulist?.forEach((menu) => {
         menu?.items?.forEach((subMenu) => {
           
           if(subMenu.items.length <= 0){
-            if(subMenu.label==='User List'){
+            if(subMenu.label==='User Setting'){
               userList=subMenu
             }
           }
           if (subMenu?.label === subMenu?.label) {
             const userListSubMenu = subMenu?.items.find(
-              (subItem) => subItem?.label === 'User List'
+              (subItem) => subItem?.label === 'User Setting'
             );
          
             if (userListSubMenu) {

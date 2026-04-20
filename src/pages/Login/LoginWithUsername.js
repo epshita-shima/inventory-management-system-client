@@ -14,7 +14,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
   const [password, setPassword] = useState("");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [loginUserValidation,{isLoading}] = useUserLoggedinMutation();
+  const [loginUserValidation, { isLoading }] = useUserLoggedinMutation();
   const inputRef = useRef(null);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const navigate = useNavigate();
@@ -41,6 +41,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
 
     try {
       const response = await loginUserValidation(loginUser);
+      console.log(response);
       if (response.data.success === true) {
         swal("Done", `${response.data.message}`, "success").then(() => {
           localStorage.setItem("user", JSON.stringify(response.data.data));
@@ -62,7 +63,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
     inputs.forEach((input) => input.setAttribute("autocomplete", "off"));
   }, []);
 
-   if (isLoading) {
+  if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center">
         <button
@@ -86,14 +87,14 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
       className="d-flex justify-content-center align-items-center shadow-lg w-100 h-100 rounded-4"
       style={{
         backgroundColor: "rgba(21, 253, 4, 0.3)",
-      
-        position: "absolute", // Or "fixed" if needed
+
+        position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="col-11 col-md-11 col-lg-4 col-xl-2 bg-white bg-opacity-25" >
+      <div className="col-11 col-md-11 col-lg-4 col-xl-2 bg-white bg-opacity-25">
         <div className="px-4 py-5">
           <div className="d-flex justify-content-center">
             <img
@@ -108,7 +109,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
           </div>
 
           {isLoggedIn ? (
-            navigate("/project") // Render success message if isLoggedIn is true
+            navigate("/project")
           ) : (
             <>
               <Form onSubmit={handleLogin} ref={formRef} autoComplete="off">
@@ -130,7 +131,11 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     autoComplete="off"
                     onFocus={handleFocus}
                     onChange={(e) => setUsername(e.target.value)}
-                    style={{ border: "1px solid #B8FEB3", background: "white",borderRadius:'5px' }}
+                    style={{
+                      border: "1px solid #B8FEB3",
+                      background: "white",
+                      borderRadius: "5px",
+                    }}
                   />
                 </InputGroup>
                 {/* <input type="username" placeholder="Email" value={username} onChange={(e) => setUsername(e.target.value)} required /> */}
@@ -157,7 +162,11 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
                     value={password}
                     autoComplete="off"
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{ border: "1px solid #B8FEB3", background: "white",borderRadius:'5px'  }}
+                    style={{
+                      border: "1px solid #B8FEB3",
+                      background: "white",
+                      borderRadius: "5px",
+                    }}
                   />
                 </InputGroup>
 
@@ -179,6 +188,13 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
               </Form>
             </>
           )}
+          <div className="text-center mt-3">
+            <small style={{ color: "#032339" }}>
+              Demo Login: <br />
+              <strong>Username:</strong> Super-026 <br />
+              <strong>Password:</strong> LC00
+            </small>
+          </div>
         </div>
       </div>
     </div>
