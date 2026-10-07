@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import UserListInfo from "./UserDataTable/UserListInfo";
+import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const UserDataList = ({
   setChangePassword,
@@ -13,84 +13,17 @@ const UserDataList = ({
   setUserIdForChangePassowrd
 }) => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
-  const [permissionResult, setPermissionResult] = useState([]);
-  const [userIdFromLocalStorage, setUserIdFromLocalStorage] = useState("");
+  const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.length > 0) {
-      const getUserId = localStorage.getItem("user");
-      const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId?._id;
-      const permidionData = user?.filter(
-        (user) => user._id === userIdFromSession
-      );
-      setPermissionResult(permidionData);
-      setUserIdFromLocalStorage(userIdFromSession);
+      const permissions = extractUserMenuListForCurrectMenu("User Setting");
+      setPermission(permissions);
     } else {
       navigate("/");
     }
-  }, [navigate, user]);
-
-  // if (isUserloading) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <button
-  //         className="btn"
-  //         style={{ backgroundColor: "#2DDC1B", color: "white" }}
-  //         type="button"
-  //         disabled
-  //       >
-  //         <span
-  //           className="spinner-grow spinner-grow-sm"
-  //           role="status"
-  //           aria-hidden="true"
-  //         ></span>
-  //         Loading user...
-  //       </button>
-  //     </div>
-  //   );
-  // }
-
-  const extractUserListForCurrentUser = (userData, userId) => {
-    let userList = null;
-
-    // Find the user object matching the provided userId
-    const currentUser = userData?.find((user) => user._id === userId);
-console.log(currentUser)
-    if (currentUser) {
-      // Loop through the menus of the current user
-      currentUser?.menulist?.forEach((menu) => {
-        menu?.items?.forEach((subMenu) => {
-          
-          if(subMenu.items.length <= 0){
-            if(subMenu.label==='User Setting'){
-              userList=subMenu
-            }
-          }
-          if (subMenu?.label === subMenu?.label) {
-            const userListSubMenu = subMenu?.items.find(
-              (subItem) => subItem?.label === 'User Setting'
-            );
-         
-            if (userListSubMenu) {
-              // Set the user list property
-              userList = userListSubMenu;
-            }
-          }
-        });
-      });
-    }
-
-    return userList;
-  }
-
-  const permission = extractUserListForCurrentUser(
-    permissionResult,
-    userIdFromLocalStorage
-  );
-
+  }, [navigate]);
 
   return (
     <div>

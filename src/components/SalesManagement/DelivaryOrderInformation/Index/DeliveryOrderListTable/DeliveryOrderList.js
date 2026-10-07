@@ -2,26 +2,21 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import DeliveryOrderListData from "./DeliveryOrderListData";
-import { useGetAllUserQuery } from "../../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import { extractUserMenuListForCurrectMenu } from "../../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const DeliveryOrderList = () => {
-  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
-
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(user, "DO List");
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("DO List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
   // if (isUserloading) {
   //   return (
@@ -46,7 +41,7 @@ const DeliveryOrderList = () => {
   return (
     <div>
       {/* <LoadingSpineer isLoading={isUserloading}></LoadingSpineer> */}
-     <div className={`${isUserloading ? 'd-none' : 'd-block'}`}>
+     <div className="d-block">
      <DeliveryOrderListData permission={permission}></DeliveryOrderListData>
       {permission?.isInserted && (
         <div

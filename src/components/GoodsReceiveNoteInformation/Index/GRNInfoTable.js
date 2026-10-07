@@ -4,29 +4,22 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import GRNInfoList from "./GRNInformationTable/GRNInfoList";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { extractUserMenuListForCurrectMenu } from './../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const GRNInfoTable = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isLoading:isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(
-        user,
-        "GRN List"
-      );
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("GRN List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
   
 
   return (

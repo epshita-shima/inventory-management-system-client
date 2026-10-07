@@ -3,8 +3,13 @@ import { Navigate, useLocation } from "react-router-dom";
 import swal from "sweetalert";
 const RequireAuth = ({ children }) => {
   const getUserFromSession = localStorage.getItem("user");
+  const accessToken = localStorage.getItem("accesstoken");
   const getUser = JSON.parse(getUserFromSession);
   const location = useLocation();
+
+  if (!getUser || !accessToken) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
   const extractUrlsAndIsChecked = (userData) => {
     const urlsAndIsChecked = [];
 

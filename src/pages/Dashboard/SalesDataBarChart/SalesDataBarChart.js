@@ -4,9 +4,9 @@ import DatePicker from "react-datepicker";
 import swal from "sweetalert";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
-const SalesDataBarChart = ({handleApplyFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
+const SalesDataBarChart = ({handleApplyFilters,handleResetFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
 
   return (
     <div className="row mt-1 g-3">
@@ -103,15 +103,15 @@ const SalesDataBarChart = ({handleApplyFilters,productionOptions,filters,fromDat
         />
       </div>
     </div>
-    <div className="col-sm-2
-    ">
-     <FontAwesomeIcon className="fs-1 text-success mt-5 " icon={faSearch} onClick={async()=>{
+    <div className="col-sm-2 d-flex align-items-end mb-1">
+     <FontAwesomeIcon className="fs-1 text-success mt-5 me-3" icon={faSearch} title="Search" onClick={async()=>{
        const updatedFilters = {
         ...filters
       };
 
        await handleApplyFilters(updatedFilters)
      }}></FontAwesomeIcon>
+     <FontAwesomeIcon className="fs-1 text-secondary mt-5" icon={faRotateLeft} title="Reset to last 2 months" onClick={() => handleResetFilters && handleResetFilters()}></FontAwesomeIcon>
     </div>
   </div>
   

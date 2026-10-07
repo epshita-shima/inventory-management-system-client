@@ -3,25 +3,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import PurchaseOderList from "./PurchaseOderInfoTable/PurchaseOderList";
 import { useNavigate } from "react-router-dom";
-import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const PurchaseOrderListTable = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(user, "PO List");
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("PO List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
 
 

@@ -46,12 +46,34 @@ ChartJS.register(
   Legend
 );
 
+const getLastTwoMonthsRange = () => {
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 2);
+  return {
+    fromDate: startDate.toLocaleDateString("en-CA"),
+    toDate: endDate.toLocaleDateString("en-CA"),
+  };
+};
+
+const toReportParams = (filters) => {
+  const params = {};
+  Object.entries(filters || {}).forEach(([key, value]) => {
+    if (value !== "" && value != null && key !== "reportStatus") {
+      params[key] = value;
+    }
+  });
+  return params;
+};
+
 const Dashboard = () => {
+  const defaultRange = getLastTwoMonthsRange();
+  const [headingRange, setHeadingRange] = useState(defaultRange);
   const {
     data: headingTotalInfo,
     isLoading: headingDataLoading,
     error,
-  } = useGetAllHeadingTotalInfoQuery(undefined, {
+  } = useGetAllHeadingTotalInfoQuery(headingRange, {
     refetchOnMountOrArgChange: true,
   });
 
@@ -66,49 +88,45 @@ const Dashboard = () => {
     { data: finishGoodsProductionData },
   ] = useLazyGetProductionDatewiseSummaryReportQuery();
 
-  function getBackDate(date, daysToSubtract) {
-    const result = new Date(date);
-    result.setDate(result.getDate() - daysToSubtract); // Subtract days
-    return result.toLocaleDateString("en-CA"); // Format to "YYYY-MM-DD"
-  }
-  console.log(finishGoodsProductionData);
-  const [fromDate, setFromDate] = useState(getBackDate(new Date(), 1));
-  const [toDate, setToDate] = useState(new Date());
+  const [fromDate, setFromDate] = useState(defaultRange.fromDate);
+  const [toDate, setToDate] = useState(defaultRange.toDate);
   const [purchaseFromDate, setPurchaseFromDate] = useState(
-    getBackDate(new Date(), 1)
+    defaultRange.fromDate
   );
-  const [purchaseToDate, setPurchaseToDate] = useState(new Date());
+  const [purchaseToDate, setPurchaseToDate] = useState(defaultRange.toDate);
   const [rawConsumptionFromDate, setRawConsumptionFromDate] = useState(
-    getBackDate(new Date(), 1)
+    defaultRange.fromDate
   );
-  const [rawConsumptionToDate, setRawConsumptionToDate] = useState(new Date());
+  const [rawConsumptionToDate, setRawConsumptionToDate] = useState(
+    defaultRange.toDate
+  );
   const [finishGoodsProductionFromDate, setFinishGoodsProductionFromDate] =
-    useState(getBackDate(new Date(), 1));
+    useState(defaultRange.fromDate);
   const [finishGoodsProductionToDate, setFinishGoodsProductionToDate] =
-    useState(new Date());
+    useState(defaultRange.toDate);
 
   const [filters, setFilters] = useState({
-    fromDate: fromDate,
-    toDate: new Date(toDate).toLocaleDateString("en-CA"),
+    fromDate: defaultRange.fromDate,
+    toDate: defaultRange.toDate,
     itemId: "",
     reportStatus: "",
   });
   const [purchaseFilters, setPurchaseFilters] = useState({
-    fromDate: purchaseFromDate,
-    toDate: new Date(purchaseToDate).toLocaleDateString("en-CA"),
+    fromDate: defaultRange.fromDate,
+    toDate: defaultRange.toDate,
     itemId: "",
     reportStatus: "",
   });
   const [rawConsumptionFilters, setRawConsumptionFilters] = useState({
-    fromDate: purchaseFromDate,
-    toDate: new Date(purchaseToDate).toLocaleDateString("en-CA"),
+    fromDate: defaultRange.fromDate,
+    toDate: defaultRange.toDate,
     itemId: "",
     reportStatus: "",
   });
   const [finishGoodsProductionFilters, setFinishGoodsProductionFilters] =
     useState({
-      fromDate: finishGoodsProductionFromDate,
-      toDate: new Date(finishGoodsProductionToDate).toLocaleDateString("en-CA"),
+      fromDate: defaultRange.fromDate,
+      toDate: defaultRange.toDate,
       productionItemName: "",
       reportStatus: "",
     });
@@ -127,71 +145,87 @@ const Dashboard = () => {
     }
   }, [error]);
 
+  const loadDefaultDashboardReports = () => {
+    const range = getLastTwoMonthsRange();
+    const salesParams = toReportParams({
+      fromDate: range.fromDate,
+      toDate: range.toDate,
+    });
+    const productionParams = toReportParams({
+      fromDate: range.fromDate,
+      toDate: range.toDate,
+    });
+    triggerSalesSummaryReport(salesParams);
+    triggerPurchaseDetailsReport(salesParams);
+    triggerRawConsumptionSummaryReport(salesParams);
+    triggerFinishGoodsProductionSummaryReport(productionParams);
+  };
+
   useEffect(() => {
-    const updatedFilters = {
-      ...filters,
+    loadDefaultDashboardReports();
+    // Initial last-2-months load only; search/reset trigger later fetches.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const resetToLastTwoMonths = (chart) => {
+    const range = getLastTwoMonthsRange();
+    const clearedSales = {
+      fromDate: range.fromDate,
+      toDate: range.toDate,
+      itemId: "",
+      reportStatus: "",
+    };
+    const clearedProduction = {
+      fromDate: range.fromDate,
+      toDate: range.toDate,
+      productionItemName: "",
       reportStatus: "",
     };
 
-    const updatedPurchaseFilters = {
-      ...purchaseFilters,
-      reportStatus: "",
-    };
-    const updatedRawConsumptionFilters = {
-      ...rawConsumptionFilters,
-      reportStatus: "",
-    };
-    const updatedFiltersFinishProduction = {
-      ...finishGoodsProductionFilters,
-      reportStatus: "",
-    };
-    const fetchRawConsuptionReport = async () => {
-      await triggerRawConsumptionSummaryReport(updatedRawConsumptionFilters);
-    };
+    setHeadingRange(range);
 
-    const fetchSalesSummaryReport = async () => {
-      await triggerSalesSummaryReport(updatedFilters);
-    };
-
-    const fetchPurchaseReport = async () => {
-      await triggerPurchaseDetailsReport(updatedPurchaseFilters);
-    };
-
-    const fetchFinishGoodsReport = async () => {
-      await triggerFinishGoodsProductionSummaryReport(
-        updatedFiltersFinishProduction
+    if (chart === "sales" || chart === "all") {
+      setFromDate(range.fromDate);
+      setToDate(range.toDate);
+      setFilters(clearedSales);
+      triggerSalesSummaryReport(toReportParams(clearedSales));
+    }
+    if (chart === "purchase" || chart === "all") {
+      setPurchaseFromDate(range.fromDate);
+      setPurchaseToDate(range.toDate);
+      setPurchaseFilters(clearedSales);
+      triggerPurchaseDetailsReport(toReportParams(clearedSales));
+    }
+    if (chart === "raw" || chart === "all") {
+      setRawConsumptionFromDate(range.fromDate);
+      setRawConsumptionToDate(range.toDate);
+      setRawConsumptionFilters(clearedSales);
+      triggerRawConsumptionSummaryReport(toReportParams(clearedSales));
+    }
+    if (chart === "production" || chart === "all") {
+      setFinishGoodsProductionFromDate(range.fromDate);
+      setFinishGoodsProductionToDate(range.toDate);
+      setFinishGoodsProductionFilters(clearedProduction);
+      triggerFinishGoodsProductionSummaryReport(
+        toReportParams(clearedProduction)
       );
-    };
-    fetchRawConsuptionReport();
-    fetchFinishGoodsReport();
-    fetchPurchaseReport();
-    fetchSalesSummaryReport();
-  }, [
-    filters,
-    finishGoodsProductionFilters,
-    purchaseFilters,
-    rawConsumptionFilters,
-    triggerFinishGoodsProductionSummaryReport,
-    triggerPurchaseDetailsReport,
-    triggerRawConsumptionSummaryReport,
-    triggerSalesSummaryReport,
-  ]);
+    }
+  };
 
   const handleApplyFilters = async (updatedFilters) => {
-    await triggerSalesSummaryReport(updatedFilters);
+    await triggerSalesSummaryReport(toReportParams(updatedFilters));
   };
 
   const handleApplyPurchaseFilters = async (updatedFilters) => {
-    console.log(updatedFilters);
-    await triggerPurchaseDetailsReport(updatedFilters);
+    await triggerPurchaseDetailsReport(toReportParams(updatedFilters));
   };
   const handleApplyRawConsumptionFilters = async (updatedFilters) => {
-    console.log(updatedFilters);
-    await triggerRawConsumptionSummaryReport(updatedFilters);
+    await triggerRawConsumptionSummaryReport(toReportParams(updatedFilters));
   };
   const handleApplyFinishGoodsProductionFilters = async (updatedFilters) => {
-    console.log(updatedFilters);
-    await triggerFinishGoodsProductionSummaryReport(updatedFilters);
+    await triggerFinishGoodsProductionSummaryReport(
+      toReportParams(updatedFilters)
+    );
   };
 
   const backgroundColors = [
@@ -306,6 +340,7 @@ const Dashboard = () => {
             <h3 className="fs-3 text-center fw-bold">Purchase Information</h3>
             <PurchaseDataPIChart
               handleApplyPurchaseFilters={handleApplyPurchaseFilters}
+              handleResetFilters={() => resetToLastTwoMonths("purchase")}
               purchaseOptions={purchaseOptions}
               filters={purchaseFilters}
               fromDate={purchaseFromDate}
@@ -331,6 +366,7 @@ const Dashboard = () => {
             <h3 className="text-center fw-bold fs-3">Raw Material Consumption</h3>
             <RawConsumptionLineChat
               handleApplyFilters={handleApplyRawConsumptionFilters}
+              handleResetFilters={() => resetToLastTwoMonths("raw")}
               purchaseOptions={purchaseOptions}
               filters={rawConsumptionFilters}
               fromDate={rawConsumptionFromDate}
@@ -357,6 +393,7 @@ const Dashboard = () => {
               handleApplyFinishGoodsProductionFilters={
                 handleApplyFinishGoodsProductionFilters
               }
+              handleResetFilters={() => resetToLastTwoMonths("production")}
               productionOptions={productionOptions}
               filters={finishGoodsProductionFilters}
               fromDate={finishGoodsProductionFromDate}
@@ -381,6 +418,7 @@ const Dashboard = () => {
             <h3 className="text-center fw-bold fs-3">Sales Information</h3>
             <SalesDataBarChart
               handleApplyFilters={handleApplyFilters}
+              handleResetFilters={() => resetToLastTwoMonths("sales")}
               productionOptions={productionOptions}
               filters={filters}
               fromDate={fromDate}

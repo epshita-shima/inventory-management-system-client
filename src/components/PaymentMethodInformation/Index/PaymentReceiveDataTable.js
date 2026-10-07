@@ -2,36 +2,27 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import PaymentReceiveDataTableList from "./PaymentReceiveDataTable/PaymentReceiveDataTableList";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const PaymentReceiveDataTable = () => {
-  const { data: user, isLoading: isUserloading } =
-    useGetAllUserQuery(undefined);
-
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(
-        user,
-        "Payment Received List"
-      );
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("Payment Received List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
 
   return (
     <div>
-      <div className={`${isUserloading ? "d-none" : "d-block"}`}>
+      <div className="d-block">
         <PaymentReceiveDataTableList
           permission={permission}
         ></PaymentReceiveDataTableList>

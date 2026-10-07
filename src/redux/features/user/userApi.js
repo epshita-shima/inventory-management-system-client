@@ -12,6 +12,9 @@ const userApi = api.injectEndpoints({
         "changesmanytatus",
       ],
     }),
+    getCurrentUser: builder.query({
+      query: () => "/api/v1/users/me",
+    }),
     createUser: builder.mutation({
       query: (payload) => ({
         url: "/api/v1/users",
@@ -93,6 +96,8 @@ const userApi = api.injectEndpoints({
 export const {
   useCreateUserMutation,
   useGetAllUserQuery,
+  useGetCurrentUserQuery,
+  useLazyGetCurrentUserQuery,
   useGetSingleUserQuery,
   useUpdateUserMutation,
   useUpdateUserInformationMutation,

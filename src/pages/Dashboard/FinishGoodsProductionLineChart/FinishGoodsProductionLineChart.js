@@ -5,9 +5,9 @@ import swal from "sweetalert";
 import './FinishGoodsProductionLineChart.css'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
-const FinishGoodsProductionLineChart = ({handleApplyFinishGoodsProductionFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
+const FinishGoodsProductionLineChart = ({handleApplyFinishGoodsProductionFilters,handleResetFilters,productionOptions,filters,fromDate,toDate,setFilters,setToDate,setFromDate}) => {
 
   return (
     <div className="row mt-1 g-3">
@@ -104,15 +104,15 @@ const FinishGoodsProductionLineChart = ({handleApplyFinishGoodsProductionFilters
         />
       </div>
     </div>
-    <div className="col-sm-2
-    ">
-     <FontAwesomeIcon className="fs-1 text-success mt-5 cursor-pointer" icon={faSearch} onClick={async()=>{
+    <div className="col-sm-2 d-flex align-items-end mb-1">
+     <FontAwesomeIcon className="fs-1 text-success mt-5 me-3 cursor-pointer" icon={faSearch} title="Search" onClick={async()=>{
        const updatedFilters = {
         ...filters
       };
 
        await handleApplyFinishGoodsProductionFilters(updatedFilters)
      }}></FontAwesomeIcon>
+     <FontAwesomeIcon className="fs-1 text-secondary mt-5 cursor-pointer" icon={faRotateLeft} title="Reset to last 2 months" onClick={() => handleResetFilters && handleResetFilters()}></FontAwesomeIcon>
     </div>
   </div>
   

@@ -1,54 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import PurchaseOrderApproveForm from "./PurchaseOrderApproveForm";
+import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const PurchaseStatusList = () => {
-  const { data: user} =
-    useGetAllUserQuery(undefined);
-
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.length > 0) {
-      const getUserId = localStorage.getItem("user");
-      const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId?._id;
-      const permidionData = user?.filter(
-        (user) => user._id === userIdFromSession
-      );
-      const extractUserListForCurrentUser = (userData, userId) => {
-        let userList = null;
-
-        const currentUser = userData?.find((user) => user._id === userId);
-        if (currentUser) {
-          currentUser?.menulist?.forEach((menu) => {
-            menu?.items?.forEach((subMenu) => {  
-              if (subMenu?.label === "Purchase Order") {
-                const userListSubMenu = subMenu?.items.find(
-                  (subItem) => subItem?.label === "PO Approval"
-                );
-                if (userListSubMenu) {
-                  userList = userListSubMenu;
-                }
-              }
-            });
-          });
-        }
-
-        return userList;
-      };
-
-      var permission = extractUserListForCurrentUser(
-        permidionData,
-        userIdFromSession
-      );
-      setPermission(permission);
+      const permissions = extractUserMenuListForCurrectMenu("PO Approval");
+      setPermission(permissions);
     } else {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [navigate]);
 
   return (
     <div>

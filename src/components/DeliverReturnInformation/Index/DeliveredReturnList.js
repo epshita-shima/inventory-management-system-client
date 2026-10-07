@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from "react";
 import DeliveredReturnListData from "./DeliveredReturnListData";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const DeliveredReturnList = () => {
-
-  const { data: user, isLoading: isUserloading } =
-    useGetAllUserQuery(undefined);
-
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(
-        user,
-        "List Information"
-      );
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("List Information");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
   return (
     <div>

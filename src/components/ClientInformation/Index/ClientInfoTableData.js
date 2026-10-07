@@ -2,50 +2,24 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import ClientInfoList from "./ClientInfoTableData/ClientInfoList";
-import { useGetAllUserQuery } from "../../../redux/features/user/userApi";
 import { useNavigate } from "react-router-dom";
 import { extractUserMenuListForCurrectMenu } from "../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const ClientInfoTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isUserloading } = useGetAllUserQuery(undefined);
 
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(
-        user,
-        "Client List"
-      );
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("Client List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
-  if (isUserloading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <button
-          className="btn"
-          style={{ backgroundColor: "#2DDC1B", color: "white" }}
-          type="button"
-          disabled
-        >
-          <span
-            className="spinner-grow spinner-grow-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Loading...
-        </button>
-      </div>
-    );
-  }
   return (
     <div>
       <ClientInfoList permission={permission} click={clickhandler} />

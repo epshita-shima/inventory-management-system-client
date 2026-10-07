@@ -2,60 +2,21 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useGetAllUserQuery } from '../../../redux/features/user/userApi';
 import PaymnetModeList from './PaymentModeTable/PaymnetModeList';
+import { extractUserMenuListForCurrectMenu } from '../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const PaymentModeDataList = () => {
-  const { data: user } = useGetAllUserQuery(undefined);
- 
   const [permission, setPermission] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.length > 0) {
-      const getUserId = localStorage.getItem("user");
-      const userSingleId = JSON.parse(getUserId);
-      const userIdFromSession = userSingleId[0]?._id;
-      const permidionData = user?.filter(
-        (user) => user._id === userIdFromSession
-      );
-      const extractUserListForCurrentUser = (userData, userId) => {
-        let userList = null;
-
-        const currentUser = userData?.find((user) => user._id === userId);
-
-        if (currentUser) {
-          // Loop through the menus of the current user
-          currentUser?.menulist?.forEach((menu) => {
-            menu?.items?.forEach((subMenu) => {
-              // Check if the subMenu is the "User Profile" menu
-              if (subMenu?.label === "Menu Index") {
-                // Find the "User List" sub-item
-                const userListSubMenu = subMenu?.items.find(
-                  (subItem) => subItem?.label === "Menu List"
-                );
-                if (userListSubMenu) {
-                  // Set the user list property
-                  userList = userListSubMenu;
-                }
-              }
-            });
-          });
-        }
-
-        return userList;
-      };
-
-      var permission = extractUserListForCurrentUser(
-        permidionData,
-        userIdFromSession
-      );
-  
-      setPermission(permission);
+      const permissions = extractUserMenuListForCurrectMenu("Menu List");
+      setPermission(permissions);
     } else {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [navigate]);
     return (
         <div>
           <PaymnetModeList permission={permission}

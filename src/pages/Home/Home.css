@@ -4,12 +4,15 @@
     border-bottom: none !important;
     margin-left: 10px;
     border-radius: 10px;
-    
+    overflow: visible !important;
+    position: relative;
+    z-index: 3000;
 }
 .p-menubar-root-list{
     margin-top: 2px;
     height: 25px;
     margin-right: 15px;
+    overflow: visible !important;
 }
 .p-submenu-list{
      background-color: rgb(54, 239, 41);
@@ -17,7 +20,9 @@
      padding: 5px;
      margin-left: 6px; 
      margin-top: 7px;
-     border:1px solid #1EDFBD
+     border:1px solid #1EDFBD;
+     z-index: 3001;
+     position: absolute;
 }
 .p-submenu-list li{
     margin-left: 0px !important;

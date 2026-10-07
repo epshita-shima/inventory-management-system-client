@@ -1,25 +1,28 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import "../../components/NestedDropdown.css";
 import {
-  useGetAllUserQuery,
+  useLazyGetCurrentUserQuery,
   useUpdateMultipleUserFieldMutation,
 } from "../../redux/features/user/userApi";
+import { sanitizeUserForStorage } from "../../components/Uitilites/extractUserMenuListForCurrectMenu";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Menubar } from "primereact/menubar";
 import "./Home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGetAllMenuItemsQuery } from "../../redux/features/menus/menuApi";
 import MenuIdCollection from "../../components/Common/MenuIdCollection/MenuIdCollection";
 
 import swal from "sweetalert";
 import { useUserLoggedOutMutation } from "../../redux/features/auth/authApi";
 import LoadingSpineer from "../../components/Common/LoadingSpinner/LoadingSpineer";
+import { api } from "../../redux/api/apiSlice";
 
 const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
-  const { data: user, refetch } = useGetAllUserQuery(undefined);
+  const [fetchCurrentUser] = useLazyGetCurrentUserQuery();
   const { data: menus,isLoading:menuLoading } = useGetAllMenuItemsQuery(undefined);
 
   const getMenulistData = localStorage?.getItem("user");
@@ -27,7 +30,11 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   const menuListData = JSON.parse(getMenulistData);
   const [loggedoutUser] = useUserLoggedOutMutation();
   const [setAllMenuData] = useUpdateMultipleUserFieldMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboardRoute =
+    location.pathname === "/main-view" || location.pathname === "/main-view/";
   if (menuListData !== null) {
     var menuListSingleData = menuListData?.menulist;
   }
@@ -37,9 +44,10 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   console.log(menuSort)
 
   useEffect(() => {
-    if (localStorage.length > 0) {
-    } else {
-      navigate("/");
+    const hasSession =
+      localStorage.getItem("user") && localStorage.getItem("accesstoken");
+    if (!hasSession) {
+      navigate("/", { replace: true });
     }
   }, [navigate]);
 
@@ -49,6 +57,9 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     backgroundColor: "rgba(21, 253, 4, 0.3)",
     height: "60px",
+    position: "relative",
+    zIndex: 3000,
+    overflow: "visible",
   };
 
   // Define your custom style for the Menubar
@@ -60,21 +71,92 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
     backgroundColor: "#2DDC1B",
     color: "#000",
   };
-  // Define the menu items
-  const filteredMenuItems = menuListSingleData?.map((menu) => {
-    const filterItems = (items) => {
-      return items.filter((item) => {
-        if (item.items && item.items.length > 0) {
-          item.items = filterItems(item.items);
-          item.isChecked = item.items.some((child) => child.isChecked);
-        }
-        return item.isChecked === true;
-      });
-    };
+  const PARENT_MENU_ORDER = [
+    "Dashboard",
+    "Setting",
+    "Master Entry",
+    "Purchase",
+    "Production",
+    "Sales",
+    "Report",
+  ];
 
-    const filteredItems = filterItems(menu.items);
-    return { ...menu, items: filteredItems };
-  });
+  const parentMenuOrderIndex = (label = "") => {
+    const index = PARENT_MENU_ORDER.findIndex(
+      (name) => label === name || label.startsWith(name)
+    );
+    return index === -1 ? PARENT_MENU_ORDER.length : index;
+  };
+
+  const byExistingOrderField = (a, b) => {
+    const orderA = parseFloat(a?.order ?? a?.orderNo);
+    const orderB = parseFloat(b?.order ?? b?.orderNo);
+    const hasA = !Number.isNaN(orderA);
+    const hasB = !Number.isNaN(orderB);
+    if (hasA && hasB && orderA !== orderB) {
+      return orderA - orderB;
+    }
+    if (hasA && !hasB) {
+      return -1;
+    }
+    if (!hasA && hasB) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const omitEmptySubmenus = (item) => {
+    if (!item?.items?.length) {
+      const { items, ...rest } = item;
+      return rest;
+    }
+    return {
+      ...item,
+      items: item.items.map(omitEmptySubmenus),
+    };
+  };
+
+  // Define the menu items
+  const filteredMenuItems = menuListSingleData
+    ?.map((menu) => {
+      const filterItems = (items) => {
+        return items
+          .filter((item) => {
+            if (item.items && item.items.length > 0) {
+              item.items = filterItems(item.items);
+              item.isChecked = item.items.some((child) => child.isChecked);
+            }
+            return item.isChecked === true;
+          })
+          .sort(byExistingOrderField);
+      };
+
+      return omitEmptySubmenus({
+        ...menu,
+        items: filterItems(menu.items || []),
+      });
+    })
+    ?.sort((a, b) => {
+      const orderA = parentMenuOrderIndex(a.label);
+      const orderB = parentMenuOrderIndex(b.label);
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return byExistingOrderField(a, b);
+    });
+
+  const handleLogout = async () => {
+    try {
+      await loggedoutUser();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(api.util.resetApiState());
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace("/");
+    }
+  };
 
   const handleClick = () => {
     // setShowComponent(true); // Set showComponent state to true to render MyComponent
@@ -85,14 +167,14 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
   };
 
   const handleRefreshData = async () => {
-    await refetch().then(({ data }) => {
-      const userData = data?.filter(
-        (item) =>
-          item?.username === menuListData?.username &&
-          item.password === menuListData?.password
-      );
+    try {
+      const currentUser = await fetchCurrentUser().unwrap();
+      if (!currentUser) {
+        swal("Sorry!", "Unable to refresh user information", "warning");
+        return;
+      }
 
-      if (userData[0]?.roleId === MenuIdCollection.userrole_supperadmin) {
+      if (currentUser.roleId === MenuIdCollection.userrole_supperadmin) {
         const updateProperties = (item) => {
           const newItem = {
             ...item,
@@ -104,27 +186,30 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
             isPDF: true,
           };
 
-          // Recursively isUpdated properties for child items
           newItem.items = newItem?.items?.map((child) =>
             updateProperties(child)
           );
           return newItem;
         };
 
-        // Update properties for each item in the menulist
-        const updatedUserData = userData.map((item) => {
-          const updatedMenuList = menus?.map((menu) => updateProperties(menu));
-          return { ...item, menulist: updatedMenuList };
+        const updatedMenuList = menus?.map((menu) => updateProperties(menu));
+        const userObjectData = sanitizeUserForStorage({
+          ...currentUser,
+          menulist: updatedMenuList,
         });
-
-        const userObjectData = updatedUserData[0];
-        setAllMenuData(updatedUserData);
+        setAllMenuData([userObjectData]);
         localStorage.setItem("user", JSON.stringify(userObjectData));
       } else {
-        const userObjectData = userData[0];
+        const userObjectData = sanitizeUserForStorage(currentUser);
         localStorage.setItem("user", JSON.stringify(userObjectData));
       }
-    });
+    } catch (error) {
+      swal(
+        "Sorry!",
+        error?.data?.message || "Unable to refresh user information",
+        "warning"
+      );
+    }
   };
 
   return (
@@ -207,16 +292,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                     <Dropdown.Item
                       href="#"
                       style={{ fontWeight: "bold" }}
-                      onClick={async () => {
-                        const response = await loggedoutUser();
-                        if (response?.data?.success === true) {
-                          swal("Done", `${response.data.message}`, "success");
-                          localStorage.clear();
-                          navigate("/");
-                        } else {
-                          console.log("something error");
-                        }
-                      }}
+                      onClick={handleLogout}
                     >
                       Logout
                     </Dropdown.Item>
@@ -273,19 +349,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#"
-                    onClick={async () => {
-                      const response = await loggedoutUser();
-                      if (response?.data?.success === true) {
-                        swal(
-                          "Done",
-                          `${response.data.message}`,
-                          "success"
-                        ).then(() => {
-                          localStorage.clear();
-                          navigate("/");
-                        });
-                      }
-                    }}
+                    onClick={handleLogout}
                   >
                     Logout
                   </Dropdown.Item>
@@ -295,7 +359,7 @@ const Home = ({ singleUserData, setChangePassword, setResetPassword }) => {
           </div>
         </div>
       </div>
-      <LoadingSpineer isLoading={menuLoading }></LoadingSpineer>
+      <LoadingSpineer isLoading={menuLoading && !isDashboardRoute}></LoadingSpineer>
     </div>
   );
 };

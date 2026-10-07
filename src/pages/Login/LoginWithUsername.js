@@ -42,14 +42,19 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
     try {
       const response = await loginUserValidation(loginUser);
       console.log(response);
-      if (response.data.success === true) {
+      if (response?.data?.success === true) {
         swal("Done", `${response.data.message}`, "success").then(() => {
-          localStorage.setItem("user", JSON.stringify(response.data.data));
+          const { password, hashPassword, ...safeUser } = response.data.data || {};
+          localStorage.setItem("user", JSON.stringify(safeUser));
           localStorage.setItem("accesstoken", response.data.token);
           navigate("/main-view");
         });
       } else {
-        swal("Sorry!", `${response.data.message}`, "error");
+        const message =
+          response?.error?.data?.message ||
+          response?.data?.message ||
+          "Invalid username or password";
+        swal("Sorry!", message, "error");
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -191,7 +196,7 @@ const LoginWithUsername = ({ singleUserData, setSingleUserData }) => {
           <div className="text-center mt-3">
             <small style={{ color: "#032339" }}>
               Demo Login: <br />
-              <strong>Username:</strong> Super-026 <br />
+              <strong>Username:</strong> Demo-03 <br />
               <strong>Password:</strong> LC00
             </small>
           </div>

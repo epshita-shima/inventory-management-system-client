@@ -3,25 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import InvoiceInformationDataList from './InvoiceInformationDataList';
 import { useNavigate } from 'react-router-dom';
-import { useGetAllUserQuery } from '../../../../../redux/features/user/userApi';
 import { extractUserMenuListForCurrectMenu } from '../../../../Uitilites/extractUserMenuListForCurrectMenu';
 
 const InvoiceInformationList = () => {
-    const { data: user, isUserloading } = useGetAllUserQuery(undefined);
-  
     const [permission, setPermission] = useState({});
     const navigate = useNavigate();
 
      useEffect(() => {
-        if (!isUserloading && user) {
-          const permissions = extractUserMenuListForCurrectMenu(user, "Invoice List");
+          const permissions = extractUserMenuListForCurrectMenu("Invoice List");
           if (permissions) {
             setPermission(permissions);
           } else {
             navigate("/");
           }
-        }
-      }, [user, navigate, isUserloading]);
+      }, [navigate]);
       
     
     return (

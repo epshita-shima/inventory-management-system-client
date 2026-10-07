@@ -190,11 +190,11 @@ const SingleUserDisplay = () => {
                   <Form.Group controlId="formInput">
                     <Form.Control
                       type="text"
-                      placeholder="Password"
+                      placeholder="Password is managed separately"
                       className="input-with-bottom-border"
-                      value={singleUserData?.password || ""}
+                      value=""
+                      readOnly
                       style={{ background: "transparent" }}
-                      isInvalid={validated && singleUserData?.password === ""}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide a password.

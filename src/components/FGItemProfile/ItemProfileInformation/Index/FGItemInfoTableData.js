@@ -4,13 +4,10 @@ import React, { useEffect, useState } from "react";
 import IteminfoList from "./IteminfoTableData/IteminfoList";
 import { useNavigate } from "react-router-dom";
 import { useGetAllItemInformationQuery } from "../../../../redux/features/iteminformation/finishgoodsinfoApi";
-import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
 import { extractUserMenuListForCurrectMenu } from "../../../Uitilites/extractUserMenuListForCurrectMenu";
 
 const FGItemInfoTableData = () => {
   const clickhandler = (name) => console.log("delete", name);
-  const { data: user, isLoading: isUserloading } =
-    useGetAllUserQuery(undefined);
   const {
     data: finishGoodInItemInfoData,
     isLoading: isFGItemloading,
@@ -20,23 +17,18 @@ const FGItemInfoTableData = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserloading && user) {
-      const permissions = extractUserMenuListForCurrectMenu(
-        user,
-        "Finish Goods Item List"
-      );
-      if (permissions) {
-        setPermission(permissions);
-      } else {
-        navigate("/");
-      }
+    const permissions = extractUserMenuListForCurrectMenu("Finish Goods Item List");
+    if (permissions) {
+      setPermission(permissions);
+    } else {
+      navigate("/");
     }
-  }, [user, navigate, isUserloading]);
+  }, [navigate]);
 
   return (
     <div>
 
-      <div className={`${isUserloading ? "d-none" : "d-block"}`}>
+      <div className="d-block">
         <IteminfoList
           permission={permission}
           finishGoodInItemInfoData={finishGoodInItemInfoData}

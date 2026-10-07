@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import {
-  useGetAllUserQuery,
+  useGetSingleUserQuery,
   useUpdateUserPasswordMutation,
 } from "../../redux/features/user/userApi";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import "./ChangePasswordModal.css";
 
@@ -25,20 +25,18 @@ const ChangePasswordModal = ({
   const queryParams = new URLSearchParams(window.location.search);
   const reset = queryParams.get("reset");
   const change = queryParams.get("change");
-  const { data: users } = useGetAllUserQuery(undefined);
-
   const userIdForChangePassowrd = queryParams.get("userId");
+  const { data: selectedUser } = useGetSingleUserQuery(userIdForChangePassowrd, {
+    skip: !userIdForChangePassowrd,
+  });
 
   useEffect(() => {
-    const filteredUser = users?.filter(
-      (user) => user._id == userIdForChangePassowrd
-    );
     if (!userIdForChangePassowrd) {
       setSingleUserData(menuListData);
-    } else {
-      setSingleUserData(filteredUser);
+    } else if (selectedUser) {
+      setSingleUserData([selectedUser]);
     }
-  }, [menuListData, setSingleUserData, userIdForChangePassowrd, users]);
+  }, [menuListData, selectedUser, setSingleUserData, userIdForChangePassowrd]);
 
   const handleChangePassword = (e) => {
     const { name, value } = e.target;
@@ -47,60 +45,41 @@ const ChangePasswordModal = ({
       ...formData,
       [name]: value,
     });
-
-    if (!userIdForChangePassowrd) {
-      setSingleUserData((prev) => {
-        const temp_data = prev;
-        temp_data["hashPassword"] = value;
-        temp_data["password"] = value;
-        return temp_data;
-      });
-    } else {
-      setSingleUserData((prev) => {
-        const temp_data = [...prev];
-        if (temp_data[0]) {
-          temp_data[0] = { ...temp_data[0], hashPassword: value };
-          temp_data[0] = { ...temp_data[0], password: value };
-        }
-        return temp_data;
-      });
-    }
   };
 
   const handleSaveChangePassword = async (e) => {
     e.preventDefault();
     try {
+      const targetUserId = userIdForChangePassowrd
+        ? selectedUser?._id || singleUserData?.[0]?._id
+        : menuListData?._id || singleUserData?._id;
 
-      if(!userIdForChangePassowrd){
-        const response = await updateUserPassword(singleUserData);
-        if (response.data.status === "success") {
-          swal("Done", `${response.data.message}`, "success");
+      if (!targetUserId) {
+        swal("Not Possible!", "User information is missing", "error");
+        return;
+      }
+
+      const response = await updateUserPassword({
+        _id: targetUserId,
+        password: formData.newPassword,
+      });
+      if (response.data.status === "success") {
+        swal("Done", `${response.data.message}`, "success");
+        if (!userIdForChangePassowrd) {
           navigate("/");
-          localStorage.clear()
+          localStorage.clear();
         } else {
-          swal(
-            "Not Possible!",
-            "An problem occurred while updating the data",
-            "error"
-          );
-        }
-      }
-      else{
-        const response = await updateUserPassword(singleUserData[0]);
-        if (response.data.status === "success") {
-          swal("Done", `${response.data.message}`, "success");
           navigate("/main-view/user-list");
-        } else {
-          swal(
-            "Not Possible!",
-            "An problem occurred while updating the data",
-            "error"
-          );
         }
+      } else {
+        swal(
+          "Not Possible!",
+          "An problem occurred while updating the data",
+          "error"
+        );
       }
-  
     } catch (error) {
-      console.error("Error updating hashPassword:", error); // Handle any errors
+      console.error("Error updating password:", error);
     }
   };
 
@@ -140,9 +119,9 @@ const ChangePasswordModal = ({
                   New Password
                 </Form.Label>
                 <Form.Control
-                  type="hashPassword"
+                  type="password"
                   name="newPassword"
-                  placeholder="Enter hashPassword"
+                  placeholder="Enter new password"
                   onChange={(e) => handleChangePassword(e)}
                 />
               </Form.Group>
@@ -152,7 +131,7 @@ const ChangePasswordModal = ({
                   Confirm Password
                 </Form.Label>
                 <Form.Control
-                  type="hashPassword"
+                  type="password"
                   name="confirmPassword"
                   placeholder="Password"
                   onChange={(e) => handleChangePassword(e)}
@@ -165,7 +144,7 @@ const ChangePasswordModal = ({
               <div className="d-flex justify-content-between mt-5">
                 <Button
                   variant="primary"
-                  type="submit"
+                  type="button"
                   style={{
                     backgroundColor: "#2DDC1B",
                     border: "none",

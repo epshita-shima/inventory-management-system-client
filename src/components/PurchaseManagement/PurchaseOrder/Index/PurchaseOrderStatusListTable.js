@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PurchaseOrderApproveList from "./PurchaseOrderApproveTable/PurchaseOrderApproveList";
-import { useGetAllUserQuery } from "../../../../redux/features/user/userApi";
-import { useNavigate } from "react-router-dom";
 import PurchaseOrderUnapproveList from "./PurchaseOrderUnapproveTable/PurchaseOrderUnapproveList";
 
 const PurchaseOrderStatusListTable = ({
