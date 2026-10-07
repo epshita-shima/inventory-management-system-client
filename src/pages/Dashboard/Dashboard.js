@@ -130,9 +130,9 @@ const Dashboard = () => {
       productionItemName: "",
       reportStatus: "",
     });
-  const { data: rawMaterialData } = useGetAllRMItemInformationQuery(undefined);
-  const { data: finishGoods } = useGetAllItemInformationQuery(undefined);
-  const { data: itemSizeInfo } = useGetAllItemSizeQuery(undefined);
+  const { data: rawMaterialData = [] } = useGetAllRMItemInformationQuery(undefined);
+  const { data: finishGoods = [] } = useGetAllItemInformationQuery(undefined);
+  const { data: itemSizeInfo = [] } = useGetAllItemSizeQuery(undefined);
   const productionOptions = finishGoodsWithSizeItemDropdown(
     finishGoods,
     itemSizeInfo

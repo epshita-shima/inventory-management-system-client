@@ -3,28 +3,29 @@ import { Pie } from 'react-chartjs-2'
 
 const PIChart = ({rawMaterialData,backgroundColors,purchaseDetailsData}) => {
   const itemMap = new Map();
-  purchaseDetailsData?.forEach((entry) => {
+  const itemList = Array.isArray(rawMaterialData) ? rawMaterialData : [];
+  const colorList = Array.isArray(backgroundColors) ? backgroundColors : [];
+  const purchaseRows = Array.isArray(purchaseDetailsData)
+    ? purchaseDetailsData
+    : [];
+  purchaseRows.forEach((entry) => {
     entry.detailsData?.forEach(({ itemId, amount }) => {
       itemMap.set(itemId, (itemMap.get(itemId) || 0) + amount);
     });
   });
-console.log(purchaseDetailsData)
   const aggregatedData = Array.from(itemMap, ([itemId, amount]) => ({
     itemId,
     amount,
   }));
 
-  console.log(aggregatedData)
-  const labels = aggregatedData?.map((itemId) => {
-    const foundItem = rawMaterialData.find(
-      (item) => String(item._id) === String(itemId.itemId)
+  const labels = aggregatedData.map((row) => {
+    const foundItem = itemList.find(
+      (item) => String(item._id) === String(row.itemId)
     );
-    console.log(foundItem);
-    return foundItem ? foundItem.itemName : `Unknown (${itemId})`;
+    return foundItem ? foundItem.itemName : `Unknown (${row.itemId})`;
   });
-  console.log(labels)
   const colors = labels.map(
-    (_, index) => backgroundColors[index % backgroundColors.length]
+    (_, index) => colorList[index % (colorList.length || 1)]
   );
 
   const dataPI = {
